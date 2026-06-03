@@ -886,6 +886,99 @@
         "displayDescription": false
       },
       "group": "Points"
+    },
+    {
+      "key": "qdrant_points_update",
+      "name": "qdrantPointsUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un point",
+      "subtitle": "Points",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qdrant",
+      "providerKey": "qdrant",
+      "description": "Met à jour un point (vecteur/payload) dans une collection.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qdrant_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un point",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID du point",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "vector",
+            "label": "Vecteur JSON",
+            "description": "Vecteur de remplacement (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Payload de remplacement (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Points",
+      "tags": [
+        "mise à jour",
+        "qdrant"
+      ],
+      "risk": "write"
     }
   ]
 }

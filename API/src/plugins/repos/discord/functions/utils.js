@@ -253,6 +253,56 @@ async discord_get_user(node, msg, inputs, opts) {
     const result = await discordRequest(opts, "GET", `/users/@me`);
     return result;
   }
+,
+  async discord_remove_role_from_member(node, msg, inputs, opts) {
+    const { discordRequest } = require("../utils").utils;
+    const a = inputs || {};
+    return await discordRequest(opts, "DELETE", `/guilds/${a.guild_id || ""}/members/${a.user_id || ""}/roles/${a.role_id || ""}`);
+  },
+
+  async discord_create_dm(node, msg, inputs, opts) {
+    const { discordRequest } = require("../utils").utils;
+    const a = inputs || {};
+    return await discordRequest(opts, "POST", "/users/@me/channels", { recipient_id: a.user_id || "" });
+  },
+
+  async discord_bulk_delete_messages(node, msg, inputs, opts) {
+    const { discordRequest } = require("../utils").utils;
+    const a = inputs || {};
+    let messages = a.message_ids;
+    if (typeof messages === "string") { try { messages = JSON.parse(messages); } catch { messages = String(messages).split(',').map(v=>v.trim()).filter(Boolean); } }
+    if (!Array.isArray(messages) || !messages.length) return { ok: false, error: "message_ids requis." };
+    return await discordRequest(opts, "POST", `/channels/${a.channel_id || ""}/messages/bulk-delete`, { messages });
+  },
+
+  async discord_pin_message(node, msg, inputs, opts) {
+    const { discordRequest } = require("../utils").utils;
+    const a = inputs || {};
+    return await discordRequest(opts, "PUT", `/channels/${a.channel_id || ""}/pins/${a.message_id || ""}`);
+  },
+
+  async discord_unpin_message(node, msg, inputs, opts) {
+    const { discordRequest } = require("../utils").utils;
+    const a = inputs || {};
+    return await discordRequest(opts, "DELETE", `/channels/${a.channel_id || ""}/pins/${a.message_id || ""}`);
+  },
+
+  async discord_get_guild_member(node, msg, inputs, opts) {
+    const { discordRequest } = require("../utils").utils;
+    const a = inputs || {};
+    return await discordRequest(opts, "GET", `/guilds/${a.guild_id || ""}/members/${a.user_id || ""}`);
+  },
+
+  async discord_modify_guild_member(node, msg, inputs, opts) {
+    const { discordRequest } = require("../utils").utils;
+    const a = inputs || {};
+    const body = {};
+    if (a.nick !== undefined && a.nick !== "") body.nick = a.nick;
+    if (a.channel_id !== undefined && a.channel_id !== "") body.channel_id = a.channel_id;
+    if (a.communication_disabled_until !== undefined && a.communication_disabled_until !== "") body.communication_disabled_until = a.communication_disabled_until;
+    return await discordRequest(opts, "PATCH", `/guilds/${a.guild_id || ""}/members/${a.user_id || ""}`, body);
+  }
+
 };
 
 module.exports = { utils: require("../utils").utils, handlers };

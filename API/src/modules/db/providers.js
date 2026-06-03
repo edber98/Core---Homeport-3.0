@@ -8,8 +8,8 @@ module.exports = function(){
   r.use(authMiddleware());
   r.use(requireCompanyScope());
   r.get('/providers', async (req, res) => {
-    let { limit = 100, page = 1 } = req.query;
-    limit = Math.max(1, Math.min(200, Number(limit) || 100));
+    let { limit = 1000, page = 1 } = req.query;
+    limit = Math.max(1, Math.min(5000, Number(limit) || 1000));
     page = Math.max(1, Number(page) || 1);
     const { q, sort } = req.query;
     // Hide providers when all their repos are disabled

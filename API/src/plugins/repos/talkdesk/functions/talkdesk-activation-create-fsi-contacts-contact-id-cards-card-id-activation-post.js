@@ -1,0 +1,44 @@
+const { utils } = require('./utils');
+
+module.exports = {
+  async talkdesk_activation_create_fsi_contacts_contact_id_cards_card_id_activation_post(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    const d = inputs || {};
+    let reqPath = "/fsi/contacts/{contact_id}/cards/{card_id}/activation";
+    const contact_id = String(d.contact_id || '').trim();
+    if (!contact_id) return { ok: false, error: 'contact_id requis.' };
+    reqPath = reqPath.replace('{contact_id}', encodeURIComponent(contact_id));
+    const card_id = String(d.card_id || '').trim();
+    if (!card_id) return { ok: false, error: 'card_id requis.' };
+    reqPath = reqPath.replace('{card_id}', encodeURIComponent(card_id));
+
+    const query = {};
+    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
+    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
+    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+
+    let body = undefined;
+    if (d.body !== undefined && d.body !== null && d.body !== '') {
+      if (typeof d.body === 'object') body = d.body;
+      else {
+        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
+      }
+    }
+
+    log('Requête en cours...');
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
+
+    const r = res.data || {};
+    return {
+      ok: true,
+      id: r.id || r.uuid || r.key || '',
+      name: r.name || r.title || '',
+      url: r.url || r.html_url || '',
+      status: r.status || r.state || '',
+      created_at: r.created_at || r.createdAt || '',
+      updated_at: r.updated_at || r.updatedAt || '',
+      raw: r
+    };
+  }
+};

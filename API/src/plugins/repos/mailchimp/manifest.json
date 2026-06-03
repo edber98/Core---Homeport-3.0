@@ -2916,6 +2916,579 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "mc_list_update",
+      "name": "mcListUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une audience",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_list"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie une audience Mailchimp.",
+      "args": {
+        "title": "Modifier une audience",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "permissionReminder",
+            "label": "Rappel de permission",
+            "description": "Texte de permission reminder.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "emailTypeOption",
+            "label": "Option type email",
+            "description": "Active email type option.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "contact",
+            "label": "Contact (JSON)",
+            "description": "Objet contact Mailchimp.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "campaignDefaults",
+            "label": "Default campagne (JSON)",
+            "description": "Objet campaign_defaults.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Audiences",
+      "icon": "fa-solid fa-pen",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ],
+      "group": "Audiences",
+      "risk": "write"
+    },
+    {
+      "key": "mc_list_delete",
+      "name": "mcListDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une audience",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_action_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une audience Mailchimp.",
+      "args": {
+        "title": "Supprimer une audience",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant de l audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Audiences",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ],
+      "group": "Audiences",
+      "risk": "destructive"
+    },
+    {
+      "key": "mc_campaign_update",
+      "name": "mcCampaignUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_campaign"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie une campagne Mailchimp.",
+      "args": {
+        "title": "Modifier une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "settings",
+            "label": "Settings (JSON)",
+            "description": "Bloc settings Mailchimp.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "recipients",
+            "label": "Recipients (JSON)",
+            "description": "Bloc recipients Mailchimp.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Campagnes",
+      "icon": "fa-solid fa-pen",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ],
+      "group": "Campagnes",
+      "risk": "write"
+    },
+    {
+      "key": "mc_campaign_delete",
+      "name": "mcCampaignDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une campagne",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_action_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une campagne Mailchimp.",
+      "args": {
+        "title": "Supprimer une campagne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "campaignId",
+            "label": "Campagne ID",
+            "description": "Identifiant campagne.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Campagnes",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ],
+      "group": "Campagnes",
+      "risk": "destructive"
+    },
+    {
+      "key": "mc_segment_create",
+      "name": "mcSegmentCreate",
+      "schemaVersion": 2,
+      "title": "Créer un segment",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_segment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un segment sur une audience.",
+      "args": {
+        "title": "Créer un segment",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du segment.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "staticSegment",
+            "label": "Membres (JSON)",
+            "description": "Tableau emails pour static segment.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Segments",
+      "icon": "fa-solid fa-plus",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ],
+      "group": "Segments",
+      "risk": "write"
+    },
+    {
+      "key": "mc_segment_update",
+      "name": "mcSegmentUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un segment",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_segment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un segment sur une audience.",
+      "args": {
+        "title": "Modifier un segment",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "segmentId",
+            "label": "Segment ID",
+            "description": "Identifiant segment.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom du segment.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "staticSegment",
+            "label": "Membres (JSON)",
+            "description": "Tableau emails pour static segment.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Segments",
+      "icon": "fa-solid fa-pen",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ],
+      "group": "Segments",
+      "risk": "write"
+    },
+    {
+      "key": "mc_segment_delete",
+      "name": "mcSegmentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un segment",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mailchimp",
+      "providerKey": "mailchimp",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mc_action_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un segment sur une audience.",
+      "args": {
+        "title": "Supprimer un segment",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "Audience ID",
+            "description": "Identifiant audience.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "segmentId",
+            "label": "Segment ID",
+            "description": "Identifiant segment.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Segments",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "lecture",
+        "mailchimp"
+      ],
+      "group": "Segments",
+      "risk": "destructive"
     }
   ]
 }

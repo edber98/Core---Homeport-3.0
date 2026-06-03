@@ -248,7 +248,7 @@ function defaultArgsFor(actionKey, outputMode, pathTemplate, method) {
   return args;
 }
 
-function renderHandler(fnName, method, pathTemplate, outputMode) {
+function renderHandler(fnName, method, pathTemplate, outputMode, args = []) {
   const params = pathParams(pathTemplate);
   const pathLine = `let reqPath = ${JSON.stringify(pathTemplate)};`;
 
@@ -270,11 +270,19 @@ function renderHandler(fnName, method, pathTemplate, outputMode) {
     }`
     : `const body = undefined;`;
 
+  const queryArgs = args
+    .filter((arg) => arg && arg.in === 'query' && arg.key)
+    .map((arg) => {
+      return `if (d.${arg.key} !== undefined && d.${arg.key} !== null && d.${arg.key} !== '') query[${JSON.stringify(arg.key)}] = d.${arg.key};`;
+    })
+    .join('\n    ');
+
   let returnBlock;
   if (outputMode === 'list') {
     returnBlock = `const payload = res.data || {};
     const rawItems = Array.isArray(payload.items) ? payload.items : Array.isArray(payload.results) ? payload.results : Array.isArray(payload) ? payload : [];
     const items = rawItems.map((r) => ({
+      ...(r && typeof r === 'object' ? r : { value: r }),
       id: r && (r.id || r.uuid || r.key || ''),
       name: r && (r.name || r.title || ''),
       url: r && (r.url || r.html_url || ''),
@@ -294,6 +302,7 @@ function renderHandler(fnName, method, pathTemplate, outputMode) {
     returnBlock = `const r = res.data || {};
     return {
       ok: true,
+      ...(r && typeof r === 'object' ? r : { value: r }),
       id: r.id || r.uuid || r.key || '',
       name: r.name || r.title || '',
       url: r.url || r.html_url || '',
@@ -321,9 +330,7 @@ module.exports = {
     ${paramLines}
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+    ${queryArgs}
 
     ${bodyBlock}
 
@@ -484,7 +491,7 @@ function generateFromSpec(specInput, opts = {}) {
       const fnName = tpl.key;
       const fileName = `${connector}-${toKebab(resourceKey)}-${toKebab(actionKey)}.js`;
       const filePath = path.join(functionsDir, fileName);
-      const content = renderHandler(fnName, method, reqPath, outputMode);
+      const content = renderHandler(fnName, method, reqPath, outputMode, args);
 
       if (!opts.dryRun) {
         if (fs.existsSync(filePath) && !opts.force) {

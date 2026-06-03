@@ -9188,8 +9188,8 @@
       "key": "baseten_activate_create_activates_a_development_deployment",
       "name": "basetenActivateCreateActivatesADevelopmentDeployment",
       "schemaVersion": 2,
-      "title": "Activer développement déploiement",
-      "subtitle": "Développement déploiement",
+      "title": "Activer déploiement de développement",
+      "subtitle": "déploiement de développement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9220,9 +9220,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Activer développement déploiement.",
+      "description": "Active déploiement de développement.",
       "args": {
-        "title": "Activer développement déploiement",
+        "title": "Activer déploiement de développement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9261,8 +9261,8 @@
       "key": "baseten_activate_create_activates_a_production_deployment",
       "name": "basetenActivateCreateActivatesAProductionDeployment",
       "schemaVersion": 2,
-      "title": "Activer production déploiement",
-      "subtitle": "Production déploiement",
+      "title": "Activer déploiement de production",
+      "subtitle": "déploiement de production",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9293,9 +9293,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Activer production déploiement.",
+      "description": "Active déploiement de production.",
       "args": {
-        "title": "Activer production déploiement",
+        "title": "Activer déploiement de production",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9366,7 +9366,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Activer déploiement.",
+      "description": "Active déploiement.",
       "args": {
         "title": "Activer déploiement",
         "ui": {
@@ -9453,7 +9453,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Activer déploiement associé environnement.",
+      "description": "Active déploiement associé environnement.",
       "args": {
         "title": "Activer déploiement associé environnement",
         "ui": {
@@ -9540,7 +9540,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister authentification code entraînement tâche.",
+      "description": "Retourne la liste des éléments authentification code entraînement tâche.",
       "args": {
         "title": "Lister authentification code entraînement tâche",
         "ui": {
@@ -9586,8 +9586,8 @@
       "key": "baseten_autoscaling_setting_update_updates_a_development_deployment_s_autoscaling_settings",
       "name": "basetenAutoscalingSettingUpdateUpdatesADevelopmentDeploymentSAutoscalingSettings",
       "schemaVersion": 2,
-      "title": "Mettre à jour développement déploiement s mise à l'échelle automatique paramètre",
-      "subtitle": "Développement déploiement s mise à l'échelle automatique paramètre",
+      "title": "Mettre à jour déploiement de développement mise à l'échelle automatique paramètre",
+      "subtitle": "déploiement de développement mise à l'échelle automatique paramètre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9618,9 +9618,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour développement déploiement s mise à l'échelle automatique paramètre.",
+      "description": "Met à jour déploiement de développement mise à l'échelle automatique paramètre.",
       "args": {
-        "title": "Mettre à jour développement déploiement s mise à l'échelle automatique paramètre",
+        "title": "Mettre à jour déploiement de développement mise à l'échelle automatique paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9650,8 +9650,8 @@
       "key": "baseten_autoscaling_setting_update_updates_a_production_deployment_s_autoscaling_settings",
       "name": "basetenAutoscalingSettingUpdateUpdatesAProductionDeploymentSAutoscalingSettings",
       "schemaVersion": 2,
-      "title": "Mettre à jour production déploiement s mise à l'échelle automatique paramètre",
-      "subtitle": "Production déploiement s mise à l'échelle automatique paramètre",
+      "title": "Mettre à jour déploiement de production mise à l'échelle automatique paramètre",
+      "subtitle": "déploiement de production mise à l'échelle automatique paramètre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9682,9 +9682,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour production déploiement s mise à l'échelle automatique paramètre.",
+      "description": "Met à jour déploiement de production mise à l'échelle automatique paramètre.",
       "args": {
-        "title": "Mettre à jour production déploiement s mise à l'échelle automatique paramètre",
+        "title": "Mettre à jour déploiement de production mise à l'échelle automatique paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9714,8 +9714,8 @@
       "key": "baseten_autoscaling_setting_update_updates_a_deployment_s_autoscaling_settings",
       "name": "basetenAutoscalingSettingUpdateUpdatesADeploymentSAutoscalingSettings",
       "schemaVersion": 2,
-      "title": "Mettre à jour déploiement s mise à l'échelle automatique paramètre",
-      "subtitle": "Déploiement s mise à l'échelle automatique paramètre",
+      "title": "Mettre à jour déploiement mise à l'échelle automatique paramètre",
+      "subtitle": "déploiement mise à l'échelle automatique paramètre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9746,9 +9746,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour déploiement s mise à l'échelle automatique paramètre.",
+      "description": "Met à jour déploiement mise à l'échelle automatique paramètre.",
       "args": {
-        "title": "Mettre à jour déploiement s mise à l'échelle automatique paramètre",
+        "title": "Mettre à jour déploiement mise à l'échelle automatique paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9778,8 +9778,8 @@
       "key": "baseten_autoscaling_setting_update_update_a_chainlet_environment_s_autoscaling_settings",
       "name": "basetenAutoscalingSettingUpdateUpdateAChainletEnvironmentSAutoscalingSettings",
       "schemaVersion": 2,
-      "title": "Mettre à jour chainlet environnement s mise à l'échelle automatique paramètre",
-      "subtitle": "Chainlet environnement s mise à l'échelle automatique paramètre",
+      "title": "Mettre à jour chainlet environnement mise à l'échelle automatique paramètre",
+      "subtitle": "Chainlet environnement mise à l'échelle automatique paramètre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -9810,9 +9810,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour chainlet environnement s mise à l'échelle automatique paramètre.",
+      "description": "Met à jour chainlet environnement mise à l'échelle automatique paramètre.",
       "args": {
-        "title": "Mettre à jour chainlet environnement s mise à l'échelle automatique paramètre",
+        "title": "Mettre à jour chainlet environnement mise à l'échelle automatique paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9874,7 +9874,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer promotion environnement.",
+      "description": "Crée un nouvel élément pour promotion environnement.",
       "args": {
         "title": "Créer promotion environnement",
         "ui": {
@@ -9961,7 +9961,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister boucle serveur capacité.",
+      "description": "Retourne la liste des éléments boucle serveur capacité.",
       "args": {
         "title": "Lister boucle serveur capacité",
         "ui": {
@@ -9978,8 +9978,8 @@
       "key": "baseten_capacity_list_get_training_gpu_capacity",
       "name": "basetenCapacityListGetTrainingGpuCapacity",
       "schemaVersion": 2,
-      "title": "Lister entraînement gpu capacity",
-      "subtitle": "Entraînement gpu capacity",
+      "title": "Lister entraînement capacité GPU",
+      "subtitle": "Entraînement capacité GPU",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -10010,9 +10010,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister entraînement gpu capacity.",
+      "description": "Retourne la liste des éléments entraînement capacité GPU.",
       "args": {
-        "title": "Lister entraînement gpu capacity",
+        "title": "Lister entraînement capacité GPU",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10059,7 +10059,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister chaîne.",
+      "description": "Retourne la liste des éléments chaîne.",
       "args": {
         "title": "Lister chaîne",
         "ui": {
@@ -10108,7 +10108,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer chaîne ID.",
+      "description": "Supprime chaîne ID.",
       "args": {
         "title": "Supprimer chaîne ID",
         "ui": {
@@ -10172,7 +10172,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer chaîne ID.",
+      "description": "Récupère les détails de chaîne ID.",
       "args": {
         "title": "Récupérer chaîne ID",
         "ui": {
@@ -10236,7 +10236,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister entraînement tâche point de contrôle.",
+      "description": "Retourne la liste des éléments entraînement tâche point de contrôle.",
       "args": {
         "title": "Lister entraînement tâche point de contrôle",
         "ui": {
@@ -10314,7 +10314,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher entraîneur point de contrôle information bt URI.",
+      "description": "Recherche des éléments liés à entraîneur point de contrôle information bt URI.",
       "args": {
         "title": "Rechercher entraîneur point de contrôle information bt URI",
         "ui": {
@@ -10378,7 +10378,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister entraîneur serveur point de contrôle.",
+      "description": "Retourne la liste des éléments entraîneur serveur point de contrôle.",
       "args": {
         "title": "Lister entraîneur serveur point de contrôle",
         "ui": {
@@ -10456,7 +10456,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister boucle point de contrôle.",
+      "description": "Retourne la liste des éléments boucle point de contrôle.",
       "args": {
         "title": "Lister boucle point de contrôle",
         "ui": {
@@ -10533,7 +10533,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister entraînement tâche point de contrôle fichier.",
+      "description": "Retourne la liste des éléments entraînement tâche point de contrôle fichier.",
       "args": {
         "title": "Lister entraînement tâche point de contrôle fichier",
         "ui": {
@@ -10569,8 +10569,8 @@
       "key": "baseten_config_search_gets_a_deployment_s_config",
       "name": "basetenConfigSearchGetsADeploymentSConfig",
       "schemaVersion": 2,
-      "title": "Rechercher déploiement s config",
-      "subtitle": "Déploiement s config",
+      "title": "Rechercher déploiement configurationuration",
+      "subtitle": "déploiement configurationuration",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -10601,9 +10601,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher déploiement s config.",
+      "description": "Recherche des éléments liés à déploiement configurationuration.",
       "args": {
-        "title": "Rechercher déploiement s config",
+        "title": "Rechercher déploiement configurationuration",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10628,8 +10628,8 @@
       "key": "baseten_deactivate_create_deactivates_a_development_deployment",
       "name": "basetenDeactivateCreateDeactivatesADevelopmentDeployment",
       "schemaVersion": 2,
-      "title": "Désactiver développement déploiement",
-      "subtitle": "Développement déploiement",
+      "title": "Désactiver déploiement de développement",
+      "subtitle": "déploiement de développement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -10660,9 +10660,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Désactiver développement déploiement.",
+      "description": "Désactive déploiement de développement.",
       "args": {
-        "title": "Désactiver développement déploiement",
+        "title": "Désactiver déploiement de développement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10701,8 +10701,8 @@
       "key": "baseten_deactivate_create_deactivates_a_production_deployment",
       "name": "basetenDeactivateCreateDeactivatesAProductionDeployment",
       "schemaVersion": 2,
-      "title": "Désactiver production déploiement",
-      "subtitle": "Production déploiement",
+      "title": "Désactiver déploiement de production",
+      "subtitle": "déploiement de production",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -10733,9 +10733,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Désactiver production déploiement.",
+      "description": "Désactive déploiement de production.",
       "args": {
-        "title": "Désactiver production déploiement",
+        "title": "Désactiver déploiement de production",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10806,7 +10806,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Désactiver déploiement.",
+      "description": "Désactive déploiement.",
       "args": {
         "title": "Désactiver déploiement",
         "ui": {
@@ -10893,7 +10893,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Désactiver déploiement associé environnement.",
+      "description": "Désactive déploiement associé environnement.",
       "args": {
         "title": "Désactiver déploiement associé environnement",
         "ui": {
@@ -10948,8 +10948,8 @@
       "key": "baseten_deactivate_create_deactivates_a_chain_deployment",
       "name": "basetenDeactivateCreateDeactivatesAChainDeployment",
       "schemaVersion": 2,
-      "title": "Désactiver chaîne déploiement",
-      "subtitle": "Chaîne déploiement",
+      "title": "Désactiver déploiement de chaîne",
+      "subtitle": "déploiement de chaîne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -10980,9 +10980,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Désactiver chaîne déploiement.",
+      "description": "Désactive déploiement de chaîne.",
       "args": {
-        "title": "Désactiver chaîne déploiement",
+        "title": "Désactiver déploiement de chaîne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11067,7 +11067,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Désactiver boucle déploiement.",
+      "description": "Désactive boucle déploiement.",
       "args": {
         "title": "Désactiver boucle déploiement",
         "ui": {
@@ -11140,7 +11140,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister déploiement modèle.",
+      "description": "Retourne la liste des éléments déploiement modèle.",
       "args": {
         "title": "Lister déploiement modèle",
         "ui": {
@@ -11204,7 +11204,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer nouveau déploiement modèle.",
+      "description": "Crée un nouvel élément pour nouveau déploiement modèle.",
       "args": {
         "title": "Créer nouveau déploiement modèle",
         "ui": {
@@ -11236,8 +11236,8 @@
       "key": "baseten_deployment_delete_deletes_a_model_s_deployment_by_id",
       "name": "basetenDeploymentDeleteDeletesAModelSDeploymentById",
       "schemaVersion": 2,
-      "title": "Supprimer modèle s déploiement ID",
-      "subtitle": "Modèle s déploiement ID",
+      "title": "Supprimer modèle déploiement ID",
+      "subtitle": "modèle déploiement ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11268,9 +11268,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer modèle s déploiement ID.",
+      "description": "Supprime modèle déploiement ID.",
       "args": {
-        "title": "Supprimer modèle s déploiement ID",
+        "title": "Supprimer modèle déploiement ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11314,8 +11314,8 @@
       "key": "baseten_deployment_get_gets_a_model_s_deployment_by_id",
       "name": "basetenDeploymentGetGetsAModelSDeploymentById",
       "schemaVersion": 2,
-      "title": "Récupérer modèle s déploiement ID",
-      "subtitle": "Modèle s déploiement ID",
+      "title": "Récupérer modèle déploiement ID",
+      "subtitle": "modèle déploiement ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11346,9 +11346,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer modèle s déploiement ID.",
+      "description": "Récupère les détails de modèle déploiement ID.",
       "args": {
-        "title": "Récupérer modèle s déploiement ID",
+        "title": "Récupérer modèle déploiement ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11392,8 +11392,8 @@
       "key": "baseten_deployment_retry_retries_a_failed_deployment",
       "name": "basetenDeploymentRetryRetriesAFailedDeployment",
       "schemaVersion": 2,
-      "title": "Relancer failed déploiement",
-      "subtitle": "Failed déploiement",
+      "title": "Relancer échoué déploiement",
+      "subtitle": "échoué déploiement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11424,9 +11424,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Relancer failed déploiement.",
+      "description": "Relance le traitement pour échoué déploiement.",
       "args": {
-        "title": "Relancer failed déploiement",
+        "title": "Relancer échoué déploiement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11479,8 +11479,8 @@
       "key": "baseten_deployment_list_gets_all_chain_deployments",
       "name": "basetenDeploymentListGetsAllChainDeployments",
       "schemaVersion": 2,
-      "title": "Lister chaîne déploiement",
-      "subtitle": "Chaîne déploiement",
+      "title": "Lister déploiement de chaîne",
+      "subtitle": "déploiement de chaîne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11511,9 +11511,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister chaîne déploiement.",
+      "description": "Retourne la liste des éléments déploiement de chaîne.",
       "args": {
-        "title": "Lister chaîne déploiement",
+        "title": "Lister déploiement de chaîne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11543,8 +11543,8 @@
       "key": "baseten_deployment_delete_deletes_a_chain_deployment_by_id",
       "name": "basetenDeploymentDeleteDeletesAChainDeploymentById",
       "schemaVersion": 2,
-      "title": "Supprimer chaîne déploiement ID",
-      "subtitle": "Chaîne déploiement ID",
+      "title": "Supprimer déploiement de chaîne ID",
+      "subtitle": "déploiement de chaîne ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11575,9 +11575,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer chaîne déploiement ID.",
+      "description": "Supprime déploiement de chaîne ID.",
       "args": {
-        "title": "Supprimer chaîne déploiement ID",
+        "title": "Supprimer déploiement de chaîne ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11621,8 +11621,8 @@
       "key": "baseten_deployment_get_gets_a_chain_deployment_by_id",
       "name": "basetenDeploymentGetGetsAChainDeploymentById",
       "schemaVersion": 2,
-      "title": "Récupérer chaîne déploiement ID",
-      "subtitle": "Chaîne déploiement ID",
+      "title": "Récupérer déploiement de chaîne ID",
+      "subtitle": "déploiement de chaîne ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11653,9 +11653,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer chaîne déploiement ID.",
+      "description": "Récupère les détails de déploiement de chaîne ID.",
       "args": {
-        "title": "Récupérer chaîne déploiement ID",
+        "title": "Récupérer déploiement de chaîne ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11731,7 +11731,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister boucle déploiement.",
+      "description": "Retourne la liste des éléments boucle déploiement.",
       "args": {
         "title": "Lister boucle déploiement",
         "ui": {
@@ -11780,7 +11780,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer boucle déploiement.",
+      "description": "Récupère les détails de boucle déploiement.",
       "args": {
         "title": "Récupérer boucle déploiement",
         "ui": {
@@ -11844,7 +11844,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer nouvelle version de déploiement Base LLM.",
+      "description": "Crée un nouvel élément pour nouvelle version de déploiement Base LLM.",
       "args": {
         "title": "Créer nouvelle version de déploiement Base LLM",
         "ui": {
@@ -11876,8 +11876,8 @@
       "key": "baseten_development_list_gets_a_model_s_development_deployment",
       "name": "basetenDevelopmentListGetsAModelSDevelopmentDeployment",
       "schemaVersion": 2,
-      "title": "Lister modèle s développement déploiement",
-      "subtitle": "Modèle s développement déploiement",
+      "title": "Lister modèle déploiement de développement",
+      "subtitle": "modèle déploiement de développement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11908,9 +11908,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister modèle s développement déploiement.",
+      "description": "Retourne la liste des éléments modèle déploiement de développement.",
       "args": {
-        "title": "Lister modèle s développement déploiement",
+        "title": "Lister modèle déploiement de développement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -11940,8 +11940,8 @@
       "key": "baseten_development_retry_retries_a_failed_development_deployment",
       "name": "basetenDevelopmentRetryRetriesAFailedDevelopmentDeployment",
       "schemaVersion": 2,
-      "title": "Relancer failed développement déploiement",
-      "subtitle": "Failed développement déploiement",
+      "title": "Relancer échoué déploiement de développement",
+      "subtitle": "échoué déploiement de développement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -11972,9 +11972,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Relancer failed développement déploiement.",
+      "description": "Relance le traitement pour échoué déploiement de développement.",
       "args": {
-        "title": "Relancer failed développement déploiement",
+        "title": "Relancer échoué déploiement de développement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12013,8 +12013,8 @@
       "key": "baseten_download_list_gets_a_presigned_download_url_for_a_deployment_s_truss",
       "name": "basetenDownloadListGetsAPresignedDownloadUrlForADeploymentSTruss",
       "schemaVersion": 2,
-      "title": "Lister presigned URL déploiement s truss",
-      "subtitle": "Presigned URL déploiement s truss",
+      "title": "Lister URL pré-signée déploiement truss",
+      "subtitle": "URL pré-signée déploiement truss",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12045,9 +12045,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister presigned URL déploiement s truss.",
+      "description": "Retourne la liste des éléments URL pré-signée déploiement truss.",
       "args": {
-        "title": "Lister presigned URL déploiement s truss",
+        "title": "Lister URL pré-signée déploiement truss",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12091,8 +12091,8 @@
       "key": "baseten_download_list_get_the_uploaded_training_job_as_a_s3_artifact",
       "name": "basetenDownloadListGetTheUploadedTrainingJobAsAS3Artifact",
       "schemaVersion": 2,
-      "title": "Lister entraînement tâche s3 artifact",
-      "subtitle": "Entraînement tâche s3 artifact",
+      "title": "Lister entraînement tâche s3 artefact",
+      "subtitle": "Entraînement tâche s3 artefact",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12123,9 +12123,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister entraînement tâche s3 artifact.",
+      "description": "Retourne la liste des éléments entraînement tâche s3 artefact.",
       "args": {
-        "title": "Lister entraînement tâche s3 artifact",
+        "title": "Lister entraînement tâche s3 artefact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12201,7 +12201,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister environnement.",
+      "description": "Retourne la liste des éléments environnement.",
       "args": {
         "title": "Lister environnement",
         "ui": {
@@ -12265,7 +12265,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer environnement.",
+      "description": "Crée un nouvel élément pour environnement.",
       "args": {
         "title": "Créer environnement",
         "ui": {
@@ -12297,8 +12297,8 @@
       "key": "baseten_environment_get_get_an_environment_s_details",
       "name": "basetenEnvironmentGetGetAnEnvironmentSDetails",
       "schemaVersion": 2,
-      "title": "Récupérer environnement s détail",
-      "subtitle": "Environnement s détail",
+      "title": "Récupérer environnement détail",
+      "subtitle": "environnement détail",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12329,9 +12329,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer environnement s détail.",
+      "description": "Récupère les détails de environnement détail.",
       "args": {
-        "title": "Récupérer environnement s détail",
+        "title": "Récupérer environnement détail",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12375,8 +12375,8 @@
       "key": "baseten_environment_update_update_an_environment_s_settings",
       "name": "basetenEnvironmentUpdateUpdateAnEnvironmentSSettings",
       "schemaVersion": 2,
-      "title": "Mettre à jour environnement s paramètre",
-      "subtitle": "Environnement s paramètre",
+      "title": "Mettre à jour environnement paramètre",
+      "subtitle": "environnement paramètre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12407,9 +12407,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour environnement s paramètre.",
+      "description": "Met à jour environnement paramètre.",
       "args": {
-        "title": "Mettre à jour environnement s paramètre",
+        "title": "Mettre à jour environnement paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12471,7 +12471,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister chaîne environnement.",
+      "description": "Retourne la liste des éléments chaîne environnement.",
       "args": {
         "title": "Lister chaîne environnement",
         "ui": {
@@ -12535,7 +12535,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer chaîne environnement.",
+      "description": "Crée un nouvel élément pour chaîne environnement.",
       "args": {
         "title": "Créer chaîne environnement",
         "ui": {
@@ -12567,8 +12567,8 @@
       "key": "baseten_environment_get_get_a_chain_environment_s_details",
       "name": "basetenEnvironmentGetGetAChainEnvironmentSDetails",
       "schemaVersion": 2,
-      "title": "Récupérer chaîne environnement s détail",
-      "subtitle": "Chaîne environnement s détail",
+      "title": "Récupérer chaîne environnement détail",
+      "subtitle": "Chaîne environnement détail",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12599,9 +12599,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer chaîne environnement s détail.",
+      "description": "Récupère les détails de chaîne environnement détail.",
       "args": {
-        "title": "Récupérer chaîne environnement s détail",
+        "title": "Récupérer chaîne environnement détail",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12645,8 +12645,8 @@
       "key": "baseten_environment_update_update_a_chain_environment_s_settings",
       "name": "basetenEnvironmentUpdateUpdateAChainEnvironmentSSettings",
       "schemaVersion": 2,
-      "title": "Mettre à jour chaîne environnement s paramètre",
-      "subtitle": "Chaîne environnement s paramètre",
+      "title": "Mettre à jour chaîne environnement paramètre",
+      "subtitle": "Chaîne environnement paramètre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12677,9 +12677,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour chaîne environnement s paramètre.",
+      "description": "Met à jour chaîne environnement paramètre.",
       "args": {
-        "title": "Mettre à jour chaîne environnement s paramètre",
+        "title": "Mettre à jour chaîne environnement paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12741,7 +12741,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer entraîneur serveur point de contrôle fichier.",
+      "description": "Récupère les détails de entraîneur serveur point de contrôle fichier.",
       "args": {
         "title": "Récupérer entraîneur serveur point de contrôle fichier",
         "ui": {
@@ -12833,7 +12833,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister boucle point de contrôle fichier.",
+      "description": "Retourne la liste des éléments boucle point de contrôle fichier.",
       "args": {
         "title": "Lister boucle point de contrôle fichier",
         "ui": {
@@ -12865,8 +12865,8 @@
       "key": "baseten_force_cancel_promotion_create_force_cancels_a_rolling_promotion",
       "name": "basetenForceCancelPromotionCreateForceCancelsARollingPromotion",
       "schemaVersion": 2,
-      "title": "Créer force rolling promotion",
-      "subtitle": "Force rolling promotion",
+      "title": "Créer promotion progressive forcée",
+      "subtitle": "promotion progressive forcée",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12897,9 +12897,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer force rolling promotion.",
+      "description": "Crée un nouvel élément pour promotion progressive forcée.",
       "args": {
-        "title": "Créer force rolling promotion",
+        "title": "Créer promotion progressive forcée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -12952,8 +12952,8 @@
       "key": "baseten_force_roll_forward_promotion_create_force_rolls_forward_a_rolling_promotion",
       "name": "basetenForceRollForwardPromotionCreateForceRollsForwardARollingPromotion",
       "schemaVersion": 2,
-      "title": "Créer force roll forward rolling promotion",
-      "subtitle": "Force roll forward rolling promotion",
+      "title": "Créer promotion progressive forcée vers la version suivante",
+      "subtitle": "promotion progressive forcée vers la version suivante",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -12984,9 +12984,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer force roll forward rolling promotion.",
+      "description": "Crée un nouvel élément pour promotion progressive forcée vers la version suivante.",
       "args": {
-        "title": "Créer force roll forward rolling promotion",
+        "title": "Créer promotion progressive forcée vers la version suivante",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13039,8 +13039,8 @@
       "key": "baseten_instance_type_list_gets_all_available_instance_types",
       "name": "basetenInstanceTypeListGetsAllAvailableInstanceTypes",
       "schemaVersion": 2,
-      "title": "Lister available instance type",
-      "subtitle": "Available instance type",
+      "title": "Lister types d'instance disponibles",
+      "subtitle": "types d'instance disponibles",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -13071,9 +13071,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister available instance type.",
+      "description": "Retourne la liste des éléments types d'instance disponibles.",
       "args": {
-        "title": "Lister available instance type",
+        "title": "Lister types d'instance disponibles",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13088,8 +13088,8 @@
       "key": "baseten_instance_type_price_list_gets_prices_for_available_instance_types",
       "name": "basetenInstanceTypePriceListGetsPricesForAvailableInstanceTypes",
       "schemaVersion": 2,
-      "title": "Lister price available instance type",
-      "subtitle": "Price available instance type",
+      "title": "Lister prix des types d'instance disponibles",
+      "subtitle": "prix des types d'instance disponibles",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -13120,9 +13120,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister price available instance type.",
+      "description": "Retourne la liste des éléments prix des types d'instance disponibles.",
       "args": {
-        "title": "Lister price available instance type",
+        "title": "Lister prix des types d'instance disponibles",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13169,7 +13169,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour session interactive.",
+      "description": "Met à jour session interactive.",
       "args": {
         "title": "Mettre à jour session interactive",
         "ui": {
@@ -13233,7 +13233,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister tâches d entraînement.",
+      "description": "Retourne la liste des éléments tâches d entraînement.",
       "args": {
         "title": "Lister tâches d entraînement",
         "ui": {
@@ -13297,7 +13297,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer tâche d entraînement.",
+      "description": "Crée un nouvel élément pour tâche d entraînement.",
       "args": {
         "title": "Créer tâche d entraînement",
         "ui": {
@@ -13361,7 +13361,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer tâche d entraînement.",
+      "description": "Supprime tâche d entraînement.",
       "args": {
         "title": "Supprimer tâche d entraînement",
         "ui": {
@@ -13439,7 +13439,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer tâche d entraînement.",
+      "description": "Récupère les détails de tâche d entraînement.",
       "args": {
         "title": "Récupérer tâche d entraînement",
         "ui": {
@@ -13517,7 +13517,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister liste de bibliothèques.",
+      "description": "Retourne la liste des éléments liste de bibliothèques.",
       "args": {
         "title": "Lister liste de bibliothèques",
         "ui": {
@@ -13566,7 +13566,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister nouveau bibliothèque.",
+      "description": "Retourne la liste des éléments nouveau bibliothèque.",
       "args": {
         "title": "Lister nouveau bibliothèque",
         "ui": {
@@ -13598,7 +13598,7 @@
       "key": "baseten_library_listing_delete_deletes_a_library_listing",
       "name": "basetenLibraryListingDeleteDeletesALibraryListing",
       "schemaVersion": 2,
-      "title": "Lister bibliothèque",
+      "title": "Supprimer bibliothèque",
       "subtitle": "Bibliothèque",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -13630,9 +13630,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister bibliothèque.",
+      "description": "Supprime bibliothèque.",
       "args": {
-        "title": "Lister bibliothèque",
+        "title": "Supprimer bibliothèque",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13662,7 +13662,7 @@
       "key": "baseten_library_listing_get_gets_a_library_listing",
       "name": "basetenLibraryListingGetGetsALibraryListing",
       "schemaVersion": 2,
-      "title": "Lister bibliothèque - bibliothèque",
+      "title": "Récupérer bibliothèque",
       "subtitle": "Bibliothèque",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -13694,9 +13694,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister bibliothèque - bibliothèque.",
+      "description": "Récupère les détails de bibliothèque.",
       "args": {
-        "title": "Lister bibliothèque - bibliothèque",
+        "title": "Récupérer bibliothèque",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -13758,7 +13758,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour liste de bibliothèques.",
+      "description": "Met à jour liste de bibliothèques.",
       "args": {
         "title": "Mettre à jour liste de bibliothèques",
         "ui": {
@@ -13822,7 +13822,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer déploiement Base LLM.",
+      "description": "Crée un nouvel élément pour déploiement Base LLM.",
       "args": {
         "title": "Créer déploiement Base LLM",
         "ui": {
@@ -13886,7 +13886,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister journal modèle déploiement.",
+      "description": "Retourne la liste des éléments journal modèle déploiement.",
       "args": {
         "title": "Lister journal modèle déploiement",
         "ui": {
@@ -13940,8 +13940,8 @@
       "key": "baseten_log_list_gets_the_logs_for_a_chainlet_within_a_chain_deployment",
       "name": "basetenLogListGetsTheLogsForAChainletWithinAChainDeployment",
       "schemaVersion": 2,
-      "title": "Lister journal chainlet within chaîne déploiement",
-      "subtitle": "Journal chainlet within chaîne déploiement",
+      "title": "Lister journal chainlet dans un déploiement de chaîne",
+      "subtitle": "Journal chainlet dans un déploiement de chaîne",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -13972,9 +13972,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister journal chainlet within chaîne déploiement.",
+      "description": "Retourne la liste des éléments journal chainlet dans un déploiement de chaîne.",
       "args": {
-        "title": "Lister journal chainlet within chaîne déploiement",
+        "title": "Lister journal chainlet dans un déploiement de chaîne",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14058,7 +14058,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister journal entraînement tâche.",
+      "description": "Retourne la liste des éléments journal entraînement tâche.",
       "args": {
         "title": "Lister journal entraînement tâche",
         "ui": {
@@ -14144,7 +14144,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister métrique entraînement tâche.",
+      "description": "Retourne la liste des éléments métrique entraînement tâche.",
       "args": {
         "title": "Lister métrique entraînement tâche",
         "ui": {
@@ -14212,7 +14212,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister modèle.",
+      "description": "Retourne la liste des éléments modèle.",
       "args": {
         "title": "Lister modèle",
         "ui": {
@@ -14244,8 +14244,8 @@
       "key": "baseten_model_create_creates_a_new_model_from_a_source",
       "name": "basetenModelCreateCreatesANewModelFromASource",
       "schemaVersion": 2,
-      "title": "Créer nouveau modèle source",
-      "subtitle": "nouveau modèle source",
+      "title": "Créer nouveau modèleource",
+      "subtitle": "nouveau modèleource",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14276,9 +14276,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer nouveau modèle source.",
+      "description": "Crée un nouvel élément pour nouveau modèleource.",
       "args": {
-        "title": "Créer nouveau modèle source",
+        "title": "Créer nouveau modèleource",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14340,7 +14340,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer modèle ID.",
+      "description": "Supprime modèle ID.",
       "args": {
         "title": "Supprimer modèle ID",
         "ui": {
@@ -14404,7 +14404,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer modèle ID.",
+      "description": "Récupère les détails de modèle ID.",
       "args": {
         "title": "Récupérer modèle ID",
         "ui": {
@@ -14436,8 +14436,8 @@
       "key": "baseten_model_list_get_blob_credentials_for_models",
       "name": "basetenModelListGetBlobCredentialsForModels",
       "schemaVersion": 2,
-      "title": "Lister blob identifiant modèle",
-      "subtitle": "Blob identifiant modèle",
+      "title": "Lister identifiants blob modèle",
+      "subtitle": "identifiants blob modèle",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14468,9 +14468,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister blob identifiant modèle.",
+      "description": "Retourne la liste des éléments identifiants blob modèle.",
       "args": {
-        "title": "Lister blob identifiant modèle",
+        "title": "Lister identifiants blob modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14485,8 +14485,8 @@
       "key": "baseten_pause_promotion_create_pauses_a_rolling_promotion",
       "name": "basetenPausePromotionCreatePausesARollingPromotion",
       "schemaVersion": 2,
-      "title": "Créer rolling promotion",
-      "subtitle": "Rolling promotion",
+      "title": "Créer promotion progressive",
+      "subtitle": "promotion progressive",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14517,9 +14517,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer rolling promotion.",
+      "description": "Crée un nouvel élément pour promotion progressive.",
       "args": {
-        "title": "Créer rolling promotion",
+        "title": "Créer promotion progressive",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14604,7 +14604,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer modèle push payload issue identifiant.",
+      "description": "Crée un nouvel élément pour modèle push payload issue identifiant.",
       "args": {
         "title": "Créer modèle push payload issue identifiant",
         "ui": {
@@ -14636,8 +14636,8 @@
       "key": "baseten_production_list_gets_a_model_s_production_deployment",
       "name": "basetenProductionListGetsAModelSProductionDeployment",
       "schemaVersion": 2,
-      "title": "Lister modèle s production déploiement",
-      "subtitle": "Modèle s production déploiement",
+      "title": "Lister modèle déploiement de production",
+      "subtitle": "modèle déploiement de production",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14668,9 +14668,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister modèle s production déploiement.",
+      "description": "Retourne la liste des éléments modèle déploiement de production.",
       "args": {
-        "title": "Lister modèle s production déploiement",
+        "title": "Lister modèle déploiement de production",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14700,8 +14700,8 @@
       "key": "baseten_production_retry_retries_a_failed_production_deployment",
       "name": "basetenProductionRetryRetriesAFailedProductionDeployment",
       "schemaVersion": 2,
-      "title": "Relancer failed production déploiement",
-      "subtitle": "Failed production déploiement",
+      "title": "Relancer échoué déploiement de production",
+      "subtitle": "échoué déploiement de production",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14732,9 +14732,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Relancer failed production déploiement.",
+      "description": "Relance le traitement pour échoué déploiement de production.",
       "args": {
-        "title": "Relancer failed production déploiement",
+        "title": "Relancer échoué déploiement de production",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14773,8 +14773,8 @@
       "key": "baseten_promote_create_promotes_a_development_deployment_to_production",
       "name": "basetenPromoteCreatePromotesADevelopmentDeploymentToProduction",
       "schemaVersion": 2,
-      "title": "Créer promote développement déploiement production",
-      "subtitle": "Promote développement déploiement production",
+      "title": "Créer promotion déploiement de développement production",
+      "subtitle": "promotion déploiement de développement production",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14805,9 +14805,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer promote développement déploiement production.",
+      "description": "Crée un nouvel élément pour promotion déploiement de développement production.",
       "args": {
-        "title": "Créer promote développement déploiement production",
+        "title": "Créer promotion déploiement de développement production",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14837,8 +14837,8 @@
       "key": "baseten_promote_create_promotes_a_deployment_to_production",
       "name": "basetenPromoteCreatePromotesADeploymentToProduction",
       "schemaVersion": 2,
-      "title": "Créer promote déploiement production",
-      "subtitle": "Promote déploiement production",
+      "title": "Créer promotion déploiement production",
+      "subtitle": "promotion déploiement production",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14869,9 +14869,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer promote déploiement production.",
+      "description": "Crée un nouvel élément pour promotion déploiement production.",
       "args": {
-        "title": "Créer promote déploiement production",
+        "title": "Créer promotion déploiement production",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14901,8 +14901,8 @@
       "key": "baseten_promote_create_promotes_a_deployment_to_an_environment",
       "name": "basetenPromoteCreatePromotesADeploymentToAnEnvironment",
       "schemaVersion": 2,
-      "title": "Créer promote déploiement environnement",
-      "subtitle": "Promote déploiement environnement",
+      "title": "Créer promotion déploiement environnement",
+      "subtitle": "promotion déploiement environnement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14933,9 +14933,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer promote déploiement environnement.",
+      "description": "Crée un nouvel élément pour promotion déploiement environnement.",
       "args": {
-        "title": "Créer promote déploiement environnement",
+        "title": "Créer promotion déploiement environnement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14965,8 +14965,8 @@
       "key": "baseten_promote_create_promotes_a_chain_deployment_to_an_environment",
       "name": "basetenPromoteCreatePromotesAChainDeploymentToAnEnvironment",
       "schemaVersion": 2,
-      "title": "Créer promote chaîne déploiement environnement",
-      "subtitle": "Promote chaîne déploiement environnement",
+      "title": "Créer promotion déploiement de chaîne environnement",
+      "subtitle": "promotion déploiement de chaîne environnement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14997,9 +14997,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer promote chaîne déploiement environnement.",
+      "description": "Crée un nouvel élément pour promotion déploiement de chaîne environnement.",
       "args": {
-        "title": "Créer promote chaîne déploiement environnement",
+        "title": "Créer promotion déploiement de chaîne environnement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15029,8 +15029,8 @@
       "key": "baseten_recreate_create_recreate_a_training_job",
       "name": "basetenRecreateCreateRecreateATrainingJob",
       "schemaVersion": 2,
-      "title": "Créer recreate entraînement tâche",
-      "subtitle": "Recreate entraînement tâche",
+      "title": "Créer recréer entraînement tâche",
+      "subtitle": "recréer entraînement tâche",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15061,9 +15061,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer recreate entraînement tâche.",
+      "description": "Crée un nouvel élément pour recréer entraînement tâche.",
       "args": {
-        "title": "Créer recreate entraînement tâche",
+        "title": "Créer recréer entraînement tâche",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15116,8 +15116,8 @@
       "key": "baseten_replica_delete_terminates_a_replica_in_a_deployment",
       "name": "basetenReplicaDeleteTerminatesAReplicaInADeployment",
       "schemaVersion": 2,
-      "title": "Supprimer replica",
-      "subtitle": "Replica",
+      "title": "Supprimer réplique",
+      "subtitle": "réplique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15148,9 +15148,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer replica.",
+      "description": "Supprime réplique.",
       "args": {
-        "title": "Supprimer replica",
+        "title": "Supprimer réplique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15208,8 +15208,8 @@
       "key": "baseten_resume_promotion_create_resumes_a_paused_rolling_promotion",
       "name": "basetenResumePromotionCreateResumesAPausedRollingPromotion",
       "schemaVersion": 2,
-      "title": "Créer rolling promotion - promotion rolling",
-      "subtitle": "Rolling promotion",
+      "title": "Créer promotion progressive - promotion rolling",
+      "subtitle": "promotion progressive",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15240,9 +15240,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer rolling promotion - promotion rolling.",
+      "description": "Crée un nouvel élément pour promotion progressive - promotion rolling.",
       "args": {
-        "title": "Créer rolling promotion - promotion rolling",
+        "title": "Créer promotion progressive - promotion rolling",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15327,7 +15327,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister boucle.",
+      "description": "Retourne la liste des éléments boucle.",
       "args": {
         "title": "Lister boucle",
         "ui": {
@@ -15395,7 +15395,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer boucle.",
+      "description": "Crée un nouvel élément pour boucle.",
       "args": {
         "title": "Créer boucle",
         "ui": {
@@ -15459,7 +15459,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer boucle.",
+      "description": "Récupère les détails de boucle.",
       "args": {
         "title": "Récupérer boucle",
         "ui": {
@@ -15491,8 +15491,8 @@
       "key": "baseten_sampler_create_create_a_sampling_server",
       "name": "basetenSamplerCreateCreateASamplingServer",
       "schemaVersion": 2,
-      "title": "Créer sampling serveur",
-      "subtitle": "Sampling serveur",
+      "title": "Créer serveur d'échantillonnage",
+      "subtitle": "serveur d'échantillonnage",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15523,9 +15523,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sampling serveur.",
+      "description": "Crée un nouvel élément pour serveur d'échantillonnage.",
       "args": {
-        "title": "Créer sampling serveur",
+        "title": "Créer serveur d'échantillonnage",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15587,7 +15587,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister boucle échantillonneur.",
+      "description": "Retourne la liste des éléments boucle échantillonneur.",
       "args": {
         "title": "Lister boucle échantillonneur",
         "ui": {
@@ -15636,7 +15636,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer boucle échantillonneur.",
+      "description": "Crée un nouvel élément pour boucle échantillonneur.",
       "args": {
         "title": "Créer boucle échantillonneur",
         "ui": {
@@ -15700,7 +15700,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer boucle échantillonneur.",
+      "description": "Récupère les détails de boucle échantillonneur.",
       "args": {
         "title": "Récupérer boucle échantillonneur",
         "ui": {
@@ -15764,7 +15764,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer boucle session.",
+      "description": "Crée un nouvel élément pour boucle session.",
       "args": {
         "title": "Créer boucle session",
         "ui": {
@@ -15828,7 +15828,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer boucle session.",
+      "description": "Récupère les détails de boucle session.",
       "args": {
         "title": "Récupérer boucle session",
         "ui": {
@@ -15860,8 +15860,8 @@
       "key": "baseten_sign_create_sign_an_ssh_certificate_for_an_inference_model",
       "name": "basetenSignCreateSignAnSshCertificateForAnInferenceModel",
       "schemaVersion": 2,
-      "title": "Créer sign",
-      "subtitle": "Sign",
+      "title": "Créer signatureature",
+      "subtitle": "signatureature",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15892,9 +15892,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sign.",
+      "description": "Crée un nouvel élément pour signatureature.",
       "args": {
-        "title": "Créer sign",
+        "title": "Créer signatureature",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15924,8 +15924,8 @@
       "key": "baseten_sign_create_sign_an_ssh_certificate_for_a_training_job",
       "name": "basetenSignCreateSignAnSshCertificateForATrainingJob",
       "schemaVersion": 2,
-      "title": "Créer sign - ssh",
-      "subtitle": "Sign",
+      "title": "Créer signatureer un certificat SSH",
+      "subtitle": "signatureature",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15956,9 +15956,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sign - ssh.",
+      "description": "Crée un nouvel élément pour signatureer un certificat SSH.",
       "args": {
-        "title": "Créer sign - ssh",
+        "title": "Créer signatureer un certificat SSH",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16020,7 +16020,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister dernier modèle poids instantané.",
+      "description": "Retourne la liste des éléments dernier modèle poids instantané.",
       "args": {
         "title": "Lister dernier modèle poids instantané",
         "ui": {
@@ -16069,7 +16069,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer instantané des poids du modèle.",
+      "description": "Crée un nouvel élément pour instantané des poids du modèle.",
       "args": {
         "title": "Créer instantané des poids du modèle",
         "ui": {
@@ -16133,7 +16133,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer dernier modèle poids instantané.",
+      "description": "Récupère les détails de dernier modèle poids instantané.",
       "args": {
         "title": "Récupérer dernier modèle poids instantané",
         "ui": {
@@ -16197,7 +16197,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer tâche d entraînement - tâche d entraînement.",
+      "description": "Crée un nouvel élément pour tâche d entraînement - tâche d entraînement.",
       "args": {
         "title": "Créer tâche d entraînement - tâche d entraînement",
         "ui": {
@@ -16261,7 +16261,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister entraînement projet cache résumé.",
+      "description": "Retourne la liste des éléments entraînement projet cache résumé.",
       "args": {
         "title": "Lister entraînement projet cache résumé",
         "ui": {
@@ -16293,8 +16293,8 @@
       "key": "baseten_team_list_lists_all_teams",
       "name": "basetenTeamListListsAllTeams",
       "schemaVersion": 2,
-      "title": "Lister liste team",
-      "subtitle": "Liste team",
+      "title": "Lister équipes",
+      "subtitle": "équipes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16325,9 +16325,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister liste team.",
+      "description": "Retourne la liste des éléments équipes.",
       "args": {
-        "title": "Lister liste team",
+        "title": "Lister équipes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16342,8 +16342,8 @@
       "key": "baseten_train_list_get_blob_credentials_for_training",
       "name": "basetenTrainListGetBlobCredentialsForTraining",
       "schemaVersion": 2,
-      "title": "Lister blob identifiant entraînement",
-      "subtitle": "Blob identifiant entraînement",
+      "title": "Lister identifiants blob entraînement",
+      "subtitle": "identifiants blob entraînement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16374,9 +16374,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister blob identifiant entraînement.",
+      "description": "Retourne la liste des éléments identifiants blob entraînement.",
       "args": {
-        "title": "Lister blob identifiant entraînement",
+        "title": "Lister identifiants blob entraînement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16423,7 +16423,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher entraîneur.",
+      "description": "Recherche des éléments liés à entraîneur.",
       "args": {
         "title": "Rechercher entraîneur",
         "ui": {
@@ -16487,7 +16487,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer entraîneur serveur.",
+      "description": "Crée un nouvel élément pour entraîneur serveur.",
       "args": {
         "title": "Créer entraîneur serveur",
         "ui": {
@@ -16551,7 +16551,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer entraîneur session.",
+      "description": "Crée un nouvel élément pour entraîneur session.",
       "args": {
         "title": "Créer entraîneur session",
         "ui": {
@@ -16615,7 +16615,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher tâches d entraînement.",
+      "description": "Recherche des éléments liés à tâches d entraînement.",
       "args": {
         "title": "Rechercher tâches d entraînement",
         "ui": {
@@ -16647,8 +16647,8 @@
       "key": "baseten_training_project_upsert_upsert_a_training_project_in_a_specific_team",
       "name": "basetenTrainingProjectUpsertUpsertATrainingProjectInASpecificTeam",
       "schemaVersion": 2,
-      "title": "Mettre à jour ou créer entraînement projet specific team",
-      "subtitle": "Entraînement projet specific team",
+      "title": "Mettre à jour ou créer entraînement projet spécifique équipe",
+      "subtitle": "Entraînement projet spécifique équipe",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16679,9 +16679,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour ou créer entraînement projet specific team.",
+      "description": "Met à jour ou crée entraînement projet spécifique équipe.",
       "args": {
-        "title": "Mettre à jour ou créer entraînement projet specific team",
+        "title": "Mettre à jour ou créer entraînement projet spécifique équipe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16743,7 +16743,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister entraînement projet.",
+      "description": "Retourne la liste des éléments entraînement projet.",
       "args": {
         "title": "Lister entraînement projet",
         "ui": {
@@ -16792,7 +16792,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour ou créer entraînement projet.",
+      "description": "Met à jour ou crée entraînement projet.",
       "args": {
         "title": "Mettre à jour ou créer entraînement projet",
         "ui": {
@@ -16856,7 +16856,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer entraînement projet.",
+      "description": "Supprime entraînement projet.",
       "args": {
         "title": "Supprimer entraînement projet",
         "ui": {
@@ -16920,7 +16920,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer entraînement projet.",
+      "description": "Récupère les détails de entraînement projet.",
       "args": {
         "title": "Récupérer entraînement projet",
         "ui": {
@@ -16952,8 +16952,8 @@
       "key": "baseten_update_create_update_a_chainlet_environment_s_instance_type_settings",
       "name": "basetenUpdateCreateUpdateAChainletEnvironmentSInstanceTypeSettings",
       "schemaVersion": 2,
-      "title": "Mettre à jour chainlet environnement s instance type paramètre",
-      "subtitle": "Chainlet environnement s instance type paramètre",
+      "title": "Mettre à jour chainlet environnement instance type paramètre",
+      "subtitle": "Chainlet environnement instance type paramètre",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16984,9 +16984,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour chainlet environnement s instance type paramètre.",
+      "description": "Met à jour chainlet environnement instance type paramètre.",
       "args": {
-        "title": "Mettre à jour chainlet environnement s instance type paramètre",
+        "title": "Mettre à jour chainlet environnement instance type paramètre",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17048,7 +17048,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer utilisateur ID.",
+      "description": "Récupère les détails de utilisateur ID.",
       "args": {
         "title": "Récupérer utilisateur ID",
         "ui": {
@@ -17112,7 +17112,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer boucle point de contrôle bt URI.",
+      "description": "Crée un nouvel élément pour boucle point de contrôle bt URI.",
       "args": {
         "title": "Créer boucle point de contrôle bt URI",
         "ui": {
@@ -17176,7 +17176,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister version bibliothèque.",
+      "description": "Retourne la liste des éléments version bibliothèque.",
       "args": {
         "title": "Lister version bibliothèque",
         "ui": {
@@ -17240,7 +17240,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer nouveau bibliothèque version.",
+      "description": "Crée un nouvel élément pour nouveau bibliothèque version.",
       "args": {
         "title": "Créer nouveau bibliothèque version",
         "ui": {
@@ -17304,7 +17304,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer bibliothèque version.",
+      "description": "Supprime bibliothèque version.",
       "args": {
         "title": "Supprimer bibliothèque version",
         "ui": {
@@ -17382,7 +17382,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer bibliothèque version.",
+      "description": "Récupère les détails de bibliothèque version.",
       "args": {
         "title": "Récupérer bibliothèque version",
         "ui": {
@@ -17460,7 +17460,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour bibliothèque version.",
+      "description": "Met à jour bibliothèque version.",
       "args": {
         "title": "Mettre à jour bibliothèque version",
         "ui": {

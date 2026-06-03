@@ -1718,6 +1718,896 @@
         "displayDescription": false
       },
       "group": "Événements"
+    },
+    {
+      "key": "docker_container_pause",
+      "name": "dockerContainerPause",
+      "schemaVersion": 2,
+      "title": "Mettre un conteneur en pause",
+      "subtitle": "Conteneurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre un conteneur en pause",
+      "args": {
+        "title": "Mettre un conteneur en pause",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "containerId",
+            "label": "Container ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Conteneurs",
+      "risk": "write"
+    },
+    {
+      "key": "docker_container_unpause",
+      "name": "dockerContainerUnpause",
+      "schemaVersion": 2,
+      "title": "Relancer un conteneur en pause",
+      "subtitle": "Conteneurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Relancer un conteneur en pause",
+      "args": {
+        "title": "Relancer un conteneur en pause",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "containerId",
+            "label": "Container ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Conteneurs",
+      "risk": "write"
+    },
+    {
+      "key": "docker_container_wait",
+      "name": "dockerContainerWait",
+      "schemaVersion": 2,
+      "title": "Attendre la fin d un conteneur",
+      "subtitle": "Conteneurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Attendre la fin d un conteneur",
+      "args": {
+        "title": "Attendre la fin d un conteneur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "containerId",
+            "label": "Container ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Conteneurs",
+      "risk": "write"
+    },
+    {
+      "key": "docker_container_rename",
+      "name": "dockerContainerRename",
+      "schemaVersion": 2,
+      "title": "Renommer un conteneur",
+      "subtitle": "Conteneurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Renommer un conteneur",
+      "args": {
+        "title": "Renommer un conteneur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "containerId",
+            "label": "Container ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nouveau nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Conteneurs",
+      "risk": "write"
+    },
+    {
+      "key": "docker_container_stats",
+      "name": "dockerContainerStats",
+      "schemaVersion": 2,
+      "title": "Lire les stats d un conteneur",
+      "subtitle": "Conteneurs",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lire les stats d un conteneur",
+      "args": {
+        "title": "Lire les stats d un conteneur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "containerId",
+            "label": "Container ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "stream",
+            "label": "Mode stream",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Conteneurs",
+      "risk": "write"
+    },
+    {
+      "key": "docker_image_inspect",
+      "name": "dockerImageInspect",
+      "schemaVersion": 2,
+      "title": "Inspecter une image",
+      "subtitle": "Images",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Inspecter une image",
+      "args": {
+        "title": "Inspecter une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "imageId",
+            "label": "Image ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Images",
+      "risk": "write"
+    },
+    {
+      "key": "docker_image_tag",
+      "name": "dockerImageTag",
+      "schemaVersion": 2,
+      "title": "Tagger une image",
+      "subtitle": "Images",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Tagger une image",
+      "args": {
+        "title": "Tagger une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "imageId",
+            "label": "Image ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Repository",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tag",
+            "label": "Tag",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Images",
+      "risk": "write"
+    },
+    {
+      "key": "docker_network_inspect",
+      "name": "dockerNetworkInspect",
+      "schemaVersion": 2,
+      "title": "Inspecter un réseau",
+      "subtitle": "Réseaux",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Inspecter un réseau",
+      "args": {
+        "title": "Inspecter un réseau",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "networkId",
+            "label": "Network ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Réseaux",
+      "risk": "write"
+    },
+    {
+      "key": "docker_volume_inspect",
+      "name": "dockerVolumeInspect",
+      "schemaVersion": 2,
+      "title": "Inspecter un volume",
+      "subtitle": "Volumes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Inspecter un volume",
+      "args": {
+        "title": "Inspecter un volume",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "volumeName",
+            "label": "Volume name",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Volumes",
+      "risk": "write"
+    },
+    {
+      "key": "docker_containers_prune",
+      "name": "dockerContainersPrune",
+      "schemaVersion": 2,
+      "title": "Purger conteneurs arrêtés",
+      "subtitle": "Maintenance",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Purger conteneurs arrêtés",
+      "args": {
+        "title": "Purger conteneurs arrêtés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload JSON optionnel",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Maintenance",
+      "risk": "destructive"
+    },
+    {
+      "key": "docker_images_prune",
+      "name": "dockerImagesPrune",
+      "schemaVersion": 2,
+      "title": "Purger images inutilisées",
+      "subtitle": "Maintenance",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Purger images inutilisées",
+      "args": {
+        "title": "Purger images inutilisées",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload JSON optionnel",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Maintenance",
+      "risk": "destructive"
+    },
+    {
+      "key": "docker_networks_prune",
+      "name": "dockerNetworksPrune",
+      "schemaVersion": 2,
+      "title": "Purger réseaux inutilisés",
+      "subtitle": "Maintenance",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Purger réseaux inutilisés",
+      "args": {
+        "title": "Purger réseaux inutilisés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload JSON optionnel",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Maintenance",
+      "risk": "destructive"
+    },
+    {
+      "key": "docker_volumes_prune",
+      "name": "dockerVolumesPrune",
+      "schemaVersion": 2,
+      "title": "Purger volumes inutilisés",
+      "subtitle": "Maintenance",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Purger volumes inutilisés",
+      "args": {
+        "title": "Purger volumes inutilisés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload JSON optionnel",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Maintenance",
+      "risk": "destructive"
+    },
+    {
+      "key": "docker_system_df",
+      "name": "dockerSystemDf",
+      "schemaVersion": 2,
+      "title": "Lire usage disque Docker",
+      "subtitle": "Système",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Docker",
+      "providerKey": "docker",
+      "tags": [
+        "docker",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:docker_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lire usage disque Docker",
+      "args": {
+        "title": "Lire usage disque Docker",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Système",
+      "risk": "write"
     }
   ]
 }

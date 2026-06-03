@@ -1500,6 +1500,466 @@
       ],
       "description": "Reçoit un événement Apollo.",
       "group": "Webhook"
+    },
+    {
+      "key": "apollo_sequence_activate",
+      "name": "apolloSequenceActivate",
+      "schemaVersion": 2,
+      "title": "Activer une séquence",
+      "subtitle": "sequences",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "sequence"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Active une séquence Apollo.",
+      "args": {
+        "title": "Activer une séquence",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sequenceId",
+            "label": "Sequence ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sequences"
+    },
+    {
+      "key": "apollo_sequence_remove_contacts",
+      "name": "apolloSequenceRemoveContacts",
+      "schemaVersion": 2,
+      "title": "Retirer des contacts d'une séquence",
+      "subtitle": "sequences",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "sequence"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retire des contacts d'une séquence.",
+      "args": {
+        "title": "Retirer des contacts d'une séquence",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sequenceId",
+            "label": "Sequence ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "contact_ids",
+            "label": "Contact IDs JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sequences"
+    },
+    {
+      "key": "apollo_custom_request",
+      "name": "apolloCustomRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "advanced",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "advanced"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle n'importe quel endpoint Apollo.",
+      "args": {
+        "title": "Requête API personnalisée",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "options": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Advanced"
+    },
+    {
+      "key": "apollo_sequences_search",
+      "name": "apolloSequencesSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des séquences",
+      "subtitle": "sequences",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "sequence"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Recherche les séquences.",
+      "args": {
+        "title": "Rechercher des séquences",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "q_name",
+            "label": "Nom / mot-clé",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "col": {
+              "xs": 12
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sequences"
+    },
+    {
+      "key": "apollo_sequence_contact_status_update",
+      "name": "apolloSequenceContactStatusUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour le statut sequence",
+      "subtitle": "sequences",
+      "icon": "fa-solid fa-user-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "sequence"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour le statut de contacts dans une ou plusieurs séquences.",
+      "args": {
+        "title": "Mettre à jour le statut sequence",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "emailer_campaign_ids",
+            "label": "Sequence IDs JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "contact_ids",
+            "label": "Contact IDs JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "mode",
+            "label": "Mode",
+            "defaultValue": "remove",
+            "options": [
+              "mark_as_finished",
+              "remove",
+              "stop"
+            ],
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sequences"
+    },
+    {
+      "key": "apollo_sequence_get",
+      "name": "apolloSequenceGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une séquence",
+      "subtitle": "sequences",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Apollo",
+      "providerKey": "apollo",
+      "tags": [
+        "apollo",
+        "sequence"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:apollo_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une séquence par ID.",
+      "args": {
+        "title": "Obtenir une séquence",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sequenceId",
+            "label": "Sequence ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sequences"
     }
   ]
 }

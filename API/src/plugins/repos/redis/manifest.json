@@ -1497,6 +1497,160 @@
         "displayDescription": false
       },
       "group": "Commande"
+    },
+    {
+      "key": "redis_list_pop",
+      "name": "redisListPop",
+      "schemaVersion": 2,
+      "title": "Pop d'une liste",
+      "subtitle": "list",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retirer et retourner un élément de liste.",
+      "args": {
+        "title": "Pop d'une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé liste",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "side",
+            "label": "Côté",
+            "default": "left",
+            "options": [
+              {
+                "label": "Left (LPOP)",
+                "value": "left"
+              },
+              {
+                "label": "Right (RPOP)",
+                "value": "right"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Listes"
+    },
+    {
+      "key": "redis_set_remove",
+      "name": "redisSetRemove",
+      "schemaVersion": 2,
+      "title": "Retirer des membres d'un set",
+      "subtitle": "set",
+      "icon": "fa-solid fa-server",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Redis",
+      "providerKey": "redis",
+      "tags": [
+        "redis"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:redis_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retirer un ou plusieurs membres d'un set.",
+      "args": {
+        "title": "Retirer des membres d'un set",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyName",
+            "label": "Clé set",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "members",
+            "label": "Membres (CSV)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Sets"
     }
   ]
 }

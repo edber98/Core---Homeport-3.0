@@ -5094,8 +5094,8 @@
       "key": "beehiiv_advertisement_opportunity_list_advertisementopportunities_index",
       "name": "beehiivAdvertisementOpportunityListAdvertisementopportunitiesIndex",
       "schemaVersion": 2,
-      "title": "Lister advertisement opportunité",
-      "subtitle": "Advertisement opportunité",
+      "title": "Lister opportunités publicitaires",
+      "subtitle": "opportunités publicitaires",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5126,9 +5126,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister advertisement opportunité.",
+      "description": "Retourne la liste des éléments opportunités publicitaires.",
       "args": {
-        "title": "Lister advertisement opportunité",
+        "title": "Lister opportunités publicitaires",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5158,8 +5158,8 @@
       "key": "beehiiv_aggregate_stat_list_posts_aggregate_stats",
       "name": "beehiivAggregateStatListPostsAggregateStats",
       "schemaVersion": 2,
-      "title": "Lister post aggregate stat",
-      "subtitle": "Post aggregate stat",
+      "title": "Lister article statistiques agrégées",
+      "subtitle": "article statistiques agrégées",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5190,9 +5190,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister post aggregate stat.",
+      "description": "Retourne la liste des éléments article statistiques agrégées.",
       "args": {
-        "title": "Lister post aggregate stat",
+        "title": "Lister article statistiques agrégées",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5306,8 +5306,8 @@
       "key": "beehiiv_author_list_authors_index",
       "name": "beehiivAuthorListAuthorsIndex",
       "schemaVersion": 2,
-      "title": "Lister author liste",
-      "subtitle": "Author liste",
+      "title": "Lister auteur liste",
+      "subtitle": "auteur liste",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5338,9 +5338,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister author liste.",
+      "description": "Retourne la liste des éléments auteur liste.",
       "args": {
-        "title": "Lister author liste",
+        "title": "Lister auteur liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5412,8 +5412,8 @@
       "key": "beehiiv_author_get_authors_show",
       "name": "beehiivAuthorGetAuthorsShow",
       "schemaVersion": 2,
-      "title": "Récupérer author",
-      "subtitle": "Author",
+      "title": "Récupérer auteur",
+      "subtitle": "auteur",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -5444,9 +5444,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer author.",
+      "description": "Récupère les détails de auteur.",
       "args": {
-        "title": "Récupérer author",
+        "title": "Récupérer auteur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5490,8 +5490,8 @@
       "key": "beehiiv_automation_list_automations_index",
       "name": "beehiivAutomationListAutomationsIndex",
       "schemaVersion": 2,
-      "title": "Lister automation",
-      "subtitle": "Automation",
+      "title": "Lister automatisation",
+      "subtitle": "automatisation",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -5522,9 +5522,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister automation.",
+      "description": "Retourne la liste des éléments automatisation.",
       "args": {
-        "title": "Lister automation",
+        "title": "Lister automatisation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5596,8 +5596,8 @@
       "key": "beehiiv_automation_get_automations_show",
       "name": "beehiivAutomationGetAutomationsShow",
       "schemaVersion": 2,
-      "title": "Récupérer automation",
-      "subtitle": "Automation",
+      "title": "Récupérer automatisation",
+      "subtitle": "automatisation",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -5628,9 +5628,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer automation.",
+      "description": "Récupère les détails de automatisation.",
       "args": {
-        "title": "Récupérer automation",
+        "title": "Récupérer automatisation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5720,7 +5720,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer lot abonnement.",
+      "description": "Crée un nouvel élément pour lot abonnement.",
       "args": {
         "title": "Créer lot abonnement",
         "ui": {
@@ -5798,7 +5798,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour lot abonnement liste.",
+      "description": "Met à jour lot abonnement liste.",
       "args": {
         "title": "Mettre à jour lot abonnement liste",
         "ui": {
@@ -5862,7 +5862,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour lot abonnement.",
+      "description": "Met à jour lot abonnement.",
       "args": {
         "title": "Mettre à jour lot abonnement",
         "ui": {
@@ -5940,7 +5940,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer abonnement email.",
+      "description": "Récupère les détails de abonnement email.",
       "args": {
         "title": "Récupérer abonnement email",
         "ui": {
@@ -5986,8 +5986,8 @@
       "key": "beehiiv_condition_set_list_conditionsets_index",
       "name": "beehiivConditionSetListConditionsetsIndex",
       "schemaVersion": 2,
-      "title": "Lister condition set",
-      "subtitle": "Condition set",
+      "title": "Lister ensemble de conditions",
+      "subtitle": "ensemble de conditions",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -6018,9 +6018,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister condition set.",
+      "description": "Retourne la liste des éléments ensemble de conditions.",
       "args": {
-        "title": "Lister condition set",
+        "title": "Lister ensemble de conditions",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6106,8 +6106,8 @@
       "key": "beehiiv_condition_set_get_conditionsets_show",
       "name": "beehiivConditionSetGetConditionsetsShow",
       "schemaVersion": 2,
-      "title": "Récupérer condition set",
-      "subtitle": "Condition set",
+      "title": "Récupérer ensemble de conditions",
+      "subtitle": "ensemble de conditions",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -6138,9 +6138,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer condition set.",
+      "description": "Récupère les détails de ensemble de conditions.",
       "args": {
-        "title": "Récupérer condition set",
+        "title": "Récupérer ensemble de conditions",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6230,7 +6230,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer champs personnalisés.",
+      "description": "Crée un nouvel élément pour champs personnalisés.",
       "args": {
         "title": "Créer champs personnalisés",
         "ui": {
@@ -6276,8 +6276,8 @@
       "key": "beehiiv_custom_field_list_customfields_index",
       "name": "beehiivCustomFieldListCustomfieldsIndex",
       "schemaVersion": 2,
-      "title": "Lister personnalisé champ liste",
-      "subtitle": "Personnalisé champ liste",
+      "title": "Lister liste de champs personnalisés",
+      "subtitle": "liste de champs personnalisés",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -6308,9 +6308,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé champ liste.",
+      "description": "Retourne la liste des éléments liste de champs personnalisés.",
       "args": {
-        "title": "Lister personnalisé champ liste",
+        "title": "Lister liste de champs personnalisés",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6372,7 +6372,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer champs personnalisés.",
+      "description": "Récupère les détails de champs personnalisés.",
       "args": {
         "title": "Récupérer champs personnalisés",
         "ui": {
@@ -6450,7 +6450,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour champs personnalisés.",
+      "description": "Met à jour champs personnalisés.",
       "args": {
         "title": "Mettre à jour champs personnalisés",
         "ui": {
@@ -6542,7 +6542,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour champs personnalisés - personnalisé.",
+      "description": "Met à jour champs personnalisés - personnalisé.",
       "args": {
         "title": "Mettre à jour champs personnalisés - personnalisé",
         "ui": {
@@ -6634,7 +6634,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer champs personnalisés.",
+      "description": "Supprime champs personnalisés.",
       "args": {
         "title": "Supprimer champs personnalisés",
         "ui": {
@@ -6680,8 +6680,8 @@
       "key": "beehiiv_deletion_request_create_datadeletion_create",
       "name": "beehiivDeletionRequestCreateDatadeletionCreate",
       "schemaVersion": 2,
-      "title": "Créer deletion request",
-      "subtitle": "Deletion request",
+      "title": "Créer suppression",
+      "subtitle": "suppression",
       "icon": "fa-solid fa-plus",
       "type": "function",
       "nodeKind": "function",
@@ -6712,9 +6712,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer deletion request.",
+      "description": "Crée un nouvel élément pour suppression.",
       "args": {
-        "title": "Créer deletion request",
+        "title": "Créer suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6758,8 +6758,8 @@
       "key": "beehiiv_deletion_request_list_datadeletion_index",
       "name": "beehiivDeletionRequestListDatadeletionIndex",
       "schemaVersion": 2,
-      "title": "Lister deletion request",
-      "subtitle": "Deletion request",
+      "title": "Lister suppression",
+      "subtitle": "suppression",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -6790,9 +6790,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister deletion request.",
+      "description": "Retourne la liste des éléments suppression.",
       "args": {
-        "title": "Lister deletion request",
+        "title": "Lister suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6822,8 +6822,8 @@
       "key": "beehiiv_deletion_request_get_datadeletion_show",
       "name": "beehiivDeletionRequestGetDatadeletionShow",
       "schemaVersion": 2,
-      "title": "Récupérer deletion request",
-      "subtitle": "Deletion request",
+      "title": "Récupérer suppression",
+      "subtitle": "suppression",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -6854,9 +6854,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer deletion request.",
+      "description": "Récupère les détails de suppression.",
       "args": {
-        "title": "Récupérer deletion request",
+        "title": "Récupérer suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -6932,7 +6932,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister email.",
+      "description": "Retourne la liste des éléments email.",
       "args": {
         "title": "Lister email",
         "ui": {
@@ -7020,8 +7020,8 @@
       "key": "beehiiv_email_blast_list_emailblasts_index",
       "name": "beehiivEmailBlastListEmailblastsIndex",
       "schemaVersion": 2,
-      "title": "Lister email blast",
-      "subtitle": "Email blast",
+      "title": "Lister campagne email",
+      "subtitle": "campagne email",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7052,9 +7052,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister email blast.",
+      "description": "Retourne la liste des éléments campagne email.",
       "args": {
-        "title": "Lister email blast",
+        "title": "Lister campagne email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7168,8 +7168,8 @@
       "key": "beehiiv_email_blast_get_emailblasts_show",
       "name": "beehiivEmailBlastGetEmailblastsShow",
       "schemaVersion": 2,
-      "title": "Récupérer email blast",
-      "subtitle": "Email blast",
+      "title": "Récupérer campagne email",
+      "subtitle": "campagne email",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -7200,9 +7200,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer email blast.",
+      "description": "Récupère les détails de campagne email.",
       "args": {
-        "title": "Récupérer email blast",
+        "title": "Récupérer campagne email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7292,7 +7292,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister engagement.",
+      "description": "Retourne la liste des éléments engagement.",
       "args": {
         "title": "Lister engagement",
         "ui": {
@@ -7394,8 +7394,8 @@
       "key": "beehiiv_identify_list_oauthusers_identify",
       "name": "beehiivIdentifyListOauthusersIdentify",
       "schemaVersion": 2,
-      "title": "Lister identify",
-      "subtitle": "Identify",
+      "title": "Lister identification",
+      "subtitle": "identification",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7426,9 +7426,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister identify.",
+      "description": "Retourne la liste des éléments identification.",
       "args": {
-        "title": "Lister identify",
+        "title": "Lister identification",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7443,8 +7443,8 @@
       "key": "beehiiv_identify_list_workspaces_identify",
       "name": "beehiivIdentifyListWorkspacesIdentify",
       "schemaVersion": 2,
-      "title": "Lister espace de travail identify",
-      "subtitle": "Espace de travail identify",
+      "title": "Lister espace de travail identification",
+      "subtitle": "Espace de travail identification",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7475,9 +7475,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister espace de travail identify.",
+      "description": "Retourne la liste des éléments espace de travail identification.",
       "args": {
-        "title": "Lister espace de travail identify",
+        "title": "Lister espace de travail identification",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7492,8 +7492,8 @@
       "key": "beehiiv_journey_trigger_automationjourneys_create",
       "name": "beehiivJourneyTriggerAutomationjourneysCreate",
       "schemaVersion": 2,
-      "title": "Créer journey",
-      "subtitle": "Journey",
+      "title": "Créer parcours d'automatisation",
+      "subtitle": "parcours d'automatisation",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -7524,9 +7524,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer journey.",
+      "description": "Crée un nouvel élément pour parcours d'automatisation.",
       "args": {
-        "title": "Créer journey",
+        "title": "Créer parcours d'automatisation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7584,8 +7584,8 @@
       "key": "beehiiv_journey_list_automationjourneys_index",
       "name": "beehiivJourneyListAutomationjourneysIndex",
       "schemaVersion": 2,
-      "title": "Lister journey",
-      "subtitle": "Journey",
+      "title": "Lister parcours d'automatisation",
+      "subtitle": "parcours d'automatisation",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7616,9 +7616,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister journey.",
+      "description": "Retourne la liste des éléments parcours d'automatisation.",
       "args": {
-        "title": "Lister journey",
+        "title": "Lister parcours d'automatisation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7704,8 +7704,8 @@
       "key": "beehiiv_journey_get_automationjourneys_show",
       "name": "beehiivJourneyGetAutomationjourneysShow",
       "schemaVersion": 2,
-      "title": "Récupérer journey",
-      "subtitle": "Journey",
+      "title": "Récupérer parcours d'automatisation",
+      "subtitle": "parcours d'automatisation",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -7736,9 +7736,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer journey.",
+      "description": "Récupère les détails de parcours d'automatisation.",
       "args": {
-        "title": "Récupérer journey",
+        "title": "Récupérer parcours d'automatisation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -7828,7 +7828,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister segment membre.",
+      "description": "Retourne la liste des éléments segment membre.",
       "args": {
         "title": "Lister segment membre",
         "ui": {
@@ -7916,8 +7916,8 @@
       "key": "beehiiv_newsletter_list_list_newsletterlists_index",
       "name": "beehiivNewsletterListListNewsletterlistsIndex",
       "schemaVersion": 2,
-      "title": "Lister newsletter liste",
-      "subtitle": "Newsletter liste",
+      "title": "Lister liste de newsletters",
+      "subtitle": "liste de newsletters",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -7948,9 +7948,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister newsletter liste.",
+      "description": "Retourne la liste des éléments liste de newsletters.",
       "args": {
-        "title": "Lister newsletter liste",
+        "title": "Lister liste de newsletters",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8022,8 +8022,8 @@
       "key": "beehiiv_newsletter_list_get_newsletterlists_show",
       "name": "beehiivNewsletterListGetNewsletterlistsShow",
       "schemaVersion": 2,
-      "title": "Lister newsletter liste - newsletterlist",
-      "subtitle": "Newsletter liste",
+      "title": "Lister liste de newsletters - newsletter",
+      "subtitle": "liste de newsletters",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -8054,9 +8054,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister newsletter liste - newsletterlist.",
+      "description": "Retourne la liste des éléments liste de newsletters - newsletter.",
       "args": {
-        "title": "Lister newsletter liste - newsletterlist",
+        "title": "Lister liste de newsletters - newsletter",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8100,8 +8100,8 @@
       "key": "beehiiv_poll_list_polls_index",
       "name": "beehiivPollListPollsIndex",
       "schemaVersion": 2,
-      "title": "Lister poll liste",
-      "subtitle": "Poll liste",
+      "title": "Lister sondage liste",
+      "subtitle": "sondage liste",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -8132,9 +8132,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister poll liste.",
+      "description": "Retourne la liste des éléments sondage liste.",
       "args": {
-        "title": "Lister poll liste",
+        "title": "Lister sondage liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8262,8 +8262,8 @@
       "key": "beehiiv_poll_get_polls_show",
       "name": "beehiivPollGetPollsShow",
       "schemaVersion": 2,
-      "title": "Récupérer poll",
-      "subtitle": "Poll",
+      "title": "Récupérer sondage",
+      "subtitle": "sondage",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -8294,9 +8294,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer poll.",
+      "description": "Récupère les détails de sondage.",
       "args": {
-        "title": "Récupérer poll",
+        "title": "Récupérer sondage",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8354,8 +8354,8 @@
       "key": "beehiiv_post_send_posts_create",
       "name": "beehiivPostSendPostsCreate",
       "schemaVersion": 2,
-      "title": "Créer post",
-      "subtitle": "Post",
+      "title": "Créer article",
+      "subtitle": "article",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8386,9 +8386,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer post.",
+      "description": "Crée un nouvel élément pour article.",
       "args": {
-        "title": "Créer post",
+        "title": "Créer article",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8432,8 +8432,8 @@
       "key": "beehiiv_post_list_posts_index",
       "name": "beehiivPostListPostsIndex",
       "schemaVersion": 2,
-      "title": "Lister post liste",
-      "subtitle": "Post liste",
+      "title": "Lister article liste",
+      "subtitle": "article liste",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -8464,9 +8464,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister post liste.",
+      "description": "Retourne la liste des éléments article liste.",
       "args": {
-        "title": "Lister post liste",
+        "title": "Lister article liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8678,8 +8678,8 @@
       "key": "beehiiv_post_send_posts_update",
       "name": "beehiivPostSendPostsUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour post",
-      "subtitle": "Post",
+      "title": "Mettre à jour article",
+      "subtitle": "article",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -8710,9 +8710,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour post.",
+      "description": "Met à jour article.",
       "args": {
-        "title": "Mettre à jour post",
+        "title": "Mettre à jour article",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8770,8 +8770,8 @@
       "key": "beehiiv_post_get_posts_show",
       "name": "beehiivPostGetPostsShow",
       "schemaVersion": 2,
-      "title": "Récupérer post",
-      "subtitle": "Post",
+      "title": "Récupérer article",
+      "subtitle": "article",
       "icon": "fa-solid fa-eye",
       "type": "function",
       "nodeKind": "function",
@@ -8802,9 +8802,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer post.",
+      "description": "Récupère les détails de article.",
       "args": {
-        "title": "Récupérer post",
+        "title": "Récupérer article",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8876,8 +8876,8 @@
       "key": "beehiiv_post_archive_posts_delete",
       "name": "beehiivPostArchivePostsDelete",
       "schemaVersion": 2,
-      "title": "Supprimer post",
-      "subtitle": "Post",
+      "title": "Supprimer article",
+      "subtitle": "article",
       "icon": "fa-solid fa-box-archive",
       "type": "function",
       "nodeKind": "function",
@@ -8908,9 +8908,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer post.",
+      "description": "Supprime article.",
       "args": {
-        "title": "Supprimer post",
+        "title": "Supprimer article",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -8986,7 +8986,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister modèle liste.",
+      "description": "Retourne la liste des éléments modèle liste.",
       "args": {
         "title": "Lister modèle liste",
         "ui": {
@@ -9106,7 +9106,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister publication.",
+      "description": "Retourne la liste des éléments publication.",
       "args": {
         "title": "Lister publication",
         "ui": {
@@ -9226,7 +9226,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer publication.",
+      "description": "Récupère les détails de publication.",
       "args": {
         "title": "Récupérer publication",
         "ui": {
@@ -9304,7 +9304,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer publication.",
+      "description": "Crée un nouvel élément pour publication.",
       "args": {
         "title": "Créer publication",
         "ui": {
@@ -9382,7 +9382,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister webhook liste.",
+      "description": "Retourne la liste des éléments webhook liste.",
       "args": {
         "title": "Lister webhook liste",
         "ui": {
@@ -9460,7 +9460,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister webhook.",
+      "description": "Retourne la liste des éléments webhook.",
       "args": {
         "title": "Lister webhook",
         "ui": {
@@ -9538,7 +9538,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour publication.",
+      "description": "Met à jour publication.",
       "args": {
         "title": "Mettre à jour publication",
         "ui": {
@@ -9630,7 +9630,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer publication.",
+      "description": "Supprime publication.",
       "args": {
         "title": "Supprimer publication",
         "ui": {
@@ -9708,7 +9708,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour recalculate.",
+      "description": "Met à jour recalculate.",
       "args": {
         "title": "Mettre à jour recalculate",
         "ui": {
@@ -9754,8 +9754,8 @@
       "key": "beehiiv_referral_program_list_referralprogram_show",
       "name": "beehiivReferralProgramListReferralprogramShow",
       "schemaVersion": 2,
-      "title": "Lister referral program",
-      "subtitle": "Referral program",
+      "title": "Lister programme de parrainage",
+      "subtitle": "programme de parrainage",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -9786,9 +9786,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister referral program.",
+      "description": "Retourne la liste des éléments programme de parrainage.",
       "args": {
-        "title": "Lister referral program",
+        "title": "Lister programme de parrainage",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -9846,8 +9846,8 @@
       "key": "beehiiv_respons_list_polls_list_responses",
       "name": "beehiivResponsListPollsListResponses",
       "schemaVersion": 2,
-      "title": "Lister poll response",
-      "subtitle": "Poll response",
+      "title": "Lister réponses au sondage",
+      "subtitle": "réponses au sondage",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -9878,9 +9878,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister poll response.",
+      "description": "Retourne la liste des éléments réponses au sondage.",
       "args": {
-        "title": "Lister poll response",
+        "title": "Lister réponses au sondage",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10022,8 +10022,8 @@
       "key": "beehiiv_result_list_segments_expand_results",
       "name": "beehiivResultListSegmentsExpandResults",
       "schemaVersion": 2,
-      "title": "Lister segment expand résultat",
-      "subtitle": "Segment expand résultat",
+      "title": "Lister résultats étendus de segment",
+      "subtitle": "résultats étendus de segment",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -10054,9 +10054,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister segment expand résultat.",
+      "description": "Retourne la liste des éléments résultats étendus de segment.",
       "args": {
-        "title": "Lister segment expand résultat",
+        "title": "Lister résultats étendus de segment",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10160,7 +10160,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer segment.",
+      "description": "Crée un nouvel élément pour segment.",
       "args": {
         "title": "Créer segment",
         "ui": {
@@ -10238,7 +10238,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister segment liste.",
+      "description": "Retourne la liste des éléments segment liste.",
       "args": {
         "title": "Lister segment liste",
         "ui": {
@@ -10400,7 +10400,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer segment.",
+      "description": "Récupère les détails de segment.",
       "args": {
         "title": "Récupérer segment",
         "ui": {
@@ -10492,7 +10492,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer segment.",
+      "description": "Supprime segment.",
       "args": {
         "title": "Supprimer segment",
         "ui": {
@@ -10570,7 +10570,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer webhook test.",
+      "description": "Envoie webhook test.",
       "args": {
         "title": "Envoyer webhook test",
         "ui": {
@@ -10648,7 +10648,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer palier.",
+      "description": "Crée un nouvel élément pour palier.",
       "args": {
         "title": "Créer palier",
         "ui": {
@@ -10726,7 +10726,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister palier liste.",
+      "description": "Retourne la liste des éléments palier liste.",
       "args": {
         "title": "Lister palier liste",
         "ui": {
@@ -10846,7 +10846,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer palier.",
+      "description": "Récupère les détails de palier.",
       "args": {
         "title": "Récupérer palier",
         "ui": {
@@ -10906,7 +10906,7 @@
       "key": "beehiiv_tier_update_tiers_put",
       "name": "beehiivTierUpdateTiersPut",
       "schemaVersion": 2,
-      "title": "Mettre à jour palier",
+      "title": "Mettre à jour palier (complet)",
       "subtitle": "Palier",
       "icon": "fa-solid fa-pen",
       "type": "function",
@@ -10938,9 +10938,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour palier.",
+      "description": "Met à jour palier (complet).",
       "args": {
-        "title": "Mettre à jour palier",
+        "title": "Mettre à jour palier (complet)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -10998,7 +10998,7 @@
       "key": "beehiiv_tier_update_tiers_patch",
       "name": "beehiivTierUpdateTiersPatch",
       "schemaVersion": 2,
-      "title": "Mettre à jour palier - palier",
+      "title": "Mettre à jour palier (partiel)",
       "subtitle": "Palier",
       "icon": "fa-solid fa-pen",
       "type": "function",
@@ -11030,9 +11030,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour palier - palier.",
+      "description": "Met à jour palier (partiel).",
       "args": {
-        "title": "Mettre à jour palier - palier",
+        "title": "Mettre à jour palier (partiel)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true

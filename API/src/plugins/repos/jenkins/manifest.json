@@ -2199,6 +2199,158 @@
         "displayDescription": false
       },
       "group": "Queue"
+    },
+    {
+      "key": "jenkins_job_builds_list",
+      "name": "jenkinsJobBuildsList",
+      "schemaVersion": 2,
+      "title": "Lister les builds d un job",
+      "subtitle": "Builds",
+      "icon": "fa-solid fa-list-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "builds",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_builds"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les builds historiques d un job Jenkins.",
+      "args": {
+        "title": "Lister les builds d un job",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Job path",
+            "description": "Nom du job ou chemin folder/job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de builds à récupérer (1-200).",
+            "col": {
+              "xs": 24
+            },
+            "default": 20
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Builds"
+    },
+    {
+      "key": "jenkins_build_artifacts_list",
+      "name": "jenkinsBuildArtifactsList",
+      "schemaVersion": 2,
+      "title": "Lister les artefacts d un build",
+      "subtitle": "Builds",
+      "icon": "fa-solid fa-box-archive",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jenkins",
+      "providerKey": "jenkins",
+      "tags": [
+        "jenkins",
+        "artifacts",
+        "build"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jenkins_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les artefacts produits par un build Jenkins.",
+      "args": {
+        "title": "Lister les artefacts d un build",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "jobPath",
+            "label": "Job path",
+            "description": "Nom du job ou chemin folder/job.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "buildNumber",
+            "label": "Numéro build",
+            "description": "Numéro du build.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Builds"
     }
   ]
 }

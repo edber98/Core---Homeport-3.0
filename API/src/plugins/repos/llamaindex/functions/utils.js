@@ -200,12 +200,36 @@ async function run(key, inputs, opts) {
       return itemResult(res.data, sessionId);
     }
 
+    if (key === 'llamaindex_chat_list') {
+      const res = await providerRequest(opts, '/api/v1/chat', { method: 'GET' });
+      if (!res.ok) return res;
+      return listResult(res.data, 'chat');
+    }
+
     if (key === 'llamaindex_chat_delete') {
       const sessionId = str(d.session_id);
       if (!sessionId) return { ok: false, error: 'session_id requis.' };
       const res = await providerRequest(opts, `/api/v1/chat/${encodeURIComponent(sessionId)}`, { method: 'DELETE' });
       if (!res.ok) return res;
       return actionResult('Session supprimée.', res.data, res.status);
+    }
+
+    if (key === 'llamaindex_pipeline_document_create') {
+      const pipelineId = str(d.pipeline_id);
+      const body = parseJson(d.body, 'body', null);
+      if (!pipelineId || !body || typeof body !== 'object') return { ok: false, error: 'pipeline_id et body JSON requis.' };
+      const res = await providerRequest(opts, `/api/v1/pipelines/${encodeURIComponent(pipelineId)}/documents`, { method: 'POST', body });
+      if (!res.ok) return res;
+      return itemResult(res.data, 'document');
+    }
+
+    if (key === 'llamaindex_pipeline_document_delete') {
+      const pipelineId = str(d.pipeline_id);
+      const documentId = str(d.document_id);
+      if (!pipelineId || !documentId) return { ok: false, error: 'pipeline_id et document_id requis.' };
+      const res = await providerRequest(opts, `/api/v1/pipelines/${encodeURIComponent(pipelineId)}/documents/${encodeURIComponent(documentId)}`, { method: 'DELETE' });
+      if (!res.ok) return res;
+      return actionResult('Document supprimé.', res.data, res.status);
     }
 
     return { ok: false, error: `Action inconnue: ${key}` };

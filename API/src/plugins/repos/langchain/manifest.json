@@ -869,6 +869,228 @@
         "displayDescription": false
       },
       "group": "RAG"
+    },
+    {
+      "key": "langchain_keywords_extract",
+      "name": "langchainKeywordsExtract",
+      "schemaVersion": 2,
+      "title": "Extraire des mots-clés",
+      "subtitle": "Texte",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Extraire des mots-clés",
+      "args": {
+        "title": "Extraire des mots-clés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Texte",
+      "risk": "safe"
+    },
+    {
+      "key": "langchain_text_translate",
+      "name": "langchainTextTranslate",
+      "schemaVersion": 2,
+      "title": "Traduire un texte",
+      "subtitle": "Texte",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Traduire un texte",
+      "args": {
+        "title": "Traduire un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "targetLanguage",
+            "label": "Langue cible",
+            "default": "fr",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Texte",
+      "risk": "safe"
+    },
+    {
+      "key": "langchain_sentiment_analyze",
+      "name": "langchainSentimentAnalyze",
+      "schemaVersion": 2,
+      "title": "Analyser le sentiment",
+      "subtitle": "Texte",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Analyser le sentiment",
+      "args": {
+        "title": "Analyser le sentiment",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Texte",
+      "risk": "safe"
     }
   ]
 }

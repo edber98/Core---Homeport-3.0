@@ -74,7 +74,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
                           </span>
                           <span class="title-pack">
                             <span class="label">{{ it.label }}</span>
-                            <span class="start-dot" *ngIf="isStartLikeTpl(it.template)" nz-tooltip [nzTooltipTitle]="startLikeTooltip(it.template)"></span>
                           </span>
                           <span class="info" *ngIf="it.template?.description as d" nz-tooltip [nzTooltipTitle]="d">
                             <i class="fa-solid fa-circle-question"></i>
@@ -190,7 +189,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
                         </span>
                         <span class="title-pack">
                           <span class="label">{{ it.label }}</span>
-                          <span class="start-dot" *ngIf="isStartLikeTpl(it.template)" nz-tooltip [nzTooltipTitle]="startLikeTooltip(it.template)"></span>
                         </span>
                         <span class="info" *ngIf="it.template?.description as d" nz-tooltip [nzTooltipTitle]="d">
                           <i class="fa-solid fa-circle-question"></i>
@@ -333,7 +331,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .search-group-title .group-mini img { width: 12px; height: 12px; object-fit: contain; display:block; }
     .palette .search-group-title .group-name { font-weight:700; font-size: 14px; color:#111; }
     .palette .search-group-title .group-spacer { width: 20px; height: 20px; margin-left: 10px; display:inline-block; }
-    .palette .mini-icon { width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; margin-right:6px; }
+    .palette .mini-icon { width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center; margin-right:6px; align-self:center; }
     .palette .mini-icon .mini { font-size: 15px; line-height: 1; color:#64748b; }
     .palette .empty { color:#94a3b8; font-size: 12px; padding: 6px 2px; display:flex; flex-direction:column; gap:8px; }
     .palette .items { display:flex; flex-direction:column; gap:0; }
@@ -349,9 +347,9 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
     .palette .item.flat:hover:not(.disabled) { background: #f8fafc; border-color: transparent; border-width: 0; }
     .palette .item.flat .meta { flex: 1 1 auto; min-width: 0; }
     .palette .item.flat .title-row { display:flex; align-items:center; gap:6px; font-weight: 600; font-size: 13px; }
-    .palette .item.flat .title-pack { display:inline-flex; align-items:center; gap:10px; flex: 1 1 auto; min-width: 0; }
-    .palette .item.flat .title-row .label { flex: 0 1 auto; white-space: nowrap; color:#111; font-weight: 400; }
-    .palette .item.flat .info { color:#94a3b8; cursor: help; display:inline-flex; align-items:center; justify-content:center; padding-right: 8px; position: relative; z-index: 2; }
+    .palette .item.flat .title-pack { display:block; flex: 1 1 auto; min-width: 0; }
+    .palette .item.flat .title-row .label { max-width:100%; color:#111; font-weight: 400; line-height: 1.2; overflow: hidden; text-overflow: clip; white-space: normal; word-break: break-word; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .palette .item.flat .info { color:#94a3b8; cursor: help; display:inline-flex; align-items:center; justify-content:center; align-self:center; padding-right: 8px; position: relative; z-index: 2; }
     .palette .item.flat .info i { font-size: 14px; }
     .palette .item.disabled { opacity: .5; cursor: not-allowed; }
     .palette .item.disabled .drag-proxy { pointer-events: none; }

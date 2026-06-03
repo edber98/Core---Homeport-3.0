@@ -7074,6 +7074,63 @@
         "displayDescription": false
       },
       "group": "vidéos"
+    },
+    {
+      "key": "together_ai_moderation_create_create_moderation",
+      "name": "togetherAiModerationCreateCreateModeration",
+      "schemaVersion": 2,
+      "title": "Créer modération",
+      "subtitle": "Modération",
+      "icon": "fa-solid fa-shield-halved",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Together AI",
+      "providerKey": "together_ai",
+      "tags": [
+        "together_ai",
+        "moderation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "Entrée",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:together_ai_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une modération.",
+      "args": {
+        "title": "Créer modération",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "modération"
     }
   ]
 }

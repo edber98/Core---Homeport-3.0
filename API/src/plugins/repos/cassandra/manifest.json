@@ -1097,6 +1097,70 @@
         "displayDescription": false
       },
       "group": "Données"
+    },
+    {
+      "key": "cassandra_table_truncate",
+      "name": "cassandraTableTruncate",
+      "schemaVersion": 2,
+      "title": "Vider une table",
+      "subtitle": "TRUNCATE table",
+      "icon": "fa-solid fa-broom",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "cassandra",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cassandra_action_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Vider une table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "keyspace",
+            "label": "Keyspace",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "risk": "destructive"
     }
   ]
 }

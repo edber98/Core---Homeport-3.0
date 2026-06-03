@@ -2329,6 +2329,239 @@
         "displayDescription": false
       },
       "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_events_export",
+      "name": "mixpanelEventsExport",
+      "schemaVersion": 2,
+      "title": "Exporter des événements",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-file-export",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Exporte les événements bruts sur une période.",
+      "args": {
+        "title": "Exporter des événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "fromDate",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "toDate",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Événement (optionnel)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Filtre where",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_annotations_create",
+      "name": "mixpanelAnnotationsCreate",
+      "schemaVersion": 2,
+      "title": "Créer une annotation",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-note-sticky",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Crée une annotation de projet.",
+      "args": {
+        "title": "Créer une annotation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "date",
+            "label": "Date",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_annotations_list",
+      "name": "mixpanelAnnotationsList",
+      "schemaVersion": 2,
+      "title": "Lister les annotations",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Liste les annotations de projet.",
+      "args": {
+        "title": "Lister les annotations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "fromDate",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "toDate",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
     }
   ]
 }

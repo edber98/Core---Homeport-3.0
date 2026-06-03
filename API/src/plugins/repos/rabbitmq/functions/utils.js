@@ -231,6 +231,18 @@ async function run(key, inputs, opts) {
       });
     }
 
+    if (key === "rabbitmq_queue_delete") {
+      const queue = cleanString(d.queue);
+      const ifUnused = d.ifUnused === true;
+      const ifEmpty = d.ifEmpty === true;
+      return withChannel(opts, async ({ channel, defaultQueue }) => {
+        const q = queue || defaultQueue;
+        if (!q) return { ok: false, error: "queue requise (input ou credentials.defaultQueue)." };
+        const info = await channel.deleteQueue(q, { ifUnused, ifEmpty });
+        return actionResult("Queue supprimée.", { queue: q, deletedMessages: Number(info.messageCount || 0), ifUnused, ifEmpty });
+      });
+    }
+
     return { ok: false, error: "Action inconnue." };
   } catch (e) {
     return { ok: false, error: e.message };

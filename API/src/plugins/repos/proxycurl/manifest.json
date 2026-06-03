@@ -4498,6 +4498,63 @@
         "displayDescription": false
       },
       "group": "work emails"
+    },
+    {
+      "key": "proxycurl_health_ping",
+      "name": "proxycurlHealthPing",
+      "schemaVersion": 2,
+      "title": "Vérifier la santé",
+      "subtitle": "Health",
+      "icon": "fa-solid fa-heart-pulse",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Proxycurl",
+      "providerKey": "proxycurl",
+      "description": "Health check local du connecteur Proxycurl.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:proxycurl_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Vérifier la santé",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "message",
+            "label": "Message",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Health",
+      "tags": [
+        "health",
+        "proxycurl"
+      ],
+      "risk": "safe"
     }
   ]
 }

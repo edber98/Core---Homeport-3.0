@@ -1019,6 +1019,69 @@
         "PayPal"
       ],
       "risk": "safe"
+    },
+    {
+      "key": "paypal_capture_get",
+      "name": "paypalCaptureGet",
+      "schemaVersion": 2,
+      "title": "Lire une capture",
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-receipt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_result"
+        }
+      ],
+      "description": "Récupérer les détails d'une capture PayPal.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lire une capture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "captureId",
+            "label": "ID capture",
+            "description": "Identifiant de la capture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Paiements",
+      "tags": [
+        "lecture",
+        "PayPal"
+      ],
+      "risk": "safe"
     }
   ]
 }

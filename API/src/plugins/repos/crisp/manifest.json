@@ -1035,6 +1035,222 @@
         "displayDescription": false
       },
       "group": "Équipe"
+    },
+    {
+      "key": "crisp_conversation_resolve",
+      "name": "crispConversationResolve",
+      "schemaVersion": 2,
+      "title": "Résoudre une conversation",
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "action",
+        "conversation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Marque une conversation Crisp comme résolue.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID website",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "ID session",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Conversations"
+    },
+    {
+      "key": "crisp_api_request",
+      "name": "crispApiRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "api",
+        "custom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête API Crisp personnalisée.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "API"
+    },
+    {
+      "key": "crisp_conversation_open",
+      "name": "crispConversationOpen",
+      "schemaVersion": 2,
+      "title": "Rouvrir une conversation",
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Crisp",
+      "providerKey": "crisp",
+      "tags": [
+        "action",
+        "conversation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crisp_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rouvre une conversation Crisp.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "websiteId",
+            "label": "ID website",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "ID session",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Conversations"
     }
   ]
 }

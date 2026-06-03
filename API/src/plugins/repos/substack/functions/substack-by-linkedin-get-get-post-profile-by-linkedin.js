@@ -4,7 +4,7 @@ module.exports = {
   async substack_by_linkedin_get_get_post_profile_by_linkedin(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
-    let reqPath = "/post_profiles/by-linkedin/{linkedinSlug}";
+    let reqPath = "/post_profiles/by-linkedin/{linkedinslug}";
     const linkedinslug = String(d.linkedinslug || '').trim();
     if (!linkedinslug) return { ok: false, error: 'linkedinslug requis.' };
     reqPath = reqPath.replace('{linkedinslug}', encodeURIComponent(linkedinslug));

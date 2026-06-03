@@ -2997,6 +2997,125 @@
         "signature"
       ],
       "risk": "safe"
+    },
+    {
+      "key": "yousign_contact_update",
+      "name": "yousignContactUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un contact",
+      "subtitle": "Contacts",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Signature électronique",
+      "providerKey": "yousign",
+      "icon": "fa-solid fa-pen-to-square",
+      "description": "Modifie un contact Yousign.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ys_contact"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "contactId",
+            "label": "ID contact",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "E-mail",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone_number",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "company_name",
+            "label": "Société",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "job_title",
+            "label": "Poste",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "locale",
+            "label": "Langue",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Contacts",
+      "tags": [
+        "mise-à-jour",
+        "contact"
+      ],
+      "risk": "write"
     }
   ]
 }

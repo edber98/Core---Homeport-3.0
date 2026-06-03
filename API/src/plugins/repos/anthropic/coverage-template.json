@@ -1,0 +1,195 @@
+{
+  "connector": "anthropic",
+  "generatedAt": "2026-06-01T08:43:49.355Z",
+  "summary": {
+    "covered": 23,
+    "missing": 0,
+    "excluded": 0
+  },
+  "rows": [
+    {
+      "nodeKey": "anthropic_create_message",
+      "title": "Créer un message",
+      "group": "Messages",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_create_message_stream",
+      "title": "Créer un message (stream)",
+      "group": "Messages",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_create_message_tools",
+      "title": "Créer un message (tools)",
+      "group": "Messages",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_create_message_vision",
+      "title": "Créer un message (vision)",
+      "group": "Messages",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_list_models",
+      "title": "Lister les modèles",
+      "group": "Modèles",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_get_model",
+      "title": "Récupérer un modèle",
+      "group": "Modèles",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_count_tokens",
+      "title": "Compter les tokens",
+      "group": "Tokens",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_classify",
+      "title": "Classifier un texte",
+      "group": "Classification",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_extract",
+      "title": "Extraire des données",
+      "group": "Extraction",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_batch_create",
+      "title": "Créer un batch de messages",
+      "group": "Batches",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_batch_get",
+      "title": "Récupérer un batch",
+      "group": "Batches",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_batch_list",
+      "title": "Lister les batches",
+      "group": "Batches",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_batch_results",
+      "title": "Récupérer les résultats de batch",
+      "group": "Batches",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_batch_cancel",
+      "title": "Annuler un batch",
+      "group": "Batches",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_batch_delete",
+      "title": "Supprimer un batch",
+      "group": "Batches",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_file_upload",
+      "title": "Téléverser un fichier",
+      "group": "Fichiers",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_file_get",
+      "title": "Récupérer un fichier",
+      "group": "Fichiers",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_file_list",
+      "title": "Lister les fichiers",
+      "group": "Fichiers",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_file_download",
+      "title": "Télécharger un fichier",
+      "group": "Fichiers",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_file_delete",
+      "title": "Supprimer un fichier",
+      "group": "Fichiers",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_create_message_json",
+      "title": "Générer JSON strict",
+      "group": "Messages",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_batch_create_from_jsonl",
+      "title": "Créer batch depuis JSONL",
+      "group": "Batches",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "anthropic_custom_request",
+      "title": "Requête API personnalisée",
+      "group": "Advanced",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    }
+  ]
+}

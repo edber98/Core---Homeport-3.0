@@ -1919,6 +1919,161 @@
         "displayDescription": false
       },
       "group": "deep lookups"
+    },
+    {
+      "key": "brightdata_discover_list_tasks",
+      "name": "brightdataDiscoverListTasks",
+      "schemaVersion": 2,
+      "title": "Lister les tâches Discover",
+      "subtitle": "Discover",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Bright Data",
+      "providerKey": "brightdata",
+      "tags": [
+        "brightdata",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brightdata_discovers"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les tâches Discover.",
+      "args": {
+        "title": "Lister les tâches Discover",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Page size",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Discover"
+    },
+    {
+      "key": "brightdata_generic_request",
+      "name": "brightdataGenericRequest",
+      "schemaVersion": 2,
+      "title": "Requête Bright Data générique",
+      "subtitle": "Couverture avancée",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Bright Data",
+      "providerKey": "brightdata",
+      "tags": [
+        "brightdata",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brightdata_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute un endpoint Bright Data métier non encore modélisé.",
+      "args": {
+        "title": "Requête Bright Data générique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "description": "GET/POST/PUT/PATCH/DELETE",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path API",
+            "description": "Ex: /datasets/v3/trigger",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Optionnel selon endpoint.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Advanced",
+      "risk": "write"
     }
   ]
 }

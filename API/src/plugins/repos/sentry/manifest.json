@@ -1060,6 +1060,81 @@
         "displayDescription": false
       },
       "group": "Issues"
+    },
+    {
+      "key": "sentry_issue_comment_create",
+      "name": "sentryIssueCommentCreate",
+      "schemaVersion": 2,
+      "title": "Ajouter un commentaire issue",
+      "subtitle": "Issues",
+      "icon": "fa-solid fa-comment",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Sentry",
+      "providerKey": "sentry",
+      "tags": [
+        "sentry"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sentry_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajouter un commentaire à une issue Sentry.",
+      "args": {
+        "title": "Ajouter un commentaire issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueId",
+            "label": "Issue ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Commentaire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Issues",
+      "risk": "write"
     }
   ]
 }

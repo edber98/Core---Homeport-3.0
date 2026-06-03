@@ -14560,7 +14560,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister compte liste.",
+      "description": "Retourne une liste pour compte liste.",
       "args": {
         "title": "Lister compte liste",
         "ui": {
@@ -14609,7 +14609,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer compte.",
+      "description": "Crée un nouvel élément pour compte.",
       "args": {
         "title": "Créer compte",
         "ui": {
@@ -14668,7 +14668,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer compte.",
+      "description": "Récupère les détails de compte.",
       "args": {
         "title": "Récupérer compte",
         "ui": {
@@ -14732,7 +14732,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour compte.",
+      "description": "Met à jour compte.",
       "args": {
         "title": "Mettre à jour compte",
         "ui": {
@@ -14773,8 +14773,8 @@
       "key": "salesloft_account_delete_docs_api_accounts_destroy",
       "name": "salesloftAccountDeleteDocsApiAccountsDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer compte destroy",
-      "subtitle": "Compte destroy",
+      "title": "Supprimer compte suppression",
+      "subtitle": "Compte suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -14805,9 +14805,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer compte destroy.",
+      "description": "Supprime compte suppression.",
       "args": {
-        "title": "Supprimer compte destroy",
+        "title": "Supprimer compte suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -14869,7 +14869,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister compte étape liste.",
+      "description": "Retourne une liste pour compte étape liste.",
       "args": {
         "title": "Lister compte étape liste",
         "ui": {
@@ -14918,7 +14918,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer compte étape.",
+      "description": "Récupère les détails de compte étape.",
       "args": {
         "title": "Récupérer compte étape",
         "ui": {
@@ -14982,7 +14982,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister compte palier liste.",
+      "description": "Retourne une liste pour compte palier liste.",
       "args": {
         "title": "Lister compte palier liste",
         "ui": {
@@ -15031,7 +15031,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer compte palier.",
+      "description": "Récupère les détails de compte palier.",
       "args": {
         "title": "Récupérer compte palier",
         "ui": {
@@ -15095,7 +15095,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister compte type liste.",
+      "description": "Retourne une liste pour compte type liste.",
       "args": {
         "title": "Lister compte type liste",
         "ui": {
@@ -15144,7 +15144,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour ou créer compte upsert.",
+      "description": "Met à jour ou crée compte upsert.",
       "args": {
         "title": "Mettre à jour ou créer compte upsert",
         "ui": {
@@ -15203,7 +15203,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister action liste.",
+      "description": "Retourne une liste pour action liste.",
       "args": {
         "title": "Lister action liste",
         "ui": {
@@ -15252,7 +15252,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer action.",
+      "description": "Récupère les détails de action.",
       "args": {
         "title": "Récupérer action",
         "ui": {
@@ -15316,7 +15316,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité.",
+      "description": "Crée un nouvel élément pour activité.",
       "args": {
         "title": "Créer activité",
         "ui": {
@@ -15375,7 +15375,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité historique liste.",
+      "description": "Retourne une liste pour activité historique liste.",
       "args": {
         "title": "Lister activité historique liste",
         "ui": {
@@ -15392,8 +15392,8 @@
       "key": "salesloft_artifact_search_docs_api_conversations_transcriptions_find_one_transcript_ar",
       "name": "salesloftArtifactSearchDocsApiConversationsTranscriptionsFindOneTranscriptAr",
       "schemaVersion": 2,
-      "title": "Rechercher artifact",
-      "subtitle": "Artifact",
+      "title": "Rechercher artefact",
+      "subtitle": "artefact",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15424,9 +15424,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher artifact.",
+      "description": "Recherche des éléments liés à artefact.",
       "args": {
-        "title": "Rechercher artifact",
+        "title": "Rechercher artefact",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15488,7 +15488,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour lot tâche.",
+      "description": "Met à jour lot tâche.",
       "args": {
         "title": "Mettre à jour lot tâche",
         "ui": {
@@ -15561,7 +15561,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer lot tâche.",
+      "description": "Récupère les détails de lot tâche.",
       "args": {
         "title": "Récupérer lot tâche",
         "ui": {
@@ -15593,8 +15593,8 @@
       "key": "salesloft_bulk_job_delete_docs_api_bulk_jobs_destroy",
       "name": "salesloftBulkJobDeleteDocsApiBulkJobsDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer lot tâche destroy",
-      "subtitle": "Lot tâche destroy",
+      "title": "Supprimer lot tâche suppression",
+      "subtitle": "Lot tâche suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15625,9 +15625,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer lot tâche destroy.",
+      "description": "Supprime lot tâche suppression.",
       "args": {
-        "title": "Supprimer lot tâche destroy",
+        "title": "Supprimer lot tâche suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15689,7 +15689,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer lot tâche.",
+      "description": "Crée un nouvel élément pour lot tâche.",
       "args": {
         "title": "Créer lot tâche",
         "ui": {
@@ -15748,7 +15748,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister lot tâche liste.",
+      "description": "Retourne une liste pour lot tâche liste.",
       "args": {
         "title": "Lister lot tâche liste",
         "ui": {
@@ -15765,8 +15765,8 @@
       "key": "salesloft_bulk_reschedule_task_create_docs_api_bulk_reschedule_tasks_create",
       "name": "salesloftBulkRescheduleTaskCreateDocsApiBulkRescheduleTasksCreate",
       "schemaVersion": 2,
-      "title": "Créer lot reschedule tâch",
-      "subtitle": "Lot reschedule tâch",
+      "title": "Créer lot replanification tâch",
+      "subtitle": "Lot replanification tâch",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15797,9 +15797,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer lot reschedule tâch.",
+      "description": "Crée un nouvel élément pour lot replanification tâch.",
       "args": {
-        "title": "Créer lot reschedule tâch",
+        "title": "Créer lot replanification tâch",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -15856,7 +15856,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister cadence liste.",
+      "description": "Retourne une liste pour cadence liste.",
       "args": {
         "title": "Lister cadence liste",
         "ui": {
@@ -15905,7 +15905,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer cadence.",
+      "description": "Récupère les détails de cadence.",
       "args": {
         "title": "Récupérer cadence",
         "ui": {
@@ -15937,8 +15937,8 @@
       "key": "salesloft_cadence_bulk_membership_create_docs_api_cadence_bulk_memberships_create",
       "name": "salesloftCadenceBulkMembershipCreateDocsApiCadenceBulkMembershipsCreate",
       "schemaVersion": 2,
-      "title": "Créer cadence lot membership",
-      "subtitle": "Cadence lot membership",
+      "title": "Créer cadence lot adhésion",
+      "subtitle": "Cadence lot adhésion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -15969,9 +15969,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer cadence lot membership.",
+      "description": "Crée un nouvel élément pour cadence lot adhésion.",
       "args": {
-        "title": "Créer cadence lot membership",
+        "title": "Créer cadence lot adhésion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16028,7 +16028,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer cadence export.",
+      "description": "Récupère les détails de cadence export.",
       "args": {
         "title": "Récupérer cadence export",
         "ui": {
@@ -16092,7 +16092,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer cadence export.",
+      "description": "Crée un nouvel élément pour cadence export.",
       "args": {
         "title": "Créer cadence export",
         "ui": {
@@ -16151,7 +16151,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer cadence import.",
+      "description": "Crée un nouvel élément pour cadence import.",
       "args": {
         "title": "Créer cadence import",
         "ui": {
@@ -16178,8 +16178,8 @@
       "key": "salesloft_cadence_membership_list_docs_api_cadence_memberships_index",
       "name": "salesloftCadenceMembershipListDocsApiCadenceMembershipsIndex",
       "schemaVersion": 2,
-      "title": "Lister cadence membership",
-      "subtitle": "Cadence membership",
+      "title": "Lister cadence adhésion",
+      "subtitle": "Cadence adhésion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16210,9 +16210,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister cadence membership.",
+      "description": "Retourne une liste pour cadence adhésion.",
       "args": {
-        "title": "Lister cadence membership",
+        "title": "Lister cadence adhésion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16227,8 +16227,8 @@
       "key": "salesloft_cadence_membership_create_docs_api_cadence_memberships_create",
       "name": "salesloftCadenceMembershipCreateDocsApiCadenceMembershipsCreate",
       "schemaVersion": 2,
-      "title": "Créer cadence membership",
-      "subtitle": "Cadence membership",
+      "title": "Créer cadence adhésion",
+      "subtitle": "Cadence adhésion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16259,9 +16259,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer cadence membership.",
+      "description": "Crée un nouvel élément pour cadence adhésion.",
       "args": {
-        "title": "Créer cadence membership",
+        "title": "Créer cadence adhésion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16286,8 +16286,8 @@
       "key": "salesloft_cadence_membership_get_docs_api_cadence_memberships_show",
       "name": "salesloftCadenceMembershipGetDocsApiCadenceMembershipsShow",
       "schemaVersion": 2,
-      "title": "Récupérer cadence membership",
-      "subtitle": "Cadence membership",
+      "title": "Récupérer cadence adhésion",
+      "subtitle": "Cadence adhésion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16318,9 +16318,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer cadence membership.",
+      "description": "Récupère les détails de cadence adhésion.",
       "args": {
-        "title": "Récupérer cadence membership",
+        "title": "Récupérer cadence adhésion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16350,8 +16350,8 @@
       "key": "salesloft_cadence_membership_delete_docs_api_cadence_memberships_destroy",
       "name": "salesloftCadenceMembershipDeleteDocsApiCadenceMembershipsDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer cadence membership",
-      "subtitle": "Cadence membership",
+      "title": "Supprimer cadence adhésion",
+      "subtitle": "Cadence adhésion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16382,9 +16382,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer cadence membership.",
+      "description": "Supprime cadence adhésion.",
       "args": {
-        "title": "Supprimer cadence membership",
+        "title": "Supprimer cadence adhésion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16414,8 +16414,8 @@
       "key": "salesloft_cadence_stat_get_docs_api_cadence_stats_show",
       "name": "salesloftCadenceStatGetDocsApiCadenceStatsShow",
       "schemaVersion": 2,
-      "title": "Récupérer cadence stat",
-      "subtitle": "Cadence stat",
+      "title": "Récupérer cadence statistique",
+      "subtitle": "Cadence statistique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -16446,9 +16446,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer cadence stat.",
+      "description": "Récupère les détails de cadence statistique.",
       "args": {
-        "title": "Récupérer cadence stat",
+        "title": "Récupérer cadence statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -16510,7 +16510,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister calendrier disponibilité liste.",
+      "description": "Retourne une liste pour calendrier disponibilité liste.",
       "args": {
         "title": "Lister calendrier disponibilité liste",
         "ui": {
@@ -16559,7 +16559,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour calendrier événement.",
+      "description": "Met à jour calendrier événement.",
       "args": {
         "title": "Mettre à jour calendrier événement",
         "ui": {
@@ -16632,7 +16632,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer calendrier événement.",
+      "description": "Crée un nouvel élément pour calendrier événement.",
       "args": {
         "title": "Créer calendrier événement",
         "ui": {
@@ -16691,7 +16691,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité appel liste.",
+      "description": "Retourne une liste pour activité appel liste.",
       "args": {
         "title": "Lister activité appel liste",
         "ui": {
@@ -16740,7 +16740,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer activité appel.",
+      "description": "Crée un nouvel élément pour activité appel.",
       "args": {
         "title": "Créer activité appel",
         "ui": {
@@ -16799,7 +16799,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité appel.",
+      "description": "Récupère les détails de activité appel.",
       "args": {
         "title": "Récupérer activité appel",
         "ui": {
@@ -16863,7 +16863,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer conversation appel.",
+      "description": "Crée un nouvel élément pour conversation appel.",
       "args": {
         "title": "Créer conversation appel",
         "ui": {
@@ -16922,7 +16922,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer enregistrements de données d appel.",
+      "description": "Crée un nouvel élément pour enregistrements de données d appel.",
       "args": {
         "title": "Créer enregistrements de données d appel",
         "ui": {
@@ -16981,7 +16981,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister appel données enregistrement liste.",
+      "description": "Retourne une liste pour appel données enregistrement liste.",
       "args": {
         "title": "Lister appel données enregistrement liste",
         "ui": {
@@ -17030,7 +17030,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour enregistrements de données d appel.",
+      "description": "Met à jour enregistrements de données d appel.",
       "args": {
         "title": "Mettre à jour enregistrements de données d appel",
         "ui": {
@@ -17103,7 +17103,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer enregistrements de données d appel.",
+      "description": "Récupère les détails de enregistrements de données d appel.",
       "args": {
         "title": "Récupérer enregistrements de données d appel",
         "ui": {
@@ -17167,7 +17167,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister appel disposition.",
+      "description": "Retourne une liste pour appel disposition.",
       "args": {
         "title": "Lister appel disposition",
         "ui": {
@@ -17216,7 +17216,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer appel disposition.",
+      "description": "Récupère les détails de appel disposition.",
       "args": {
         "title": "Récupérer appel disposition",
         "ui": {
@@ -17280,7 +17280,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister appel instruction.",
+      "description": "Retourne une liste pour appel instruction.",
       "args": {
         "title": "Lister appel instruction",
         "ui": {
@@ -17329,7 +17329,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer appel instruction.",
+      "description": "Récupère les détails de appel instruction.",
       "args": {
         "title": "Récupérer appel instruction",
         "ui": {
@@ -17393,7 +17393,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister appel sentiment.",
+      "description": "Retourne une liste pour appel sentiment.",
       "args": {
         "title": "Lister appel sentiment",
         "ui": {
@@ -17442,7 +17442,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer appel sentiment.",
+      "description": "Récupère les détails de appel sentiment.",
       "args": {
         "title": "Récupérer appel sentiment",
         "ui": {
@@ -17474,8 +17474,8 @@
       "key": "salesloft_caller_id_list_docs_api_phone_numbers_caller_ids_index",
       "name": "salesloftCallerIdListDocsApiPhoneNumbersCallerIdsIndex",
       "schemaVersion": 2,
-      "title": "Lister téléphone numéro caller ids liste",
-      "subtitle": "Téléphone numéro caller ids liste",
+      "title": "Lister téléphone numéro identifiants d’appelant liste",
+      "subtitle": "Téléphone numéro identifiants d’appelant liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17506,9 +17506,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister téléphone numéro caller ids liste.",
+      "description": "Retourne une liste pour téléphone numéro identifiants d’appelant liste.",
       "args": {
-        "title": "Lister téléphone numéro caller ids liste",
+        "title": "Lister téléphone numéro identifiants d’appelant liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17523,7 +17523,7 @@
       "key": "salesloft_conversation_search_docs_api_conversations_find_all",
       "name": "salesloftConversationSearchDocsApiConversationsFindAll",
       "schemaVersion": 2,
-      "title": "Rechercher conversation",
+      "title": "Lister conversations",
       "subtitle": "Conversation",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -17555,9 +17555,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher conversation.",
+      "description": "Retourne une liste pour conversations.",
       "args": {
-        "title": "Rechercher conversation",
+        "title": "Lister conversations",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17572,7 +17572,7 @@
       "key": "salesloft_conversation_search_docs_api_conversations_find_one",
       "name": "salesloftConversationSearchDocsApiConversationsFindOne",
       "schemaVersion": 2,
-      "title": "Rechercher conversation - conversation",
+      "title": "Récupérer conversation",
       "subtitle": "Conversation",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -17604,9 +17604,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher conversation - conversation.",
+      "description": "Récupère les détails de conversation.",
       "args": {
-        "title": "Rechercher conversation - conversation",
+        "title": "Récupérer conversation",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17636,8 +17636,8 @@
       "key": "salesloft_count_list_docs_api_tasks_counts_index",
       "name": "salesloftCountListDocsApiTasksCountsIndex",
       "schemaVersion": 2,
-      "title": "Lister tâche count liste",
-      "subtitle": "Tâche count liste",
+      "title": "Lister tâche compte liste",
+      "subtitle": "Tâche compte liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17668,9 +17668,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister tâche count liste.",
+      "description": "Retourne une liste pour tâche compte liste.",
       "args": {
-        "title": "Lister tâche count liste",
+        "title": "Lister tâche compte liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17685,8 +17685,8 @@
       "key": "salesloft_crm_account_team_member_list_docs_api_crm_account_team_members_index",
       "name": "salesloftCrmAccountTeamMemberListDocsApiCrmAccountTeamMembersIndex",
       "schemaVersion": 2,
-      "title": "Lister crm compte team membre liste",
-      "subtitle": "Crm compte team membre liste",
+      "title": "Lister CRM compte équipe membre liste",
+      "subtitle": "CRM compte équipe membre liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17717,9 +17717,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister crm compte team membre liste.",
+      "description": "Retourne une liste pour CRM compte équipe membre liste.",
       "args": {
-        "title": "Lister crm compte team membre liste",
+        "title": "Lister CRM compte équipe membre liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17734,8 +17734,8 @@
       "key": "salesloft_crm_activity_list_docs_api_crm_activities_index",
       "name": "salesloftCrmActivityListDocsApiCrmActivitiesIndex",
       "schemaVersion": 2,
-      "title": "Lister crm activité liste",
-      "subtitle": "Crm activité liste",
+      "title": "Lister CRM activité liste",
+      "subtitle": "CRM activité liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17766,9 +17766,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister crm activité liste.",
+      "description": "Retourne une liste pour CRM activité liste.",
       "args": {
-        "title": "Lister crm activité liste",
+        "title": "Lister CRM activité liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17783,8 +17783,8 @@
       "key": "salesloft_crm_activity_get_docs_api_crm_activities_show",
       "name": "salesloftCrmActivityGetDocsApiCrmActivitiesShow",
       "schemaVersion": 2,
-      "title": "Récupérer crm activité",
-      "subtitle": "Crm activité",
+      "title": "Récupérer CRM activité",
+      "subtitle": "CRM activité",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17815,9 +17815,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer crm activité.",
+      "description": "Récupère les détails de CRM activité.",
       "args": {
-        "title": "Récupérer crm activité",
+        "title": "Récupérer CRM activité",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17847,8 +17847,8 @@
       "key": "salesloft_crm_activity_field_list_docs_api_crm_activity_fields_index",
       "name": "salesloftCrmActivityFieldListDocsApiCrmActivityFieldsIndex",
       "schemaVersion": 2,
-      "title": "Lister crm activité champ liste",
-      "subtitle": "Crm activité champ liste",
+      "title": "Lister CRM activité champ liste",
+      "subtitle": "CRM activité champ liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17879,9 +17879,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister crm activité champ liste.",
+      "description": "Retourne une liste pour CRM activité champ liste.",
       "args": {
-        "title": "Lister crm activité champ liste",
+        "title": "Lister CRM activité champ liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17896,8 +17896,8 @@
       "key": "salesloft_crm_team_members_with_role_list_docs_api_crm_team_members_with_roles_index",
       "name": "salesloftCrmTeamMembersWithRoleListDocsApiCrmTeamMembersWithRolesIndex",
       "schemaVersion": 2,
-      "title": "Lister crm team membre role liste",
-      "subtitle": "Crm team membre role liste",
+      "title": "Lister CRM équipe membre role liste",
+      "subtitle": "CRM équipe membre role liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17928,9 +17928,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister crm team membre role liste.",
+      "description": "Retourne une liste pour CRM équipe membre role liste.",
       "args": {
-        "title": "Lister crm team membre role liste",
+        "title": "Lister CRM équipe membre role liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -17945,8 +17945,8 @@
       "key": "salesloft_crm_user_list_docs_api_crm_users_index",
       "name": "salesloftCrmUserListDocsApiCrmUsersIndex",
       "schemaVersion": 2,
-      "title": "Lister crm utilisateur liste",
-      "subtitle": "Crm utilisateur liste",
+      "title": "Lister CRM utilisateur liste",
+      "subtitle": "CRM utilisateur liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -17977,9 +17977,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister crm utilisateur liste.",
+      "description": "Retourne une liste pour CRM utilisateur liste.",
       "args": {
-        "title": "Lister crm utilisateur liste",
+        "title": "Lister CRM utilisateur liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18026,7 +18026,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer champs personnalisés.",
+      "description": "Récupère les détails de champs personnalisés.",
       "args": {
         "title": "Récupérer champs personnalisés",
         "ui": {
@@ -18058,8 +18058,8 @@
       "key": "salesloft_custom_field_delete_docs_api_custom_fields_destroy",
       "name": "salesloftCustomFieldDeleteDocsApiCustomFieldsDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer personnalisé champ destroy",
-      "subtitle": "Personnalisé champ destroy",
+      "title": "Supprimer personnalisé champ suppression",
+      "subtitle": "Personnalisé champ suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18090,9 +18090,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer personnalisé champ destroy.",
+      "description": "Supprime personnalisé champ suppression.",
       "args": {
-        "title": "Supprimer personnalisé champ destroy",
+        "title": "Supprimer personnalisé champ suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18154,7 +18154,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé champ liste.",
+      "description": "Retourne une liste pour personnalisé champ liste.",
       "args": {
         "title": "Lister personnalisé champ liste",
         "ui": {
@@ -18203,7 +18203,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer champs personnalisés.",
+      "description": "Crée un nouvel élément pour champs personnalisés.",
       "args": {
         "title": "Créer champs personnalisés",
         "ui": {
@@ -18262,7 +18262,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister activité email liste.",
+      "description": "Retourne une liste pour activité email liste.",
       "args": {
         "title": "Lister activité email liste",
         "ui": {
@@ -18311,7 +18311,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer activité email.",
+      "description": "Récupère les détails de activité email.",
       "args": {
         "title": "Récupérer activité email",
         "ui": {
@@ -18375,7 +18375,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer email missing tag.",
+      "description": "Crée un nouvel élément pour email missing tag.",
       "args": {
         "title": "Créer email missing tag",
         "ui": {
@@ -18434,7 +18434,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister email modèle liste.",
+      "description": "Retourne une liste pour email modèle liste.",
       "args": {
         "title": "Lister email modèle liste",
         "ui": {
@@ -18483,7 +18483,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer email modèle.",
+      "description": "Crée un nouvel élément pour email modèle.",
       "args": {
         "title": "Créer email modèle",
         "ui": {
@@ -18542,7 +18542,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer email modèle.",
+      "description": "Récupère les détails de email modèle.",
       "args": {
         "title": "Récupérer email modèle",
         "ui": {
@@ -18606,7 +18606,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour email modèle.",
+      "description": "Met à jour email modèle.",
       "args": {
         "title": "Mettre à jour email modèle",
         "ui": {
@@ -18647,8 +18647,8 @@
       "key": "salesloft_email_template_attachment_list_docs_api_email_template_attachments_index",
       "name": "salesloftEmailTemplateAttachmentListDocsApiEmailTemplateAttachmentsIndex",
       "schemaVersion": 2,
-      "title": "Lister email modèle attachment",
-      "subtitle": "Email modèle attachment",
+      "title": "Lister email modèle pièce jointe",
+      "subtitle": "Email modèle pièce jointe",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18679,9 +18679,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister email modèle attachment.",
+      "description": "Retourne une liste pour email modèle pièce jointe.",
       "args": {
-        "title": "Lister email modèle attachment",
+        "title": "Lister email modèle pièce jointe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18728,7 +18728,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister calendrier événement liste.",
+      "description": "Retourne une liste pour calendrier événement liste.",
       "args": {
         "title": "Lister calendrier événement liste",
         "ui": {
@@ -18777,7 +18777,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher conversation extensive.",
+      "description": "Recherche des éléments liés à conversation extensive.",
       "args": {
         "title": "Rechercher conversation extensive",
         "ui": {
@@ -18809,8 +18809,8 @@
       "key": "salesloft_external_email_create_docs_api_external_emails_create",
       "name": "salesloftExternalEmailCreateDocsApiExternalEmailsCreate",
       "schemaVersion": 2,
-      "title": "Créer external email",
-      "subtitle": "External email",
+      "title": "Créer email externe",
+      "subtitle": "email externe",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -18841,9 +18841,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer external email.",
+      "description": "Crée un nouvel élément pour email externe.",
       "args": {
-        "title": "Créer external email",
+        "title": "Créer email externe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -18900,7 +18900,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer groupe.",
+      "description": "Crée un nouvel élément pour groupe.",
       "args": {
         "title": "Créer groupe",
         "ui": {
@@ -18959,7 +18959,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister groupe liste.",
+      "description": "Retourne une liste pour groupe liste.",
       "args": {
         "title": "Lister groupe liste",
         "ui": {
@@ -19008,7 +19008,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer groupe.",
+      "description": "Récupère les détails de groupe.",
       "args": {
         "title": "Récupérer groupe",
         "ui": {
@@ -19072,7 +19072,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour groupe.",
+      "description": "Met à jour groupe.",
       "args": {
         "title": "Mettre à jour groupe",
         "ui": {
@@ -19113,8 +19113,8 @@
       "key": "salesloft_group_delete_docs_api_groups_destroy",
       "name": "salesloftGroupDeleteDocsApiGroupsDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer groupe destroy",
-      "subtitle": "Groupe destroy",
+      "title": "Supprimer groupe suppression",
+      "subtitle": "Groupe suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19145,9 +19145,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer groupe destroy.",
+      "description": "Supprime groupe suppression.",
       "args": {
-        "title": "Supprimer groupe destroy",
+        "title": "Supprimer groupe suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19209,7 +19209,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister import liste.",
+      "description": "Retourne une liste pour import liste.",
       "args": {
         "title": "Lister import liste",
         "ui": {
@@ -19258,7 +19258,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer import.",
+      "description": "Crée un nouvel élément pour import.",
       "args": {
         "title": "Créer import",
         "ui": {
@@ -19317,7 +19317,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer import.",
+      "description": "Récupère les détails de import.",
       "args": {
         "title": "Récupérer import",
         "ui": {
@@ -19381,7 +19381,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour import.",
+      "description": "Met à jour import.",
       "args": {
         "title": "Mettre à jour import",
         "ui": {
@@ -19422,8 +19422,8 @@
       "key": "salesloft_import_delete_docs_api_imports_destroy",
       "name": "salesloftImportDeleteDocsApiImportsDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer import destroy",
-      "subtitle": "Import destroy",
+      "title": "Supprimer import suppression",
+      "subtitle": "Import suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19454,9 +19454,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer import destroy.",
+      "description": "Supprime import suppression.",
       "args": {
-        "title": "Supprimer import destroy",
+        "title": "Supprimer import suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19518,7 +19518,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer lot tâche données.",
+      "description": "Crée un nouvel élément pour lot tâche données.",
       "args": {
         "title": "Créer lot tâche données",
         "ui": {
@@ -19591,7 +19591,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister lot tâche données liste.",
+      "description": "Retourne une liste pour lot tâche données liste.",
       "args": {
         "title": "Lister lot tâche données liste",
         "ui": {
@@ -19623,8 +19623,8 @@
       "key": "salesloft_live_website_tracking_parameter_create_docs_api_live_website_tracking_parameters_create",
       "name": "salesloftLiveWebsiteTrackingParameterCreateDocsApiLiveWebsiteTrackingParametersCreate",
       "schemaVersion": 2,
-      "title": "Créer live website tracking parameter",
-      "subtitle": "Live website tracking parameter",
+      "title": "Créer live website suivi parameter",
+      "subtitle": "Live website suivi parameter",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -19655,9 +19655,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer live website tracking parameter.",
+      "description": "Crée un nouvel élément pour live website suivi parameter.",
       "args": {
-        "title": "Créer live website tracking parameter",
+        "title": "Créer live website suivi parameter",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -19714,7 +19714,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister me liste.",
+      "description": "Retourne une liste pour me liste.",
       "args": {
         "title": "Lister me liste",
         "ui": {
@@ -19763,7 +19763,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister meeting liste.",
+      "description": "Retourne une liste pour meeting liste.",
       "args": {
         "title": "Lister meeting liste",
         "ui": {
@@ -19812,7 +19812,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour meeting.",
+      "description": "Met à jour meeting.",
       "args": {
         "title": "Mettre à jour meeting",
         "ui": {
@@ -19885,7 +19885,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer mime email payload.",
+      "description": "Récupère les détails de mime email payload.",
       "args": {
         "title": "Récupérer mime email payload",
         "ui": {
@@ -19949,7 +19949,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister note liste.",
+      "description": "Retourne une liste pour note liste.",
       "args": {
         "title": "Lister note liste",
         "ui": {
@@ -19998,7 +19998,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer note.",
+      "description": "Crée un nouvel élément pour note.",
       "args": {
         "title": "Créer note",
         "ui": {
@@ -20057,7 +20057,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer note.",
+      "description": "Récupère les détails de note.",
       "args": {
         "title": "Récupérer note",
         "ui": {
@@ -20121,7 +20121,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour note.",
+      "description": "Met à jour note.",
       "args": {
         "title": "Mettre à jour note",
         "ui": {
@@ -20162,8 +20162,8 @@
       "key": "salesloft_note_delete_docs_api_notes_destroy",
       "name": "salesloftNoteDeleteDocsApiNotesDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer note destroy",
-      "subtitle": "Note destroy",
+      "title": "Supprimer note suppression",
+      "subtitle": "Note suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20194,9 +20194,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer note destroy.",
+      "description": "Supprime note suppression.",
       "args": {
-        "title": "Supprimer note destroy",
+        "title": "Supprimer note suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20226,8 +20226,8 @@
       "key": "salesloft_ongoing_action_create_docs_api_ongoing_actions_create",
       "name": "salesloftOngoingActionCreateDocsApiOngoingActionsCreate",
       "schemaVersion": 2,
-      "title": "Créer ongoing action",
-      "subtitle": "Ongoing action",
+      "title": "Créer action en cours",
+      "subtitle": "action en cours",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20258,9 +20258,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer ongoing action.",
+      "description": "Crée un nouvel élément pour action en cours.",
       "args": {
-        "title": "Créer ongoing action",
+        "title": "Créer action en cours",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20317,7 +20317,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister opportunité liste.",
+      "description": "Retourne une liste pour opportunité liste.",
       "args": {
         "title": "Lister opportunité liste",
         "ui": {
@@ -20366,7 +20366,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer opportunité.",
+      "description": "Récupère les détails de opportunité.",
       "args": {
         "title": "Récupérer opportunité",
         "ui": {
@@ -20398,8 +20398,8 @@
       "key": "salesloft_opportunity_people_create_docs_api_opportunity_people_create",
       "name": "salesloftOpportunityPeopleCreateDocsApiOpportunityPeopleCreate",
       "schemaVersion": 2,
-      "title": "Créer opportunité people",
-      "subtitle": "Opportunité people",
+      "title": "Créer opportunité personnes",
+      "subtitle": "Opportunité personnes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20430,9 +20430,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer opportunité people.",
+      "description": "Crée un nouvel élément pour opportunité personnes.",
       "args": {
-        "title": "Créer opportunité people",
+        "title": "Créer opportunité personnes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20457,8 +20457,8 @@
       "key": "salesloft_opportunity_people_list_docs_api_opportunity_people_index",
       "name": "salesloftOpportunityPeopleListDocsApiOpportunityPeopleIndex",
       "schemaVersion": 2,
-      "title": "Lister opportunité people liste",
-      "subtitle": "Opportunité people liste",
+      "title": "Lister opportunité personnes liste",
+      "subtitle": "Opportunité personnes liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20489,9 +20489,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister opportunité people liste.",
+      "description": "Retourne une liste pour opportunité personnes liste.",
       "args": {
-        "title": "Lister opportunité people liste",
+        "title": "Lister opportunité personnes liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20506,8 +20506,8 @@
       "key": "salesloft_opportunity_people_delete_docs_api_opportunity_people_destroy",
       "name": "salesloftOpportunityPeopleDeleteDocsApiOpportunityPeopleDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer opportunité people destroy",
-      "subtitle": "Opportunité people destroy",
+      "title": "Supprimer opportunité personnes suppression",
+      "subtitle": "Opportunité personnes suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20538,9 +20538,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer opportunité people destroy.",
+      "description": "Supprime opportunité personnes suppression.",
       "args": {
-        "title": "Supprimer opportunité people destroy",
+        "title": "Supprimer opportunité personnes suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20570,8 +20570,8 @@
       "key": "salesloft_opportunity_stage_create_docs_api_opportunity_stages_create",
       "name": "salesloftOpportunityStageCreateDocsApiOpportunityStagesCreate",
       "schemaVersion": 2,
-      "title": "Créer opportunité étape",
-      "subtitle": "Opportunité étape",
+      "title": "Créer opportunitétape",
+      "subtitle": "Opportunitétape",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20602,9 +20602,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer opportunité étape.",
+      "description": "Crée un nouvel élément pour opportunitétape.",
       "args": {
-        "title": "Créer opportunité étape",
+        "title": "Créer opportunitétape",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20629,8 +20629,8 @@
       "key": "salesloft_opportunity_stage_list_docs_api_opportunity_stages_index",
       "name": "salesloftOpportunityStageListDocsApiOpportunityStagesIndex",
       "schemaVersion": 2,
-      "title": "Lister opportunité étape liste",
-      "subtitle": "Opportunité étape liste",
+      "title": "Lister opportunitétape liste",
+      "subtitle": "Opportunitétape liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20661,9 +20661,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister opportunité étape liste.",
+      "description": "Retourne une liste pour opportunitétape liste.",
       "args": {
-        "title": "Lister opportunité étape liste",
+        "title": "Lister opportunitétape liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20678,8 +20678,8 @@
       "key": "salesloft_opportunity_stage_delete_docs_api_opportunity_stages_destroy",
       "name": "salesloftOpportunityStageDeleteDocsApiOpportunityStagesDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer opportunité étape destroy",
-      "subtitle": "Opportunité étape destroy",
+      "title": "Supprimer opportunitétape suppression",
+      "subtitle": "Opportunitétape suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20710,9 +20710,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer opportunité étape destroy.",
+      "description": "Supprime opportunitétape suppression.",
       "args": {
-        "title": "Supprimer opportunité étape destroy",
+        "title": "Supprimer opportunitétape suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20742,8 +20742,8 @@
       "key": "salesloft_opportunity_stage_get_docs_api_opportunity_stages_show",
       "name": "salesloftOpportunityStageGetDocsApiOpportunityStagesShow",
       "schemaVersion": 2,
-      "title": "Récupérer opportunité étape",
-      "subtitle": "Opportunité étape",
+      "title": "Récupérer opportunitétape",
+      "subtitle": "Opportunitétape",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20774,9 +20774,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer opportunité étape.",
+      "description": "Récupère les détails de opportunitétape.",
       "args": {
-        "title": "Récupérer opportunité étape",
+        "title": "Récupérer opportunitétape",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20806,8 +20806,8 @@
       "key": "salesloft_opportunity_stage_update_docs_api_opportunity_stages_update",
       "name": "salesloftOpportunityStageUpdateDocsApiOpportunityStagesUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour opportunité étape",
-      "subtitle": "Opportunité étape",
+      "title": "Mettre à jour opportunitétape",
+      "subtitle": "Opportunitétape",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20838,9 +20838,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour opportunité étape.",
+      "description": "Met à jour opportunitétape.",
       "args": {
-        "title": "Mettre à jour opportunité étape",
+        "title": "Mettre à jour opportunitétape",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20879,8 +20879,8 @@
       "key": "salesloft_pending_email_list_docs_api_pending_emails_index",
       "name": "salesloftPendingEmailListDocsApiPendingEmailsIndex",
       "schemaVersion": 2,
-      "title": "Lister pending email liste",
-      "subtitle": "Pending email liste",
+      "title": "Lister en attente email liste",
+      "subtitle": "en attente email liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20911,9 +20911,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister pending email liste.",
+      "description": "Retourne une liste pour en attente email liste.",
       "args": {
-        "title": "Lister pending email liste",
+        "title": "Lister en attente email liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -20928,8 +20928,8 @@
       "key": "salesloft_pending_email_update_docs_api_pending_emails_update",
       "name": "salesloftPendingEmailUpdateDocsApiPendingEmailsUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour pending email",
-      "subtitle": "Pending email",
+      "title": "Mettre à jour en attente email",
+      "subtitle": "en attente email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -20960,9 +20960,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour pending email.",
+      "description": "Met à jour en attente email.",
       "args": {
-        "title": "Mettre à jour pending email",
+        "title": "Mettre à jour en attente email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21001,8 +21001,8 @@
       "key": "salesloft_people_list_docs_api_people_index",
       "name": "salesloftPeopleListDocsApiPeopleIndex",
       "schemaVersion": 2,
-      "title": "Lister people liste",
-      "subtitle": "People liste",
+      "title": "Lister personnes liste",
+      "subtitle": "personnes liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21033,9 +21033,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister people liste.",
+      "description": "Retourne une liste pour personnes liste.",
       "args": {
-        "title": "Lister people liste",
+        "title": "Lister personnes liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21050,8 +21050,8 @@
       "key": "salesloft_people_create_docs_api_people_create",
       "name": "salesloftPeopleCreateDocsApiPeopleCreate",
       "schemaVersion": 2,
-      "title": "Créer people",
-      "subtitle": "People",
+      "title": "Créer personnes",
+      "subtitle": "personnes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21082,9 +21082,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer people.",
+      "description": "Crée un nouvel élément pour personnes.",
       "args": {
-        "title": "Créer people",
+        "title": "Créer personnes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21109,8 +21109,8 @@
       "key": "salesloft_people_get_docs_api_people_show",
       "name": "salesloftPeopleGetDocsApiPeopleShow",
       "schemaVersion": 2,
-      "title": "Récupérer people",
-      "subtitle": "People",
+      "title": "Récupérer personnes",
+      "subtitle": "personnes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21141,9 +21141,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer people.",
+      "description": "Récupère les détails de personnes.",
       "args": {
-        "title": "Récupérer people",
+        "title": "Récupérer personnes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21173,8 +21173,8 @@
       "key": "salesloft_people_update_docs_api_people_update",
       "name": "salesloftPeopleUpdateDocsApiPeopleUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour people",
-      "subtitle": "People",
+      "title": "Mettre à jour personnes",
+      "subtitle": "personnes",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21205,9 +21205,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour people.",
+      "description": "Met à jour personnes.",
       "args": {
-        "title": "Mettre à jour people",
+        "title": "Mettre à jour personnes",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21246,8 +21246,8 @@
       "key": "salesloft_people_delete_docs_api_people_destroy",
       "name": "salesloftPeopleDeleteDocsApiPeopleDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer people destroy",
-      "subtitle": "People destroy",
+      "title": "Supprimer personnes suppression",
+      "subtitle": "personnes suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21278,9 +21278,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer people destroy.",
+      "description": "Supprime personnes suppression.",
       "args": {
-        "title": "Supprimer people destroy",
+        "title": "Supprimer personnes suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21310,8 +21310,8 @@
       "key": "salesloft_person_stage_list_docs_api_person_stages_index",
       "name": "salesloftPersonStageListDocsApiPersonStagesIndex",
       "schemaVersion": 2,
-      "title": "Lister person étape liste",
-      "subtitle": "Person étape liste",
+      "title": "Lister personne étape liste",
+      "subtitle": "personne étape liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21342,9 +21342,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister person étape liste.",
+      "description": "Retourne une liste pour personne étape liste.",
       "args": {
-        "title": "Lister person étape liste",
+        "title": "Lister personne étape liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21359,8 +21359,8 @@
       "key": "salesloft_person_stage_create_docs_api_person_stages_create",
       "name": "salesloftPersonStageCreateDocsApiPersonStagesCreate",
       "schemaVersion": 2,
-      "title": "Créer person étape",
-      "subtitle": "Person étape",
+      "title": "Créer personne étape",
+      "subtitle": "personne étape",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21391,9 +21391,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer person étape.",
+      "description": "Crée un nouvel élément pour personne étape.",
       "args": {
-        "title": "Créer person étape",
+        "title": "Créer personne étape",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21418,8 +21418,8 @@
       "key": "salesloft_person_stage_get_docs_api_person_stages_show",
       "name": "salesloftPersonStageGetDocsApiPersonStagesShow",
       "schemaVersion": 2,
-      "title": "Récupérer person étape",
-      "subtitle": "Person étape",
+      "title": "Récupérer personne étape",
+      "subtitle": "personne étape",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21450,9 +21450,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer person étape.",
+      "description": "Récupère les détails de personne étape.",
       "args": {
-        "title": "Récupérer person étape",
+        "title": "Récupérer personne étape",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21482,8 +21482,8 @@
       "key": "salesloft_person_stage_update_docs_api_person_stages_update",
       "name": "salesloftPersonStageUpdateDocsApiPersonStagesUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour person étape",
-      "subtitle": "Person étape",
+      "title": "Mettre à jour personne étape",
+      "subtitle": "personne étape",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21514,9 +21514,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour person étape.",
+      "description": "Met à jour personne étape.",
       "args": {
-        "title": "Mettre à jour person étape",
+        "title": "Mettre à jour personne étape",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21555,8 +21555,8 @@
       "key": "salesloft_person_stage_delete_docs_api_person_stages_destroy",
       "name": "salesloftPersonStageDeleteDocsApiPersonStagesDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer person étape destroy",
-      "subtitle": "Person étape destroy",
+      "title": "Supprimer personne étape suppression",
+      "subtitle": "personne étape suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21587,9 +21587,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer person étape destroy.",
+      "description": "Supprime personne étape suppression.",
       "args": {
-        "title": "Supprimer person étape destroy",
+        "title": "Supprimer personne étape suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21619,8 +21619,8 @@
       "key": "salesloft_person_upsert_create_docs_api_person_upserts_create",
       "name": "salesloftPersonUpsertCreateDocsApiPersonUpsertsCreate",
       "schemaVersion": 2,
-      "title": "Mettre à jour ou créer person upsert",
-      "subtitle": "Person upsert",
+      "title": "Mettre à jour ou créer personne upsert",
+      "subtitle": "personne upsert",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21651,9 +21651,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour ou créer person upsert.",
+      "description": "Met à jour ou crée personne upsert.",
       "args": {
-        "title": "Mettre à jour ou créer person upsert",
+        "title": "Mettre à jour ou créer personne upsert",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21710,7 +21710,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister téléphone numéro assignment.",
+      "description": "Retourne une liste pour téléphone numéro assignment.",
       "args": {
         "title": "Lister téléphone numéro assignment",
         "ui": {
@@ -21759,7 +21759,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer téléphone numéro assignment.",
+      "description": "Récupère les détails de téléphone numéro assignment.",
       "args": {
         "title": "Récupérer téléphone numéro assignment",
         "ui": {
@@ -21791,8 +21791,8 @@
       "key": "salesloft_play_update_docs_api_integrations_signals_registrations_plays_update",
       "name": "salesloftPlayUpdateDocsApiIntegrationsSignalsRegistrationsPlaysUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour play",
-      "subtitle": "Play",
+      "title": "Mettre à jour scénario",
+      "subtitle": "scénario",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21823,9 +21823,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour play.",
+      "description": "Met à jour scénario.",
       "args": {
-        "title": "Mettre à jour play",
+        "title": "Mettre à jour scénario",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21864,8 +21864,8 @@
       "key": "salesloft_play_get_docs_api_integrations_signals_registrations_plays_show",
       "name": "salesloftPlayGetDocsApiIntegrationsSignalsRegistrationsPlaysShow",
       "schemaVersion": 2,
-      "title": "Récupérer play",
-      "subtitle": "Play",
+      "title": "Récupérer scénario",
+      "subtitle": "scénario",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21896,9 +21896,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer play.",
+      "description": "Récupère les détails de scénario.",
       "args": {
-        "title": "Récupérer play",
+        "title": "Récupérer scénario",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21928,8 +21928,8 @@
       "key": "salesloft_play_delete_docs_api_integrations_signals_registrations_plays_destroy",
       "name": "salesloftPlayDeleteDocsApiIntegrationsSignalsRegistrationsPlaysDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer play",
-      "subtitle": "Play",
+      "title": "Supprimer scénario",
+      "subtitle": "scénario",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -21960,9 +21960,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer play.",
+      "description": "Supprime scénario.",
       "args": {
-        "title": "Supprimer play",
+        "title": "Supprimer scénario",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -21992,8 +21992,8 @@
       "key": "salesloft_play_create_docs_api_integrations_signals_registrations_plays_create",
       "name": "salesloftPlayCreateDocsApiIntegrationsSignalsRegistrationsPlaysCreate",
       "schemaVersion": 2,
-      "title": "Créer play",
-      "subtitle": "Play",
+      "title": "Créer scénario",
+      "subtitle": "scénario",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22024,9 +22024,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer play.",
+      "description": "Crée un nouvel élément pour scénario.",
       "args": {
-        "title": "Créer play",
+        "title": "Créer scénario",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22051,8 +22051,8 @@
       "key": "salesloft_play_list_docs_api_integrations_signals_registrations_plays_index",
       "name": "salesloftPlayListDocsApiIntegrationsSignalsRegistrationsPlaysIndex",
       "schemaVersion": 2,
-      "title": "Lister play",
-      "subtitle": "Play",
+      "title": "Lister scénario",
+      "subtitle": "scénario",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22083,9 +22083,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister play.",
+      "description": "Retourne une liste pour scénario.",
       "args": {
-        "title": "Lister play",
+        "title": "Lister scénario",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22132,7 +22132,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher conversation enregistrement.",
+      "description": "Recherche des éléments liés à conversation enregistrement.",
       "args": {
         "title": "Rechercher conversation enregistrement",
         "ui": {
@@ -22196,7 +22196,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer téléphone numéro enregistrement paramètre.",
+      "description": "Récupère les détails de téléphone numéro enregistrement paramètre.",
       "args": {
         "title": "Récupérer téléphone numéro enregistrement paramètre",
         "ui": {
@@ -22260,7 +22260,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour inscription.",
+      "description": "Met à jour inscription.",
       "args": {
         "title": "Mettre à jour inscription",
         "ui": {
@@ -22333,7 +22333,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer inscription.",
+      "description": "Récupère les détails de inscription.",
       "args": {
         "title": "Récupérer inscription",
         "ui": {
@@ -22397,7 +22397,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer inscription.",
+      "description": "Supprime inscription.",
       "args": {
         "title": "Supprimer inscription",
         "ui": {
@@ -22461,7 +22461,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer inscription.",
+      "description": "Crée un nouvel élément pour inscription.",
       "args": {
         "title": "Créer inscription",
         "ui": {
@@ -22520,7 +22520,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister inscription.",
+      "description": "Retourne une liste pour inscription.",
       "args": {
         "title": "Lister inscription",
         "ui": {
@@ -22537,8 +22537,8 @@
       "key": "salesloft_reschedule_link_get_docs_api_meetings_reschedule_links_show",
       "name": "salesloftRescheduleLinkGetDocsApiMeetingsRescheduleLinksShow",
       "schemaVersion": 2,
-      "title": "Récupérer reschedule link",
-      "subtitle": "Reschedule link",
+      "title": "Récupérer replanification lien",
+      "subtitle": "replanification lien",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22569,9 +22569,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer reschedule link.",
+      "description": "Récupère les détails de replanification lien.",
       "args": {
-        "title": "Récupérer reschedule link",
+        "title": "Récupérer replanification lien",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22633,7 +22633,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister lot tâche résultat liste.",
+      "description": "Retourne une liste pour lot tâche résultat liste.",
       "args": {
         "title": "Lister lot tâche résultat liste",
         "ui": {
@@ -22665,7 +22665,7 @@
       "key": "salesloft_saved_list_view_list_docs_api_saved_list_views_index",
       "name": "salesloftSavedListViewListDocsApiSavedListViewsIndex",
       "schemaVersion": 2,
-      "title": "Lister vue liste",
+      "title": "Lister vues sauvegardées",
       "subtitle": "Vue liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -22697,9 +22697,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister vue liste.",
+      "description": "Retourne une liste pour vues sauvegardées.",
       "args": {
-        "title": "Lister vue liste",
+        "title": "Lister vues sauvegardées",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22714,7 +22714,7 @@
       "key": "salesloft_saved_list_view_create_docs_api_saved_list_views_create",
       "name": "salesloftSavedListViewCreateDocsApiSavedListViewsCreate",
       "schemaVersion": 2,
-      "title": "Lister vue",
+      "title": "Créer vue sauvegardée",
       "subtitle": "Vue",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -22746,9 +22746,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister vue.",
+      "description": "Crée un nouvel élément pour vue sauvegardée.",
       "args": {
-        "title": "Lister vue",
+        "title": "Créer vue sauvegardée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22773,7 +22773,7 @@
       "key": "salesloft_saved_list_view_get_docs_api_saved_list_views_show",
       "name": "salesloftSavedListViewGetDocsApiSavedListViewsShow",
       "schemaVersion": 2,
-      "title": "Lister vue - vue",
+      "title": "Récupérer vue sauvegardée",
       "subtitle": "Vue",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -22805,9 +22805,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister vue - vue.",
+      "description": "Récupère les détails de vue sauvegardée.",
       "args": {
-        "title": "Lister vue - vue",
+        "title": "Récupérer vue sauvegardée",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22837,8 +22837,8 @@
       "key": "salesloft_saved_list_view_delete_docs_api_saved_list_views_destroy",
       "name": "salesloftSavedListViewDeleteDocsApiSavedListViewsDestroy",
       "schemaVersion": 2,
-      "title": "Lister vue destroy",
-      "subtitle": "Vue destroy",
+      "title": "Lister vue suppression",
+      "subtitle": "Vue suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -22869,9 +22869,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister vue destroy.",
+      "description": "Retourne une liste pour vue suppression.",
       "args": {
-        "title": "Lister vue destroy",
+        "title": "Lister vue suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -22933,7 +22933,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour vue.",
+      "description": "Met à jour vue.",
       "args": {
         "title": "Mettre à jour vue",
         "ui": {
@@ -23006,7 +23006,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer meeting paramètre.",
+      "description": "Crée un nouvel élément pour meeting paramètre.",
       "args": {
         "title": "Créer meeting paramètre",
         "ui": {
@@ -23033,8 +23033,8 @@
       "key": "salesloft_sentence_search_docs_api_conversations_transcriptions_find_one_transcript_se",
       "name": "salesloftSentenceSearchDocsApiConversationsTranscriptionsFindOneTranscriptSe",
       "schemaVersion": 2,
-      "title": "Rechercher sentence",
-      "subtitle": "Sentence",
+      "title": "Rechercher phrase",
+      "subtitle": "phrase",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23065,9 +23065,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher sentence.",
+      "description": "Recherche des éléments liés à phrase.",
       "args": {
-        "title": "Rechercher sentence",
+        "title": "Rechercher phrase",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23129,7 +23129,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour meeting paramètre.",
+      "description": "Met à jour meeting paramètre.",
       "args": {
         "title": "Mettre à jour meeting paramètre",
         "ui": {
@@ -23202,7 +23202,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer signal.",
+      "description": "Crée un nouvel élément pour signal.",
       "args": {
         "title": "Créer signal",
         "ui": {
@@ -23229,8 +23229,8 @@
       "key": "salesloft_step_list_docs_api_steps_index",
       "name": "salesloftStepListDocsApiStepsIndex",
       "schemaVersion": 2,
-      "title": "Lister step liste",
-      "subtitle": "Step liste",
+      "title": "Lister étape liste",
+      "subtitle": "étape liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23261,9 +23261,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister step liste.",
+      "description": "Retourne une liste pour étape liste.",
       "args": {
-        "title": "Lister step liste",
+        "title": "Lister étape liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23278,8 +23278,8 @@
       "key": "salesloft_step_get_docs_api_steps_show",
       "name": "salesloftStepGetDocsApiStepsShow",
       "schemaVersion": 2,
-      "title": "Récupérer step",
-      "subtitle": "Step",
+      "title": "Récupérer étape",
+      "subtitle": "étape",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23310,9 +23310,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer step.",
+      "description": "Récupère les détails de étape.",
       "args": {
-        "title": "Récupérer step",
+        "title": "Récupérer étape",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23374,7 +23374,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister Succès liste.",
+      "description": "Retourne une liste pour Succès liste.",
       "args": {
         "title": "Lister Succès liste",
         "ui": {
@@ -23423,7 +23423,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Taguer liste.",
+      "description": "Applique un marquage sur liste.",
       "args": {
         "title": "Taguer liste",
         "ui": {
@@ -23472,7 +23472,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer tâche.",
+      "description": "Crée un nouvel élément pour tâche.",
       "args": {
         "title": "Créer tâche",
         "ui": {
@@ -23531,7 +23531,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister tâche liste.",
+      "description": "Retourne une liste pour tâche liste.",
       "args": {
         "title": "Lister tâche liste",
         "ui": {
@@ -23580,7 +23580,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer tâche.",
+      "description": "Récupère les détails de tâche.",
       "args": {
         "title": "Récupérer tâche",
         "ui": {
@@ -23644,7 +23644,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour tâche.",
+      "description": "Met à jour tâche.",
       "args": {
         "title": "Mettre à jour tâche",
         "ui": {
@@ -23685,8 +23685,8 @@
       "key": "salesloft_task_delete_docs_api_tasks_destroy",
       "name": "salesloftTaskDeleteDocsApiTasksDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer tâche destroy",
-      "subtitle": "Tâche destroy",
+      "title": "Supprimer tâche suppression",
+      "subtitle": "Tâche suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23717,9 +23717,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer tâche destroy.",
+      "description": "Supprime tâche suppression.",
       "args": {
-        "title": "Supprimer tâche destroy",
+        "title": "Supprimer tâche suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23749,8 +23749,8 @@
       "key": "salesloft_team_list_docs_api_team_index",
       "name": "salesloftTeamListDocsApiTeamIndex",
       "schemaVersion": 2,
-      "title": "Lister team liste",
-      "subtitle": "Team liste",
+      "title": "Lister équipe liste",
+      "subtitle": "équipe liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23781,9 +23781,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister team liste.",
+      "description": "Retourne une liste pour équipe liste.",
       "args": {
-        "title": "Lister team liste",
+        "title": "Lister équipe liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23798,8 +23798,8 @@
       "key": "salesloft_team_template_list_docs_api_team_templates_index",
       "name": "salesloftTeamTemplateListDocsApiTeamTemplatesIndex",
       "schemaVersion": 2,
-      "title": "Lister team modèle liste",
-      "subtitle": "Team modèle liste",
+      "title": "Lister équipe modèle liste",
+      "subtitle": "équipe modèle liste",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23830,9 +23830,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister team modèle liste.",
+      "description": "Retourne une liste pour équipe modèle liste.",
       "args": {
-        "title": "Lister team modèle liste",
+        "title": "Lister équipe modèle liste",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23847,8 +23847,8 @@
       "key": "salesloft_team_template_create_docs_api_team_templates_create",
       "name": "salesloftTeamTemplateCreateDocsApiTeamTemplatesCreate",
       "schemaVersion": 2,
-      "title": "Créer team modèle",
-      "subtitle": "Team modèle",
+      "title": "Créer équipe modèle",
+      "subtitle": "équipe modèle",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23879,9 +23879,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer team modèle.",
+      "description": "Crée un nouvel élément pour équipe modèle.",
       "args": {
-        "title": "Créer team modèle",
+        "title": "Créer équipe modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23906,8 +23906,8 @@
       "key": "salesloft_team_template_get_docs_api_team_templates_show",
       "name": "salesloftTeamTemplateGetDocsApiTeamTemplatesShow",
       "schemaVersion": 2,
-      "title": "Récupérer team modèle",
-      "subtitle": "Team modèle",
+      "title": "Récupérer équipe modèle",
+      "subtitle": "équipe modèle",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -23938,9 +23938,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer team modèle.",
+      "description": "Récupère les détails de équipe modèle.",
       "args": {
-        "title": "Récupérer team modèle",
+        "title": "Récupérer équipe modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -23970,8 +23970,8 @@
       "key": "salesloft_team_template_update_docs_api_team_templates_update",
       "name": "salesloftTeamTemplateUpdateDocsApiTeamTemplatesUpdate",
       "schemaVersion": 2,
-      "title": "Mettre à jour team modèle",
-      "subtitle": "Team modèle",
+      "title": "Mettre à jour équipe modèle",
+      "subtitle": "équipe modèle",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24002,9 +24002,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour team modèle.",
+      "description": "Met à jour équipe modèle.",
       "args": {
-        "title": "Mettre à jour team modèle",
+        "title": "Mettre à jour équipe modèle",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24043,8 +24043,8 @@
       "key": "salesloft_team_template_attachment_list_docs_api_team_template_attachments_index",
       "name": "salesloftTeamTemplateAttachmentListDocsApiTeamTemplateAttachmentsIndex",
       "schemaVersion": 2,
-      "title": "Lister team modèle attachment",
-      "subtitle": "Team modèle attachment",
+      "title": "Lister équipe modèle pièce jointe",
+      "subtitle": "équipe modèle pièce jointe",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24075,9 +24075,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister team modèle attachment.",
+      "description": "Retourne une liste pour équipe modèle pièce jointe.",
       "args": {
-        "title": "Lister team modèle attachment",
+        "title": "Lister équipe modèle pièce jointe",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24092,8 +24092,8 @@
       "key": "salesloft_third_party_live_feed_item_create_docs_api_third_party_live_feed_items_create",
       "name": "salesloftThirdPartyLiveFeedItemCreateDocsApiThirdPartyLiveFeedItemsCreate",
       "schemaVersion": 2,
-      "title": "Créer third party live feed item",
-      "subtitle": "Third party live feed item",
+      "title": "Créer élément de flux tiers",
+      "subtitle": "élément de flux tiers",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24124,9 +24124,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer third party live feed item.",
+      "description": "Crée un nouvel élément pour élément de flux tiers.",
       "args": {
-        "title": "Créer third party live feed item",
+        "title": "Créer élément de flux tiers",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24183,7 +24183,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher transcription.",
+      "description": "Recherche des éléments liés à transcription.",
       "args": {
         "title": "Rechercher transcription",
         "ui": {
@@ -24232,7 +24232,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher transcription - conversation.",
+      "description": "Recherche des éléments liés à transcription - conversation.",
       "args": {
         "title": "Rechercher transcription - conversation",
         "ui": {
@@ -24296,7 +24296,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour ou créer calendrier événement.",
+      "description": "Met à jour ou crée calendrier événement.",
       "args": {
         "title": "Mettre à jour ou créer calendrier événement",
         "ui": {
@@ -24355,7 +24355,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister utilisateur liste.",
+      "description": "Retourne une liste pour utilisateur liste.",
       "args": {
         "title": "Lister utilisateur liste",
         "ui": {
@@ -24404,7 +24404,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer utilisateur.",
+      "description": "Récupère les détails de utilisateur.",
       "args": {
         "title": "Récupérer utilisateur",
         "ui": {
@@ -24468,7 +24468,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour utilisateur.",
+      "description": "Met à jour utilisateur.",
       "args": {
         "title": "Mettre à jour utilisateur",
         "ui": {
@@ -24541,7 +24541,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour webhook abonnement.",
+      "description": "Met à jour webhook abonnement.",
       "args": {
         "title": "Mettre à jour webhook abonnement",
         "ui": {
@@ -24614,7 +24614,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer webhook abonnement.",
+      "description": "Récupère les détails de webhook abonnement.",
       "args": {
         "title": "Récupérer webhook abonnement",
         "ui": {
@@ -24646,8 +24646,8 @@
       "key": "salesloft_webhook_subscription_delete_docs_api_webhook_subscriptions_destroy",
       "name": "salesloftWebhookSubscriptionDeleteDocsApiWebhookSubscriptionsDestroy",
       "schemaVersion": 2,
-      "title": "Supprimer webhook abonnement destroy",
-      "subtitle": "Webhook abonnement destroy",
+      "title": "Supprimer webhook abonnement suppression",
+      "subtitle": "Webhook abonnement suppression",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -24678,9 +24678,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer webhook abonnement destroy.",
+      "description": "Supprime webhook abonnement suppression.",
       "args": {
-        "title": "Supprimer webhook abonnement destroy",
+        "title": "Supprimer webhook abonnement suppression",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -24742,7 +24742,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer webhook abonnement.",
+      "description": "Crée un nouvel élément pour webhook abonnement.",
       "args": {
         "title": "Créer webhook abonnement",
         "ui": {
@@ -24801,7 +24801,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister webhook abonnement liste.",
+      "description": "Retourne une liste pour webhook abonnement liste.",
       "args": {
         "title": "Lister webhook abonnement liste",
         "ui": {

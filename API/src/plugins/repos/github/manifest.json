@@ -1829,6 +1829,639 @@
           }
         }
       ]
+    },
+    "gh_content": {
+      "title": "Fichier GitHub",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "path",
+          "label": "Chemin",
+          "description": "Chemin complet du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "sha",
+          "label": "SHA",
+          "description": "SHA du blob.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "size",
+          "label": "Taille",
+          "description": "Taille du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "encoding",
+          "label": "Encodage",
+          "description": "Encodage du contenu.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "content",
+          "label": "Contenu",
+          "description": "Contenu du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "html_url",
+          "label": "URL",
+          "description": "URL web du fichier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "download_url",
+          "label": "Téléchargement",
+          "description": "URL de téléchargement brute.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "entries",
+          "label": "Entrées",
+          "description": "Nombre d'entrées si le chemin pointe vers un répertoire.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de contenu.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gh_workflow_run": {
+      "title": "Exécution de workflow",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'exécution.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du workflow.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'exécution.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "conclusion",
+          "label": "Conclusion",
+          "description": "Conclusion de l'exécution.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "html_url",
+          "label": "URL",
+          "description": "URL de l'exécution.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "workflow_id",
+          "label": "Workflow ID",
+          "description": "Identifiant du workflow.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "head_branch",
+          "label": "Branche",
+          "description": "Branche de déclenchement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "head_sha",
+          "label": "SHA",
+          "description": "SHA de déclenchement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "run_number",
+          "label": "Numéro",
+          "description": "Numéro d'exécution.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Événement déclencheur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date de mise à jour",
+          "description": "Date de dernière mise à jour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gh_workflow_runs": {
+      "title": "Exécutions de workflow",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d'exécutions.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Exécutions",
+          "description": "Liste des exécutions",
+          "mode": "array",
+          "key": "runs",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant de l'exécution.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du workflow.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut de l'exécution.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "conclusion",
+              "label": "Conclusion",
+              "description": "Conclusion de l'exécution.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "html_url",
+              "label": "URL",
+              "description": "URL de l'exécution.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "workflow_id",
+              "label": "Workflow ID",
+              "description": "Identifiant du workflow.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "head_branch",
+              "label": "Branche",
+              "description": "Branche de déclenchement.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "head_sha",
+              "label": "SHA",
+              "description": "SHA de déclenchement.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "run_number",
+              "label": "Numéro",
+              "description": "Numéro d'exécution.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "event",
+              "label": "Événement",
+              "description": "Événement déclencheur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date de création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gh_runner_label": {
+      "title": "Label Runner GitHub",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du label.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du label.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type du label (read-only ou custom).",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gh_runner_labels": {
+      "title": "Labels Runner GitHub",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de labels.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Labels",
+          "description": "Liste des labels",
+          "mode": "array",
+          "key": "labels",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant du label.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du label.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type du label.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gh_runner": {
+      "title": "Runner GitHub",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du runner.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du runner.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "os",
+          "label": "OS",
+          "description": "Système d'exploitation du runner.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du runner.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "busy",
+          "label": "Occupé",
+          "description": "Runner occupé ou non.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "ephemeral",
+          "label": "Éphémère",
+          "description": "Runner éphémère.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "version",
+          "label": "Version",
+          "description": "Version du runner.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "labels",
+          "label": "Labels",
+          "description": "Labels du runner.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gh_runners": {
+      "title": "Runners GitHub",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de runners.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Runners",
+          "description": "Liste des runners",
+          "mode": "array",
+          "key": "runners",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant du runner.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom du runner.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "os",
+              "label": "OS",
+              "description": "Système d'exploitation du runner.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut du runner.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "busy",
+              "label": "Occupé",
+              "description": "Runner occupé ou non.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "ephemeral",
+              "label": "Éphémère",
+              "description": "Runner éphémère.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "version",
+              "label": "Version",
+              "description": "Version du runner.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "labels",
+              "label": "Labels",
+              "description": "Labels du runner.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "providers": [
@@ -5488,6 +6121,2453 @@
         "création",
         "GitHub"
       ],
+      "risk": "write"
+    },
+    {
+      "key": "github_repo_update",
+      "name": "githubRepoUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un dépôt",
+      "subtitle": "Dépôt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-pen",
+      "description": "Mettre à jour les informations d'un dépôt GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_repo"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un dépôt",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nouveau nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Nouvelle description du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "private",
+            "label": "Privé",
+            "description": "Rendre le dépôt privé ou public.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "default_branch",
+            "label": "Branche par défaut",
+            "description": "Nouvelle branche par défaut.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dépôts",
+      "tags": [
+        "mise à jour",
+        "GitHub"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "github_repo_delete",
+      "name": "githubRepoDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un dépôt",
+      "subtitle": "Dépôt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un dépôt GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un dépôt",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dépôts",
+      "tags": [
+        "suppression",
+        "GitHub"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "github_branch_delete",
+      "name": "githubBranchDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une branche",
+      "subtitle": "Branche",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une branche GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une branche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "branch",
+            "label": "Branche",
+            "description": "Nom de la branche à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Branches",
+      "tags": [
+        "suppression",
+        "GitHub"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "github_issue_comment_get",
+      "name": "githubIssueCommentGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer un commentaire d'issue GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_comment"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "comment_id",
+            "label": "ID commentaire",
+            "description": "Identifiant du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "github_issue_comment_update",
+      "name": "githubIssueCommentUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-pen",
+      "description": "Mettre à jour un commentaire d'issue GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_comment"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "comment_id",
+            "label": "ID commentaire",
+            "description": "Identifiant du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Contenu",
+            "description": "Nouveau contenu du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires",
+      "tags": [
+        "mise à jour",
+        "GitHub"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "github_issue_comment_delete",
+      "name": "githubIssueCommentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaire",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un commentaire d'issue GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "comment_id",
+            "label": "ID commentaire",
+            "description": "Identifiant du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires",
+      "tags": [
+        "suppression",
+        "GitHub"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "github_label_update",
+      "name": "githubLabelUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un label",
+      "subtitle": "Label",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-pen",
+      "description": "Mettre à jour un label de dépôt GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_label"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour un label",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom actuel du label.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "new_name",
+            "label": "Nouveau nom",
+            "description": "Nouveau nom du label.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "color",
+            "label": "Couleur",
+            "description": "Couleur hexadécimale (sans #, ex: ff0000).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description du label.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Labels",
+      "tags": [
+        "mise à jour",
+        "GitHub"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "github_label_delete",
+      "name": "githubLabelDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un label",
+      "subtitle": "Label",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un label de dépôt GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un label",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du label à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Labels",
+      "tags": [
+        "suppression",
+        "GitHub"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "github_release_update",
+      "name": "githubReleaseUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une release",
+      "subtitle": "Release",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-pen",
+      "description": "Mettre à jour une release GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_release"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Mettre à jour une release",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "release_id",
+            "label": "ID release",
+            "description": "Identifiant de la release.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tag_name",
+            "label": "Tag",
+            "description": "Nouveau nom du tag.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "target_commitish",
+            "label": "Cible",
+            "description": "Référence cible de la release.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la release.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Description",
+            "description": "Description de la release.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "draft",
+            "label": "Brouillon",
+            "description": "Marquer la release comme brouillon.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "prerelease",
+            "label": "Pré-release",
+            "description": "Marquer la release comme pré-release.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Releases",
+      "tags": [
+        "mise à jour",
+        "GitHub"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "github_release_delete",
+      "name": "githubReleaseDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une release",
+      "subtitle": "Release",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer une release GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une release",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "release_id",
+            "label": "ID release",
+            "description": "Identifiant de la release.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Releases",
+      "tags": [
+        "suppression",
+        "GitHub"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "github_contents_get",
+      "name": "githubContentsGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un fichier",
+      "subtitle": "Fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer le contenu d'un fichier GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_content"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du fichier dans le dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ref",
+            "label": "Référence",
+            "description": "Branche, tag ou commit à lire.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "github_contents_upsert",
+      "name": "githubContentsUpsert",
+      "schemaVersion": 2,
+      "title": "Créer ou mettre à jour un fichier",
+      "subtitle": "Fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-pen",
+      "description": "Créer ou mettre à jour un fichier GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_content"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer ou mettre à jour un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du fichier dans le dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu à écrire dans le fichier.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message",
+            "label": "Message",
+            "description": "Message du commit.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "branch",
+            "label": "Branche",
+            "description": "Branche cible.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "sha",
+            "label": "SHA",
+            "description": "SHA existant du fichier pour une mise à jour.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "encoding",
+            "label": "Encodage",
+            "description": "Encodage du contenu. Valeur text ou base64.",
+            "default": "text",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "committer_name",
+            "label": "Nom committer",
+            "description": "Nom du committer.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "committer_email",
+            "label": "Email committer",
+            "description": "Email du committer.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_name",
+            "label": "Nom auteur",
+            "description": "Nom de l'auteur du commit.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_email",
+            "label": "Email auteur",
+            "description": "Email de l'auteur du commit.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "tags": [
+        "écriture",
+        "GitHub"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "github_contents_delete",
+      "name": "githubContentsDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "subtitle": "Fichier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un fichier GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin",
+            "description": "Chemin du fichier dans le dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message",
+            "label": "Message",
+            "description": "Message du commit.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sha",
+            "label": "SHA",
+            "description": "SHA du fichier à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "branch",
+            "label": "Branche",
+            "description": "Branche cible.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "committer_name",
+            "label": "Nom committer",
+            "description": "Nom du committer.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "committer_email",
+            "label": "Email committer",
+            "description": "Email du committer.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_name",
+            "label": "Nom auteur",
+            "description": "Nom de l'auteur du commit.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "author_email",
+            "label": "Email auteur",
+            "description": "Email de l'auteur du commit.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers",
+      "tags": [
+        "suppression",
+        "GitHub"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "github_workflow_runs_list",
+      "name": "githubWorkflowRunsList",
+      "schemaVersion": 2,
+      "title": "Lister les exécutions",
+      "subtitle": "Exécution",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les exécutions de workflow GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_workflow_runs"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les exécutions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "branch",
+            "label": "Branche",
+            "description": "Filtrer par branche.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtrer par statut.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Événement",
+            "description": "Filtrer par événement.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "description": "Nombre de résultats par page.",
+            "default": 20,
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "default": 1,
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Exécutions",
+      "tags": [
+        "liste",
+        "GitHub"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "github_workflow_run_get",
+      "name": "githubWorkflowRunGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une exécution",
+      "subtitle": "Exécution",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer une exécution de workflow GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_workflow_run"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une exécution",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "ID exécution",
+            "description": "Identifiant de l'exécution.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Exécutions",
+      "tags": [
+        "lecture",
+        "GitHub"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "github_workflow_run_cancel",
+      "name": "githubWorkflowRunCancel",
+      "schemaVersion": 2,
+      "title": "Annuler une exécution",
+      "subtitle": "Exécution",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-ban",
+      "description": "Annuler une exécution de workflow GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Annuler une exécution",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "ID exécution",
+            "description": "Identifiant de l'exécution.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Exécutions",
+      "tags": [
+        "annulation",
+        "GitHub"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "github_workflow_run_rerun",
+      "name": "githubWorkflowRunRerun",
+      "schemaVersion": 2,
+      "title": "Relancer une exécution",
+      "subtitle": "Exécution",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "GitHub",
+      "providerKey": "github",
+      "icon": "fa-solid fa-rotate-right",
+      "description": "Relancer une exécution de workflow GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Relancer une exécution",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "ID exécution",
+            "description": "Identifiant de l'exécution.",
+            "col": {
+              "xs": 24
+            },
+            "expression": {
+              "allow": true
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Exécutions",
+      "tags": [
+        "relance",
+        "GitHub"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "github_runners_list",
+      "name": "githubRunnersList",
+      "schemaVersion": 2,
+      "title": "Lister les runners",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "github",
+      "icon": "fa-solid fa-list",
+      "description": "Lister les self-hosted runners d'un dépôt GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_runners"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les runners",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": { "xs": 24 },
+            "expression": { "allow": true },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": { "xs": 24 },
+            "expression": { "allow": true },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Par page",
+            "description": "Nombre de résultats par page.",
+            "default": 30,
+            "col": { "xs": 24 },
+            "expression": { "allow": true }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "default": 1,
+            "col": { "xs": 24 },
+            "expression": { "allow": true }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitHub"],
+      "risk": "safe"
+    },
+    {
+      "key": "github_runner_get",
+      "name": "githubRunnerGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "github",
+      "icon": "fa-solid fa-eye",
+      "description": "Récupérer un self-hosted runner d'un dépôt GitHub",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": ["any", "payload"]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gh_runner"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir un runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Nom du propriétaire (utilisateur ou organisation).",
+            "col": { "xs": 24 },
+            "expression": { "allow": true },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "repo",
+            "label": "Dépôt",
+            "description": "Nom du dépôt.",
+            "col": { "xs": 24 },
+            "expression": { "allow": true },
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "number",
+            "key": "runner_id",
+            "label": "ID runner",
+            "description": "Identifiant du runner.",
+            "col": { "xs": 24 },
+            "expression": { "allow": true },
+            "validators": [{ "type": "required" }]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitHub"],
+      "risk": "safe"
+    },
+    {
+      "key": "github_runner_delete",
+      "name": "githubRunnerDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "github",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un self-hosted runner d'un dépôt GitHub",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gh_result" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "owner", "label": "Propriétaire", "description": "Nom du propriétaire (utilisateur ou organisation).", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "repo", "label": "Dépôt", "description": "Nom du dépôt.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "runner_id", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["suppression", "GitHub"],
+      "risk": "destructive"
+    },
+    {
+      "key": "github_runner_labels_list",
+      "name": "githubRunnerLabelsList",
+      "schemaVersion": 2,
+      "title": "Lister les labels du runner",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "github",
+      "icon": "fa-solid fa-tags",
+      "description": "Lister les labels d'un runner GitHub",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gh_runner_labels" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lister les labels du runner",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "owner", "label": "Propriétaire", "description": "Nom du propriétaire (utilisateur ou organisation).", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "repo", "label": "Dépôt", "description": "Nom du dépôt.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "runner_id", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["lecture", "GitHub"],
+      "risk": "safe"
+    },
+    {
+      "key": "github_runner_labels_add",
+      "name": "githubRunnerLabelsAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter des labels",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "github",
+      "icon": "fa-solid fa-plus",
+      "description": "Ajouter des labels personnalisés à un runner GitHub",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gh_runner_labels" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Ajouter des labels",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "owner", "label": "Propriétaire", "description": "Nom du propriétaire (utilisateur ou organisation).", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "repo", "label": "Dépôt", "description": "Nom du dépôt.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "runner_id", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "labels", "label": "Labels", "description": "Liste de labels séparés par des virgules.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["mise à jour", "GitHub"],
+      "risk": "write"
+    },
+    {
+      "key": "github_runner_labels_set",
+      "name": "githubRunnerLabelsSet",
+      "schemaVersion": 2,
+      "title": "Définir les labels",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "github",
+      "icon": "fa-solid fa-tag",
+      "description": "Remplacer les labels personnalisés d'un runner GitHub",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gh_runner_labels" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Définir les labels",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "owner", "label": "Propriétaire", "description": "Nom du propriétaire (utilisateur ou organisation).", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "repo", "label": "Dépôt", "description": "Nom du dépôt.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "runner_id", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "labels", "label": "Labels", "description": "Liste de labels séparés par des virgules.", "col": { "xs": 24 }, "expression": { "allow": true } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["mise à jour", "GitHub"],
+      "risk": "write"
+    },
+    {
+      "key": "github_runner_labels_delete",
+      "name": "githubRunnerLabelsDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un label",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "github",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprimer un label personnalisé d'un runner GitHub",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gh_runner_labels" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un label",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "owner", "label": "Propriétaire", "description": "Nom du propriétaire (utilisateur ou organisation).", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "repo", "label": "Dépôt", "description": "Nom du dépôt.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "runner_id", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "name", "label": "Nom du label", "description": "Nom du label à supprimer.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["suppression", "GitHub"],
+      "risk": "destructive"
+    },
+    {
+      "key": "github_runner_labels_clear",
+      "name": "githubRunnerLabelsClear",
+      "schemaVersion": 2,
+      "title": "Vider les labels",
+      "subtitle": "Runner",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Actions",
+      "providerKey": "github",
+      "icon": "fa-solid fa-broom",
+      "description": "Retirer tous les labels personnalisés d'un runner GitHub",
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:gh_runner_labels" }],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Vider les labels",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "owner", "label": "Propriétaire", "description": "Nom du propriétaire (utilisateur ou organisation).", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "repo", "label": "Dépôt", "description": "Nom du dépôt.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "runner_id", "label": "ID runner", "description": "Identifiant du runner.", "col": { "xs": 24 }, "expression": { "allow": true }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Runners",
+      "tags": ["mise à jour", "GitHub"],
       "risk": "write"
     }
   ]

@@ -1744,7 +1744,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer création.",
+      "description": "Crée un nouvel élément pour création.",
       "args": {
         "title": "Créer création",
         "ui": {
@@ -1803,7 +1803,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister campagne analytique.",
+      "description": "Retourne la liste des éléments campagne analytique.",
       "args": {
         "title": "Lister campagne analytique",
         "ui": {
@@ -1880,7 +1880,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister donnée sery.",
+      "description": "Retourne la liste des éléments donnée sery.",
       "args": {
         "title": "Lister donnée sery",
         "ui": {
@@ -1961,8 +1961,8 @@
       "key": "braze_data_sery_list_customeventsanalytics",
       "name": "brazeDataSeryListCustomeventsanalytics",
       "schemaVersion": 2,
-      "title": "Lister personnalisé événement analytique",
-      "subtitle": "Personnalisé événement analytique",
+      "title": "Lister événement personnalisé analytique",
+      "subtitle": "Événement personnalisé analytique",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -1993,9 +1993,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé événement analytique.",
+      "description": "Retourne la liste des éléments événement personnalisé analytique.",
       "args": {
-        "title": "Lister personnalisé événement analytique",
+        "title": "Lister événement personnalisé analytique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2004,7 +2004,7 @@
           {
             "type": "text",
             "key": "event",
-            "label": "Événement",
+            "label": "événement",
             "description": "Required String name personnalisé événement which return analytiques",
             "col": {
               "xs": 24
@@ -2097,7 +2097,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister donnée sery - données.",
+      "description": "Retourne la liste des éléments donnée sery - données.",
       "args": {
         "title": "Lister donnée sery - données",
         "ui": {
@@ -2183,7 +2183,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister donnée sery - données dailyactiveusersbydate.",
+      "description": "Retourne la liste des éléments donnée sery - données dailyactiveusersbydate.",
       "args": {
         "title": "Lister donnée sery - données dailyactiveusersbydate",
         "ui": {
@@ -2260,7 +2260,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister donnée sery - données monthlyactiveusersforlast30day.",
+      "description": "Retourne la liste des éléments donnée sery - données monthlyactiveusersforlast30day.",
       "args": {
         "title": "Lister donnée sery - données monthlyactiveusersforlast30day",
         "ui": {
@@ -2337,7 +2337,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister donnée sery - données dailynewusersbydate.",
+      "description": "Retourne la liste des éléments donnée sery - données dailynewusersbydate.",
       "args": {
         "title": "Lister donnée sery - données dailynewusersbydate",
         "ui": {
@@ -2414,7 +2414,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister donnée sery - données kpisfordailyappuninstallsbydate.",
+      "description": "Retourne la liste des éléments donnée sery - données kpisfordailyappuninstallsbydate.",
       "args": {
         "title": "Lister donnée sery - données kpisfordailyappuninstallsbydate",
         "ui": {
@@ -2491,7 +2491,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister donnée sery - données segmentanalytic.",
+      "description": "Retourne la liste des éléments donnée sery - données segmentanalytic.",
       "args": {
         "title": "Lister donnée sery - données segmentanalytic",
         "ui": {
@@ -2568,7 +2568,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Envoyer analytique.",
+      "description": "Envoie analytique.",
       "args": {
         "title": "Envoyer analytique",
         "ui": {
@@ -2654,7 +2654,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister donnée sery - données appsessionsbytime.",
+      "description": "Retourne la liste des éléments donnée sery - données appsessionsbytime.",
       "args": {
         "title": "Lister donnée sery - données appsessionsbytime",
         "ui": {
@@ -2749,7 +2749,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister donnée résumé.",
+      "description": "Retourne la liste des éléments donnée résumé.",
       "args": {
         "title": "Lister donnée résumé",
         "ui": {
@@ -2862,7 +2862,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Taguer campagne détail.",
+      "description": "Applique un marquage sur campagne détail.",
       "args": {
         "title": "Taguer campagne détail",
         "ui": {
@@ -2921,7 +2921,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Taguer détail.",
+      "description": "Applique un marquage sur détail.",
       "args": {
         "title": "Taguer détail",
         "ui": {
@@ -2980,7 +2980,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Taguer détail - newsfeedcardsdetail.",
+      "description": "Applique un marquage sur détail - newsfeedcardsdetail.",
       "args": {
         "title": "Taguer détail - newsfeedcardsdetail",
         "ui": {
@@ -3039,7 +3039,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Taguer détail - segmentdetail.",
+      "description": "Applique un marquage sur détail - segmentdetail.",
       "args": {
         "title": "Taguer détail - segmentdetail",
         "ui": {
@@ -3098,7 +3098,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher hard bounce.",
+      "description": "Recherche des éléments liés à hard bounce.",
       "args": {
         "title": "Rechercher hard bounce",
         "ui": {
@@ -3193,7 +3193,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister information.",
+      "description": "Retourne la liste des éléments information.",
       "args": {
         "title": "Lister information",
         "ui": {
@@ -3261,7 +3261,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister information - seeemailtemplateinformation.",
+      "description": "Retourne la liste des éléments information - seeemailtemplateinformation.",
       "args": {
         "title": "Lister information - seeemailtemplateinformation",
         "ui": {
@@ -3320,7 +3320,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister tag campagne.",
+      "description": "Retourne la liste des éléments tag campagne.",
       "args": {
         "title": "Lister tag campagne",
         "ui": {
@@ -3406,7 +3406,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister liste.",
+      "description": "Retourne la liste des éléments liste.",
       "args": {
         "title": "Lister liste",
         "ui": {
@@ -3492,7 +3492,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister liste - listavailablecontentblock.",
+      "description": "Retourne la liste des éléments liste - listavailablecontentblock.",
       "args": {
         "title": "Lister liste - listavailablecontentblock",
         "ui": {
@@ -3546,8 +3546,8 @@
       "key": "braze_list_list_customeventslist",
       "name": "brazeListListCustomeventslist",
       "schemaVersion": 2,
-      "title": "Lister personnalisé événement",
-      "subtitle": "Personnalisé événement",
+      "title": "Lister événement personnalisé",
+      "subtitle": "Événement personnalisé",
       "icon": "fa-solid fa-list",
       "type": "function",
       "nodeKind": "function",
@@ -3578,9 +3578,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister personnalisé événement.",
+      "description": "Retourne la liste des éléments événement personnalisé.",
       "args": {
-        "title": "Lister personnalisé événement",
+        "title": "Lister événement personnalisé",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3637,7 +3637,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister liste - tag.",
+      "description": "Retourne la liste des éléments liste - tag.",
       "args": {
         "title": "Lister liste - tag",
         "ui": {
@@ -3714,7 +3714,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister liste - tag segmentlist.",
+      "description": "Retourne la liste des éléments liste - tag segmentlist.",
       "args": {
         "title": "Lister liste - tag segmentlist",
         "ui": {
@@ -3782,7 +3782,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister liste - listavailableemailtemplate.",
+      "description": "Retourne la liste des éléments liste - listavailableemailtemplate.",
       "args": {
         "title": "Lister liste - listavailableemailtemplate",
         "ui": {
@@ -3836,8 +3836,8 @@
       "key": "braze_scheduled_broadcast_tag_getupcomingscheduledcampaignsandcanvases",
       "name": "brazeScheduledBroadcastTagGetupcomingscheduledcampaignsandcanvases",
       "schemaVersion": 2,
-      "title": "Taguer planifié broadcast",
-      "subtitle": "Planifié broadcast",
+      "title": "Taguer planifié campagne email",
+      "subtitle": "Planifié campagne email",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3868,9 +3868,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Taguer planifié broadcast.",
+      "description": "Applique un marquage sur planifié campagne email.",
       "args": {
-        "title": "Taguer planifié broadcast",
+        "title": "Taguer planifié campagne email",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3895,8 +3895,8 @@
       "key": "braze_unsubscribe_search_querylistofunsubscribedemailaddresses",
       "name": "brazeUnsubscribeSearchQuerylistofunsubscribedemailaddresses",
       "schemaVersion": 2,
-      "title": "Rechercher unsubscribe",
-      "subtitle": "Unsubscribe",
+      "title": "Rechercher désinscription",
+      "subtitle": "désinscription",
       "icon": "fa-solid fa-magnifying-glass",
       "type": "function",
       "nodeKind": "function",
@@ -3927,9 +3927,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher unsubscribe.",
+      "description": "Recherche des éléments liés à désinscription.",
       "args": {
-        "title": "Rechercher unsubscribe",
+        "title": "Rechercher désinscription",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3994,6 +3994,387 @@
         "displayDescription": false
       },
       "group": "unsubscribes"
+    },
+    {
+      "key": "braze_users_track",
+      "name": "brazeUsersTrack",
+      "schemaVersion": 2,
+      "title": "Users Track",
+      "subtitle": "Créer/mettre à jour utilisateurs et événements",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle l endpoint users/track.",
+      "args": {
+        "title": "Users Track",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON users/track.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Users",
+      "risk": "write"
+    },
+    {
+      "key": "braze_messages_send",
+      "name": "brazeMessagesSend",
+      "schemaVersion": 2,
+      "title": "Messages Send",
+      "subtitle": "Envoyer un message transactionnel",
+      "icon": "fa-solid fa-paper-plane",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle l endpoint messages/send.",
+      "args": {
+        "title": "Messages Send",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON messages/send.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messaging",
+      "risk": "write"
+    },
+    {
+      "key": "braze_users_export_ids",
+      "name": "brazeUsersExportIds",
+      "schemaVersion": 2,
+      "title": "Users Export IDs",
+      "subtitle": "Exporter des profils utilisateurs",
+      "icon": "fa-solid fa-file-export",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle l endpoint users/export/ids.",
+      "args": {
+        "title": "Users Export IDs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON users/export/ids.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Users",
+      "risk": "write"
+    },
+    {
+      "key": "braze_campaigns_trigger_send",
+      "name": "brazeCampaignsTriggerSend",
+      "schemaVersion": 2,
+      "title": "Trigger campaign",
+      "subtitle": "Envoyer campagne transactionnelle",
+      "icon": "fa-solid fa-bullhorn",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle /campaigns/trigger/send.",
+      "args": {
+        "title": "Trigger campaign",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messaging",
+      "risk": "write"
+    },
+    {
+      "key": "braze_canvas_trigger_send",
+      "name": "brazeCanvasTriggerSend",
+      "schemaVersion": 2,
+      "title": "Trigger canvas",
+      "subtitle": "Envoyer canvas transactionnel",
+      "icon": "fa-solid fa-diagram-project",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle /canvas/trigger/send.",
+      "args": {
+        "title": "Trigger canvas",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messaging",
+      "risk": "write"
+    },
+    {
+      "key": "braze_users_delete",
+      "name": "brazeUsersDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer utilisateurs",
+      "subtitle": "Suppression profils",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Braze",
+      "providerKey": "braze",
+      "tags": [
+        "braze",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:braze_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle /users/delete.",
+      "args": {
+        "title": "Supprimer utilisateurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Users",
+      "risk": "destructive"
     }
   ]
 }

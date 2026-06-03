@@ -2352,6 +2352,136 @@
         "displayDescription": false
       },
       "group": "entités"
+    },
+    {
+      "key": "milvus_entity_count_entities",
+      "name": "milvusEntityCountEntities",
+      "schemaVersion": 2,
+      "title": "Compter des entités",
+      "subtitle": "Entities",
+      "icon": "fa-solid fa-calculator",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Milvus",
+      "providerKey": "milvus",
+      "tags": [
+        "milvus",
+        "entity",
+        "count"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:milvus_entity"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Compte les entités selon un filtre/collection.",
+      "args": {
+        "title": "Compter des entités",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Ex: {\"collectionName\":\"my_collection\",\"filter\":\"id > 0\"}",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entities"
+    },
+    {
+      "key": "milvus_collection_flush_collection",
+      "name": "milvusCollectionFlushCollection",
+      "schemaVersion": 2,
+      "title": "Flush collection",
+      "subtitle": "Collections",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Milvus",
+      "providerKey": "milvus",
+      "tags": [
+        "milvus",
+        "collection",
+        "flush"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:milvus_collection"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Force la persistance des données d une collection.",
+      "args": {
+        "title": "Flush collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionName",
+            "label": "Collection name",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "dbName",
+            "label": "Database name",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Collections"
     }
   ]
 }

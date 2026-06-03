@@ -1461,6 +1461,217 @@
       },
       "group": "Déclencheur",
       "risk": "safe"
+    },
+    {
+      "key": "instagram_comment_get",
+      "name": "instagramCommentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment-dots",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "commentaire",
+        "read"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_comment"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un commentaire par son ID.",
+      "args": {
+        "title": "Récupérer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID commentaire",
+            "description": "Identifiant du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires",
+      "risk": "safe"
+    },
+    {
+      "key": "instagram_comment_replies_list",
+      "name": "instagramCommentRepliesList",
+      "schemaVersion": 2,
+      "title": "Lister les réponses d un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-reply-all",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "commentaire",
+        "replies"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_comments"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les réponses d un commentaire Instagram.",
+      "args": {
+        "title": "Lister les réponses d un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID commentaire",
+            "description": "Identifiant du commentaire parent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max.",
+            "col": {
+              "xs": 24
+            },
+            "default": 25
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Cursor after",
+            "description": "Cursor pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires",
+      "risk": "safe"
+    },
+    {
+      "key": "instagram_comment_delete",
+      "name": "instagramCommentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Instagram",
+      "providerKey": "instagram",
+      "tags": [
+        "instagram",
+        "commentaire",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:instagram_action"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un commentaire Instagram.",
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID commentaire",
+            "description": "Identifiant du commentaire à supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires",
+      "risk": "write"
     }
   ]
 }

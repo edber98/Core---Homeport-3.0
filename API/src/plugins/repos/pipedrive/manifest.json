@@ -3397,6 +3397,205 @@
       },
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "pipedrive_note_get",
+      "name": "pipedriveNoteGet",
+      "schemaVersion": 2,
+      "title": "Obtenir une note",
+      "subtitle": "Notes",
+      "icon": "fa-solid fa-note-sticky",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_note"
+        }
+      ],
+      "description": "Récupère une note Pipedrive par ID.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Obtenir une note",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "noteId",
+            "label": "ID note",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Notes",
+      "tags": [
+        "lecture",
+        "Pipedrive"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "pipedrive_note_update",
+      "name": "pipedriveNoteUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une note",
+      "subtitle": "Notes",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_note"
+        }
+      ],
+      "description": "Met à jour une note Pipedrive.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier une note",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "noteId",
+            "label": "ID note",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Notes",
+      "tags": [
+        "mise à jour",
+        "Pipedrive"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "pipedrive_note_delete",
+      "name": "pipedriveNoteDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une note",
+      "subtitle": "Notes",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Pipedrive",
+      "providerKey": "pipedrive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:pd_result"
+        }
+      ],
+      "description": "Supprime une note Pipedrive.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer une note",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "noteId",
+            "label": "ID note",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Notes",
+      "tags": [
+        "suppression",
+        "Pipedrive"
+      ],
+      "risk": "destructive"
     }
   ]
 }

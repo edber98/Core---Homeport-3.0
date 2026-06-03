@@ -3474,6 +3474,91 @@
         "slack"
       ],
       "risk": "safe"
+    },
+    {
+      "key": "slack_list_messages",
+      "name": "slackListMessages",
+      "schemaVersion": 2,
+      "title": "Lister les messages",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Slack",
+      "providerKey": "slack",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:slack_messages"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Lister les messages d'un canal Slack.",
+      "args": {
+        "title": "Lister les messages",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "oldest",
+            "label": "Oldest ts",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "latest",
+            "label": "Latest ts",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "slack"
+      ],
+      "group": "Messages",
+      "risk": "safe"
     }
   ]
 }

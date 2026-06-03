@@ -2294,6 +2294,209 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "monday_item_archive",
+      "name": "mondayItemArchive",
+      "schemaVersion": 2,
+      "title": "Archiver un élément",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Archive un élément Monday.",
+      "args": {
+        "title": "Archiver un élément",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Item ID",
+            "description": "Identifiant de l'élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Items",
+      "icon": "fa-solid fa-box-archive",
+      "tags": [
+        "monday",
+        "archive"
+      ],
+      "group": "Items",
+      "risk": "write"
+    },
+    {
+      "key": "monday_item_move_to_group",
+      "name": "mondayItemMoveToGroup",
+      "schemaVersion": 2,
+      "title": "Déplacer un élément de groupe",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déplace un élément vers un autre groupe.",
+      "args": {
+        "title": "Déplacer un élément de groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "Item ID",
+            "description": "Identifiant de l'élément.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupId",
+            "label": "Group ID",
+            "description": "Identifiant du groupe cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Items",
+      "icon": "fa-solid fa-right-left",
+      "tags": [
+        "monday",
+        "move"
+      ],
+      "group": "Items",
+      "risk": "write"
+    },
+    {
+      "key": "monday_update_delete",
+      "name": "mondayUpdateDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une mise à jour",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Monday.com",
+      "providerKey": "monday",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:monday_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une mise à jour sur monday.com.",
+      "args": {
+        "title": "Supprimer une mise à jour",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "updateId",
+            "label": "Update ID",
+            "description": "Identifiant de la mise à jour.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Mises à jour",
+      "icon": "fa-solid fa-trash",
+      "tags": [
+        "monday",
+        "delete"
+      ],
+      "group": "Mises à jour",
+      "risk": "write"
     }
   ]
 }

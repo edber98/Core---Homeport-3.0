@@ -807,6 +807,279 @@
         "displayDescription": false
       },
       "group": "Dialogue"
+    },
+    {
+      "key": "elevenlabs_history_list",
+      "name": "elevenlabsHistoryList",
+      "schemaVersion": 2,
+      "title": "Lister historique audio",
+      "subtitle": "Historique",
+      "icon": "fa-solid fa-clock-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les générations audio de l historique.",
+      "args": {
+        "title": "Lister historique audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "startAfterHistoryItemId",
+            "label": "Après historique ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "voiceId",
+            "label": "Voice ID",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "elevenlabs_history_get",
+      "name": "elevenlabsHistoryGet",
+      "schemaVersion": 2,
+      "title": "Récupérer entrée historique",
+      "subtitle": "Historique",
+      "icon": "fa-solid fa-file-audio",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les détails d une génération audio historique.",
+      "args": {
+        "title": "Récupérer entrée historique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "historyItemId",
+            "label": "History item ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "elevenlabs_history_delete",
+      "name": "elevenlabsHistoryDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer entrée historique",
+      "subtitle": "Historique",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "history",
+        "delete",
+        "destructive"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une entrée historique ElevenLabs.",
+      "args": {
+        "title": "Supprimer entrée historique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "historyItemId",
+            "label": "History item ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "elevenlabs_audio_isolation",
+      "name": "elevenlabsAudioIsolation",
+      "schemaVersion": 2,
+      "title": "Isoler une voix depuis audio",
+      "subtitle": "Audio",
+      "icon": "fa-solid fa-sliders",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Isol e la voix principale d un audio source.",
+      "args": {
+        "title": "Isoler une voix depuis audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "audioUrl",
+            "label": "URL audio",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "Model ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "outputFormat",
+            "label": "Format sortie",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
     }
   ]
 }

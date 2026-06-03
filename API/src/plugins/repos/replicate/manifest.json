@@ -831,6 +831,312 @@
         "displayDescription": false
       },
       "group": "Déploiements"
+    },
+    {
+      "key": "replicate_trainings_list",
+      "name": "replicateTrainingsList",
+      "schemaVersion": 2,
+      "title": "Lister les entraînements",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les entraînements Replicate.",
+      "args": {
+        "title": "Lister les entraînements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entraînements"
+    },
+    {
+      "key": "replicate_training_get",
+      "name": "replicateTrainingGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un entraînement",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère l'état d'un entraînement.",
+      "args": {
+        "title": "Récupérer un entraînement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "trainingId",
+            "label": "ID entraînement",
+            "description": "Identifiant de l'entraînement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entraînements"
+    },
+    {
+      "key": "replicate_training_cancel",
+      "name": "replicateTrainingCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un entraînement",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un entraînement en cours.",
+      "args": {
+        "title": "Annuler un entraînement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "trainingId",
+            "label": "ID entraînement",
+            "description": "Identifiant de l'entraînement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entraînements"
+    },
+    {
+      "key": "replicate_training_create",
+      "name": "replicateTrainingCreate",
+      "schemaVersion": 2,
+      "title": "Créer un entraînement",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un entraînement sur une version de modèle.",
+      "args": {
+        "title": "Créer un entraînement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Owner du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "version",
+            "label": "Version",
+            "description": "ID de version du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Entrée JSON",
+            "description": "Objet JSON d'entraînement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destination",
+            "label": "Destination",
+            "description": "owner/name du modèle cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "webhook",
+            "label": "Webhook",
+            "description": "URL appelée à la fin.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entraînements"
     }
   ]
 }

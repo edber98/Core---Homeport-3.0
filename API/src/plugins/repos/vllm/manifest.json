@@ -2584,6 +2584,65 @@
         "displayDescription": false
       },
       "group": "audio"
+    },
+    {
+      "key": "vllm_image_create_image_generation",
+      "name": "vllmImageCreateImageGeneration",
+      "schemaVersion": 2,
+      "title": "Générer une image",
+      "subtitle": "image",
+      "icon": "fa-solid fa-image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "vLLM",
+      "providerKey": "vllm",
+      "tags": [
+        "vllm",
+        "image",
+        "generation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:vllm_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action image generation OpenAI-compatible.",
+      "args": {
+        "title": "Générer une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "image"
     }
   ]
 }

@@ -290,6 +290,20 @@ async function run(key, inputs, opts) {
       return ok(res, "Résumé de session généré.");
     }
 
+    if (key === "fullstory_user_events_export") {
+      const uid = requireField(d, "uid", "uid");
+      const res = await requestFullstory(opts, "/api/v1/export/userEvents", { method: "GET", query: { uid } });
+      if (!res.ok) return res;
+      return ok(res, "Export user events récupéré.");
+    }
+
+    if (key === "fullstory_user_pages_export") {
+      const uid = requireField(d, "uid", "uid");
+      const res = await requestFullstory(opts, "/api/v1/export/userPages", { method: "GET", query: { uid } });
+      if (!res.ok) return res;
+      return ok(res, "Export user pages récupéré.");
+    }
+
     if (key === "fullstory_api_request") {
       const method = clean(d.method || "GET").toUpperCase();
       const reqPath = clean(d.path);

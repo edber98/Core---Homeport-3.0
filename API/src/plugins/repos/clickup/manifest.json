@@ -2170,6 +2170,896 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "clickup_list_update",
+      "name": "clickupListUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une liste",
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "modification",
+        "liste"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_list"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Modifie une liste ClickUp.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "ID liste",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Listes"
+    },
+    {
+      "key": "clickup_list_delete",
+      "name": "clickupListDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une liste",
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "suppression",
+        "liste"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une liste ClickUp.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "listId",
+            "label": "ID liste",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Listes"
+    },
+    {
+      "key": "clickup_comment_update",
+      "name": "clickupCommentUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment-dots",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "modification",
+        "commentaire"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_comment"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Modifie un commentaire.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID commentaire",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "commentText",
+            "label": "Texte",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "clickup_comment_delete",
+      "name": "clickupCommentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-comment-slash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "suppression",
+        "commentaire"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un commentaire.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID commentaire",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Commentaires"
+    },
+    {
+      "key": "clickup_task_custom_field_set",
+      "name": "clickupTaskCustomFieldSet",
+      "schemaVersion": 2,
+      "title": "Définir un champ personnalisé",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-sliders",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "modification",
+        "task"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour un champ personnalisé de tâche.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "ID tâche",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "fieldId",
+            "label": "ID champ",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Valeur JSON",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_checklist_create",
+      "name": "clickupChecklistCreate",
+      "schemaVersion": 2,
+      "title": "Créer une checklist",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-list-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "création",
+        "checklist"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une checklist sur une tâche.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "ID tâche",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom checklist",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_checklist_item_create",
+      "name": "clickupChecklistItemCreate",
+      "schemaVersion": 2,
+      "title": "Créer un item de checklist",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "création",
+        "checklist"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un item dans une checklist.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "checklistId",
+            "label": "ID checklist",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom item",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignee",
+            "label": "ID assignee",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_api_request",
+      "name": "clickupApiRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "api",
+        "custom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête API ClickUp personnalisée.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "headers",
+            "label": "Headers JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "API"
+    },
+    {
+      "key": "clickup_checklist_item_update",
+      "name": "clickupChecklistItemUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un item de checklist",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "modification",
+        "checklist"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Modifie un item de checklist.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "checklistId",
+            "label": "ID checklist",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "checklistItemId",
+            "label": "ID item",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "resolved",
+            "label": "Résolu (true/false)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "assignee",
+            "label": "ID assignee",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_checklist_item_delete",
+      "name": "clickupChecklistItemDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un item de checklist",
+      "subtitle": "Tâches",
+      "icon": "fa-solid fa-square-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "suppression",
+        "checklist"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un item de checklist.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "checklistId",
+            "label": "ID checklist",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "checklistItemId",
+            "label": "ID item",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tâches"
+    },
+    {
+      "key": "clickup_time_entry_update",
+      "name": "clickupTimeEntryUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une entrée de temps",
+      "subtitle": "Temps",
+      "icon": "fa-solid fa-stopwatch",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "modification",
+        "time"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Modifie une entrée de temps.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID team",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "timerId",
+            "label": "ID entrée",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "start",
+            "label": "Start (ms)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "end",
+            "label": "End (ms)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "tid",
+            "label": "ID tâche",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Temps"
+    },
+    {
+      "key": "clickup_time_entry_delete",
+      "name": "clickupTimeEntryDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une entrée de temps",
+      "subtitle": "Temps",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickUp",
+      "providerKey": "clickup",
+      "tags": [
+        "suppression",
+        "time"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickup_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une entrée de temps.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "teamId",
+            "label": "ID team",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "timerId",
+            "label": "ID entrée",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Temps"
     }
   ]
 }

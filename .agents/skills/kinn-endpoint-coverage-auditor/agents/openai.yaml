@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kinn Endpoint Coverage Auditor"
+  short_description: "Audit coverage noeuds automation hors parametrage."
+  default_prompt: "Passe en revue un connecteur endpoint par endpoint, marque les endpoints de parametrage, puis ajoute tous les noeuds utiles pour automation et produit un rapport de couverture."

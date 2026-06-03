@@ -821,6 +821,78 @@
         "displayDescription": false
       },
       "group": "Contextes"
+    },
+    {
+      "key": "browserbase_generic_request",
+      "name": "browserbaseGenericRequest",
+      "schemaVersion": 2,
+      "title": "Requête Browserbase générique",
+      "subtitle": "Couverture avancée",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "browserbase",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:browserbase_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Requête Browserbase générique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path API",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "risk": "write"
     }
   ]
 }

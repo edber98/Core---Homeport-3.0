@@ -2959,7 +2959,7 @@
       "key": "mem0_add_create_memories_add_v3",
       "name": "mem0AddCreateMemoriesAddV3",
       "schemaVersion": 2,
-      "title": "Créer mémoire",
+      "title": "Créer mémoire (v3 add)",
       "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -2991,9 +2991,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer mémoire.",
+      "description": "Crée un nouvel élément pour mémoire (v3 add).",
       "args": {
-        "title": "Créer mémoire",
+        "title": "Créer mémoire (v3 add)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3055,7 +3055,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer agent.",
+      "description": "Crée un nouvel élément pour agent.",
       "args": {
         "title": "Créer agent",
         "ui": {
@@ -3087,8 +3087,8 @@
       "key": "mem0_app_create_apps_create",
       "name": "mem0AppCreateAppsCreate",
       "schemaVersion": 2,
-      "title": "Créer app",
-      "subtitle": "App",
+      "title": "Créer application",
+      "subtitle": "application",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3119,9 +3119,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer app.",
+      "description": "Crée un nouvel élément pour application.",
       "args": {
-        "title": "Créer app",
+        "title": "Créer application",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3183,7 +3183,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour mémoire lot.",
+      "description": "Met à jour mémoire lot.",
       "args": {
         "title": "Mettre à jour mémoire lot",
         "ui": {
@@ -3247,7 +3247,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer mémoire lot.",
+      "description": "Supprime mémoire lot.",
       "args": {
         "title": "Supprimer mémoire lot",
         "ui": {
@@ -3296,7 +3296,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister entité.",
+      "description": "Retourne une liste pour entité.",
       "args": {
         "title": "Lister entité",
         "ui": {
@@ -3364,7 +3364,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer entité.",
+      "description": "Récupère les détails de entité.",
       "args": {
         "title": "Récupérer entité",
         "ui": {
@@ -3442,7 +3442,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer entité.",
+      "description": "Supprime entité.",
       "args": {
         "title": "Supprimer entité",
         "ui": {
@@ -3520,7 +3520,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister événement.",
+      "description": "Retourne une liste pour événement.",
       "args": {
         "title": "Lister événement",
         "ui": {
@@ -3569,7 +3569,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer événement.",
+      "description": "Récupère les détails de événement.",
       "args": {
         "title": "Récupérer événement",
         "ui": {
@@ -3633,7 +3633,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mémoire événement.",
+      "description": "Retourne une liste pour mémoire événement.",
       "args": {
         "title": "Lister mémoire événement",
         "ui": {
@@ -3682,7 +3682,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer export.",
+      "description": "Crée un nouvel élément pour export.",
       "args": {
         "title": "Créer export",
         "ui": {
@@ -3714,8 +3714,8 @@
       "key": "mem0_feedback_create_submit_feedback",
       "name": "mem0FeedbackCreateSubmitFeedback",
       "schemaVersion": 2,
-      "title": "Créer feedback",
-      "subtitle": "Feedback",
+      "title": "Créer retour",
+      "subtitle": "retour",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3746,9 +3746,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer feedback.",
+      "description": "Crée un nouvel élément pour retour.",
       "args": {
-        "title": "Créer feedback",
+        "title": "Créer retour",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3810,7 +3810,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister entité filtre.",
+      "description": "Retourne une liste pour entité filtre.",
       "args": {
         "title": "Lister entité filtre",
         "ui": {
@@ -3859,7 +3859,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer export.",
+      "description": "Récupère les détails de export.",
       "args": {
         "title": "Récupérer export",
         "ui": {
@@ -3918,7 +3918,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mémoire historique.",
+      "description": "Retourne une liste pour mémoire historique.",
       "args": {
         "title": "Lister mémoire historique",
         "ui": {
@@ -3982,7 +3982,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister mémoire.",
+      "description": "Retourne une liste pour mémoire.",
       "args": {
         "title": "Lister mémoire",
         "ui": {
@@ -4126,7 +4126,7 @@
       "key": "mem0_memory_create_memories_create",
       "name": "mem0MemoryCreateMemoriesCreate",
       "schemaVersion": 2,
-      "title": "Créer mémoire - mémoire",
+      "title": "Créer mémoire (v1)",
       "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -4158,9 +4158,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer mémoire - mémoire.",
+      "description": "Crée un nouvel élément pour mémoire (v1).",
       "args": {
-        "title": "Créer mémoire - mémoire",
+        "title": "Créer mémoire (v1)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4190,7 +4190,7 @@
       "key": "mem0_memory_delete_memories_delete_all",
       "name": "mem0MemoryDeleteMemoriesDeleteAll",
       "schemaVersion": 2,
-      "title": "Supprimer mémoire",
+      "title": "Supprimer toutes les mémoires",
       "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -4222,9 +4222,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer mémoire.",
+      "description": "Supprime toutes les mémoires.",
       "args": {
-        "title": "Supprimer mémoire",
+        "title": "Supprimer toutes les mémoires",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4303,7 +4303,7 @@
       "key": "mem0_memory_create_memories_list_v2",
       "name": "mem0MemoryCreateMemoriesListV2",
       "schemaVersion": 2,
-      "title": "Créer mémoire mémoire",
+      "title": "Créer mémoire (v2)",
       "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -4335,9 +4335,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer mémoire mémoire.",
+      "description": "Crée un nouvel élément pour mémoire (v2).",
       "args": {
-        "title": "Créer mémoire mémoire",
+        "title": "Créer mémoire (v2)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4367,7 +4367,7 @@
       "key": "mem0_memory_search_memories_search_create",
       "name": "mem0MemorySearchMemoriesSearchCreate",
       "schemaVersion": 2,
-      "title": "Rechercher mémoire",
+      "title": "Rechercher mémoire (v1)",
       "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -4399,9 +4399,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher mémoire.",
+      "description": "Recherche des éléments liés à mémoire (v1).",
       "args": {
-        "title": "Rechercher mémoire",
+        "title": "Rechercher mémoire (v1)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4431,7 +4431,7 @@
       "key": "mem0_memory_search_memories_search_v2",
       "name": "mem0MemorySearchMemoriesSearchV2",
       "schemaVersion": 2,
-      "title": "Rechercher mémoire - mémoire",
+      "title": "Rechercher mémoire (v2)",
       "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -4463,9 +4463,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher mémoire - mémoire.",
+      "description": "Recherche des éléments liés à mémoire (v2).",
       "args": {
-        "title": "Rechercher mémoire - mémoire",
+        "title": "Rechercher mémoire (v2)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4527,7 +4527,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher mémoire 3.",
+      "description": "Recherche des éléments liés à mémoire 3.",
       "args": {
         "title": "Rechercher mémoire 3",
         "ui": {
@@ -4577,7 +4577,7 @@
       "key": "mem0_memory_search_memories_search_v3",
       "name": "mem0MemorySearchMemoriesSearchV3",
       "schemaVersion": 2,
-      "title": "Rechercher mémoire mémoire",
+      "title": "Rechercher mémoire (v3)",
       "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -4609,9 +4609,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher mémoire mémoire.",
+      "description": "Recherche des éléments liés à mémoire (v3).",
       "args": {
-        "title": "Rechercher mémoire mémoire",
+        "title": "Rechercher mémoire (v3)",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4673,7 +4673,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer mémoire entité.",
+      "description": "Récupère les détails de mémoire entité.",
       "args": {
         "title": "Récupérer mémoire entité",
         "ui": {
@@ -4751,7 +4751,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer mémoire.",
+      "description": "Récupère les détails de mémoire.",
       "args": {
         "title": "Récupérer mémoire",
         "ui": {
@@ -4815,7 +4815,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour mémoire.",
+      "description": "Met à jour mémoire.",
       "args": {
         "title": "Mettre à jour mémoire",
         "ui": {
@@ -4856,7 +4856,7 @@
       "key": "mem0_memory_delete_memories_delete",
       "name": "mem0MemoryDeleteMemoriesDelete",
       "schemaVersion": 2,
-      "title": "Supprimer mémoire - mémoire",
+      "title": "Supprimer mémoire par ID",
       "subtitle": "Mémoire",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -4888,9 +4888,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer mémoire - mémoire.",
+      "description": "Supprime mémoire par ID.",
       "args": {
-        "title": "Supprimer mémoire - mémoire",
+        "title": "Supprimer mémoire par ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4920,8 +4920,8 @@
       "key": "mem0_run_run_runs_create",
       "name": "mem0RunRunRunsCreate",
       "schemaVersion": 2,
-      "title": "Créer run",
-      "subtitle": "Run",
+      "title": "Créer exécution",
+      "subtitle": "exécution",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -4952,9 +4952,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer run.",
+      "description": "Crée un nouvel élément pour exécution.",
       "args": {
-        "title": "Créer run",
+        "title": "Créer exécution",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -4984,8 +4984,8 @@
       "key": "mem0_stat_search_stats_list",
       "name": "mem0StatSearchStatsList",
       "schemaVersion": 2,
-      "title": "Rechercher stat",
-      "subtitle": "Stat",
+      "title": "Rechercher statistique",
+      "subtitle": "statistique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -5016,9 +5016,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Rechercher stat.",
+      "description": "Recherche des éléments liés à statistique.",
       "args": {
-        "title": "Rechercher stat",
+        "title": "Rechercher statistique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -5065,7 +5065,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer utilisateur.",
+      "description": "Crée un nouvel élément pour utilisateur.",
       "args": {
         "title": "Créer utilisateur",
         "ui": {
@@ -5129,7 +5129,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour webhook.",
+      "description": "Met à jour webhook.",
       "args": {
         "title": "Mettre à jour webhook",
         "ui": {
@@ -5207,7 +5207,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer webhook.",
+      "description": "Supprime webhook.",
       "args": {
         "title": "Supprimer webhook",
         "ui": {

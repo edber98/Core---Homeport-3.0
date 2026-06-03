@@ -496,6 +496,153 @@
         "displayDescription": false
       },
       "group": "Suivi"
+    },
+    {
+      "key": "midjourney_fetch_job",
+      "name": "midjourneyFetchJob",
+      "schemaVersion": 2,
+      "title": "Récupérer un job Midjourney",
+      "subtitle": "Suivi",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Midjourney",
+      "providerKey": "midjourney",
+      "tags": [
+        "midjourney",
+        "job",
+        "fetch"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:midjourney_job_status_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un job Midjourney par taskId.",
+      "args": {
+        "title": "Récupérer un job Midjourney",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Suivi"
+    },
+    {
+      "key": "midjourney_job_action",
+      "name": "midjourneyJobAction",
+      "schemaVersion": 2,
+      "title": "Lancer une action sur job",
+      "subtitle": "Génération",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Midjourney",
+      "providerKey": "midjourney",
+      "tags": [
+        "midjourney",
+        "action"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:midjourney_submit_jobs_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Soumet une action Midjourney (upsample/variation/reroll) sur un taskId.",
+      "args": {
+        "title": "Lancer une action sur job",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "customId",
+            "label": "Custom ID action",
+            "description": "Ex: MJ::JOB::upsample::1",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "hookUrl",
+            "label": "Webhook URL",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
     }
   ]
 }

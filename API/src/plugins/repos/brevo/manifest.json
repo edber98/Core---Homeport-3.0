@@ -3172,6 +3172,306 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "brevo_smtp_events_list",
+      "name": "brevoSmtpEventsList",
+      "schemaVersion": 2,
+      "title": "Lister les événements SMTP",
+      "subtitle": "Logs transactionnels",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les événements transactionnels SMTP.",
+      "args": {
+        "title": "Lister les événements SMTP",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Type événement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "messageId",
+            "label": "Message ID",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SMTP"
+    },
+    {
+      "key": "brevo_event_create",
+      "name": "brevoEventCreate",
+      "schemaVersion": 2,
+      "title": "Créer un événement custom",
+      "subtitle": "Tracking événementiel",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un événement custom via API Brevo.",
+      "args": {
+        "title": "Créer un événement custom",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "eventName",
+            "label": "Nom événement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email contact",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Properties JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Events",
+      "risk": "write"
+    },
+    {
+      "key": "brevo_smtp_emails_list",
+      "name": "brevoSmtpEmailsList",
+      "schemaVersion": 2,
+      "title": "Lister les emails transactionnels",
+      "subtitle": "SMTP emails",
+      "icon": "fa-solid fa-envelope-open-text",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les emails transactionnels.",
+      "args": {
+        "title": "Lister les emails transactionnels",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "templateId",
+            "label": "Template ID",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SMTP"
+    },
+    {
+      "key": "brevo_smtp_email_get",
+      "name": "brevoSmtpEmailGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un email transactionnel",
+      "subtitle": "SMTP email",
+      "icon": "fa-solid fa-envelope",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_email"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un email transactionnel par UUID.",
+      "args": {
+        "title": "Obtenir un email transactionnel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "uuid",
+            "label": "UUID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SMTP"
     }
   ]
 }

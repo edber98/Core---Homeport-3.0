@@ -1063,6 +1063,126 @@
         "displayDescription": false
       },
       "group": "status"
+    },
+    {
+      "key": "crewai_api_request",
+      "name": "crewaiApiRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "CrewAI",
+      "providerKey": "crewai",
+      "tags": [
+        "api",
+        "custom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crewai_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête API CrewAI personnalisée.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "API"
+    },
+    {
+      "key": "crewai_health_ping",
+      "name": "crewaiHealthPing",
+      "schemaVersion": 2,
+      "title": "Tester la connexion API",
+      "subtitle": "Santé",
+      "icon": "fa-solid fa-heart-pulse",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "CrewAI",
+      "providerKey": "crewai",
+      "tags": [
+        "santé"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:crewai_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Vérifie la disponibilité du connecteur CrewAI.",
+      "args": {
+        "fields": []
+      },
+      "group": "Utilitaires"
     }
   ]
 }

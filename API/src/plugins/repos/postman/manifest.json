@@ -7,51 +7,212 @@
   "variables": {
     "postman_resources": {
       "title": "Ressources Postman",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Éléments",
           "key": "items",
           "mode": "array",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-            { "type": "text", "key": "uid", "label": "UID", "col": { "xs": 24 } },
-            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-            { "type": "text", "key": "type", "label": "Type", "col": { "xs": 12 } },
-            { "type": "text", "key": "visibility", "label": "Visibilité", "col": { "xs": 12 } },
-            { "type": "text", "key": "owner", "label": "Propriétaire", "col": { "xs": 24 } },
-            { "type": "date", "key": "updatedAt", "label": "Date de modification", "col": { "xs": 24 } },
-            { "type": "json", "key": "raw", "label": "Données brutes", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "uid",
+              "label": "UID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 12
+              }
+            },
+            {
+              "type": "text",
+              "key": "visibility",
+              "label": "Visibilité",
+              "col": {
+                "xs": 12
+              }
+            },
+            {
+              "type": "text",
+              "key": "owner",
+              "label": "Propriétaire",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updatedAt",
+              "label": "Date de modification",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         },
-        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "postman_resource": {
       "title": "Ressource Postman",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-        { "type": "text", "key": "uid", "label": "UID", "col": { "xs": 24 } },
-        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-        { "type": "text", "key": "type", "label": "Type", "col": { "xs": 12 } },
-        { "type": "text", "key": "visibility", "label": "Visibilité", "col": { "xs": 12 } },
-        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "uid",
+          "label": "UID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "visibility",
+          "label": "Visibilité",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "postman_operation": {
       "title": "Opération Postman",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
-        { "type": "text", "key": "uid", "label": "UID", "col": { "xs": 24 } },
-        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "message", "label": "Message", "col": { "xs": 24 } },
-        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "uid",
+          "label": "UID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     }
   },
@@ -63,28 +224,45 @@
       "iconClass": "fa-solid fa-paper-plane",
       "iconUrl": "https://cdn.simpleicons.org/postman",
       "color": "#fdd9c5",
-      "tags": ["postman", "api", "collections"],
-      "categories": ["Développement"],
+      "tags": [
+        "postman",
+        "api",
+        "collections"
+      ],
+      "categories": [
+        "Développement"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "Identifiants Postman",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
             "key": "apiKey",
             "label": "Clé API",
             "description": "Clé API envoyée dans l'en-tête X-API-Key.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "secret": true,
-            "validators": [{ "type": "required" }]
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "baseUrl",
             "label": "URL de base",
             "default": "https://api.getpostman.com",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -104,12 +282,41 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["compte", "postman"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "compte",
+        "postman"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère les informations du compte associé à la clé API.",
-      "args": { "title": "Récupérer le compte", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Récupérer le compte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Compte"
     },
     {
@@ -123,12 +330,41 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["workspaces", "liste"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resources" }],
+      "tags": [
+        "workspaces",
+        "liste"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resources"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les workspaces accessibles.",
-      "args": { "title": "Lister les workspaces", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Lister les workspaces",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Workspaces"
     },
     {
@@ -142,12 +378,56 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["workspace", "lecture"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "workspace",
+        "lecture"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère le détail d'un workspace.",
-      "args": { "title": "Récupérer un workspace", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "workspaceId", "label": "ID du workspace", "default": "workspace-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Récupérer un workspace",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceId",
+            "label": "ID du workspace",
+            "default": "workspace-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Workspaces"
     },
     {
@@ -161,12 +441,79 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["workspace", "création"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "workspace",
+        "création"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Crée un workspace Postman.",
-      "args": { "title": "Créer un workspace", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "name", "label": "Nom", "default": "Workspace API", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "select", "key": "type", "label": "Type", "default": "personal", "options": ["personal", "team", "public", "partner"], "col": { "xs": 12 } }, { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Créer un workspace",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "default": "Workspace API",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "default": "personal",
+            "options": [
+              "personal",
+              "team",
+              "public",
+              "partner"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Workspaces"
     },
     {
@@ -180,12 +527,87 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["workspace", "mise à jour"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "workspace",
+        "mise à jour"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Met à jour un workspace Postman.",
-      "args": { "title": "Mettre à jour un workspace", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "workspaceId", "label": "ID du workspace", "default": "workspace-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "name", "label": "Nom", "default": "Workspace API", "col": { "xs": 24 } }, { "type": "select", "key": "type", "label": "Type", "options": ["personal", "team", "public", "partner"], "col": { "xs": 12 } }, { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Mettre à jour un workspace",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceId",
+            "label": "ID du workspace",
+            "default": "workspace-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "default": "Workspace API",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "options": [
+              "personal",
+              "team",
+              "public",
+              "partner"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Workspaces"
     },
     {
@@ -199,12 +621,56 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["workspace", "suppression"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_operation" }],
+      "tags": [
+        "workspace",
+        "suppression"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_operation"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Supprime un workspace Postman.",
-      "args": { "title": "Supprimer un workspace", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "workspaceId", "label": "ID du workspace", "default": "workspace-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Supprimer un workspace",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workspaceId",
+            "label": "ID du workspace",
+            "default": "workspace-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Workspaces"
     },
     {
@@ -218,12 +684,41 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["collections", "liste"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resources" }],
+      "tags": [
+        "collections",
+        "liste"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resources"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les collections accessibles.",
-      "args": { "title": "Lister les collections", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Lister les collections",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Collections"
     },
     {
@@ -237,12 +732,56 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["collection", "lecture"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "collection",
+        "lecture"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère une collection complète.",
-      "args": { "title": "Récupérer une collection", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "collectionId", "label": "ID de collection", "default": "collection-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Récupérer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionId",
+            "label": "ID de collection",
+            "default": "collection-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Collections"
     },
     {
@@ -256,12 +795,70 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["collection", "création"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "collection",
+        "création"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Crée une collection Postman.",
-      "args": { "title": "Créer une collection", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "json", "key": "collection", "label": "Collection", "default": { "info": { "name": "Collection API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" }, "item": [] }, "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "text", "key": "workspaceId", "label": "ID du workspace", "col": { "xs": 24 } }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Créer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "collection",
+            "label": "Collection",
+            "default": {
+              "info": {
+                "name": "Collection API",
+                "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+              },
+              "item": []
+            },
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "workspaceId",
+            "label": "ID du workspace",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Collections"
     },
     {
@@ -275,12 +872,76 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["collection", "mise à jour"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "collection",
+        "mise à jour"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Remplace le contenu d'une collection Postman.",
-      "args": { "title": "Mettre à jour une collection", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "collectionId", "label": "ID de collection", "default": "collection-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "json", "key": "collection", "label": "Collection", "default": { "info": { "name": "Collection API", "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json" }, "item": [] }, "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Mettre à jour une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionId",
+            "label": "ID de collection",
+            "default": "collection-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "collection",
+            "label": "Collection",
+            "default": {
+              "info": {
+                "name": "Collection API",
+                "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+              },
+              "item": []
+            },
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Collections"
     },
     {
@@ -294,12 +955,56 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["collection", "suppression"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_operation" }],
+      "tags": [
+        "collection",
+        "suppression"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_operation"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Supprime une collection Postman.",
-      "args": { "title": "Supprimer une collection", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "collectionId", "label": "ID de collection", "default": "collection-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Supprimer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collectionId",
+            "label": "ID de collection",
+            "default": "collection-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Collections"
     },
     {
@@ -313,12 +1018,41 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["environnements", "liste"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resources" }],
+      "tags": [
+        "environnements",
+        "liste"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resources"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les environnements accessibles.",
-      "args": { "title": "Lister les environnements", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Lister les environnements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Environnements"
     },
     {
@@ -332,12 +1066,56 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["environnement", "lecture"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "environnement",
+        "lecture"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère un environnement Postman.",
-      "args": { "title": "Récupérer un environnement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "environmentId", "label": "ID d'environnement", "default": "environment-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Récupérer un environnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "environmentId",
+            "label": "ID d'environnement",
+            "default": "environment-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Environnements"
     },
     {
@@ -351,12 +1129,80 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["environnement", "création"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "environnement",
+        "création"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Crée un environnement Postman.",
-      "args": { "title": "Créer un environnement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "name", "label": "Nom", "default": "Environnement API", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "json", "key": "values", "label": "Variables", "default": [{ "key": "baseUrl", "value": "https://api.example.com", "type": "text", "enabled": true }], "col": { "xs": 24 } }, { "type": "text", "key": "workspaceId", "label": "ID du workspace", "col": { "xs": 24 } }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Créer un environnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "default": "Environnement API",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "values",
+            "label": "Variables",
+            "default": [
+              {
+                "key": "baseUrl",
+                "value": "https://api.example.com",
+                "type": "text",
+                "enabled": true
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "workspaceId",
+            "label": "ID du workspace",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Environnements"
     },
     {
@@ -370,12 +1216,80 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["environnement", "mise à jour"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "environnement",
+        "mise à jour"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Met à jour un environnement Postman.",
-      "args": { "title": "Mettre à jour un environnement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "environmentId", "label": "ID d'environnement", "default": "environment-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }, { "type": "json", "key": "environment", "label": "Environnement", "default": { "name": "Environnement API", "values": [{ "key": "baseUrl", "value": "https://api.example.com", "type": "text", "enabled": true }] }, "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Mettre à jour un environnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "environmentId",
+            "label": "ID d'environnement",
+            "default": "environment-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "environment",
+            "label": "Environnement",
+            "default": {
+              "name": "Environnement API",
+              "values": [
+                {
+                  "key": "baseUrl",
+                  "value": "https://api.example.com",
+                  "type": "text",
+                  "enabled": true
+                }
+              ]
+            },
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Environnements"
     },
     {
@@ -389,12 +1303,56 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["environnement", "suppression"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_operation" }],
+      "tags": [
+        "environnement",
+        "suppression"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_operation"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Supprime un environnement Postman.",
-      "args": { "title": "Supprimer un environnement", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "environmentId", "label": "ID d'environnement", "default": "environment-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Supprimer un environnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "environmentId",
+            "label": "ID d'environnement",
+            "default": "environment-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Environnements"
     },
     {
@@ -408,12 +1366,41 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["monitors", "liste"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resources" }],
+      "tags": [
+        "monitors",
+        "liste"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resources"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les monitors Postman.",
-      "args": { "title": "Lister les monitors", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Lister les monitors",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Monitors"
     },
     {
@@ -427,12 +1414,56 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["monitor", "lecture"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_resource" }],
+      "tags": [
+        "monitor",
+        "lecture"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère le détail d'un monitor.",
-      "args": { "title": "Récupérer un monitor", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "monitorId", "label": "ID du monitor", "default": "monitor-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Récupérer un monitor",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "monitorId",
+            "label": "ID du monitor",
+            "default": "monitor-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Monitors"
     },
     {
@@ -446,13 +1477,292 @@
       "nodeKind": "function",
       "category": "Postman",
       "providerKey": "postman",
-      "tags": ["monitor", "exécution"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:postman_operation" }],
+      "tags": [
+        "monitor",
+        "exécution"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_operation"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Lance manuellement un monitor Postman.",
-      "args": { "title": "Déclencher un monitor", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [{ "type": "text", "key": "monitorId", "label": "ID du monitor", "default": "monitor-id", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Déclencher un monitor",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "monitorId",
+            "label": "ID du monitor",
+            "default": "monitor-id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Monitors"
+    },
+    {
+      "key": "postman_monitor_create",
+      "name": "postmanMonitorCreate",
+      "schemaVersion": 2,
+      "title": "Créer un monitor",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-stopwatch",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Postman",
+      "providerKey": "postman",
+      "tags": [
+        "monitor",
+        "postman"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un monitor Postman.",
+      "args": {
+        "title": "Créer un monitor",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "collectionUid",
+            "label": "Collection UID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "schedule",
+            "label": "Schedule JSON",
+            "description": "Planning monitor (cron/timezone).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Monitors",
+      "risk": "write"
+    },
+    {
+      "key": "postman_monitor_update",
+      "name": "postmanMonitorUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un monitor",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Postman",
+      "providerKey": "postman",
+      "tags": [
+        "monitor",
+        "postman"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_resource"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour un monitor Postman.",
+      "args": {
+        "title": "Mettre à jour un monitor",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "monitorId",
+            "label": "ID du monitor",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "collectionUid",
+            "label": "Collection UID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "schedule",
+            "label": "Schedule JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Monitors",
+      "risk": "write"
+    },
+    {
+      "key": "postman_monitor_delete",
+      "name": "postmanMonitorDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un monitor",
+      "subtitle": "Monitors",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Postman",
+      "providerKey": "postman",
+      "tags": [
+        "monitor",
+        "postman"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:postman_operation"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un monitor Postman.",
+      "args": {
+        "title": "Supprimer un monitor",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "monitorId",
+            "label": "ID du monitor",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Monitors",
+      "risk": "destructive"
     }
   ]
 }

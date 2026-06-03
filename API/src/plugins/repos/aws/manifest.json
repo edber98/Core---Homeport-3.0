@@ -3058,6 +3058,339 @@
       },
       "group": "Lambda",
       "risk": "write"
+    },
+    {
+      "key": "aws_lambda_list_functions",
+      "name": "awsLambdaListFunctions",
+      "schemaVersion": 2,
+      "title": "Lister les fonctions Lambda",
+      "subtitle": "Lambda",
+      "icon": "fa-solid fa-list",
+      "tags": [
+        "aws",
+        "lambda"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsLambda",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_items"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les fonctions AWS Lambda.",
+      "args": {
+        "title": "Lister les fonctions Lambda",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "maxItems",
+            "label": "Nombre max",
+            "description": "Limite du nombre de fonctions.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Lambda"
+    },
+    {
+      "key": "aws_s3_move_object",
+      "name": "awsS3MoveObject",
+      "schemaVersion": 2,
+      "title": "Deplacer un objet S3",
+      "subtitle": "S3",
+      "icon": "fa-solid fa-right-left",
+      "tags": [
+        "aws",
+        "s3"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Deplace un objet entre emplacements S3.",
+      "args": {
+        "title": "Deplacer un objet S3",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sourceBucket",
+            "label": "Bucket source",
+            "description": "Bucket source.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sourceKey",
+            "label": "Cle source",
+            "description": "Cle source.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destinationBucket",
+            "label": "Bucket destination",
+            "description": "Bucket destination.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destinationKey",
+            "label": "Cle destination",
+            "description": "Cle destination.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "S3",
+      "risk": "write"
+    },
+    {
+      "key": "aws_s3_delete_objects",
+      "name": "awsS3DeleteObjects",
+      "schemaVersion": 2,
+      "title": "Supprimer plusieurs objets S3",
+      "subtitle": "S3",
+      "icon": "fa-solid fa-trash-can",
+      "tags": [
+        "aws",
+        "s3"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsS3",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_s3_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime plusieurs objets d un bucket S3.",
+      "args": {
+        "title": "Supprimer plusieurs objets S3",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "description": "Nom du bucket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "keys",
+            "label": "Cles JSON",
+            "description": "Tableau JSON de cles a supprimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "S3",
+      "risk": "destructive"
+    },
+    {
+      "key": "aws_ses_update_template",
+      "name": "awsSesUpdateTemplate",
+      "schemaVersion": 2,
+      "title": "Mettre a jour un template SES",
+      "subtitle": "SES",
+      "icon": "fa-solid fa-pen",
+      "tags": [
+        "aws",
+        "ses"
+      ],
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AWS",
+      "providerKey": "awsSES",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:aws_ses_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met a jour un template email SES.",
+      "args": {
+        "title": "Mettre a jour un template SES",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "templateName",
+            "label": "Nom du template",
+            "description": "Template SES.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subjectPart",
+            "label": "Sujet",
+            "description": "Sujet du template.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "htmlPart",
+            "label": "Partie HTML",
+            "description": "Corps HTML.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "textPart",
+            "label": "Partie texte",
+            "description": "Corps texte.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SES",
+      "risk": "write"
     }
   ]
 }
