@@ -13,14 +13,13 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const payload = {};
+    if (d.target_url !== undefined && d.target_url !== null && d.target_url !== '') payload.target_url = d.target_url;
+    if (d.subscriptions !== undefined && d.subscriptions !== null && d.subscriptions !== '') {
+      try { payload.subscriptions = utils.parseJsonInput(d.subscriptions, 'subscriptions', undefined); } catch (e) { return { ok: false, error: e.message }; }
     }
+    if (!Object.keys(payload).length) return { ok: false, error: 'Aucun champ à envoyer.' };
+    const body = { data: payload };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });

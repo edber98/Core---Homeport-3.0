@@ -226,6 +226,10 @@ function validateArgsFields(connectorName, template) {
       return false;
     }
 
+    if (key === "query" && (type === "text" || type === "textarea")) {
+      return false;
+    }
+
     return type === "json" || type === "json_editor" || mentionsGenericJson;
   });
 

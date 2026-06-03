@@ -16,7 +16,7 @@
 | asana | Oui |
 | assemblyai | Oui |
 | atera | Oui |
-| attio | Non |
+| attio | Oui |
 | aws | Oui |
 | baseten | Non |
 | beehiiv | Non |

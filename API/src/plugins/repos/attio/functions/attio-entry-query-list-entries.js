@@ -13,14 +13,26 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const payload = {};
+    if (d.filter !== undefined && d.filter !== null && d.filter !== '') {
+      try { payload.filter = utils.parseJsonInput(d.filter, 'filter', undefined); } catch (e) { return { ok: false, error: e.message }; }
     }
+    if (d.filter_view_id !== undefined && d.filter_view_id !== null && d.filter_view_id !== '') payload.filter_view_id = d.filter_view_id;
+    if (d.sorts !== undefined && d.sorts !== null && d.sorts !== '') {
+      try { payload.sorts = utils.parseJsonInput(d.sorts, 'sorts', undefined); } catch (e) { return { ok: false, error: e.message }; }
+    }
+    if (d.limit !== undefined && d.limit !== null && d.limit !== '') {
+      const parsed = Number(d.limit);
+      if (Number.isNaN(parsed)) return { ok: false, error: 'limit invalide.' };
+      payload.limit = parsed;
+    }
+    if (d.offset !== undefined && d.offset !== null && d.offset !== '') {
+      const parsed = Number(d.offset);
+      if (Number.isNaN(parsed)) return { ok: false, error: 'offset invalide.' };
+      payload.offset = parsed;
+    }
+    if (!Object.keys(payload).length) return { ok: false, error: 'Aucun champ à envoyer.' };
+    const body = payload;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
