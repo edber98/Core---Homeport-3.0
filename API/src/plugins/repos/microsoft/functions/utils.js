@@ -1,14 +1,32 @@
 const TOKEN_BASE = "https://login.microsoftonline.com";
 const GRAPH_API = "https://graph.microsoft.com/v1.0";
 
+// Runtime OAuth2 managé (SSO délégué via bouncer) : client_id/secret côté env,
+// refresh token dans le credential, endpoint /common.
+let getOAuth2AccessToken = null;
+try { ({ getOAuth2AccessToken } = require("../../../../oauth/oauth2-runtime")); } catch { /* optionnel */ }
+
 let cachedToken = null;
 let tokenExpiry = 0;
 
 async function getAccessToken(credentials) {
+  const creds = credentials || {};
+
+  // SSO managé (bouncer) : pas de clientId/secret dans le credential → ils viennent
+  // de l'env. On délègue au runtime (refresh_token, cache par credential intégré).
+  const isManaged = !creds.clientId && !creds.clientSecret && (creds.providerKey || creds.refreshToken);
+  if (isManaged && getOAuth2AccessToken) {
+    return getOAuth2AccessToken({
+      providerKey: String(creds.providerKey || "microsoft").trim() || "microsoft",
+      credentials: creds,
+    });
+  }
+
+  // Fallback legacy : identifiants saisis manuellement (tenant + app dédiée).
   const now = Date.now();
   if (cachedToken && now < tokenExpiry - 30000) return cachedToken;
 
-  const { tenantId, clientId, clientSecret, refreshToken } = credentials;
+  const { tenantId, clientId, clientSecret, refreshToken } = creds;
   if (!tenantId || !clientId || !clientSecret || !refreshToken) {
     throw new Error("Missing Microsoft OAuth2 credentials (tenantId, clientId, clientSecret, refreshToken).");
   }

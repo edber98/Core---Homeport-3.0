@@ -105,6 +105,8 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/node-templates')());
     app.use('/api', require('./modules/db/apps')());
     app.use('/api', require('./modules/db/credentials')());
+    // OAuth bouncer : POST /api/auth/connections/prepare + GET /oauth/:vendor/callback (sans préfixe /api).
+    app.use(require('./modules/oauth-connections')());
     app.use('/api', require('./modules/db/transfer')());
     app.use('/api', require('./modules/db/import-manifest')());
     app.use('/api', require('./modules/db/workspaces')());

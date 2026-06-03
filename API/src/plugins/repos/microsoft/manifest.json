@@ -1358,7 +1358,7 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "Identifiants Microsoft 365",
+        "title": "Connexion Microsoft",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1366,61 +1366,79 @@
         "fields": [
           {
             "type": "text",
-            "key": "tenantId",
-            "label": "Tenant ID",
+            "key": "accountEmail",
+            "label": "Compte connecté",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "scope",
+            "label": "Périmètres accordés",
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
-            "key": "clientId",
-            "label": "Client ID",
+            "key": "connectedAt",
+            "label": "Connecté le",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "text",
-            "key": "clientSecret",
-            "label": "Client secret",
-            "col": {
-              "xs": 24
-            },
-            "secret": true,
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           },
           {
             "type": "text",
             "key": "refreshToken",
-            "label": "Refresh token",
+            "label": "Jeton de rafraîchissement",
             "col": {
               "xs": 24
             },
-            "secret": true,
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "secret": true
           }
         ],
         "displayTitle": false,
         "displayDescription": false
+      },
+      "auth": {
+        "type": "oauth2",
+        "oauth2": {
+          "useBouncer": true,
+          "vendor": "microsoft",
+          "authorizeUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+          "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+          "userinfoUrl": "https://graph.microsoft.com/v1.0/me",
+          "clientIdEnv": "MICROSOFT_OAUTH_CLIENT_ID",
+          "clientSecretEnv": "MICROSOFT_OAUTH_CLIENT_SECRET",
+          "scopes": [
+            "openid",
+            "email",
+            "profile",
+            "offline_access",
+            "User.Read",
+            "Sites.ReadWrite.All",
+            "Files.ReadWrite.All",
+            "Team.ReadBasic.All",
+            "Channel.ReadBasic.All",
+            "ChannelMessage.Send",
+            "Chat.ReadWrite"
+          ],
+          "authorizationParams": {
+            "prompt": "consent"
+          },
+          "fieldMap": {
+            "refreshToken": "token.refresh_token",
+            "accountEmail": [
+              "userinfo.mail",
+              "userinfo.userPrincipalName"
+            ],
+            "accountName": "userinfo.displayName",
+            "scope": "token.scope",
+            "tokenType": "token.token_type"
+          },
+          "requireRefreshToken": true
+        }
       }
     }
   ],

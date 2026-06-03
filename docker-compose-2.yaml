@@ -24,6 +24,17 @@ services:
       - OPENAI_MODEL=${OPENAI_MODEL}
       - HOST=0.0.0.0
       - PLUGIN_IMPORT_ENABLED=1
+      # ── OAuth Bouncer (concentrateur auth.kinn.fr) ──
+      - KINN_OAUTH_RELAY_SECRET=${KINN_OAUTH_RELAY_SECRET:-}
+      - KINN_OAUTH_CONCENTRATOR_URL=${KINN_OAUTH_CONCENTRATOR_URL:-https://auth.kinn.fr}
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID:-}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET:-}
+      - MICROSOFT_OAUTH_CLIENT_ID=${MICROSOFT_OAUTH_CLIENT_ID:-}
+      - MICROSOFT_OAUTH_CLIENT_SECRET=${MICROSOFT_OAUTH_CLIENT_SECRET:-}
+      - META_OAUTH_CLIENT_ID=${META_OAUTH_CLIENT_ID:-}
+      - META_OAUTH_CLIENT_SECRET=${META_OAUTH_CLIENT_SECRET:-}
+      - TIKTOK_OAUTH_CLIENT_KEY=${TIKTOK_OAUTH_CLIENT_KEY:-}
+      - TIKTOK_OAUTH_CLIENT_SECRET=${TIKTOK_OAUTH_CLIENT_SECRET:-}
     labels:
       - "traefik.http.routers.kinn-backend-2.rule=Host(`app.kinn.fr`) && (PathPrefix(`/api`) || PathPrefix(`/auth`)) && !PathPrefix(`/onlyoffice`)"
       - "traefik.http.routers.kinn-backend-2.priority=20"

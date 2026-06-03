@@ -366,3 +366,72 @@ questions:
       Format : "zitadelRole:kinnRole,...". Utilise "*:role" pour le fallback (défaut editor).
       Exemple : "superadmin:admin,poweruser:editor,readonly:viewer,*:viewer".
     group: SSO Zitadel
+
+  - variable: kinn.kinnApi.kinn_oauth_relay_secret
+    type: password
+    default: ""
+    label: OAuth relay secret (HS256)
+    description: |
+      Clé HS256 PARTAGÉE avec le concentrateur auth.kinn.fr et toute la flotte.
+      DOIT être identique partout. Générer 1x : openssl rand -hex 32.
+      Injectée automatiquement par Kinn-panel.
+    group: OAuth Bouncer
+
+  - variable: kinn.kinnApi.kinn_oauth_concentrator_url
+    type: string
+    default: "https://auth.kinn.fr"
+    label: URL du concentrateur OAuth
+    description: redirect_uri envoyé aux providers = ${URL}/oauth/<vendor>/callback.
+    group: OAuth Bouncer
+
+  - variable: kinn.kinnApi.google_oauth_client_id
+    type: string
+    default: ""
+    label: Google — Client ID
+    description: App OAuth Google (redirect auth.kinn.fr/oauth/google/callback). Géré côté Kinn-panel.
+    group: OAuth Bouncer
+
+  - variable: kinn.kinnApi.google_oauth_client_secret
+    type: password
+    default: ""
+    label: Google — Client Secret
+    group: OAuth Bouncer
+
+  - variable: kinn.kinnApi.microsoft_oauth_client_id
+    type: string
+    default: ""
+    label: Microsoft — Client ID
+    description: App Azure AD (endpoint /common pour multi-tenant). Redirect auth.kinn.fr/oauth/microsoft/callback.
+    group: OAuth Bouncer
+
+  - variable: kinn.kinnApi.microsoft_oauth_client_secret
+    type: password
+    default: ""
+    label: Microsoft — Client Secret
+    group: OAuth Bouncer
+
+  - variable: kinn.kinnApi.meta_oauth_client_id
+    type: string
+    default: ""
+    label: Meta — Client ID
+    description: App Meta/Facebook. Redirect auth.kinn.fr/oauth/meta/callback.
+    group: OAuth Bouncer
+
+  - variable: kinn.kinnApi.meta_oauth_client_secret
+    type: password
+    default: ""
+    label: Meta — Client Secret
+    group: OAuth Bouncer
+
+  - variable: kinn.kinnApi.tiktok_oauth_client_key
+    type: string
+    default: ""
+    label: TikTok — Client Key
+    description: TikTok utilise client_key (et non client_id). PKCE obligatoire. Redirect auth.kinn.fr/oauth/tiktok/callback.
+    group: OAuth Bouncer
+
+  - variable: kinn.kinnApi.tiktok_oauth_client_secret
+    type: password
+    default: ""
+    label: TikTok — Client Secret
+    group: OAuth Bouncer

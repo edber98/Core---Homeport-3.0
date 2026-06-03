@@ -230,7 +230,7 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "OAuth Microsoft Graph",
+        "title": "Connexion Microsoft",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -238,27 +238,32 @@
         "fields": [
           {
             "type": "text",
-            "key": "tenantId",
-            "label": "ID du tenant",
-            "description": "ID du tenant Microsoft.",
+            "key": "accountEmail",
+            "label": "Compte connecté",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "scope",
+            "label": "Périmètres accordés",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "text",
-            "key": "clientId",
-            "label": "ID client",
-            "description": "Client ID OAuth.",
+            "key": "connectedAt",
+            "label": "Connecté le",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "text",
-            "key": "clientSecret",
-            "label": "Secret client",
-            "description": "Client secret OAuth.",
+            "key": "refreshToken",
+            "label": "Jeton de rafraîchissement",
             "col": {
               "xs": 24
             },
@@ -267,6 +272,40 @@
         ],
         "displayTitle": false,
         "displayDescription": false
+      },
+      "auth": {
+        "type": "oauth2",
+        "oauth2": {
+          "useBouncer": true,
+          "vendor": "microsoft",
+          "authorizeUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+          "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+          "userinfoUrl": "https://graph.microsoft.com/v1.0/me",
+          "clientIdEnv": "MICROSOFT_OAUTH_CLIENT_ID",
+          "clientSecretEnv": "MICROSOFT_OAUTH_CLIENT_SECRET",
+          "scopes": [
+            "openid",
+            "email",
+            "profile",
+            "offline_access",
+            "User.Read",
+            "Calendars.ReadWrite"
+          ],
+          "authorizationParams": {
+            "prompt": "consent"
+          },
+          "fieldMap": {
+            "refreshToken": "token.refresh_token",
+            "accountEmail": [
+              "userinfo.mail",
+              "userinfo.userPrincipalName"
+            ],
+            "accountName": "userinfo.displayName",
+            "scope": "token.scope",
+            "tokenType": "token.token_type"
+          },
+          "requireRefreshToken": true
+        }
       }
     }
   ],

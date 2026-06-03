@@ -1,5 +1,25 @@
+// Runtime OAuth2 managé (SSO délégué via bouncer).
+let getOAuth2AccessToken = null;
+try { ({ getOAuth2AccessToken } = require("../../../../oauth/oauth2-runtime")); } catch { /* optionnel */ }
+
 async function getAccessToken(opts) {
   const credentials = (opts && opts.credentials) || {};
+
+  // SSO managé (bouncer) : refresh_token délégué, client_id/secret côté env.
+  const isManaged = !credentials.clientId && !credentials.clientSecret && (credentials.providerKey || credentials.refreshToken);
+  if (isManaged && getOAuth2AccessToken) {
+    try {
+      const accessToken = await getOAuth2AccessToken({
+        providerKey: String(credentials.providerKey || "sharePoint").trim() || "sharePoint",
+        credentials,
+      });
+      return { ok: true, accessToken };
+    } catch (e) {
+      return { ok: false, error: e.message };
+    }
+  }
+
+  // Fallback legacy : app-only (client_credentials) avec identifiants saisis.
   const tenantId = credentials.tenantId;
   const clientId = credentials.clientId;
   const clientSecret = credentials.clientSecret;

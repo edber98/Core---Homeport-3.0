@@ -64,6 +64,20 @@ services:
       - ZITADEL_POST_LOGOUT_URI=${ZITADEL_POST_LOGOUT_URI:-}
       - KINN_PANEL_HMAC_SECRET=${KINN_PANEL_HMAC_SECRET:-}
       - SSO_ROLE_MAP=${SSO_ROLE_MAP:-}
+      # ── OAuth Bouncer (concentrateur auth.kinn.fr) ──
+      # Clé HS256 PARTAGÉE avec le panel + toute la flotte (même valeur partout).
+      - KINN_OAUTH_RELAY_SECRET=${KINN_OAUTH_RELAY_SECRET:-}
+      - KINN_OAUTH_CONCENTRATOR_URL=${KINN_OAUTH_CONCENTRATOR_URL:-https://auth.kinn.fr}
+      # Identifiants OAuth par vendor (1 app enregistrée par vendor chez le provider).
+      - GOOGLE_OAUTH_CLIENT_ID=${GOOGLE_OAUTH_CLIENT_ID:-}
+      - GOOGLE_OAUTH_CLIENT_SECRET=${GOOGLE_OAUTH_CLIENT_SECRET:-}
+      - MICROSOFT_OAUTH_CLIENT_ID=${MICROSOFT_OAUTH_CLIENT_ID:-}
+      - MICROSOFT_OAUTH_CLIENT_SECRET=${MICROSOFT_OAUTH_CLIENT_SECRET:-}
+      - META_OAUTH_CLIENT_ID=${META_OAUTH_CLIENT_ID:-}
+      - META_OAUTH_CLIENT_SECRET=${META_OAUTH_CLIENT_SECRET:-}
+      # TikTok utilise client_key (et non client_id).
+      - TIKTOK_OAUTH_CLIENT_KEY=${TIKTOK_OAUTH_CLIENT_KEY:-}
+      - TIKTOK_OAUTH_CLIENT_SECRET=${TIKTOK_OAUTH_CLIENT_SECRET:-}
     # ── Capabilities pour bwrap user namespaces ──────────────────
     # Sur Docker Engine moderne (rootless ou classic), bwrap nécessite seccomp
     # permissif. En K8s sans privileged, retirer ces deux options et passer

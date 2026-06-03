@@ -9,6 +9,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { CatalogService, AppProvider, CredentialSummary, CredentialDoc } from '../../services/catalog.service';
+import { ProviderAuthService } from '../../services/provider-auth.service';
 import { AccessControlService } from '../../services/access-control.service';
 import { DynamicForm } from '../../modules/dynamic-form/dynamic-form';
 import { DynamicFormService, FormSchema } from '../../modules/dynamic-form/dynamic-form.service';
@@ -116,12 +117,22 @@ import { environment } from '../../../environments/environment';
                 </nz-form-item>
               </div>
             </form>
+            <!-- Connexion managée (OAuth2 SSO via bouncer) -->
+            <div *ngIf="isManaged" class="oauth-connect">
+              <div class="oauth-status" [class.connected]="isConnected">
+                <span *ngIf="isConnected">✓ Connecté<span *ngIf="credValues?.accountEmail"> — {{ credValues.accountEmail }}</span></span>
+                <span *ngIf="!isConnected">Connexion requise pour cette application.</span>
+              </div>
+              <button nz-button nzType="default" [nzLoading]="connecting" (click)="connect()">
+                {{ isConnected ? 'Reconnecter' : 'Se connecter' }}
+              </button>
+            </div>
             <div *ngIf="currentSchema as schema">
               <app-dynamic-form [schema]="schema" [(value)]="credValues" (validChange)="credValid=$event" [hideActions]="true" [disableExpressions]="true"></app-dynamic-form>
             </div>
             <div class="actions end">
               <button nz-button (click)="closeCreate()">Annuler</button>
-              <button nz-button nzType="primary" class="primary-cta" [disabled]="!createForm.valid || !credValid" (click)="create()">Créer</button>
+              <button nz-button nzType="primary" class="primary-cta" [disabled]="!createForm.valid || (isManaged ? !isConnected : !credValid)" (click)="create()">Créer</button>
             </div>
           </div>
         </ng-container>
@@ -178,6 +189,9 @@ import { environment } from '../../../environments/environment';
     .icon-btn:hover:not([disabled]) { background: #fdf2f8; color:#e61982; box-shadow: 0 4px 12px rgba(230,25,130,0.18); transform: translateY(-1px); }
     .icon-btn.danger:hover:not([disabled]) { border-color:#fecaca; background:#fee2e2; color:#b91c1c; box-shadow: 0 4px 12px rgba(239,68,68,0.18); }
     .create-modal .grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap:8px; }
+    .oauth-connect { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; margin:8px 0 12px; border:1px solid #e5e7eb; border-radius:10px; background:#fafafa; }
+    .oauth-status { font-size:13px; color:#6b7280; }
+    .oauth-status.connected { color:#15803d; }
     .actions.end { display:flex; justify-content:flex-end; gap:8px; margin-top: 10px; }
     .actions.end .primary-cta { background:#e61982; border-color:#e61982; color:#fff; border-radius: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(230,25,130,0.2); }
     .actions.end .primary-cta:hover:not([disabled]),
@@ -218,7 +232,7 @@ export class CredentialListComponent implements OnInit, OnDestroy {
   useNativeFilterSelect = false;
   isMobile = false;
 
-  constructor(private fb: FormBuilder, private catalog: CatalogService, private acl: AccessControlService, public dfs: DynamicFormService, private zone: NgZone, private cdr: ChangeDetectorRef, private router: Router, private ui: UiMessageService) {
+  constructor(private fb: FormBuilder, private catalog: CatalogService, private acl: AccessControlService, public dfs: DynamicFormService, private zone: NgZone, private cdr: ChangeDetectorRef, private router: Router, private ui: UiMessageService, private providerAuth: ProviderAuthService) {
     this.updateFilterSelectMode();
   }
   private aclSub?: any;
@@ -285,12 +299,50 @@ export class CredentialListComponent implements OnInit, OnDestroy {
     try { setTimeout(() => { try { this.cdr.detectChanges(); } catch {} }, 0); } catch {}
   }
   closeCreate() { this.createVisible = false; }
+
+  connecting = false;
+  /** Provider sélectionné dans le formulaire de création. */
+  get selectedProvider(): AppProvider | undefined {
+    return this.providers.find(x => x.id === this.createForm?.value?.providerId);
+  }
+  /** Le provider expose-t-il un flow OAuth2 managé (« Se connecter ») ? */
+  get isManaged(): boolean { return this.providerAuth.hasManagedCredentialFlow(this.selectedProvider); }
+  /** Un compte est-il déjà connecté (refreshToken présent) ? */
+  get isConnected(): boolean { return this.providerAuth.hasCredentialValues(this.selectedProvider, this.credValues); }
+
+  /** Lance le flow OAuth2 managé via popup + concentrateur auth.kinn.fr. */
+  connect() {
+    const provider = this.selectedProvider;
+    if (!provider || !this.workspaceId) { this.ui.error('Application ou workspace introuvable'); return; }
+    this.connecting = true;
+    this.providerAuth.connect(provider, this.workspaceId)
+      .then((res) => {
+        this.credValues = { ...(this.credValues || {}), ...(res.values || {}) };
+        this.credValid = true;
+        if (!(this.createForm.value?.name || '').trim()) {
+          const suggested = String(res.values?.accountEmail || provider.title || provider.name || '').trim();
+          if (suggested) this.createForm.patchValue({ name: suggested });
+        }
+        this.ui.success('Compte connecté');
+        try { this.cdr.detectChanges(); } catch {}
+      })
+      .catch((err) => this.ui.error(String(err?.message || 'Connexion échouée')))
+      .finally(() => { this.connecting = false; try { this.cdr.detectChanges(); } catch {} });
+  }
+
   onProviderChange(providerId: string) {
     const p = this.providers.find(x => x.id === providerId);
-    const base = (p?.credentialsForm as FormSchema) || ({} as any);
-    // Provide a visible default schema if none or empty
-    const hasContent = base && (Array.isArray((base as any).fields) || Array.isArray((base as any).steps));
-    const nextSchema = hasContent ? base : ({ title: 'Credentials', ui: { layout: 'vertical' }, fields: [] } as FormSchema);
+    let nextSchema: FormSchema | null;
+    if (this.providerAuth.hasManagedCredentialFlow(p)) {
+      // Flow OAuth2 managé : on masque les champs gérés automatiquement
+      // (refreshToken, accountEmail…) → seul le bouton « Se connecter » reste.
+      // On ne garde que d'éventuels champs supplémentaires non managés.
+      nextSchema = (this.providerAuth.getSupplementalCredentialSchema(p) as FormSchema) || null;
+    } else {
+      const base = (p?.credentialsForm as FormSchema) || ({} as any);
+      const hasContent = base && (Array.isArray((base as any).fields) || Array.isArray((base as any).steps));
+      nextSchema = hasContent ? base : ({ title: 'Credentials', ui: { layout: 'vertical' }, fields: [] } as FormSchema);
+    }
     // Drop current form component to avoid transient control-name mismatches
     this.currentSchema = null;
     this.credValues = {};
@@ -302,7 +354,10 @@ export class CredentialListComponent implements OnInit, OnDestroy {
     }, 0);
   }
   create() {
-    if (!this.createForm.valid || !this.credValid || !this.currentSchema) return;
+    if (!this.createForm.valid) return;
+    // Managé : la validité = compte connecté. Sinon : formulaire credentials valide.
+    if (this.isManaged) { if (!this.isConnected) return; }
+    else if (!this.credValid || !this.currentSchema) return;
     const v = this.createForm.value as any;
     const doc: CredentialDoc = {
       id: environment.useBackend ? '' : this.slug(`${v.providerId}-${v.name}-${Date.now().toString(36)}`),

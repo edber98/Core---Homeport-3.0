@@ -74,6 +74,7 @@ export type AppProvider = {
   hasCredentials?: boolean;              // if true, this provider expects credentials
   allowWithoutCredentials?: boolean;     // if true, nodes may run without credentials
   credentialsForm?: any;                 // FormSchema for credentials (built via form-builder)
+  auth?: any;                            // config d'auth managée (ex: { type:'oauth2', oauth2:{...} })
 };
 
 // Credentials storage
@@ -423,6 +424,7 @@ export class CatalogService {
         hasCredentials: !!p.hasCredentials,
         allowWithoutCredentials: !!p.allowWithoutCredentials,
         credentialsForm: p.credentialsForm,
+        auth: p.auth,
       } as AppProvider))));
     }
     return of(this.load<AppProvider[]>(this.APP_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));

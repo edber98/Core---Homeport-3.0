@@ -583,7 +583,7 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "OAuth Microsoft",
+        "title": "Connexion Microsoft",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -591,24 +591,32 @@
         "fields": [
           {
             "type": "text",
-            "key": "tenantId",
-            "label": "ID du tenant",
+            "key": "accountEmail",
+            "label": "Compte connecté",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "scope",
+            "label": "Périmètres accordés",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "text",
-            "key": "clientId",
-            "label": "ID client",
+            "key": "connectedAt",
+            "label": "Connecté le",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "text",
-            "key": "clientSecret",
-            "label": "Secret client",
+            "key": "refreshToken",
+            "label": "Jeton de rafraîchissement",
             "col": {
               "xs": 24
             },
@@ -617,6 +625,41 @@
         ],
         "displayTitle": false,
         "displayDescription": false
+      },
+      "auth": {
+        "type": "oauth2",
+        "oauth2": {
+          "useBouncer": true,
+          "vendor": "microsoft",
+          "authorizeUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+          "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+          "userinfoUrl": "https://graph.microsoft.com/v1.0/me",
+          "clientIdEnv": "MICROSOFT_OAUTH_CLIENT_ID",
+          "clientSecretEnv": "MICROSOFT_OAUTH_CLIENT_SECRET",
+          "scopes": [
+            "openid",
+            "email",
+            "profile",
+            "offline_access",
+            "User.Read",
+            "Mail.ReadWrite",
+            "Mail.Send"
+          ],
+          "authorizationParams": {
+            "prompt": "consent"
+          },
+          "fieldMap": {
+            "refreshToken": "token.refresh_token",
+            "accountEmail": [
+              "userinfo.mail",
+              "userinfo.userPrincipalName"
+            ],
+            "accountName": "userinfo.displayName",
+            "scope": "token.scope",
+            "tokenType": "token.token_type"
+          },
+          "requireRefreshToken": true
+        }
       }
     }
   ],
@@ -1110,6 +1153,255 @@
       ],
       "risk": "write",
       "riskReason": "Retire un label (réversible)"
+    },
+    {
+      "key": "outlook_send_email",
+      "name": "outlookSendEmail",
+      "schemaVersion": 2,
+      "title": "Envoyer un e-mail Outlook",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "E-mail",
+      "providerKey": "outlook",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        },
+        {
+          "id": "err",
+          "name": "Error",
+          "type": "error"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoyer un e-mail via Outlook (Microsoft Graph).",
+      "args": {
+        "title": "Envoyer un e-mail Outlook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "email",
+            "key": "to",
+            "label": "À",
+            "description": "Adresse(s) du destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "email",
+            "key": "cc",
+            "label": "CC",
+            "description": "Copie carbone (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "email",
+            "key": "bcc",
+            "label": "BCC",
+            "description": "Copie carbone cachée (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Objet",
+            "description": "Sujet du message.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Corps (texte)",
+            "description": "Contenu en texte brut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "html",
+            "key": "html",
+            "label": "Corps (HTML)",
+            "description": "Contenu HTML (prioritaire sur le texte).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "saveToSentItems",
+            "label": "Enregistrer dans Éléments envoyés",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "outlook_list_messages",
+      "name": "outlookListMessages",
+      "schemaVersion": 2,
+      "title": "Lister les e-mails Outlook",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "E-mail",
+      "providerKey": "outlook",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        },
+        {
+          "id": "err",
+          "name": "Error",
+          "type": "error"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les messages de la boîte de réception.",
+      "args": {
+        "title": "Lister les e-mails Outlook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de messages (max 100).",
+            "col": {
+              "xs": 24
+            },
+            "default": 25
+          },
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Recherche plein texte (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filtre OData",
+            "description": "Filtre Graph $filter (optionnel, ignoré si recherche).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "outlook_get_message",
+      "name": "outlookGetMessage",
+      "schemaVersion": 2,
+      "title": "Lire un e-mail Outlook",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "E-mail",
+      "providerKey": "outlook",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload"
+        },
+        {
+          "id": "err",
+          "name": "Error",
+          "type": "error"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer le contenu complet d’un message.",
+      "args": {
+        "title": "Lire un e-mail Outlook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "messageId",
+            "label": "ID du message",
+            "description": "Identifiant du message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
     }
   ]
 }

@@ -116,6 +116,8 @@ module.exports = function(){
       }
     }
     Object.assign(p, patch);
+    if (patch.credentialsForm != null) p.markModified('credentialsForm');
+    if (patch.auth != null) p.markModified('auth');
     await p.save();
     res.apiOk(p);
   });

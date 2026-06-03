@@ -144,4 +144,10 @@ module.exports = {
       : ''),
   // Secret HMAC pour les webhooks /internal/* poussés par Kinn-panel
   KINN_PANEL_HMAC_SECRET: process.env.KINN_PANEL_HMAC_SECRET || '',
+  // === OAuth Bouncer (concentrateur auth.kinn.fr) ===
+  // Clé HS256 PARTAGÉE avec le panel + toute la flotte (signe/vérifie les `state` JWT).
+  // Doit être IDENTIQUE partout. Générer 1x: `openssl rand -hex 32`.
+  KINN_OAUTH_RELAY_SECRET: process.env.KINN_OAUTH_RELAY_SECRET || '',
+  // URL du concentrateur. Le redirect_uri envoyé aux providers est `${url}/oauth/{vendor}/callback`.
+  KINN_OAUTH_CONCENTRATOR_URL: (process.env.KINN_OAUTH_CONCENTRATOR_URL || 'https://auth.kinn.fr').replace(/\/+$/, ''),
 };
