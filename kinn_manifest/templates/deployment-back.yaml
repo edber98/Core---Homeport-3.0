@@ -20,7 +20,7 @@ spec:
       {{- end }}
       containers:
         - name: kinn-api
-          image: registry.c4rbon.group/edouard.bernier/kinn-homeport/api:v0.0.43
+          image: registry.c4rbon.group/edouard.bernier/kinn-homeport/api:v0.0.44
           ports:
             - containerPort: {{ .Values.kinn.kinnApi.port | int }}
           env:
