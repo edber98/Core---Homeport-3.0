@@ -36,6 +36,9 @@ spec:
               value: {{ .Values.kinn.kinnApi.node_env | default "development" | quote }}
             - name: HMAC_SECRET
               value: {{ .Values.kinn.kinnApi.hmac_secret | quote }}
+            # Clé AES de chiffrement des credentials (Credential.secret). CRITIQUE.
+            - name: ENC_KEY
+              value: {{ .Values.kinn.kinnApi.enc_key | default .Values.kinn.kinnApi.hmac_secret | quote }}
             - name: TOKEN_TTL_SEC
               value: {{ .Values.kinn.kinnApi.token_ttl_sec | quote }}
             - name: MONGO_URL
@@ -76,6 +79,105 @@ spec:
               value: {{ .Values.kinn.kinnApi.openai_api_key | quote }}
             - name: OPENAI_MODEL
               value: {{ .Values.kinn.kinnApi.openai_model | quote }}
+            - name: AI_DEBUG
+              value: {{ .Values.kinn.kinnApi.ai_debug | default "0" | quote }}
+            # ── IA LOCALE (vLLM / Ollama / LM Studio — OpenAI-compatible) ──
+            - name: AI_BASE_URL
+              value: {{ .Values.kinn.kinnApi.ai_base_url | default "" | quote }}
+            - name: VLLM_BASE_URL
+              value: {{ .Values.kinn.kinnApi.vllm_base_url | default "" | quote }}
+            - name: VLLM_MODEL
+              value: {{ .Values.kinn.kinnApi.vllm_model | default "" | quote }}
+            - name: AI_MODEL_VLLM
+              value: {{ .Values.kinn.kinnApi.ai_model_vllm | default "" | quote }}
+            - name: VLLM_API_KEY
+              value: {{ .Values.kinn.kinnApi.vllm_api_key | default "local" | quote }}
+            - name: VLLM_MAX_TOKENS
+              value: {{ .Values.kinn.kinnApi.vllm_max_tokens | default "0" | quote }}
+            - name: AI_FORCE_CHAT_COMPLETIONS
+              value: {{ .Values.kinn.kinnApi.ai_force_chat_completions | default "0" | quote }}
+            # ── IA avancé (toggles agents/subagents) ──
+            - name: AI_DEFAULT_MAX_LOOPS
+              value: {{ .Values.kinn.kinnApi.ai_default_max_loops | default "100" | quote }}
+            - name: AI_ENABLE_THINKING
+              value: {{ .Values.kinn.kinnApi.ai_enable_thinking | default "0" | quote }}
+            - name: AI_DISABLE_DOC_WRITER
+              value: {{ .Values.kinn.kinnApi.ai_disable_doc_writer | default "0" | quote }}
+            - name: AI_DISABLE_MEMORY_EXTRACTOR
+              value: {{ .Values.kinn.kinnApi.ai_disable_memory_extractor | default "0" | quote }}
+            - name: AI_DISABLE_SUBAGENT_ASYNC
+              value: {{ .Values.kinn.kinnApi.ai_disable_subagent_async | default "0" | quote }}
+            - name: AGENT_USE_QUEUE
+              value: {{ .Values.kinn.kinnApi.agent_use_queue | default "0" | quote }}
+            - name: AI_AGENT_WORKTREE_MODE
+              value: {{ .Values.kinn.kinnApi.ai_agent_worktree_mode | default "shared" | quote }}
+            - name: AI_MODEL_LIMITS
+              value: {{ .Values.kinn.kinnApi.ai_model_limits | default "" | quote }}
+            - name: SUBAGENT_DEPS_TIMEOUT_MS
+              value: {{ .Values.kinn.kinnApi.subagent_deps_timeout_ms | default "3600000" | quote }}
+            # ── Install de packages (sandbox code IA) ──
+            - name: AI_PACKAGE_INSTALL_MODE
+              value: {{ .Values.kinn.kinnApi.ai_package_install_mode | default "ask" | quote }}
+            - name: AI_PACKAGE_INSTALL_MAX_PER_DAY
+              value: {{ .Values.kinn.kinnApi.ai_package_install_max_per_day | default "20" | quote }}
+            - name: AI_PACKAGE_WHITELIST
+              value: {{ .Values.kinn.kinnApi.ai_package_whitelist | default "" | quote }}
+            - name: AI_PACKAGE_BLACKLIST
+              value: {{ .Values.kinn.kinnApi.ai_package_blacklist | default "" | quote }}
+            # ── Mini-LLM + outils web de l'agent ──
+            - name: WEB_MINI_BASE_URL
+              value: {{ .Values.kinn.kinnApi.web_mini_base_url | default "" | quote }}
+            - name: WEB_MINI_API_KEY
+              value: {{ .Values.kinn.kinnApi.web_mini_api_key | default "" | quote }}
+            - name: WEB_SEARCH_ENGINE
+              value: {{ .Values.kinn.kinnApi.web_search_engine | default "bing" | quote }}
+            - name: WEB_SEARCH_FALLBACK
+              value: {{ .Values.kinn.kinnApi.web_search_fallback | default "brave" | quote }}
+            - name: WEB_SEARCH_TIMEOUT_MS
+              value: {{ .Values.kinn.kinnApi.web_search_timeout_ms | default "40000" | quote }}
+            - name: WEB_HTTP_TIMEOUT_MS
+              value: {{ .Values.kinn.kinnApi.web_http_timeout_ms | default "30000" | quote }}
+            - name: WEB_BROWSER_TIMEOUT_MS
+              value: {{ .Values.kinn.kinnApi.web_browser_timeout_ms | default "30000" | quote }}
+            - name: WEB_FETCH_MAX_BYTES
+              value: {{ .Values.kinn.kinnApi.web_fetch_max_bytes | default "5242880" | quote }}
+            - name: WEB_FETCH_MAX_RAW_CHARS
+              value: {{ .Values.kinn.kinnApi.web_fetch_max_raw_chars | default "80000" | quote }}
+            # ── Redis (events temps réel / queue agents) ──
+            - name: REDIS_HOST
+              value: {{ .Values.kinn.kinnApi.redis_host | default "" | quote }}
+            - name: REDIS_PORT
+              value: {{ .Values.kinn.kinnApi.redis_port | default "6379" | quote }}
+            - name: REDIS_PASSWORD
+              value: {{ .Values.kinn.kinnApi.redis_password | default "" | quote }}
+            # ── Stockage de fichiers ──
+            - name: FILE_STORAGE_TYPE
+              value: {{ .Values.kinn.kinnApi.file_storage_type | default "local" | quote }}
+            - name: FILE_STORAGE_PATH
+              value: {{ .Values.kinn.kinnApi.file_storage_path | default "/data/files" | quote }}
+            - name: FILE_MAX_SIZE
+              value: {{ .Values.kinn.kinnApi.file_max_size | default "200mb" | quote }}
+            - name: FILE_TTL_DEFAULT
+              value: {{ .Values.kinn.kinnApi.file_ttl_default | default "24h" | quote }}
+            - name: FILE_CLEANUP_INTERVAL
+              value: {{ .Values.kinn.kinnApi.file_cleanup_interval | default "1h" | quote }}
+            - name: FILE_EXECUTION_CLEANUP_DELAY
+              value: {{ .Values.kinn.kinnApi.file_execution_cleanup_delay | default "30m" | quote }}
+            - name: FILE_S3_BUCKET
+              value: {{ .Values.kinn.kinnApi.file_s3_bucket | default "" | quote }}
+            - name: FILE_S3_REGION
+              value: {{ .Values.kinn.kinnApi.file_s3_region | default "us-east-1" | quote }}
+            - name: FILE_S3_ACCESS_KEY
+              value: {{ .Values.kinn.kinnApi.file_s3_access_key | default "" | quote }}
+            - name: FILE_S3_SECRET_KEY
+              value: {{ .Values.kinn.kinnApi.file_s3_secret_key | default "" | quote }}
+            - name: FILE_S3_ENDPOINT
+              value: {{ .Values.kinn.kinnApi.file_s3_endpoint | default "" | quote }}
+            # ── Plugins ──
+            - name: PLUGIN_REPOS
+              value: {{ .Values.kinn.kinnApi.plugin_repos | default "" | quote }}
+            - name: PLUGIN_CLEANUP_ENABLED
+              value: {{ .Values.kinn.kinnApi.plugin_cleanup_enabled | default "0" | quote }}
             # ── Sandbox d'exécution code (execute_code, install_package) ──
             # bwrap : namespaces Linux (besoin kernel.unprivileged_userns_clone=1)
             # subprocess : exécution directe — sûr SEULEMENT si runtimeClassName=gvisor
