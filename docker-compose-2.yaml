@@ -24,6 +24,29 @@ services:
       - OPENAI_MODEL=${OPENAI_MODEL}
       - HOST=0.0.0.0
       - PLUGIN_IMPORT_ENABLED=1
+      # ── Provider IA + IA locale (vLLM / Ollama / LM Studio) ──
+      - AI_PROVIDER=${AI_PROVIDER:-}
+      - AI_BASE_URL=${AI_BASE_URL:-}
+      - VLLM_BASE_URL=${VLLM_BASE_URL:-}
+      - VLLM_MODEL=${VLLM_MODEL:-}
+      - AI_MODEL_VLLM=${AI_MODEL_VLLM:-}
+      - VLLM_API_KEY=${VLLM_API_KEY:-local}
+      - VLLM_MAX_TOKENS=${VLLM_MAX_TOKENS:-0}
+      - AI_FORCE_CHAT_COMPLETIONS=${AI_FORCE_CHAT_COMPLETIONS:-0}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - ANTHROPIC_MODEL=${ANTHROPIC_MODEL:-}
+      # ── Mini-LLM + outils web ──
+      - WEB_MINI_PROVIDER=${WEB_MINI_PROVIDER:-}
+      - WEB_MINI_MODEL=${WEB_MINI_MODEL:-}
+      - WEB_MINI_BASE_URL=${WEB_MINI_BASE_URL:-}
+      - WEB_MINI_API_KEY=${WEB_MINI_API_KEY:-}
+      # ── Redis (optionnel) ──
+      - REDIS_HOST=${REDIS_HOST:-}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      # ── File storage ──
+      - FILE_STORAGE_TYPE=${FILE_STORAGE_TYPE:-local}
+      - FILE_STORAGE_PATH=${FILE_STORAGE_PATH:-./data/files}
       # ── OAuth Bouncer (concentrateur auth.kinn.fr) ──
       - KINN_OAUTH_RELAY_SECRET=${KINN_OAUTH_RELAY_SECRET:-}
       - KINN_OAUTH_CONCENTRATOR_URL=${KINN_OAUTH_CONCENTRATOR_URL:-https://auth.kinn.fr}

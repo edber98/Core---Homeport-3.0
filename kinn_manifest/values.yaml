@@ -21,9 +21,15 @@ kinn:
     replicaCount: 1
     port: 5055
     hmac_secret: 'dev-secret-change-me'
+    # Clé de chiffrement AES des credentials (Credential.secret). OBLIGATOIRE en
+    # prod : openssl rand -hex 32. Sans elle, impossible de déchiffrer/recréer.
+    enc_key: 'dev-enc-key-change-me'
     token_ttl_sec: 86400
     seed: "true"
     plugin_import_enabled: 1
+    # Supprime les plugins absents des manifests au boot (1 = actif)
+    plugin_cleanup_enabled: 0
+    plugin_repos: ""
     default_company: "ACME"
     default_admin_email: "admin@acme.test"
     default_admin_password: "admin"
@@ -68,10 +74,62 @@ kinn:
     ai_parallel_tool_calls: "0"     # "1" pour activer (défaut 0 = séquentiel)
     ai_max_tokens: "16384"
     ai_temperature: "0.7"
+    ai_debug: "0"
+    # ── IA LOCALE (vLLM / Ollama / LM Studio — endpoint OpenAI-compatible) ──
+    # Renseigner ai_base_url bascule automatiquement AI_PROVIDER sur 'vllm'.
+    ai_base_url: ""                 # ex: "http://vllm:8000/v1"
+    vllm_base_url: ""               # alias de ai_base_url
+    vllm_model: ""                  # ex: "Qwen/Qwen3-32B"
+    ai_model_vllm: ""               # alias de vllm_model
+    vllm_api_key: "local"
+    vllm_max_tokens: "0"            # 0 = pas de plafond imposé
+    ai_force_chat_completions: "0"  # 1 = forcer Chat Completions (sinon Responses API)
+    # ── IA avancé (toggles agents/subagents) ──
+    ai_default_max_loops: "100"
+    ai_enable_thinking: "0"
+    ai_disable_doc_writer: "0"
+    ai_disable_memory_extractor: "0"
+    ai_disable_subagent_async: "0"
+    agent_use_queue: "0"            # 1 = file d'attente Redis pour les events agents
+    ai_agent_worktree_mode: "shared"
+    ai_model_limits: ""             # JSON override des limites de contexte par modèle
+    subagent_deps_timeout_ms: "3600000"
+    # ── Install de packages (sandbox code IA) ──
+    ai_package_install_mode: "ask"  # "ask" | "auto" | "off"
+    ai_package_install_max_per_day: "20"
+    ai_package_whitelist: ""
+    ai_package_blacklist: ""
     # ── LLM "mini" pour webscraping / extraction de pages ──
     # Vide = défaut auto (haiku si Anthropic, gpt-4o-mini si OpenAI)
     web_mini_provider: ""           # "openai" | "anthropic"
     web_mini_model: ""              # ex: "gpt-4o-mini" / "claude-haiku-4-5"
+    web_mini_base_url: ""           # vide = hérite de ai_base_url
+    web_mini_api_key: ""            # vide = hérite de vllm_api_key
+    # ── Outils web de l'agent (web_search / web_fetch / browser) ──
+    web_search_engine: "bing"
+    web_search_fallback: "brave"
+    web_search_timeout_ms: "40000"
+    web_http_timeout_ms: "30000"
+    web_browser_timeout_ms: "30000"
+    web_fetch_max_bytes: "5242880"
+    web_fetch_max_raw_chars: "80000"
+    # ── Redis (events temps réel / queue agents — optionnel) ──
+    # Vide = pas de Redis (fallback in-memory). Pour le service Redis du chart : "<release>-redis".
+    redis_host: ""
+    redis_port: "6379"
+    redis_password: ""
+    # ── Stockage de fichiers ──
+    file_storage_type: "local"      # "local" | "s3"
+    file_storage_path: "/data/files"
+    file_max_size: "200mb"
+    file_ttl_default: "24h"
+    file_cleanup_interval: "1h"
+    file_execution_cleanup_delay: "30m"
+    file_s3_bucket: ""
+    file_s3_region: "us-east-1"
+    file_s3_access_key: ""
+    file_s3_secret_key: ""
+    file_s3_endpoint: ""
     # ── Timeouts streaming / subagents ──
     ai_stream_timeout_ms: "240000"           # 4 min
     ai_subagent_heartbeat_timeout_ms: "180000"  # 3 min
