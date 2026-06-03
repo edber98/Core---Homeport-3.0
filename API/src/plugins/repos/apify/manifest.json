@@ -279,15 +279,6 @@
             ]
           },
           {
-            "type": "textarea",
-            "key": "input",
-            "label": "Entrée JSON",
-            "description": "Input de l'acteur.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
             "type": "number",
             "key": "waitForFinish",
             "label": "Attente",
@@ -358,15 +349,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "textarea",
-            "key": "input",
-            "label": "Entrée JSON",
-            "description": "Input de l'acteur.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -868,15 +850,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "textarea",
-            "key": "input",
-            "label": "Entrée JSON",
-            "description": "Input optionnel.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1143,14 +1116,6 @@
             ]
           },
           {
-            "type": "json",
-            "key": "input",
-            "label": "Input JSON",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
             "type": "number",
             "key": "limit",
             "label": "Limit items",
@@ -1234,20 +1199,64 @@
             "label": "Actor ID",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Identifiant de l acteur Apify."
           },
           {
-            "type": "json",
-            "key": "input",
-            "label": "Input JSON",
+            "type": "text",
+            "key": "build",
+            "label": "Build",
+            "description": "Tag ou numéro de build à utiliser.",
             "col": {
               "xs": 24
             }
           },
           {
-            "type": "json",
-            "key": "options",
-            "label": "Options JSON",
+            "type": "number",
+            "key": "timeoutSecs",
+            "label": "Timeout (s)",
+            "description": "Durée maximale d exécution en secondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "memoryMbytes",
+            "label": "Mémoire (Mo)",
+            "description": "Mémoire allouée au run.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxItems",
+            "label": "Max items",
+            "description": "Nombre maximal d items à produire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTotalChargeUsd",
+            "label": "Coût max (USD)",
+            "description": "Plafond de facturation total.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "restartOnError",
+            "label": "Relancer en cas d erreur",
+            "description": "Redémarre automatiquement en cas d erreur.",
             "col": {
               "xs": 24
             }
@@ -1332,9 +1341,55 @@
             }
           },
           {
-            "type": "json",
-            "key": "options",
-            "label": "Options JSON",
+            "type": "text",
+            "key": "build",
+            "label": "Build",
+            "description": "Tag ou numéro de build à utiliser.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeoutSecs",
+            "label": "Timeout (s)",
+            "description": "Durée maximale d exécution en secondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "memoryMbytes",
+            "label": "Mémoire (Mo)",
+            "description": "Mémoire allouée au run.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxItems",
+            "label": "Max items",
+            "description": "Nombre maximal d items à produire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTotalChargeUsd",
+            "label": "Coût max (USD)",
+            "description": "Plafond de facturation total.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "restartOnError",
+            "label": "Relancer en cas d erreur",
+            "description": "Redémarre automatiquement en cas d erreur.",
             "col": {
               "xs": 24
             }
@@ -1470,82 +1525,6 @@
         "displayDescription": false
       },
       "group": "Tasks"
-    },
-    {
-      "key": "apify_task_input_update",
-      "name": "apifyTaskInputUpdate",
-      "schemaVersion": 2,
-      "title": "Modifier l'input d'une task",
-      "subtitle": "Tasks",
-      "icon": "fa-solid fa-file-pen",
-      "type": "function",
-      "nodeKind": "function",
-      "category": "Apify",
-      "providerKey": "apify",
-      "tags": [
-        "apify",
-        "tasks"
-      ],
-      "inputHandles": [
-        {
-          "id": "in",
-          "name": "In",
-          "type": "any",
-          "accepts": [
-            "any",
-            "payload"
-          ]
-        }
-      ],
-      "outputHandles": [
-        {
-          "id": "ok",
-          "name": "Success",
-          "type": "payload",
-          "schema": "$var:apify_response"
-        }
-      ],
-      "authorize_catch_error": true,
-      "description": "Met à jour l'input JSON d'une task.",
-      "args": {
-        "title": "Modifier l'input d'une task",
-        "ui": {
-          "layout": "vertical",
-          "labelsOnTop": true
-        },
-        "fields": [
-          {
-            "type": "text",
-            "key": "taskId",
-            "label": "Task ID",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "json",
-            "key": "input",
-            "label": "Input JSON",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          }
-        ],
-        "displayTitle": false,
-        "displayDescription": false
-      },
-      "group": "Tasks",
-      "risk": "write"
     },
     {
       "key": "apify_task_runs_list",

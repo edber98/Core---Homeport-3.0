@@ -13,17 +13,25 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+    if (d.events_action !== undefined && d.events_action !== null && d.events_action !== '') query.events_action = d.events_action;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
+    let events;
+    if (d.events !== undefined && d.events !== null && d.events !== '') {
+      if (typeof d.events === 'object') events = d.events;
       else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
+        try { events = JSON.parse(String(d.events)); } catch { return { ok: false, error: 'JSON invalide dans events.' }; }
       }
+      if (!Array.isArray(events)) return { ok: false, error: 'events doit être un tableau JSON.' };
     }
 
+    const body = {};
+    if (d.url !== undefined && d.url !== null && d.url !== '') body.url = d.url;
+    if (d.custom_name !== undefined && d.custom_name !== null && d.custom_name !== '') body.custom_name = d.custom_name;
+    if (d.active !== undefined && d.active !== null && d.active !== '') body.active = Boolean(d.active);
+    if (events !== undefined) body.events = events;
+
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

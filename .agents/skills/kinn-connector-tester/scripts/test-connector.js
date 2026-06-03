@@ -18,8 +18,23 @@ function fail(message, meta) { failures.push({ message, ...(meta || {}) }); }
 function warn(message, meta) { warnings.push({ message, ...(meta || {}) }); }
 function rel(file) { return path.relative(root, file); }
 
-const GENERIC_BODY_FIELD_KEYS = new Set(["body", "payload", "payloadjson", "data", "attributes", "requestattributes", "request_root_key", "requestrootkey", "request_resource_id", "requestresourceid"]);
-const GENERIC_BODY_FIELD_TYPES = new Set(["json", "json_editor", "textarea", "text"]);
+const GENERIC_FIELD_KEYS = new Set([
+  "body",
+  "payload",
+  "payloadjson",
+  "data",
+  "attributes",
+  "input",
+  "query",
+  "headers",
+  "options",
+  "requestattributes",
+  "request_root_key",
+  "requestrootkey",
+  "request_resource_id",
+  "requestresourceid"
+]);
+const GENERIC_FIELD_TYPES = new Set(["json", "json_editor", "textarea", "text"]);
 
 function findRepoRoot(start) {
   let dir = start;
@@ -195,17 +210,33 @@ function validateArgsFields(connectorName, template) {
   const argsFields = (template.args && Array.isArray(template.args.fields)) ? template.args.fields : [];
   const flatFields = flattenFields(argsFields);
   if (!flatFields.length) return;
+  if (String(template.key || "").includes("custom_request")) return;
 
-  const genericBodyFields = flatFields.filter((field) => {
+  const genericFields = flatFields.filter((field) => {
     const key = String(field.key || "").toLowerCase();
     const type = String(field.type || "").toLowerCase();
-    return GENERIC_BODY_FIELD_KEYS.has(key) && GENERIC_BODY_FIELD_TYPES.has(type);
+    if (!GENERIC_FIELD_KEYS.has(key) || !GENERIC_FIELD_TYPES.has(type)) return false;
+
+    const label = String(field.label || "").toLowerCase();
+    const description = String(field.description || "").toLowerCase();
+    const text = `${label} ${description}`.trim();
+    const mentionsGenericJson = /(json|payload|query|header|option|input|corps json|body json)/.test(text);
+
+    if (key === "body" && (type === "text" || type === "textarea") && !mentionsGenericJson) {
+      return false;
+    }
+
+    return type === "json" || type === "json_editor" || mentionsGenericJson;
   });
 
-  if (genericBodyFields.length === 1 && flatFields.length === 1) {
-    const field = genericBodyFields[0];
-    fail(`${connectorName}: ${template.key} utilise un champ générique unique ${field.key}; exposer un champ par attribut du body accepté`);
+  if (genericFields.length === 1 && flatFields.length === 1) {
+    const field = genericFields[0];
+    fail(`${connectorName}: ${template.key} utilise un champ générique unique ${field.key}; exposer des champs explicites alignés sur les attributs réellement acceptés par l endpoint`);
     return;
+  }
+
+  if (genericFields.length) {
+    fail(`${connectorName}: ${template.key} expose des champs génériques (${genericFields.map((field) => field.key).join(', ')}); modéliser des champs explicites, ou réserver cela à un noeud custom request`);
   }
 
   const pseudoStructuredKeys = new Set(["requestrootkey", "request_root_key", "requestresourceid", "request_resource_id", "requestattributes", "request_attributes"]);
@@ -230,7 +261,7 @@ function sampleValue(key, field) {
   if (k.includes("id")) return "test-id";
   if (k.includes("date") || k.includes("time") || k === "start" || k === "end") return "2026-01-01T00:00:00Z";
   if (k.includes("template")) return "{{ 1 + 1 }}";
-  if (k.includes("data") || k.includes("attributes")) return {};
+  if (k.includes("data") || k.includes("attributes") || k.includes("input") || k.includes("query") || k.includes("headers") || k.includes("options")) return {};
   return "test";
 }
 

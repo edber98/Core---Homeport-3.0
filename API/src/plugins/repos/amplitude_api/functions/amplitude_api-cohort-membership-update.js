@@ -19,13 +19,16 @@ module.exports = {
     try { headers = utils.parseJsonInput(d.headers, 'headers', { defaultValue: {}, allowArray: false }) || {}; }
     catch (e) { return { ok: false, error: e.message }; }
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    let memberships;
+    try { memberships = utils.parseJsonInput(d.memberships, 'memberships', { defaultValue: undefined, allowArray: true, allowObject: false }); }
+    catch (e) { return { ok: false, error: e.message }; }
+    if (!Array.isArray(memberships) || !memberships.length) return { ok: false, error: 'memberships requis et doit être un tableau JSON non vide.' };
+    const body = {};
+    if (d.cohort_id !== undefined && d.cohort_id !== null && d.cohort_id !== '') body.cohort_id = d.cohort_id;
+    if (d.count_group !== undefined && d.count_group !== null && d.count_group !== '') body.count_group = d.count_group;
+    body.memberships = memberships;
+    if (d.skip_invalid_ids !== undefined && d.skip_invalid_ids !== null && d.skip_invalid_ids !== '') body.skip_invalid_ids = Boolean(d.skip_invalid_ids);
+    if (!body.cohort_id) return { ok: false, error: 'cohort_id requis.' };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body, headers });

@@ -22,7 +22,7 @@ function normalizeBase(url, fallback) {
 }
 
 function isIngestionPath(path) {
-  return path === '/2/httpapi' || path === '/identify' || path === '/groupidentify' || path === '/usermap';
+  return path === '/2/httpapi' || path === '/identify' || path === '/groupidentify';
 }
 
 function asFormData(obj = {}) {
@@ -44,7 +44,8 @@ async function providerRequest(opts, path, options = {}) {
   const method = (options.method || 'GET').toUpperCase();
   const ingestBase = normalizeBase(credentials.ingestBaseUrl, 'https://api2.amplitude.com');
   const analyticsBase = normalizeBase(credentials.analyticsBaseUrl, 'https://amplitude.com');
-  const baseUrl = isIngestionPath(path) ? ingestBase : analyticsBase;
+  const aliasBase = normalizeBase(credentials.aliasBaseUrl, 'https://api.amplitude.com');
+  const baseUrl = path === '/usermap' ? aliasBase : (isIngestionPath(path) ? ingestBase : analyticsBase);
   const url = new URL(`${baseUrl}${path.startsWith('/') ? path : '/' + path}`);
 
   const query = parseJsonInput(options.query, 'query', { defaultValue: {}, allowArray: false }) || {};

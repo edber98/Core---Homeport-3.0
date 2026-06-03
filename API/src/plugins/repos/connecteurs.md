@@ -6,9 +6,9 @@
 | activecampaign | Oui |
 | adyen | Oui |
 | ahrefs | Oui |
-| aircall | Non |
+| aircall | Oui |
 | airtable | Oui |
-| amplitude_api | Non |
+| amplitude_api | Oui |
 | anthropic | Oui |
 | apify | Oui |
 | apollo | Oui |

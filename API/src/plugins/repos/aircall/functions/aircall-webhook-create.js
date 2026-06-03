@@ -12,13 +12,20 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
+    let events;
+    if (d.events !== undefined && d.events !== null && d.events !== '') {
+      if (typeof d.events === 'object') events = d.events;
       else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
+        try { events = JSON.parse(String(d.events)); } catch { return { ok: false, error: 'JSON invalide dans events.' }; }
       }
+      if (!Array.isArray(events)) return { ok: false, error: 'events doit être un tableau JSON.' };
     }
+
+    const body = {};
+    if (d.url !== undefined && d.url !== null && d.url !== '') body.url = d.url;
+    if (d.custom_name !== undefined && d.custom_name !== null && d.custom_name !== '') body.custom_name = d.custom_name;
+    if (events !== undefined) body.events = events;
+    if (!body.url) return { ok: false, error: 'url requis.' };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
