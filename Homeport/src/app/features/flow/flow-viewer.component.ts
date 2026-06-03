@@ -294,7 +294,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     .canvas-host { height: 100%; width: 100%; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: none; }
     .canvas-host vflow { touch-action: none; }
     /* Node layout (execution): align with builder grid */
-    .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease; }
+    .node-card.ro { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding: 6px 0 0 0; width:223px; min-width: 223px; max-width:223px; min-height: 70px; display: grid; grid-template-columns: 1fr; align-items: center; column-gap: 6px; box-sizing: border-box; overflow: hidden; transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease; }
     .node-card.dim { opacity: .35; filter: saturate(0.6); }
     /* Safari/iOS: avoid opacity — render in grayscale instead */
     .node-card.dim-safari { background:#f8fafc; border-color:#e5e7eb; }
@@ -306,7 +306,7 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
    
     .node-card.ro.horizontal { min-height: 70px; }
     .node-card.ro.locked { pointer-events: none; }
-    .center-wrap { grid-column: 1; grid-row: 1; display:flex; flex-direction: column; align-items: stretch; justify-content:flex-start; padding: 0 8px 2px; text-align: left; pointer-events: initial; }
+    .center-wrap { grid-column: 1; grid-row: 1; display:flex; flex-direction: column; align-items: stretch; justify-content:flex-start; padding: 0 8px 2px; text-align: left; min-width: 0; width: 100%; overflow: hidden; box-sizing: border-box; pointer-events: initial; }
     .center-wrap node-card-header { pointer-events:auto; }
     .node-card .desc { color:#6b7280; font-size:12px; white-space: pre-line; word-break: break-word; }
     .node-card .desc.clamp { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; white-space: normal; }
@@ -321,17 +321,19 @@ import { CatalogService, AppProvider } from '../../services/catalog.service';
     /* Align horizontal layout like builder */
     .node-card.ro.horizontal .outputs { position: absolute; top: -200px; display:flex; flex-direction: column; justify-content:center; gap: 17px; }
     /* Linked handles labels layout */
-    .node-card .links { display:flex; gap:8px; margin-top: 4px; }
-    .node-card .desc-links { display:flex; align-items:flex-start; justify-content:space-between; gap: 8px; padding: 0 8px; }
+    .node-card .links { display:flex; gap:8px; margin-top: 4px; min-width: 0; width: 100%; overflow: hidden; box-sizing: border-box; }
+    .node-card .desc-links { display:flex; align-items:flex-start; justify-content:space-between; gap: 8px; padding: 0 8px; min-width: 0; width: 100%; overflow: hidden; box-sizing: border-box; }
     .node-card .desc-links > .desc { flex: 1 1 auto; margin: 6px 0; padding: 0; }
     .node-card .desc-links > .links { flex: 0 0 auto; display:flex; flex-direction: column; align-items:flex-end; gap:8px; margin-top: 4px; }
     .node-card.horizontal .links { flex-direction: row; justify-content: center; align-items: center; flex-wrap: wrap; }
-    .node-card:not(.horizontal) .links { flex-direction: column; align-items: flex-end; }
-    .node-card .link { display: inline-flex; align-items: center; gap: 6px; }
-    .node-card .link-label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #6b7280; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+    .node-card:not(.horizontal) .links { flex-direction: column; align-items: stretch; }
+    .node-card .link { display:flex; align-items:center; gap:6px; min-width:0; width:100%; justify-content:flex-end; }
+    .node-card .link-label { display:inline-flex; align-items:center; justify-content:flex-end; gap:4px; min-width:0; flex:1 1 auto; max-width:calc(100% - 16px); overflow:hidden; font-size:12px; color:#6b7280; white-space:nowrap; text-overflow:ellipsis; }
+    .node-card .link-label .txt { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .node-card .link-label .type { flex:0 0 auto; white-space:nowrap; }
     .node-card .link-chevron { font-size: 9px; color: #94a3b8; line-height: 1; }
     .node-card .link-child-row { padding-right: 4px; }
-    .node-card .link-child-label { font-size: 11px; color: #a1a8b8; padding-left: 10px; }
+    .node-card .link-child-label { font-size: 11px; color: #a1a8b8; padding-left: 10px; max-width: calc(100% - 16px); }
     .node-card .link-child-label .type { font-size: 10px; color: #bcc3d0; }
     .node-card .exec-badge { grid-column: 1; grid-row: 1; align-self: start; justify-self: end; display:flex; align-items:center; gap:6px; background:#fff; border:1px solid #e5e7eb; border-radius:10px; padding:2px 6px; box-shadow:0 1px 2px rgba(0,0,0,.06); position:relative; z-index:10; pointer-events:auto; }
     .node-card .exec-badge .fa-circle-check.ok { color:#16a34a; }

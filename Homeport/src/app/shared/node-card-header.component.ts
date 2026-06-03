@@ -30,11 +30,11 @@ import { AppProvider } from '../services/catalog.service';
     </div>
   `,
   styles: [`
-    .node-header { display:flex; align-items:center; gap:10px; }
+    .node-header { display:flex; align-items:center; gap:10px; min-width: 0; width: 100%; overflow: hidden; }
     .leading { flex: 0 0 auto; display:flex; align-items:center; }
     .meta { min-width:0; flex: 1 1 auto; }
-    .title { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .subtitle { color:#8c8c8c; font-size:12px; display:flex; align-items:center; gap:6px; }
+    .title { font-weight: 600; letter-spacing: -0.01em; min-width: 0; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .subtitle { color:#8c8c8c; font-size:12px; display:flex; align-items:center; gap:6px; min-width: 0; overflow: hidden; }
     .type-badge { font-size:12px; color:#6b7280; }
     .group-badge-img { width:12px; height:12px; object-fit:contain; display:inline-block; }
     .app-icon { width:28px; height:28px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; }
