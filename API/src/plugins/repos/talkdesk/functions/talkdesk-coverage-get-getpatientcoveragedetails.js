@@ -1,0 +1,38 @@
+const { utils } = require('./utils');
+
+module.exports = {
+  async talkdesk_coverage_get_getpatientcoveragedetails(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    const d = inputs || {};
+    let reqPath = "/healthcare/patients/{patient_id}/coverages/{coverage_id}";
+    const patient_id = String(d.patient_id || '').trim();
+    if (!patient_id) return { ok: false, error: 'patient_id requis.' };
+    reqPath = reqPath.replace('{patient_id}', encodeURIComponent(patient_id));
+    const coverage_id = String(d.coverage_id || '').trim();
+    if (!coverage_id) return { ok: false, error: 'coverage_id requis.' };
+    reqPath = reqPath.replace('{coverage_id}', encodeURIComponent(coverage_id));
+
+    const query = {};
+    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
+    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
+    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+
+    const body = undefined;
+
+    log('Requête en cours...');
+    const res = await utils.providerRequest(opts, reqPath, { method: 'GET', query, body });
+    if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
+
+    const r = res.data || {};
+    return {
+      ok: true,
+      id: r.id || r.uuid || r.key || '',
+      name: r.name || r.title || '',
+      url: r.url || r.html_url || '',
+      status: r.status || r.state || '',
+      created_at: r.created_at || r.createdAt || '',
+      updated_at: r.updated_at || r.updatedAt || '',
+      raw: r
+    };
+  }
+};

@@ -1,0 +1,1100 @@
+{
+  "repo": {
+    "name": "clay",
+    "type": "local",
+    "label": "Clay"
+  },
+  "variables": {
+    "clay_response": {
+      "title": "Réponse Clay",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "data",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clay_items": {
+      "title": "Clay - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clay_webhook": {
+      "title": "Webhook Clay",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payload",
+          "label": "Payload",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "clay",
+      "name": "Clay",
+      "title": "Clay",
+      "iconClass": "fa-solid fa-table-list",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=clay.com&sz=128",
+      "color": "#f7eee8",
+      "tags": [
+        "clay",
+        "enrichissement"
+      ],
+      "categories": [
+        "Ventes"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Clay",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "secret": true,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "defaultValue": "https://api.clay.com",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "clay_webhook_send",
+      "name": "clayWebhookSend",
+      "schemaVersion": 2,
+      "title": "Envoyer des données à un webhook Clay",
+      "subtitle": "webhook",
+      "icon": "fa-solid fa-paper-plane",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "clay",
+        "webhook"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoyer des données à un webhook Clay",
+      "args": {
+        "title": "Envoyer des données à un webhook Clay",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "webhookUrl",
+            "label": "URL webhook",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Données",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks"
+    },
+    {
+      "key": "clay_people_search",
+      "name": "clayPeopleSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des personnes",
+      "subtitle": "people",
+      "icon": "fa-solid fa-user-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "clay",
+        "people"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rechercher des personnes",
+      "args": {
+        "title": "Rechercher des personnes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enterprise API"
+    },
+    {
+      "key": "clay_person_enrich",
+      "name": "clayPersonEnrich",
+      "schemaVersion": 2,
+      "title": "Enrichir une personne",
+      "subtitle": "person",
+      "icon": "fa-solid fa-id-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "clay",
+        "person"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Enrichir une personne",
+      "args": {
+        "title": "Enrichir une personne",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "linkedin_url",
+            "label": "LinkedIn",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enterprise API"
+    },
+    {
+      "key": "clay_companies_search",
+      "name": "clayCompaniesSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des entreprises",
+      "subtitle": "companies",
+      "icon": "fa-solid fa-building",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "clay",
+        "companies"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rechercher des entreprises",
+      "args": {
+        "title": "Rechercher des entreprises",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enterprise API"
+    },
+    {
+      "key": "clay_company_enrich",
+      "name": "clayCompanyEnrich",
+      "schemaVersion": 2,
+      "title": "Enrichir une entreprise",
+      "subtitle": "company",
+      "icon": "fa-solid fa-building-circle-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "clay",
+        "company"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Enrichir une entreprise",
+      "args": {
+        "title": "Enrichir une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enterprise API"
+    },
+    {
+      "key": "clay_table_row_create",
+      "name": "clayTableRowCreate",
+      "schemaVersion": 2,
+      "title": "Créer une ligne de table",
+      "subtitle": "table",
+      "icon": "fa-solid fa-table",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "clay",
+        "table"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une ligne de table",
+      "args": {
+        "title": "Créer une ligne de table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "tableId",
+            "label": "ID table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "clay_webhook_event",
+      "name": "clayWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Webhook",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "clay"
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_webhook"
+        }
+      ],
+      "description": "Reçoit un événement Clay.",
+      "group": "Webhook"
+    },
+    {
+      "key": "clay_table_rows_list",
+      "name": "clayTableRowsList",
+      "schemaVersion": 2,
+      "title": "Lister les lignes de table",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "lecture",
+        "table"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les lignes d'une table Clay.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "tableId",
+            "label": "ID table",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Cursor",
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "clay_table_row_get",
+      "name": "clayTableRowGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une ligne de table",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-table-cells",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "lecture",
+        "table"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une ligne Clay.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "tableId",
+            "label": "ID table",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "rowId",
+            "label": "ID ligne",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "clay_table_row_update",
+      "name": "clayTableRowUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une ligne de table",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "modification",
+        "table"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour une ligne Clay.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "tableId",
+            "label": "ID table",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "rowId",
+            "label": "ID ligne",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "clay_table_row_delete",
+      "name": "clayTableRowDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une ligne de table",
+      "subtitle": "Tables",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "suppression",
+        "table"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une ligne Clay.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "tableId",
+            "label": "ID table",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "rowId",
+            "label": "ID ligne",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Tables"
+    },
+    {
+      "key": "clay_api_request",
+      "name": "clayApiRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clay",
+      "providerKey": "clay",
+      "tags": [
+        "api",
+        "custom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clay_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête API Clay personnalisée.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path ou URL",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "API"
+    }
+  ]
+}

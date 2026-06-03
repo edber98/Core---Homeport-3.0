@@ -1,0 +1,1364 @@
+{
+  "repo": {
+    "name": "groq",
+    "type": "local",
+    "label": "Groq"
+  },
+  "variables": {
+    "groq_response": {
+      "title": "Réponse Groq",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "groq_items": {
+      "title": "Groq - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "groq",
+      "name": "Groq",
+      "title": "Groq",
+      "iconClass": "fa-solid fa-bolt",
+      "iconUrl": "https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@1.90.0/dark/groq.png",
+      "color": "#f2f2f2",
+      "tags": [
+        "groq",
+        "ia"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Groq",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API Groq",
+            "description": "Clé API Groq.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.groq.com/openai/v1"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "groq_chat_create",
+      "name": "groqChatCreate",
+      "schemaVersion": 2,
+      "title": "Créer une réponse chat",
+      "subtitle": "Chat",
+      "icon": "fa-solid fa-message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Groq",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un prompt à Groq et retourne la réponse.",
+      "args": {
+        "title": "Créer une réponse chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Instruction ou question à envoyer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle à utiliser.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages JSON",
+            "description": "Tableau JSON de messages compatible chat.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Tokens maximum",
+            "description": "Nombre maximum de tokens en sortie.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité de la génération.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "responseFormat",
+            "label": "Format de réponse",
+            "description": "Optionnel : json_object pour demander du JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Chat"
+    },
+    {
+      "key": "groq_models_list",
+      "name": "groqModelsList",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Groq",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les modèles disponibles.",
+      "args": {
+        "title": "Lister les modèles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "groq_audio_transcribe",
+      "name": "groqAudioTranscribe",
+      "schemaVersion": 2,
+      "title": "Transcrire un audio",
+      "subtitle": "Audio",
+      "icon": "fa-solid fa-file-audio",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Transcrit un fichier audio accessible par URL.",
+      "args": {
+        "title": "Transcrire un audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "audioUrl",
+            "label": "URL audio",
+            "description": "URL du fichier audio.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle de transcription.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "language",
+            "label": "Langue",
+            "description": "Code langue ISO-639-1.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Contexte optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "responseFormat",
+            "label": "Format",
+            "description": "json, text ou verbose_json.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Température de décodage.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Audio"
+    },
+    {
+      "key": "groq_audio_translate",
+      "name": "groqAudioTranslate",
+      "schemaVersion": 2,
+      "title": "Traduire un audio",
+      "subtitle": "Audio",
+      "icon": "fa-solid fa-language",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Traduit un fichier audio en anglais.",
+      "args": {
+        "title": "Traduire un audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "audioUrl",
+            "label": "URL audio",
+            "description": "URL du fichier audio.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle de traduction.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Contexte optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "responseFormat",
+            "label": "Format",
+            "description": "json, text ou verbose_json.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Température de décodage.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Audio"
+    },
+    {
+      "key": "groq_file_upload",
+      "name": "groqFileUpload",
+      "schemaVersion": 2,
+      "title": "Téléverser un fichier batch",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Téléverse un fichier JSONL pour l'API batch.",
+      "args": {
+        "title": "Téléverser un fichier batch",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu JSONL",
+            "description": "Contenu du fichier JSONL.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "filename",
+            "label": "Nom du fichier",
+            "description": "Nom du fichier à créer.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "purpose",
+            "label": "Usage",
+            "description": "Usage du fichier, par exemple batch.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "groq_files_list",
+      "name": "groqFilesList",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les fichiers téléversés.",
+      "args": {
+        "title": "Lister les fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "groq_file_get",
+      "name": "groqFileGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les métadonnées d'un fichier.",
+      "args": {
+        "title": "Récupérer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "ID fichier",
+            "description": "Identifiant du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "groq_file_delete",
+      "name": "groqFileDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un fichier téléversé.",
+      "args": {
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "ID fichier",
+            "description": "Identifiant du fichier.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Fichiers"
+    },
+    {
+      "key": "groq_batch_create",
+      "name": "groqBatchCreate",
+      "schemaVersion": 2,
+      "title": "Créer un batch",
+      "subtitle": "Batchs",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un batch Groq à partir d'un fichier JSONL.",
+      "args": {
+        "title": "Créer un batch",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "inputFileId",
+            "label": "ID fichier",
+            "description": "Identifiant du fichier JSONL.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "endpoint",
+            "label": "Endpoint",
+            "description": "Endpoint cible du batch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "completionWindow",
+            "label": "Fenêtre",
+            "description": "Fenêtre de traitement, par exemple 24h.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Batchs"
+    },
+    {
+      "key": "groq_batch_get",
+      "name": "groqBatchGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un batch",
+      "subtitle": "Batchs",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère l'état d'un batch.",
+      "args": {
+        "title": "Récupérer un batch",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "batchId",
+            "label": "ID batch",
+            "description": "Identifiant du batch.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Batchs"
+    },
+    {
+      "key": "groq_batches_list",
+      "name": "groqBatchesList",
+      "schemaVersion": 2,
+      "title": "Lister les batchs",
+      "subtitle": "Batchs",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les batchs récents.",
+      "args": {
+        "title": "Lister les batchs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de batchs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Après",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Batchs"
+    },
+    {
+      "key": "groq_batch_cancel",
+      "name": "groqBatchCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un batch",
+      "subtitle": "Batchs",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un batch en cours.",
+      "args": {
+        "title": "Annuler un batch",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "batchId",
+            "label": "ID batch",
+            "description": "Identifiant du batch.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Batchs"
+    },
+    {
+      "key": "groq_embeddings_create",
+      "name": "groqEmbeddingsCreate",
+      "schemaVersion": 2,
+      "title": "Créer un embedding",
+      "subtitle": "Embeddings",
+      "icon": "fa-solid fa-vector-square",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Génère des embeddings via l'endpoint embeddings.",
+      "args": {
+        "title": "Créer un embedding",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle embedding.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Input",
+            "description": "Texte ou JSON tableau de textes.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Embeddings"
+    },
+    {
+      "key": "groq_response_create",
+      "name": "groqResponseCreate",
+      "schemaVersion": 2,
+      "title": "Créer une réponse",
+      "subtitle": "Responses",
+      "icon": "fa-solid fa-comment-dots",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une réponse via l'endpoint Responses.",
+      "args": {
+        "title": "Créer une réponse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle à utiliser.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Input",
+            "description": "Instruction utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Responses"
+    },
+    {
+      "key": "groq_response_get",
+      "name": "groqResponseGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une réponse",
+      "subtitle": "Responses",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère le statut/résultat d'une réponse.",
+      "args": {
+        "title": "Récupérer une réponse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "responseId",
+            "label": "Response ID",
+            "description": "Identifiant de la réponse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Responses"
+    },
+    {
+      "key": "groq_response_delete",
+      "name": "groqResponseDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une réponse",
+      "subtitle": "Responses",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "groq",
+      "tags": [
+        "groq",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": ":groq_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une réponse.",
+      "args": {
+        "title": "Supprimer une réponse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "responseId",
+            "label": "Response ID",
+            "description": "Identifiant de la réponse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Responses"
+    }
+  ]
+}

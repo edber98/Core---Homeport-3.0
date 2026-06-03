@@ -4535,6 +4535,197 @@
         "stripe"
       ],
       "risk": "safe"
+    },
+    {
+      "key": "stripe_invoice_void",
+      "name": "stripeInvoiceVoid",
+      "schemaVersion": 2,
+      "title": "Annuler une facture",
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-credit-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stripe",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Annuler une facture",
+      "args": {
+        "title": "Annuler une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "Invoice ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "stripe"
+      ],
+      "group": "Factures",
+      "risk": "destructive"
+    },
+    {
+      "key": "stripe_checkout_session_expire",
+      "name": "stripeCheckoutSessionExpire",
+      "schemaVersion": 2,
+      "title": "Expirer une session checkout",
+      "subtitle": "Checkout",
+      "icon": "fa-solid fa-credit-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stripe",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Expirer une session checkout",
+      "args": {
+        "title": "Expirer une session checkout",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "Session ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "stripe"
+      ],
+      "group": "Checkout",
+      "risk": "write"
+    },
+    {
+      "key": "stripe_subscription_resume",
+      "name": "stripeSubscriptionResume",
+      "schemaVersion": 2,
+      "title": "Reprendre un abonnement",
+      "subtitle": "Abonnements",
+      "icon": "fa-solid fa-credit-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Stripe",
+      "providerKey": "stripe",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:stripe_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Reprendre un abonnement",
+      "args": {
+        "title": "Reprendre un abonnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "subscriptionId",
+            "label": "Subscription ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "billing_cycle_anchor",
+            "label": "Billing cycle anchor",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "stripe"
+      ],
+      "group": "Abonnements",
+      "risk": "write"
     }
   ]
 }

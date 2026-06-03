@@ -637,20 +637,59 @@ function getDocTitle(html) {
 
 async function callMiniLlm({ system, userText, maxTokens = 2000 }) {
   // Provider + modèle configurables pour l'extraction web :
-  //   WEB_MINI_PROVIDER=openai|anthropic  (défaut: anthropic si ANTHROPIC_API_KEY, sinon openai)
-  //   WEB_MINI_MODEL=gpt-4o-mini|claude-haiku-4-5|...  (défaut selon provider)
+  //   WEB_MINI_PROVIDER=openai|anthropic|vllm|ollama|...  (défaut: vllm si AI_BASE_URL,
+  //                                                       sinon anthropic si ANTHROPIC_API_KEY,
+  //                                                       sinon openai)
+  //   WEB_MINI_MODEL=gpt-4o-mini|claude-haiku-4-5|Qwen/...|...
+  //   WEB_MINI_BASE_URL=http://IP:8000/v1   (pour vLLM/Ollama/etc.)
+  //   WEB_MINI_API_KEY=local                (pour vLLM ; défaut 'local')
   const { createLlmClient } = require('../llm');
-  const miniProvider = (process.env.WEB_MINI_PROVIDER || '').toLowerCase()
-    || (env.ANTHROPIC_API_KEY ? 'anthropic' : 'openai');
-  const defaultModel = miniProvider === 'openai' ? 'gpt-4o-mini' : 'claude-haiku-4-5';
-  const model = process.env.WEB_MINI_MODEL || defaultModel;
-  const apiKey = miniProvider === 'openai' ? env.OPENAI_API_KEY : env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    return null;
+  const VLLM_ALIASES = new Set(['vllm', 'ollama', 'lmstudio', 'openai-compatible', 'openai-compat']);
+  let miniProvider = (process.env.WEB_MINI_PROVIDER || '').toLowerCase()
+    || (env.AI_BASE_URL ? 'vllm'
+        : env.ANTHROPIC_API_KEY ? 'anthropic'
+        : 'openai');
+
+  // Défaut model selon provider
+  let defaultModel;
+  if (VLLM_ALIASES.has(miniProvider)) defaultModel = env.VLLM_MODEL || 'Qwen/Qwen3.6-35B-A3B-FP8';
+  else if (miniProvider === 'openai') defaultModel = 'gpt-4o-mini';
+  else defaultModel = 'claude-haiku-4-5';
+  let model = process.env.WEB_MINI_MODEL || defaultModel;
+
+  // ── Garde-fou mismatch provider/model (pour openai/anthropic seulement).
+  const isOpenAiModel = /^(gpt-|o[1-9]|chatgpt-)/i.test(model);
+  const isAnthropicModel = /^claude-/i.test(model);
+  if (miniProvider === 'anthropic' && isOpenAiModel) {
+    console.warn(`[web-mini] config mismatch : WEB_MINI_PROVIDER=anthropic mais WEB_MINI_MODEL=${model} (model OpenAI). Auto-correction.`);
+    if (env.OPENAI_API_KEY) miniProvider = 'openai';
+    else model = 'claude-haiku-4-5';
+  } else if (miniProvider === 'openai' && isAnthropicModel) {
+    console.warn(`[web-mini] config mismatch : WEB_MINI_PROVIDER=openai mais WEB_MINI_MODEL=${model} (model Anthropic). Auto-correction.`);
+    if (env.ANTHROPIC_API_KEY) miniProvider = 'anthropic';
+    else model = 'gpt-4o-mini';
   }
+
+  // Résolution apiKey + baseURL selon provider
+  let apiKey, baseURL;
+  if (VLLM_ALIASES.has(miniProvider)) {
+    apiKey = process.env.WEB_MINI_API_KEY || env.VLLM_API_KEY || 'local';
+    baseURL = process.env.WEB_MINI_BASE_URL || env.AI_BASE_URL;
+    if (!baseURL) {
+      console.warn(`[web-mini] provider=${miniProvider} mais WEB_MINI_BASE_URL/AI_BASE_URL absent → skip mini-LLM`);
+      return null;
+    }
+  } else if (miniProvider === 'openai') {
+    apiKey = env.OPENAI_API_KEY;
+  } else {
+    apiKey = env.ANTHROPIC_API_KEY;
+  }
+  if (!apiKey) return null;
+
   const client = createLlmClient(miniProvider, {
     apiKey,
     model,
+    baseURL,
     maxTokens,
     temperature: 0.2,
   });

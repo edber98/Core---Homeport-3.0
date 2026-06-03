@@ -1,0 +1,1085 @@
+{
+  "repo": {
+    "name": "elevenlabs",
+    "type": "local",
+    "label": "ElevenLabs"
+  },
+  "variables": {
+    "elevenlabs_response": {
+      "title": "Réponse ElevenLabs",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "elevenlabs_items": {
+      "title": "ElevenLabs - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "elevenlabs",
+      "name": "ElevenLabs",
+      "title": "ElevenLabs",
+      "iconClass": "fa-solid fa-volume-high",
+      "iconUrl": "https://cdn.simpleicons.org/elevenlabs/111111",
+      "color": "#f2f2f2",
+      "tags": [
+        "elevenlabs",
+        "audio"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants ElevenLabs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API ElevenLabs",
+            "description": "Clé API ElevenLabs.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.elevenlabs.io/v1"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "elevenlabs_text_to_speech",
+      "name": "elevenlabsTextToSpeech",
+      "schemaVersion": 2,
+      "title": "Convertir du texte en audio",
+      "subtitle": "Voix",
+      "icon": "fa-solid fa-volume-high",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Génère un audio depuis un texte.",
+      "args": {
+        "title": "Convertir du texte en audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "voiceId",
+            "label": "ID voix",
+            "description": "Identifiant de la voix.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Texte à convertir.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "Modèle",
+            "description": "Modèle ElevenLabs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "voiceSettings",
+            "label": "Paramètres voix JSON",
+            "description": "Paramètres de voix optionnels.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Voix"
+    },
+    {
+      "key": "elevenlabs_voices_list",
+      "name": "elevenlabsVoicesList",
+      "schemaVersion": 2,
+      "title": "Lister les voix",
+      "subtitle": "Voix",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les voix disponibles.",
+      "args": {
+        "title": "Lister les voix",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Voix"
+    },
+    {
+      "key": "elevenlabs_models_list",
+      "name": "elevenlabsModelsList",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les modèles disponibles.",
+      "args": {
+        "title": "Lister les modèles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "elevenlabs_voice_get",
+      "name": "elevenlabsVoiceGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une voix",
+      "subtitle": "Voix",
+      "icon": "fa-solid fa-user",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les détails d'une voix.",
+      "args": {
+        "title": "Récupérer une voix",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "voiceId",
+            "label": "ID voix",
+            "description": "Identifiant de la voix.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Voix"
+    },
+    {
+      "key": "elevenlabs_speech_to_text",
+      "name": "elevenlabsSpeechToText",
+      "schemaVersion": 2,
+      "title": "Transcrire un audio",
+      "subtitle": "Transcription",
+      "icon": "fa-solid fa-file-audio",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Transcrit un fichier audio accessible par URL.",
+      "args": {
+        "title": "Transcrire un audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "fileUrl",
+            "label": "URL fichier",
+            "description": "URL du fichier audio.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "Modèle",
+            "description": "Modèle de transcription.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "languageCode",
+            "label": "Langue",
+            "description": "Code langue optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "tagAudioEvents",
+            "label": "Événements audio",
+            "description": "true ou false.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "diarize",
+            "label": "Diarisation",
+            "description": "true ou false.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transcription"
+    },
+    {
+      "key": "elevenlabs_speech_to_speech",
+      "name": "elevenlabsSpeechToSpeech",
+      "schemaVersion": 2,
+      "title": "Transformer une voix",
+      "subtitle": "Voix",
+      "icon": "fa-solid fa-microphone-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Transforme un audio vers une autre voix.",
+      "args": {
+        "title": "Transformer une voix",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "voiceId",
+            "label": "ID voix",
+            "description": "Voix cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "url",
+            "key": "fileUrl",
+            "label": "URL fichier",
+            "description": "URL du fichier audio.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "Modèle",
+            "description": "Modèle speech-to-speech.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "voiceSettings",
+            "label": "Paramètres voix JSON",
+            "description": "Paramètres de voix optionnels.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Voix"
+    },
+    {
+      "key": "elevenlabs_sound_effects_generate",
+      "name": "elevenlabsSoundEffectsGenerate",
+      "schemaVersion": 2,
+      "title": "Générer un effet sonore",
+      "subtitle": "Audio",
+      "icon": "fa-solid fa-wave-square",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Génère un effet sonore depuis un prompt.",
+      "args": {
+        "title": "Générer un effet sonore",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Description",
+            "description": "Description de l'effet sonore.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "durationSeconds",
+            "label": "Durée",
+            "description": "Durée en secondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "promptInfluence",
+            "label": "Influence prompt",
+            "description": "Influence du prompt sur la génération.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Audio"
+    },
+    {
+      "key": "elevenlabs_text_to_dialogue",
+      "name": "elevenlabsTextToDialogue",
+      "schemaVersion": 2,
+      "title": "Créer un dialogue audio",
+      "subtitle": "Dialogue",
+      "icon": "fa-solid fa-comments",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Génère un dialogue multi-voix.",
+      "args": {
+        "title": "Créer un dialogue audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "inputs",
+            "label": "Dialogue JSON",
+            "description": "Tableau JSON des répliques et voix.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "Modèle",
+            "description": "Modèle de dialogue.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Dialogue"
+    },
+    {
+      "key": "elevenlabs_history_list",
+      "name": "elevenlabsHistoryList",
+      "schemaVersion": 2,
+      "title": "Lister historique audio",
+      "subtitle": "Historique",
+      "icon": "fa-solid fa-clock-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les générations audio de l historique.",
+      "args": {
+        "title": "Lister historique audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille page",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "startAfterHistoryItemId",
+            "label": "Après historique ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "voiceId",
+            "label": "Voice ID",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "elevenlabs_history_get",
+      "name": "elevenlabsHistoryGet",
+      "schemaVersion": 2,
+      "title": "Récupérer entrée historique",
+      "subtitle": "Historique",
+      "icon": "fa-solid fa-file-audio",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les détails d une génération audio historique.",
+      "args": {
+        "title": "Récupérer entrée historique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "historyItemId",
+            "label": "History item ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "elevenlabs_history_delete",
+      "name": "elevenlabsHistoryDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer entrée historique",
+      "subtitle": "Historique",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "history",
+        "delete",
+        "destructive"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une entrée historique ElevenLabs.",
+      "args": {
+        "title": "Supprimer entrée historique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "historyItemId",
+            "label": "History item ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "elevenlabs_audio_isolation",
+      "name": "elevenlabsAudioIsolation",
+      "schemaVersion": 2,
+      "title": "Isoler une voix depuis audio",
+      "subtitle": "Audio",
+      "icon": "fa-solid fa-sliders",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ElevenLabs",
+      "providerKey": "elevenlabs",
+      "tags": [
+        "elevenlabs",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:elevenlabs_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Isol e la voix principale d un audio source.",
+      "args": {
+        "title": "Isoler une voix depuis audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "audioUrl",
+            "label": "URL audio",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "Model ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "outputFormat",
+            "label": "Format sortie",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ]
+}

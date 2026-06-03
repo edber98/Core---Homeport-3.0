@@ -2980,6 +2980,175 @@
       },
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "intercom_conversations_search",
+      "name": "intercomConversationsSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des conversations",
+      "subtitle": "Conversations",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "intercom",
+        "search",
+        "conversations"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_conversations"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Recherche avancée des conversations Intercom.",
+      "args": {
+        "title": "Rechercher des conversations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "perPage",
+            "label": "Résultats max",
+            "description": "Nombre maximum par page.",
+            "col": {
+              "xs": 24
+            },
+            "default": 20
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query JSON",
+            "description": "Corps query Intercom (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Conversations",
+      "risk": "safe"
+    },
+    {
+      "key": "intercom_company_update",
+      "name": "intercomCompanyUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une entreprise",
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Intercom",
+      "providerKey": "intercom",
+      "tags": [
+        "intercom",
+        "company",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ic_company"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour les attributs métier d une entreprise Intercom.",
+      "args": {
+        "title": "Mettre à jour une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "companyId",
+            "label": "ID entreprise",
+            "description": "Identifiant de l entreprise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom entreprise.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "plan",
+            "label": "Plan",
+            "description": "Nom du plan.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "industry",
+            "label": "Secteur",
+            "description": "Secteur d activité.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "monthlySpend",
+            "label": "Dépense mensuelle",
+            "description": "Dépense mensuelle.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entreprises",
+      "risk": "write"
     }
   ]
 }

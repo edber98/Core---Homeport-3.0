@@ -163,10 +163,12 @@ export interface AiPermissionRequest {
   answeredAt?: string;
   answeredBy?: string;
   // Identité du subagent qui demande (roster), injectée par le backend
+  subagentType?: string;
   agentName?: string;
   agentEmoji?: string;
   agentColor?: string;
   agentTagline?: string;
+  agentFigure?: string;
   escalatedFromSubagent?: boolean;
   childJobId?: string;
   parentJobId?: string;
@@ -683,25 +685,33 @@ export class AiService {
   private _activeSendAbort?: AbortController;
   private _activeSendThreadId?: string;
 
+  /**
+   * Envoi d'un message utilisateur — architecture "app neuve" :
+   *
+   *   1. POST /messages → 202 Accepted (backend lance harness en background)
+   *   2. Tous les events de l'agent arrivent via /live (déjà ouvert pour ce thread)
+   *   3. On forward les events filtrés au Subject events$ pour compat ai-chat
+   *
+   * Plus de SSE long-lived sur la requête POST. Plus de polling. L'API publique
+   * { events$, stop } est conservée pour rétro-compat avec ai-chat.component.ts
+   * qui consomme `events$` pour l'affichage live du streaming.
+   */
   sendMessage(content: string, answer?: any, attachments?: any[]): { events$: Observable<AiStreamEvent>; stop: () => void } {
     const thread = this.currentThread();
     if (!thread) throw new Error('No active thread');
-    // Si un send précédent tourne encore (pour un autre thread ou le même),
-    // on l'abort pour éviter le leak d'events sur la nouvelle conversation.
+    // Si un send précédent tourne encore (autre thread ou même), on l'abort.
     try { this._activeSendAbort?.abort(); } catch {}
 
     this.streaming.set(true);
     this.pendingQuestion.set(null); this.pendingQuestionContext.set(null);
 
-    // Add user message to local state immediately
+    // Add user message to local state immediately (optimistic update)
     const userMsg: AiMessage = { threadId: thread._id, role: 'user', content, attachments, answer };
     this.messages.update(msgs => [...msgs, userMsg]);
 
-    // POST the message — the response is SSE
     const body: any = { content };
     if (answer) body.answer = answer;
     if (attachments) body.attachments = attachments;
-
     // Include temporary graph/schema so the AI works on the latest unsaved state
     const ctx = this.pageContext();
     if (ctx.page === 'flow-builder' && ctx.graph) body.graph = ctx.graph;
@@ -710,24 +720,68 @@ export class AiService {
     const subj = new Subject<AiStreamEvent>();
     const wsId = this.wsId();
     const tok = this.auth.token || '';
-
-    // Use fetch for SSE POST (EventSource only supports GET)
     const capturedThreadId = String(thread.id || thread._id || '');
-    const url = this.buildFetchUrl(`/api/ai/threads/${capturedThreadId}/messages?workspaceId=${encodeURIComponent(wsId)}`);
+    const threadKey = String(thread._id);
+
     const abortController = new AbortController();
     this._activeSendAbort = abortController;
     this._activeSendThreadId = capturedThreadId;
 
-    this.streamPost(url, body, tok, abortController.signal, subj, capturedThreadId);
+    // Garantit que /live est ouvert (alimentera subj via la subscription ci-dessous)
+    this.openThreadLiveStream(capturedThreadId);
 
-    const threadId = thread.id || thread._id;
+    // Forward les events du sideEvents$ (alimenté par /live) vers le Subject local.
+    // Seuls les events de CE thread sont propagés. Termine sur 'done'.
+    const liveSub = this.sideEvents$.subscribe((ev: any) => {
+      if (!ev) return;
+      // Filtre sur le thread courant
+      if (ev.threadId && String(ev.threadId) !== threadKey && String(ev.threadId) !== capturedThreadId) return;
+      subj.next(ev as AiStreamEvent);
+      if (ev.type === 'done') {
+        this.streaming.set(false);
+        try { liveSub.unsubscribe(); } catch {}
+        subj.complete();
+      }
+    });
+
+    // POST 202 Accepted — la réponse est juste un ack
+    const url = this.buildFetchUrl(`/api/ai/threads/${capturedThreadId}/messages?workspaceId=${encodeURIComponent(wsId)}`);
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tok}`,
+      },
+      body: JSON.stringify(body),
+      signal: abortController.signal,
+    })
+      .then(async (res) => {
+        if (res.status !== 202 && !res.ok) {
+          const errText = await res.text().catch(() => '');
+          console.error(`[sendMessage] HTTP ${res.status}: ${errText.slice(0, 200)}`);
+          subj.next({ type: 'error', code: 'http_error', message: `HTTP ${res.status}` } as any);
+          this.streaming.set(false);
+          try { liveSub.unsubscribe(); } catch {}
+          subj.complete();
+        }
+      })
+      .catch((e) => {
+        if (abortController.signal.aborted) return;
+        console.error('[sendMessage] network error:', e?.message);
+        subj.next({ type: 'error', code: 'network_error', message: e?.message } as any);
+        this.streaming.set(false);
+        try { liveSub.unsubscribe(); } catch {}
+        subj.complete();
+      });
+
     const stop = () => {
       try { abortController.abort(); } catch {}
-      // Also tell backend to cancel (in case TCP close isn't detected)
-      fetch(this.buildFetchUrl(`/api/ai/threads/${threadId}/cancel?workspaceId=${encodeURIComponent(wsId)}`), {
+      // Backend cancel — notifie le harness en cours
+      fetch(this.buildFetchUrl(`/api/ai/threads/${capturedThreadId}/cancel?workspaceId=${encodeURIComponent(wsId)}`), {
         method: 'POST', headers: { 'Authorization': `Bearer ${tok}` },
       }).catch(() => {});
       this.streaming.set(false);
+      try { liveSub.unsubscribe(); } catch {}
       subj.complete();
     };
 
@@ -1245,8 +1299,14 @@ export class AiService {
   // ── Side events for builders ──
   sideEvents$ = new Subject<AiStreamEvent>();
 
-  /** Emit a side event that builders can subscribe to */
-  emitSideEvent(ev: AiStreamEvent) { this.sideEvents$.next(ev); }
+  /** Emit a side event that builders can subscribe to.
+   *  Pose un flag _emittedAsSide pour qu'ai-chat.processStreamEvent ne re-emit
+   *  pas l'event dans sideEvents$ s'il le reçoit en retour via subj — sinon
+   *  boucle infinie (RangeError stack overflow). */
+  emitSideEvent(ev: AiStreamEvent) {
+    if (ev && typeof ev === 'object') (ev as any)._emittedAsSide = true;
+    this.sideEvents$.next(ev);
+  }
 
   // ── Quick send (auto-create thread if needed) ──
   async quickSend(content: string, mode?: string, attachments?: AiAttachment[]) {
@@ -1629,6 +1689,55 @@ export class AiService {
   private _streamingMessageIds = new Set<string>();
 
   /**
+   * Applique un AiMessage créé reçu via /live stream auto-suffisant.
+   *
+   * - Dédoublonne par _id (au cas où l'event arriverait 2× pendant un reconnect).
+   * - N'écrase pas un message en cours de streaming (placeholder local).
+   * - Préserve l'ordre temporel (insère à la fin, l'agent émet dans l'ordre).
+   *
+   * Plus aucun refetch n'est nécessaire : le payload de l'event contient le
+   * AiMessage complet hydraté par le backend.
+   */
+  private _applyMessageCreated(message: AiMessage): void {
+    const id = String(message._id || '');
+    if (!id) return;
+    // Skip si en cours de streaming local (placeholder qu'on est en train de
+    // remplir nous-mêmes — sera remplacé par le tour suivant).
+    if (this._streamingMessageIds.has(id)) return;
+    this.messages.update(msgs => {
+      // Dedup : si message déjà présent, on patch (cas reconnect + replay)
+      const idx = msgs.findIndex(m => String(m._id) === id);
+      if (idx >= 0) {
+        const next = msgs.slice();
+        next[idx] = { ...next[idx], ...message };
+        return next;
+      }
+      return [...msgs, message];
+    });
+  }
+
+  /**
+   * Applique un AiMessage updaté reçu via /live stream auto-suffisant.
+   * Patch en place : préserve les champs locaux non envoyés par l'event.
+   */
+  private _applyMessageUpdated(message: AiMessage): void {
+    const id = String(message._id || '');
+    if (!id) return;
+    if (this._streamingMessageIds.has(id)) return; // streaming local en cours
+    this.messages.update(msgs => {
+      const idx = msgs.findIndex(m => String(m._id) === id);
+      if (idx < 0) {
+        // Message inconnu localement (rare : l'update arrive avant le create)
+        // → ajoute le message
+        return [...msgs, message];
+      }
+      const next = msgs.slice();
+      next[idx] = { ...next[idx], ...message };
+      return next;
+    });
+  }
+
+  /**
    * Programme un reloadThreadMessages debounced. Coalesce les rafales d'events
    * (ex: 3 subagents qui émettent 20 widgets à la seconde) en 1 seul fetch.
    */
@@ -1643,34 +1752,50 @@ export class AiService {
     }, delayMs);
   }
 
+  // Dernier seq reçu pour ce thread — utilisé comme Last-Event-ID au reconnect.
+  // Le backend rejoue tous les events depuis ce seq, garantissant zéro perte.
+  private _lastEventSeq = new Map<string, number>();
+
+  /**
+   * Ouvre le SSE master sur GET /api/ai/threads/:id/live.
+   *
+   * Architecture "app neuve" : c'est l'UNIQUE source d'events thread. Plus de
+   * polling, plus de refetch déclenché par event — chaque event porte sa
+   * donnée complète (le AiMessage est inclus dans ai.message.created/updated).
+   *
+   * Au reconnect (timeout serveur, perte réseau), on envoie le dernier seq vu
+   * via Last-Event-ID : le backend rejoue les events manqués depuis AiThreadEvent.
+   */
   private openThreadLiveStream(threadId: string) {
     if (!threadId) return;
     if (this._threadStreamId === threadId && this._threadStreamCtrl) return; // déjà ouvert
-    // Ferme l'ancien
     try { this._threadStreamCtrl?.abort(); } catch {}
     this._threadStreamCtrl = undefined;
     this._threadStreamId = threadId;
 
-    // Boucle de reconnexion : si le serveur ferme la connexion (timeout,
-    // redémarrage, etc.) sans que l'user ait explicitement quitté le thread,
-    // on reconnecte automatiquement avec backoff. Sans ça, les events live
-    // (todo_write, ai.message.updated) ne remontent plus et il faut refresh
-    // la page pour les voir.
     const attemptConnect = async (retryDelay: number): Promise<void> => {
-      // Abandonné si user a changé de thread entretemps
-      if (this._threadStreamId !== threadId) return;
+      if (this._threadStreamId !== threadId) return; // user a changé de thread
       const ctrl = new AbortController();
       this._threadStreamCtrl = ctrl;
-      const url = this.buildFetchUrl(`/api/ai/threads/${threadId}/stream?workspaceId=${encodeURIComponent(this.wsId())}`);
+      const url = this.buildFetchUrl(`/api/ai/threads/${threadId}/live?workspaceId=${encodeURIComponent(this.wsId())}`);
+
+      const headers: Record<string, string> = {
+        'Authorization': `Bearer ${this.auth.token || ''}`,
+      };
+      // Last-Event-ID : au reconnect, le backend rejoue depuis ce seq.
+      const lastSeq = this._lastEventSeq.get(threadId);
+      if (lastSeq != null && lastSeq > 0) {
+        headers['Last-Event-ID'] = String(lastSeq);
+      }
+
       try {
-        const res = await fetch(url, {
-          headers: { Authorization: `Bearer ${this.auth.token || ''}` },
-          signal: ctrl.signal,
-        });
+        const res = await fetch(url, { headers, signal: ctrl.signal });
         if (!res.ok || !res.body) throw new Error(`stream HTTP ${res.status}`);
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
+        let currentId = ''; // accumulateur SSE "id: <seq>" pour la prochaine data
+
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
@@ -1679,21 +1804,30 @@ export class AiService {
           buffer = lines.pop() || '';
           for (const line of lines) {
             const t = line.trim();
+            if (!t) { currentId = ''; continue; } // ligne vide = fin d'event SSE
+            if (t.startsWith(':')) continue; // commentaire (keepalive)
+            if (t.startsWith('id:')) {
+              currentId = t.slice(3).trim();
+              continue;
+            }
+            if (t.startsWith('event:')) continue; // type SSE — on lit le data
             if (!t.startsWith('data:')) continue;
             try {
               const ev = JSON.parse(t.slice(5).trim());
+              // Track le seq pour Last-Event-ID au reconnect
+              const seq = Number(ev.seq) || Number(currentId) || 0;
+              if (seq > 0) this._lastEventSeq.set(threadId, seq);
               this.zone.run(() => this.dispatchLiveThreadEvent(ev));
             } catch {}
           }
         }
-        // Le serveur a fermé proprement (done=true) → on reconnecte rapidement
+        // Server fermé proprement → reconnexion rapide
         if (this._threadStreamId === threadId && !ctrl.signal.aborted) {
           setTimeout(() => attemptConnect(1000), 500);
         }
       } catch (e: any) {
-        // AbortError = user a changé de thread/quitté → on arrête
         if (ctrl.signal.aborted || e?.name === 'AbortError') return;
-        // Erreur réseau / HTTP → backoff exponentiel (1s → 2s → 4s → max 10s)
+        // Backoff exponentiel : 1s → 2s → 4s → max 10s
         const next = Math.min(retryDelay * 2, 10_000);
         if (this._threadStreamId === threadId) {
           setTimeout(() => attemptConnect(next), retryDelay);
@@ -1703,60 +1837,72 @@ export class AiService {
     attemptConnect(1000);
   }
 
-  /** Dispatch un event reçu du stream passif — ne dédoublonne pas avec POST /messages
-   * (doublons supportés par les handlers idempotents). */
+  /**
+   * Dispatch un event reçu du SSE master /live.
+   *
+   * Architecture "app neuve" : tous les events thread (message, tool, canvas,
+   * permission, done, etc.) passent par ici. On les forward TOUS à sideEvents$
+   * pour que sendMessage() puisse les capturer dans son Subject local et que
+   * les builders (flow-builder, form-builder) les reçoivent aussi.
+   *
+   * En plus du forward, on applique les side-effects type-specific (persistence
+   * canvas, store local pour messages, etc.).
+   */
   private dispatchLiveThreadEvent(ev: any) {
     if (!ev || !ev.type) return;
     const cur = this.currentThread();
-    // Skip si pas le thread courant (rare, course condition pendant switch)
     if (ev.threadId && cur?._id && String(ev.threadId) !== String(cur._id) && String(ev.threadId) !== String((cur as any).id)) {
       return;
     }
+    // Forward universel : tous les abonnés sideEvents$ reçoivent l'event.
+    // Les handlers spécialisés ci-dessous font le side-effect métier en plus.
+    this.sideEvents$.next(ev);
+
     const evType = ev.type as string;
     if (evType.startsWith('canvas.')) {
       this.handleCanvasEvent(ev);
-      this.sideEvents$.next(ev);
       return;
     }
     if (evType === 'ai.permission.request' || evType === 'ai.permission.granted' || evType === 'ai.permission.denied') {
-      this.sideEvents$.next(ev);
+      // sideEvents$ déjà émis au-dessus
       return;
     }
     if (evType === 'ai.plan.request' || evType === 'plan.resolved') {
-      this.sideEvents$.next(ev);
+      // Note : on reload encore le thread pour récupérer les détails du plan
+      // (TODO : faire émettre le plan complet par le backend pour kill ce refetch)
       const tid = cur?.id || cur?._id;
       if (tid) setTimeout(() => { this.loadThread(tid).catch?.(() => {}); }, 150);
       return;
     }
     if (evType === 'ai.message.created') {
-      console.log('[passive-stream] ai.message.created received', ev.kind);
-      this.sideEvents$.next(ev);
-      this.scheduleReloadMessages();
+      console.log('[live-stream] ai.message.created received', ev.kind, 'hasMessage:', !!ev.message);
+      // Backend "app neuve" : event auto-suffisant — message complet hydraté.
+      if (ev.message && ev.message._id) {
+        this._applyMessageCreated(ev.message);
+      } else {
+        // Legacy / event sans message hydraté → fallback refetch (rare maintenant)
+        this.scheduleReloadMessages();
+      }
       return;
     }
     if (evType === 'ai.message.updated') {
-      console.log('[passive-stream] ai.message.updated received', ev.kind);
-      // Si cet update finalise un placeholder streamé (backend vient d'écrire
-      // le contenu final en DB), on retire l'ID du set streaming → le prochain
-      // reload prendra la version DB (qui est désormais la version finale).
+      console.log('[live-stream] ai.message.updated received', ev.kind, 'hasMessage:', !!ev.message);
       if (ev.messageId && this._streamingMessageIds.has(String(ev.messageId))) {
         this._streamingMessageIds.delete(String(ev.messageId));
       }
-      this.sideEvents$.next(ev);
-      this.scheduleReloadMessages();
+      if (ev.message && ev.message._id) {
+        this._applyMessageUpdated(ev.message);
+      } else {
+        this.scheduleReloadMessages();
+      }
       return;
     }
     if (evType === 'memory.pending.update') {
       const cnt = ev.pendingCount;
       if (typeof cnt === 'number') this.pendingKnowledgeCount.set(cnt);
-      this.scheduleReloadMessages();
       return;
     }
-    // subagent.* events → forward to sideEvents pour visibilité canvas Agents
-    if (evType.startsWith('subagent.') || evType === 'job.status') {
-      this.sideEvents$.next(ev);
-      return;
-    }
+    // subagent.* / job.status / autres : déjà forward via sideEvents$ au-dessus
     // Live streaming du resume parent : events tagués avec _streamingMessageId
     // (text deltas, tool.start/end, tool.input_delta). On append directement
     // au placeholder en mémoire sans recharger tout le thread → UI fluide.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kinn connector logo"
+  short_description: "Add Kinn connector logos and colors."
+  default_prompt: "Mets un logo pour notion"

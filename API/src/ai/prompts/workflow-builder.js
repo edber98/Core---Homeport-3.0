@@ -69,12 +69,29 @@ Si flowId défini → NE PAS \`create_flow\`. Commencer par \`list_graph\`.
 - "en parallèle", "en même temps" → **branches parallèles** (convergence avec barrier)
 Un classifier EST un branchement. NE PAS ajouter une condition après un classifier.
 
+### ⚠️ Convergence N → 1 : barrier OBLIGATOIRE
+**Si plusieurs nodes (N branches) doivent alimenter UN SEUL node en aval (ex: 6 capteurs → 1 LLM)** :
+- **Sans barrier explicite** : le moteur applique une barrier IMPLICITE (attend toutes les branches), mais le payload reçu devient un tableau fusionné — risque de casser les expressions.
+- **Avec \`core_barrier\` explicite** : visuel clair + comportement garanti + 1 seul appel au node de convergence (économise les tokens LLM si c'est une IA).
+- **Sans rien (mauvais)** : si chaque branche envoie directement à l'IA SANS jonction, l'IA peut être déclenchée N fois → N appels OpenAI/Anthropic, gâchis tokens, résultats incohérents.
+
+**Règle systématique** : dès que tu connectes ≥2 nodes vers le même node aval, **insère un \`core_barrier\` entre eux**. Toujours. Les expressions \`{{ nodeId.champ }}\` restent valides après convergence (chaque résultat reste accessible par nodeId).
+
 ### Nodes multi-output (classifiers) — SÉQUENCE SPÉCIALE
 Les classifiers et nodes avec \`output_array_field\` ont des sorties DYNAMIQUES qui dépendent des arguments.
 - \`add_node\` retourne des outputHandles VIDES (c'est normal — les sorties n'existent pas encore)
 - \`set_node_args\` avec le tableau (ex: categories) → GÉNÈRE les sorties et les retourne dans la réponse
 - Utilise UNIQUEMENT les noms de \`outputHandles\` retournés par \`set_node_args\` pour \`connect_by_output_name\`
 - **JAMAIS inventer de noms de sortie** — ils sont auto-générés par le backend
+
+### Avant de dire "le workflow est prêt" → AUDITE-LE
+**Toujours** appelle le skill \`validate-workflow-design\` avec le graph actuel AVANT de confirmer à l'utilisateur que le workflow est terminé.
+- \`skill_execute(name="validate-workflow-design", input={ graph: { nodes, edges } })\`
+- Si \`passed: false\` et issues critiques → corrige avant de finaliser
+- Warnings/infos → mentionne-les dans ton récap à l'utilisateur
+- Le skill détecte : convergence N→1 sans barrier, refs cassées, args requis manquants, cycles, classifiers mal câblés, orphelins, triggers absents/dupliqués
+
+C'est ton garde-fou anti-bug runtime. Saute-le → tu livres un workflow potentiellement cassé.
 
 ### Quand tu doutes → LIS LE MANUEL
 **N'hésite JAMAIS à consulter le manuel.** Si tu n'es pas sûr d'un schéma de sortie, d'un pattern, d'une séquence ou des credentials :

@@ -1,13 +1,31 @@
 const TOKEN_URL = "https://oauth2.googleapis.com/token";
 
+// Runtime OAuth2 managé (flow bouncer) : client_id/secret côté env serveur,
+// refresh token dans le credential. Voir API/src/oauth/oauth2-runtime.js.
+let getOAuth2AccessToken = null;
+try { ({ getOAuth2AccessToken } = require("../../../../oauth/oauth2-runtime")); } catch { /* optionnel */ }
+
 let cachedToken = null;
 let tokenExpiry = 0;
 
 async function getAccessToken(credentials) {
+  const creds = credentials || {};
+
+  // Flow managé (bouncer) : pas de clientId/secret dans le credential → ils
+  // viennent de l'env. On délègue au runtime (cache par credential intégré).
+  const isManaged = !creds.clientId && !creds.clientSecret && (creds.providerKey || creds.refreshToken);
+  if (isManaged && getOAuth2AccessToken) {
+    return getOAuth2AccessToken({
+      providerKey: String(creds.providerKey || "googleDrive").trim() || "googleDrive",
+      credentials: creds,
+    });
+  }
+
+  // Fallback legacy : identifiants OAuth2 saisis manuellement par l'utilisateur.
   const now = Date.now();
   if (cachedToken && now < tokenExpiry - 30000) return cachedToken;
 
-  const { clientId, clientSecret, refreshToken } = credentials;
+  const { clientId, clientSecret, refreshToken } = creds;
   if (!clientId || !clientSecret || !refreshToken) {
     throw new Error("Missing Google OAuth2 credentials (clientId, clientSecret, refreshToken).");
   }

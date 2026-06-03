@@ -365,9 +365,26 @@ export class FlowAdvancedCenterPanelComponent implements OnDestroy {
   @Input() ctx: any = {};
   @Input() flowId: string | null = null;
 
-  /** ctx enrichi avec flowId/nodeId pour les fields type 'resolver' qui appellent le backend. */
+  /** ctx enrichi avec flowId/nodeId pour les fields type 'resolver' qui appellent le backend.
+   *  IMPORTANT : cached + signature-checked pour éviter qu'un nouvel objet à chaque CD
+   *  ne cause un infinite change detection loop (NG0103). On rebuild SEULEMENT si
+   *  l'un des 3 inputs change (ctx ref, flowId, model.id). */
+  private _resolverCtxCache: any = null;
+  private _resolverCtxSig: string = '';
   get resolverCtx(): any {
-    return { ...(this.ctx || {}), flowId: this.flowId, nodeId: this.model?.id };
+    const ctxRef = this.ctx as any;
+    const nodeId = this.model?.id || '';
+    const sig = `${ctxRef ? (ctxRef.__id__ || '') : ''}|${this.flowId || ''}|${nodeId}`;
+    // Compare aussi par ref directe pour détecter mutation in-place
+    if (this._resolverCtxCache && this._resolverCtxSig === sig && this._resolverCtxCache._srcCtx === ctxRef) {
+      return this._resolverCtxCache;
+    }
+    const next = { ...(ctxRef || {}), flowId: this.flowId, nodeId };
+    // Tag interne pour détecter le changement de référence sans muter ctx
+    Object.defineProperty(next, '_srcCtx', { value: ctxRef, enumerable: false });
+    this._resolverCtxCache = next;
+    this._resolverCtxSig = sig;
+    return next;
   }
   @Input() bare = false;
   @Input() simScenarios: Array<{ id: string; index: number; label: string; msgIn: any; match?: { exec?: boolean; handleId?: string; handleLabel?: string } }>|null = null;
@@ -422,6 +439,8 @@ export class FlowAdvancedCenterPanelComponent implements OnDestroy {
 
   private lastModelId: string | null = null;
   private lastTemplateSig: string | null = null;
+  /** Anti-loop guard : timestamps des derniers resets du DynamicForm. */
+  private _lastResetTs: number[] = [];
   dfVisible = true;
   constructor(private cdr: ChangeDetectorRef, private zone: NgZone, private catalog: CatalogService, private acl: AccessControlService, private router: Router, private msg: NzMessageService) {
     this.updateSelectMode();
@@ -433,7 +452,15 @@ export class FlowAdvancedCenterPanelComponent implements OnDestroy {
       });
   }
 
+  /** Flag pour skip les detectChanges async une fois détruit (sinon throw). */
+  private _destroyed = false;
+  /** Handles des setTimeout en attente pour pouvoir les cancel à destroy. */
+  private _pendingTimeouts: any[] = [];
+
   ngOnDestroy(): void {
+    this._destroyed = true;
+    try { for (const t of this._pendingTimeouts) clearTimeout(t); } catch {}
+    this._pendingTimeouts = [];
     try { this.formsSearchSub?.unsubscribe(); } catch {}
   }
 
@@ -483,17 +510,52 @@ export class FlowAdvancedCenterPanelComponent implements OnDestroy {
         this.formFuture = [];
         this.lastJson = JSON.stringify(init);
       } catch { this.formPast = [{}]; this.formFuture = []; this.lastJson = '{}'; }
-      // Force destroy/recreate of DynamicForm to reset validators + status
+      // Force destroy/recreate of DynamicForm to reset validators + status.
+      // Garde-fou anti-boucle infinie : si on enchaîne 3 resets en <1s, on skip
+      // pour éviter de spam le CPU et noyer la console.
       try {
+        const now = Date.now();
+        if (!this._lastResetTs) this._lastResetTs = [];
+        this._lastResetTs = this._lastResetTs.filter(t => now - t < 1000);
+        this._lastResetTs.push(now);
+        if (this._lastResetTs.length > 3) {
+          console.warn('[center-panel] reset loop detected (>3 in 1s) — skip detectChanges to break the loop');
+          this.dfVisible = true;
+          return;
+        }
         this.dfVisible = false;
-        this.cdr.detectChanges();
-        setTimeout(() => {
-          this.zone.run(() => {
-            this.dfVisible = true;
-            try { this.cdr.detectChanges(); } catch {}
-          });
+        if (!this._destroyed) {
+          try { this.cdr.detectChanges(); } catch (e) { /* cdr peut throw si déjà détruit */ }
+        }
+        const handle = setTimeout(() => {
+          // Skip si composant détruit entre temps (dialog fermé → cdr.detectChanges throw)
+          if (this._destroyed) return;
+          try {
+            this.zone.run(() => {
+              if (this._destroyed) return;
+              this.dfVisible = true;
+              try {
+                // ApplicationRef-safe guard : si cdr est marqué destroyed, skip
+                if (!(this.cdr as any).destroyed) this.cdr.detectChanges();
+              } catch (e) {
+                console.error('[center-panel] detectChanges step2 failed', (e as any)?.message || e, {
+                  modelId: this.model?.id,
+                  templateType: this.model?.templateObj?.type,
+                });
+              }
+            });
+          } catch (e) {
+            console.error('[center-panel] reset setTimeout body crashed', (e as any)?.message || e);
+          } finally {
+            // Cleanup handle
+            const idx = this._pendingTimeouts.indexOf(handle);
+            if (idx >= 0) this._pendingTimeouts.splice(idx, 1);
+          }
         }, 0);
-      } catch {}
+        this._pendingTimeouts.push(handle);
+      } catch (e) {
+        console.error('[center-panel] reset block crashed', e);
+      }
       // Refresh credentials UI based on provider
       this.refreshCredentialsState();
     }

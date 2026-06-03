@@ -2856,6 +2856,314 @@
       ],
       "group": "Déclencheur",
       "risk": "safe"
+    },
+    {
+      "key": "wc_category_update",
+      "name": "wcCategoryUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une catégorie",
+      "subtitle": "Catégories",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "woocommerce",
+      "icon": "fa-solid fa-pen-to-square",
+      "description": "Modifie une catégorie WooCommerce.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_category"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier une catégorie",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "ID catégorie",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Catégories",
+      "tags": [
+        "WooCommerce",
+        "mise-à-jour"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "wc_category_delete",
+      "name": "wcCategoryDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une catégorie",
+      "subtitle": "Catégories",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "woocommerce",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprime une catégorie WooCommerce.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer une catégorie",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "ID catégorie",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Catégories",
+      "tags": [
+        "WooCommerce",
+        "suppression"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "wc_coupon_update",
+      "name": "wcCouponUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un coupon",
+      "subtitle": "Coupons",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Coupons",
+      "providerKey": "woocommerce",
+      "icon": "fa-solid fa-pen-to-square",
+      "description": "Modifie un coupon WooCommerce.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_coupon"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier un coupon",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "couponId",
+            "label": "ID coupon",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "code",
+            "label": "Code",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "date_expires",
+            "label": "Date expiration",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Coupons",
+      "tags": [
+        "WooCommerce",
+        "mise-à-jour"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "wc_customer_delete",
+      "name": "wcCustomerDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un client",
+      "subtitle": "Clients",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "woocommerce",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprime un client WooCommerce.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wc_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clients",
+      "tags": [
+        "WooCommerce",
+        "suppression"
+      ],
+      "risk": "destructive"
     }
   ]
 }

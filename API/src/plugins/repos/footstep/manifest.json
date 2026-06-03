@@ -1,0 +1,571 @@
+{
+  "repo": {
+    "name": "footstep",
+    "type": "local",
+    "label": "Footstep"
+  },
+  "variables": {
+    "footstep_geocoding_results": {
+      "title": "Résultats de géocodage Footstep",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "json", "key": "query", "label": "Requête", "col": { "xs": 24 } },
+        {
+          "type": "section",
+          "title": "Résultats",
+          "key": "results",
+          "mode": "array",
+          "array": { "initialItems": 0, "minItems": 0 },
+          "fields": [
+            { "type": "text", "key": "label", "label": "Libellé", "col": { "xs": 24 } },
+            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+            { "type": "number", "key": "lat", "label": "Latitude", "col": { "xs": 12 } },
+            { "type": "number", "key": "lon", "label": "Longitude", "col": { "xs": 12 } },
+            { "type": "text", "key": "country", "label": "Pays", "col": { "xs": 12 } },
+            { "type": "text", "key": "country_code", "label": "Code pays", "col": { "xs": 12 } },
+            { "type": "text", "key": "region", "label": "Région", "col": { "xs": 12 } },
+            { "type": "text", "key": "locality", "label": "Localité", "col": { "xs": 12 } },
+            { "type": "number", "key": "confidence", "label": "Confiance", "col": { "xs": 12 } },
+            { "type": "text", "key": "place_type", "label": "Type de lieu", "col": { "xs": 12 } },
+            { "type": "json", "key": "raw", "label": "Données brutes", "col": { "xs": 24 } }
+          ],
+          "col": { "xs": 24 }
+        },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "footstep_batch_results": {
+      "title": "Résultats groupés Footstep",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "json", "key": "results", "label": "Résultats", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "footstep_parse_results": {
+      "title": "Adresses analysées Footstep",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "json", "key": "results", "label": "Adresses", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "footstep_ai_query_result": {
+      "title": "Réponse naturelle Footstep",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "intent", "label": "Intention", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "summary", "label": "Résumé", "col": { "xs": 24 } },
+        { "type": "json", "key": "result", "label": "Résultat", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "footstep_route_result": {
+      "title": "Itinéraire Footstep",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "distance_meters", "label": "Distance en mètres", "col": { "xs": 12 } },
+        { "type": "number", "key": "duration_seconds", "label": "Durée en secondes", "col": { "xs": 12 } },
+        { "type": "text", "key": "units", "label": "Unités", "col": { "xs": 12 } },
+        { "type": "textarea", "key": "narrative", "label": "Résumé", "col": { "xs": 24 } },
+        { "type": "json", "key": "terrain", "label": "Terrain", "col": { "xs": 24 } },
+        { "type": "json", "key": "bounds", "label": "Emprise", "col": { "xs": 24 } },
+        { "type": "json", "key": "route", "label": "Itinéraire", "col": { "xs": 24 } },
+        { "type": "json", "key": "alternates", "label": "Alternatives", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "footstep_compare_result": {
+      "title": "Comparaison d'itinéraires Footstep",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "json", "key": "routes", "label": "Itinéraires", "col": { "xs": 24 } },
+        { "type": "json", "key": "summary", "label": "Synthèse", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "footstep_isochrone_result": {
+      "title": "Isochrone Footstep",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "json", "key": "contours", "label": "Contours", "col": { "xs": 24 } },
+        { "type": "json", "key": "geojson", "label": "GeoJSON", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "footstep_matrix_result": {
+      "title": "Matrice Footstep",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "json", "key": "matrix", "label": "Matrice", "col": { "xs": 24 } },
+        { "type": "json", "key": "sources", "label": "Sources", "col": { "xs": 24 } },
+        { "type": "json", "key": "targets", "label": "Destinations", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    },
+    "footstep_elevation_result": {
+      "title": "Altitudes Footstep",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "json", "key": "elevations", "label": "Altitudes", "col": { "xs": 24 } },
+        { "type": "json", "key": "summary", "label": "Synthèse", "col": { "xs": 24 } },
+        { "type": "json", "key": "raw", "label": "Réponse brute", "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "footstep",
+      "name": "Footstep",
+      "title": "Footstep",
+      "iconClass": "fa-solid fa-map-location-dot",
+      "iconUrl": "https://www.footstep.ai/favicon.ico",
+      "color": "#16a34a",
+      "tags": ["footstep", "géocodage", "itinéraire"],
+      "categories": ["Cartographie"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Footstep",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Footstep envoyée dans l'en-tête x-api-key.",
+            "col": { "xs": 24 },
+            "secret": true,
+            "validators": [{ "type": "required" }]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de l'API Footstep.",
+            "default": "https://api.footstep.ai",
+            "col": { "xs": 24 }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "footstep_geocoding_search",
+      "name": "footstepGeocodingSearch",
+      "schemaVersion": 2,
+      "title": "Géocoder une adresse",
+      "subtitle": "Géocodage",
+      "icon": "fa-solid fa-magnifying-glass-location",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["géocodage", "adresse", "recherche"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_geocoding_results" }],
+      "authorize_catch_error": true,
+      "description": "Convertit une adresse ou un lieu en coordonnées.",
+      "args": {
+        "title": "Géocoder une adresse",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "text", "label": "Texte", "default": "London", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "size", "label": "Nombre de résultats", "default": 5, "col": { "xs": 12 } },
+          { "type": "number", "key": "focusLat", "label": "Latitude de biais", "col": { "xs": 12 } },
+          { "type": "number", "key": "focusLon", "label": "Longitude de biais", "col": { "xs": 12 } },
+          { "type": "text", "key": "country", "label": "Pays", "description": "Code pays ISO alpha-3, par exemple GBR ou USA.", "col": { "xs": 12 } },
+          { "type": "text", "key": "placeTypes", "label": "Types de lieux", "description": "Liste acceptée par Footstep, séparée par des virgules.", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Géocodage"
+    },
+    {
+      "key": "footstep_geocoding_reverse",
+      "name": "footstepGeocodingReverse",
+      "schemaVersion": 2,
+      "title": "Géocoder à l'envers",
+      "subtitle": "Géocodage",
+      "icon": "fa-solid fa-location-crosshairs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["géocodage", "coordonnées"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_geocoding_results" }],
+      "authorize_catch_error": true,
+      "description": "Convertit des coordonnées en adresse ou lieu.",
+      "args": {
+        "title": "Géocoder à l'envers",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "number", "key": "lat", "label": "Latitude", "default": 51.5074, "col": { "xs": 12 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "lon", "label": "Longitude", "default": -0.1278, "col": { "xs": 12 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "size", "label": "Nombre de résultats", "default": 5, "col": { "xs": 12 } },
+          { "type": "number", "key": "radius", "label": "Rayon", "description": "Rayon de recherche autour du point.", "col": { "xs": 12 } },
+          { "type": "text", "key": "placeTypes", "label": "Types de lieux", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Géocodage"
+    },
+    {
+      "key": "footstep_geocoding_places",
+      "name": "footstepGeocodingPlaces",
+      "schemaVersion": 2,
+      "title": "Rechercher des lieux",
+      "subtitle": "Géocodage",
+      "icon": "fa-solid fa-map-pin",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["lieux", "poi", "recherche"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_geocoding_results" }],
+      "authorize_catch_error": true,
+      "description": "Recherche des points d'intérêt près d'un lieu ou de coordonnées.",
+      "args": {
+        "title": "Rechercher des lieux",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "query", "label": "Recherche", "default": "coffee", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "near", "label": "Près de", "default": "London", "col": { "xs": 24 } },
+          { "type": "number", "key": "nearLat", "label": "Latitude", "col": { "xs": 12 } },
+          { "type": "number", "key": "nearLon", "label": "Longitude", "col": { "xs": 12 } },
+          { "type": "number", "key": "radius", "label": "Rayon", "default": 1000, "col": { "xs": 12 } },
+          { "type": "number", "key": "size", "label": "Nombre de résultats", "default": 10, "col": { "xs": 12 } },
+          { "type": "text", "key": "country", "label": "Pays", "col": { "xs": 12 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Géocodage"
+    },
+    {
+      "key": "footstep_geocoding_batch",
+      "name": "footstepGeocodingBatch",
+      "schemaVersion": 2,
+      "title": "Géocoder en lot",
+      "subtitle": "Géocodage",
+      "icon": "fa-solid fa-list-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["géocodage", "lot"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_batch_results" }],
+      "authorize_catch_error": true,
+      "description": "Géocode plusieurs adresses dans une seule requête.",
+      "args": {
+        "title": "Géocoder en lot",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "json", "key": "items", "label": "Adresses", "default": [{ "text": "London" }], "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "size", "label": "Résultats par adresse", "default": 1, "col": { "xs": 12 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Géocodage"
+    },
+    {
+      "key": "footstep_address_parse",
+      "name": "footstepAddressParse",
+      "schemaVersion": 2,
+      "title": "Analyser des adresses",
+      "subtitle": "Langage naturel",
+      "icon": "fa-solid fa-wand-magic-sparkles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["adresse", "analyse", "ia"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_parse_results" }],
+      "authorize_catch_error": true,
+      "description": "Corrige et structure des adresses libres.",
+      "args": {
+        "title": "Analyser des adresses",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "json", "key": "addresses", "label": "Adresses", "default": [{ "text": "10 downing st london", "country": "GBR" }], "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Langage naturel"
+    },
+    {
+      "key": "footstep_ai_query",
+      "name": "footstepAiQuery",
+      "schemaVersion": 2,
+      "title": "Poser une requête géospatiale",
+      "subtitle": "Langage naturel",
+      "icon": "fa-solid fa-comment-dots",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["ia", "géospatial", "requête"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_ai_query_result" }],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête géospatiale en langage naturel.",
+      "args": {
+        "title": "Poser une requête géospatiale",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "textarea", "key": "query", "label": "Requête", "default": "Walking route from Kings Cross to Tower Bridge", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "json", "key": "context", "label": "Contexte", "default": { "country": "GBR" }, "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Langage naturel"
+    },
+    {
+      "key": "footstep_routing_route",
+      "name": "footstepRoutingRoute",
+      "schemaVersion": 2,
+      "title": "Calculer un itinéraire",
+      "subtitle": "Itinéraires",
+      "icon": "fa-solid fa-route",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["itinéraire", "terrain"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_route_result" }],
+      "authorize_catch_error": true,
+      "description": "Calcule un itinéraire avec analyse de terrain.",
+      "args": {
+        "title": "Calculer un itinéraire",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "json", "key": "locations", "label": "Points", "default": [{ "lat": 51.5322, "lon": -0.124 }, { "lat": 51.5055, "lon": -0.0754 }], "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "select", "key": "travel", "label": "Mode", "default": "auto", "options": ["auto", "bicycle", "pedestrian", "bus", "truck"], "col": { "xs": 12 } },
+          { "type": "select", "key": "units", "label": "Unités", "default": "kilometers", "options": ["kilometers", "miles"], "col": { "xs": 12 } },
+          { "type": "text", "key": "language", "label": "Langue", "default": "en-GB", "col": { "xs": 12 } },
+          { "type": "number", "key": "elevation_interval", "label": "Intervalle d'altitude", "default": 30, "col": { "xs": 12 } },
+          { "type": "number", "key": "alternates", "label": "Alternatives", "default": 0, "col": { "xs": 12 } },
+          { "type": "checkbox", "key": "narrative", "label": "Inclure un résumé", "default": false, "col": { "xs": 12 } },
+          { "type": "select", "key": "format", "label": "Format", "default": "footstep", "options": ["footstep", "geojson"], "col": { "xs": 12 } },
+          { "type": "json", "key": "travel_options", "label": "Options de déplacement", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Itinéraires"
+    },
+    {
+      "key": "footstep_routing_optimize",
+      "name": "footstepRoutingOptimize",
+      "schemaVersion": 2,
+      "title": "Optimiser des arrêts",
+      "subtitle": "Itinéraires",
+      "icon": "fa-solid fa-arrows-split-up-and-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["optimisation", "itinéraire"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_route_result" }],
+      "authorize_catch_error": true,
+      "description": "Trouve le meilleur ordre pour visiter plusieurs arrêts.",
+      "args": {
+        "title": "Optimiser des arrêts",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "json", "key": "locations", "label": "Arrêts", "default": [{ "lat": 51.5322, "lon": -0.124 }, { "lat": 51.5055, "lon": -0.0754 }, { "lat": 51.515, "lon": -0.09 }, { "lat": 51.49, "lon": -0.1 }], "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "select", "key": "travel", "label": "Mode", "default": "auto", "options": ["auto", "bicycle", "pedestrian"], "col": { "xs": 12 } },
+          { "type": "select", "key": "units", "label": "Unités", "default": "kilometers", "options": ["kilometers", "miles"], "col": { "xs": 12 } },
+          { "type": "number", "key": "elevation_interval", "label": "Intervalle d'altitude", "default": 30, "col": { "xs": 12 } },
+          { "type": "checkbox", "key": "narrative", "label": "Inclure un résumé", "default": false, "col": { "xs": 12 } },
+          { "type": "select", "key": "format", "label": "Format", "default": "footstep", "options": ["footstep", "geojson"], "col": { "xs": 12 } },
+          { "type": "json", "key": "travel_options", "label": "Options de déplacement", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Itinéraires"
+    },
+    {
+      "key": "footstep_routing_compare",
+      "name": "footstepRoutingCompare",
+      "schemaVersion": 2,
+      "title": "Comparer des itinéraires",
+      "subtitle": "Itinéraires",
+      "icon": "fa-solid fa-code-compare",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["comparaison", "itinéraire"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_compare_result" }],
+      "authorize_catch_error": true,
+      "description": "Compare plusieurs modes de déplacement entre les mêmes points.",
+      "args": {
+        "title": "Comparer des itinéraires",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "json", "key": "locations", "label": "Points", "default": [{ "lat": 51.5322, "lon": -0.124 }, { "lat": 51.5055, "lon": -0.0754 }], "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "json", "key": "travel_modes", "label": "Modes", "default": ["auto", "pedestrian"], "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "number", "key": "elevation_interval", "label": "Intervalle d'altitude", "default": 30, "col": { "xs": 12 } },
+          { "type": "select", "key": "format", "label": "Format", "default": "footstep", "options": ["footstep", "geojson"], "col": { "xs": 12 } },
+          { "type": "json", "key": "travel_options", "label": "Options de déplacement", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Itinéraires"
+    },
+    {
+      "key": "footstep_routing_isochrone",
+      "name": "footstepRoutingIsochrone",
+      "schemaVersion": 2,
+      "title": "Calculer une isochrone",
+      "subtitle": "Analyse spatiale",
+      "icon": "fa-solid fa-draw-polygon",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["isochrone", "zone", "analyse"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_isochrone_result" }],
+      "authorize_catch_error": true,
+      "description": "Calcule des zones atteignables depuis une origine.",
+      "args": {
+        "title": "Calculer une isochrone",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "from", "label": "Origine textuelle", "default": "Kings Cross, London", "col": { "xs": 24 } },
+          { "type": "json", "key": "locations", "label": "Origine en coordonnées", "col": { "xs": 24 } },
+          { "type": "json", "key": "contours", "label": "Contours", "default": [{ "time": 15, "color": "ff0000" }], "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "select", "key": "travel", "label": "Mode", "default": "pedestrian", "options": ["auto", "bicycle", "pedestrian", "bus", "truck"], "col": { "xs": 12 } },
+          { "type": "checkbox", "key": "polygons", "label": "Retourner des polygones", "default": true, "col": { "xs": 12 } },
+          { "type": "number", "key": "denoise", "label": "Lissage", "default": 0.5, "col": { "xs": 12 } },
+          { "type": "checkbox", "key": "show_locations", "label": "Inclure les points", "default": false, "col": { "xs": 12 } },
+          { "type": "select", "key": "format", "label": "Format", "default": "footstep", "options": ["footstep", "geojson"], "col": { "xs": 12 } },
+          { "type": "json", "key": "travel_options", "label": "Options de déplacement", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analyse spatiale"
+    },
+    {
+      "key": "footstep_routing_matrix",
+      "name": "footstepRoutingMatrix",
+      "schemaVersion": 2,
+      "title": "Calculer une matrice",
+      "subtitle": "Analyse spatiale",
+      "icon": "fa-solid fa-table-cells",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["matrice", "distance", "durée"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_matrix_result" }],
+      "authorize_catch_error": true,
+      "description": "Calcule les distances et durées entre sources et destinations.",
+      "args": {
+        "title": "Calculer une matrice",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "json", "key": "sources", "label": "Sources", "default": [{ "lat": 51.5322, "lon": -0.124 }], "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "json", "key": "targets", "label": "Destinations", "default": [{ "lat": 51.5055, "lon": -0.0754 }], "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "select", "key": "travel", "label": "Mode", "default": "auto", "options": ["auto", "bicycle", "pedestrian", "bus", "truck"], "col": { "xs": 12 } },
+          { "type": "select", "key": "units", "label": "Unités", "default": "kilometers", "options": ["kilometers", "miles"], "col": { "xs": 12 } },
+          { "type": "select", "key": "format", "label": "Format", "default": "footstep", "options": ["footstep", "geojson"], "col": { "xs": 12 } },
+          { "type": "json", "key": "travel_options", "label": "Options de déplacement", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analyse spatiale"
+    },
+    {
+      "key": "footstep_routing_elevation",
+      "name": "footstepRoutingElevation",
+      "schemaVersion": 2,
+      "title": "Récupérer les altitudes",
+      "subtitle": "Analyse spatiale",
+      "icon": "fa-solid fa-mountain",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["altitude", "terrain"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_elevation_result" }],
+      "authorize_catch_error": true,
+      "description": "Récupère les altitudes pour des coordonnées ou une polyline.",
+      "args": {
+        "title": "Récupérer les altitudes",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "json", "key": "shape", "label": "Points", "default": [{ "lat": 51.5322, "lon": -0.124 }, { "lat": 51.5055, "lon": -0.0754 }], "col": { "xs": 24 } },
+          { "type": "text", "key": "encoded_polyline", "label": "Polyline encodée", "col": { "xs": 24 } },
+          { "type": "checkbox", "key": "range", "label": "Inclure les distances cumulées", "default": false, "col": { "xs": 12 } },
+          { "type": "number", "key": "resample_distance", "label": "Rééchantillonnage", "col": { "xs": 12 } },
+          { "type": "number", "key": "height_precision", "label": "Précision", "default": 0, "col": { "xs": 12 } },
+          { "type": "select", "key": "format", "label": "Format", "default": "footstep", "options": ["footstep", "geojson"], "col": { "xs": 12 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analyse spatiale"
+    },
+    {
+      "key": "footstep_routing_find_and_route",
+      "name": "footstepRoutingFindAndRoute",
+      "schemaVersion": 2,
+      "title": "Trouver et router",
+      "subtitle": "Itinéraires",
+      "icon": "fa-solid fa-signs-post",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Footstep",
+      "providerKey": "footstep",
+      "tags": ["recherche", "itinéraire"],
+      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
+      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:footstep_route_result" }],
+      "authorize_catch_error": true,
+      "description": "Trouve une destination par nom puis calcule l'itinéraire.",
+      "args": {
+        "title": "Trouver et router",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "json", "key": "origin", "label": "Origine", "default": { "lat": 51.5322, "lon": -0.124 }, "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "destination", "label": "Destination", "default": "Tower Bridge", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
+          { "type": "text", "key": "origin_country", "label": "Pays de l'origine", "col": { "xs": 12 } },
+          { "type": "text", "key": "destination_country", "label": "Pays de destination", "default": "GBR", "col": { "xs": 12 } },
+          { "type": "select", "key": "travel", "label": "Mode", "default": "auto", "options": ["auto", "bicycle", "pedestrian", "bus", "truck"], "col": { "xs": 12 } },
+          { "type": "number", "key": "elevation_interval", "label": "Intervalle d'altitude", "default": 30, "col": { "xs": 12 } },
+          { "type": "checkbox", "key": "narrative", "label": "Inclure un résumé", "default": false, "col": { "xs": 12 } },
+          { "type": "select", "key": "format", "label": "Format", "default": "footstep", "options": ["footstep", "geojson"], "col": { "xs": 12 } },
+          { "type": "json", "key": "travel_options", "label": "Options de déplacement", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Itinéraires"
+    }
+  ]
+}

@@ -180,6 +180,7 @@ interface ProcessedSegment {
           <div *ngSwitchCase="'permission_request'" class="widget-bubble perm-request-bubble">
             <ai-permission-request-card
               [request]="msg.metadata!.permissionRequest!"
+              [requestedAt]="msg.createdAt"
               (answered)="onPermissionAnswer($event)">
             </ai-permission-request-card>
           </div>
@@ -560,25 +561,83 @@ interface ProcessedSegment {
     </div>
   `,
   styles: [`
+    /* Style ChatGPT-like :
+       - USER → bulle visible sur fond gris foncé, alignée à droite, max 75% large
+       - ASSISTANT → PAS de bulle, PAS de background, contenu directement sur le
+         fond du chat (comme du texte de page normal). L'avatar reste pour identifier
+         l'auteur. Le texte assistant peut occuper toute la largeur disponible. */
     .ai-msg { display: flex; gap: 10px; padding: 8px 0; }
     .ai-msg.user { flex-direction: row-reverse; }
     .ai-msg.user .body { align-items: flex-end; }
-    .ai-msg.user .content { background: #fdf2f8; border-radius: 14px 14px 2px 14px; padding: 10px 16px; }
+    /* Bulle user : gris clair lisible (style ChatGPT) — pas trop foncée pour rester
+       cohérente avec un thème clair. Texte foncé sur fond gris très clair. */
+    .ai-msg.user .content {
+      background: #f4f4f4;
+      color: #262626;
+      border-radius: 18px;
+      padding: 10px 16px;
+      max-width: 75%;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+    .ai-msg.user .content :host ::ng-deep code {
+      background: rgba(0, 0, 0, 0.06);
+      color: #262626;
+    }
+    .ai-msg.user .content :host ::ng-deep a {
+      color: #1677ff;
+      text-decoration: underline;
+    }
+    /* Assistant : pas de bulle, juste du texte aligné sur la page. En desktop,
+       un peu de padding-left pour aérer (pas collé au bord), en mobile pleine
+       largeur. */
     .ai-msg.assistant .content {
-      background: #ebebeb; border-radius: 14px 14px 14px 2px; padding: 10px 16px;
-      /* Apparition fluide des nouvelles portions de texte pendant streaming */
-      animation: ai-msg-appear 220ms ease-out;
+      background: transparent;
+      padding: 0;
+      max-width: 100%;
+      animation: ai-msg-appear 260ms cubic-bezier(.2, .8, .2, 1);
+    }
+    /* Padding gauche uniquement sur très grands écrans (≥ 1440px).
+       Sur les écrans normaux (laptop, tablette, mobile), pleine largeur. */
+    @media (min-width: 1440px) {
+      .ai-msg.assistant { padding-left: 48px; }
     }
     @keyframes ai-msg-appear {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0; transform: translateY(6px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    /* Curseur de typing : barre verticale pulsée à la fin du texte streamé.
+       Visible uniquement quand le message est actif (streaming en cours). */
+    .ai-msg.streaming .content::after {
+      content: '▎';
+      display: inline-block;
+      color: #e61982;
+      font-weight: 100;
+      margin-left: 2px;
+      animation: typingBlink 0.9s ease-in-out infinite;
+    }
+    @keyframes typingBlink {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
     }
     .avatar { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
-    .ai-msg.assistant .avatar { background: #fdf2f8; color: #e61982; }
+    /* Style ChatGPT-like : pas d'avatar côté assistant (le texte est directement
+       sur la page, sans visuel d'auteur). On garde l'avatar côté user pour
+       éventuelle distinction, mais hide aussi pour épuration max. */
+    .ai-msg.assistant .avatar,
+    .ai-msg.assistant .avatar-spacer {
+      display: none;
+    }
+    .ai-msg.user .avatar,
+    .ai-msg.user .avatar-spacer {
+      display: none;
+    }
     .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
     /* Body vide (widget-only sans texte ni actions) : pas de place perdue */
     .body:empty, .body:has(> .system-hint-hidden:only-child) { display: none; }
-    .content { max-width: 85%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; }
+    /* Tous les blocs (texte, reasoning, report-card) prennent la pleine largeur
+       du parent .msg-wrap (768px max via .messages-wrapper). Plus de max-width
+       custom — alignement vertical cohérent entre texte / tools / cards. */
+    .content { max-width: 100%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; box-sizing: border-box; }
     .content :host ::ng-deep p { margin: 0 0 4px; }
     .content :host ::ng-deep p:last-child { margin: 0; }
     .content :host ::ng-deep code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
@@ -602,7 +661,7 @@ interface ProcessedSegment {
     .content ::ng-deep th, .content ::ng-deep td { border: 1px solid #e8e8e8; padding: 6px 10px; text-align: left; white-space: nowrap; }
     .content ::ng-deep th { background: #fafafa; font-weight: 600; font-size: 12px; }
     .content ::ng-deep tr:nth-child(even) { background: #fafafa; }
-    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.85; max-width: 85%; min-width: 0; overflow: hidden; }
+    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; opacity: 0.85; max-width: 100%; min-width: 0; overflow: hidden; box-sizing: border-box; }
     .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
     .reasoning-header.clickable { cursor: pointer; user-select: none; transition: color .12s; }
     .reasoning-header.clickable:hover { color: #e61982; }
@@ -667,7 +726,7 @@ interface ProcessedSegment {
       padding: 6px 12px; margin: 4px 0;
       border-radius: 0 8px 8px 0;
       opacity: 0.85;
-      max-width: 85%; min-width: 0;
+      max-width: 100%; min-width: 0; box-sizing: border-box;
       cursor: pointer; user-select: none;
       font-size: 11px; color: #999; font-weight: 500;
       text-transform: uppercase; letter-spacing: 0.3px;
@@ -714,12 +773,12 @@ interface ProcessedSegment {
     .args-value-clamped { max-height: calc(4 * 1.5em); overflow: hidden; }
     .args-expand-toggle { display: inline-block; font-size: 10px; color: #e61982; cursor: pointer; margin-top: 1px; }
     .args-expand-toggle:hover { text-decoration: underline; }
-    .answered-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; margin: 4px 0; max-width: 85%; }
+    .answered-question { background: #fafafa; border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px 12px; margin: 4px 0; max-width: 100%; box-sizing: border-box; }
     .user-edit-btn { position: absolute; top: 4px; right: 4px; color: #bfbfbf; opacity: 0; transition: opacity .15s; }
     .ai-msg:hover .user-edit-btn { opacity: 1; }
     .user-edit-btn:hover { color: #1890ff; background: rgba(24,144,255,0.08); }
     .ai-msg.user { position: relative; }
-    .edit-wrap { display: flex; flex-direction: column; gap: 6px; background: #f8f9fa; border: 1px solid #d9d9d9; border-radius: 8px; padding: 8px; min-width: 280px; max-width: 85%; }
+    .edit-wrap { display: flex; flex-direction: column; gap: 6px; background: #f8f9fa; border: 1px solid #d9d9d9; border-radius: 8px; padding: 8px; min-width: 280px; max-width: 100%; box-sizing: border-box; }
     .edit-ta { font-size: 13px; font-family: inherit; }
     .edit-actions { display: flex; justify-content: flex-end; gap: 6px; }
     .edit-hint { font-size: 11px; color: #8c8c8c; font-style: italic; }
@@ -772,7 +831,7 @@ interface ProcessedSegment {
     .cancelled-tag { color: #ff4d4f; border: 1px solid #ff4d4f; background: transparent; margin: 0; }
     .retry-btn { color: #666; font-size: 12px; }
     .retry-btn:hover { color: #e61982; }
-    .msg-attachments { display: flex; flex-wrap: wrap; gap: 6px; max-width: 85%; }
+    .msg-attachments { display: flex; flex-wrap: wrap; gap: 6px; max-width: 100%; box-sizing: border-box; }
     .msg-att-chip { display: inline-flex; }
     .msg-att-img { max-width: 200px; max-height: 150px; border-radius: 8px; cursor: pointer; object-fit: cover; border: 1px solid #e8e8e8; transition: opacity 0.2s; }
     .msg-att-img:hover { opacity: 0.85; }
@@ -787,7 +846,8 @@ interface ProcessedSegment {
       border-radius: 0;
       padding: 4px 12px;
       margin: 6px 0;
-      max-width: 85%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     .comment-msg .comment-content { margin-top: 4px; font-size: 13px; color: #333; line-height: 1.55; }
     .comment-msg .comment-content ::ng-deep p { margin: 0 0 4px; }
@@ -826,24 +886,20 @@ interface ProcessedSegment {
     .tool-files { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tool-file-img { max-width: 200px; max-height: 150px; border-radius: 6px; object-fit: cover; border: 1px solid #e8e8e8; }
     .tool-file-link { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #e61982; }
-    /* Wrapper unifié pour TOUS les widgets assistant — même max-width que les messages texte */
-    /* Widgets inline : même largeur que le texte (85%), pas de card séparée.
-       Visuellement intégrés dans le flux du message comme dans Claude.ai. */
+    /* Wrapper unifié pour TOUS les widgets assistant : pleine largeur du parent
+       .msg-wrap (768px max via .messages-wrapper). Aligné avec .content / .reasoning. */
     .widget-bubble {
-      max-width: 85%;
+      max-width: 100%;
       min-width: 0;
+      box-sizing: border-box;
       display: block;
       margin: 8px 0;
       background: transparent;
       border: 0;
       box-shadow: none;
     }
-    @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
-    /* Permission request : style inline (bordure gauche colorée), même largeur
-       que les bulles message (85%). Pas de pulse, pas de box-shadow. */
-    .perm-request-bubble { max-width: 85%; animation: none; box-shadow: none; }
-    @media (max-width: 640px) { .perm-request-bubble { max-width: 100%; } }
-    @media (max-width: 640px) { .widget-bubble { max-width: 100%; } }
+    /* Permission request : style inline (bordure gauche colorée), pleine largeur. */
+    .perm-request-bubble { max-width: 100%; box-sizing: border-box; animation: none; box-shadow: none; }
     .widget-bubble :host ::ng-deep > * { max-width: 100%; }
     /* Diagrammes : bubble plus large (pleine largeur dispo) pour que le mermaid respire */
     .diagram-bubble { background: #fff; border: 1px solid #f0f0f0; border-left: 3px solid #e61982; border-radius: 0 8px 8px 0; padding: 8px 10px; max-width: min(1100px, 100%); width: 100%; }
@@ -1292,7 +1348,22 @@ export class AiMessageComponent {
   // - todo_write : son résultat est déjà visible via le widget plan-header /
   //   checklist en haut. La pill "Checklist" dans le message est redondante
   //   et visuellement lourde (surtout dans le resume final du parent).
-  private static readonly HIDDEN_TOOL_NAMES = new Set(['todo_write']);
+  //
+  // Étendu : tous les tools qui produisent un widget rendu INLINE dans le flux
+  // du message (file_inline, image_inline, structured, diagram, canvas_html,
+  // todo_list) sont cachés du résumé tools — leur widget complet est déjà
+  // visible juste au-dessus, c'est redondant. Vu par l'user comme "aperçu fichier
+  // affiché en doublon".
+  private static readonly HIDDEN_TOOL_NAMES = new Set([
+    'todo_write',
+    'display_file',
+    'display_image',
+    'render_structured',
+    'render_interactive_canvas',
+    'generate_diagram',
+    'generate_document',
+    'canvas_html',
+  ]);
 
   private _filterHiddenTools(tools: AiToolCall[] | undefined): AiToolCall[] {
     if (!tools?.length) return tools || [];
@@ -1677,10 +1748,23 @@ export class AiMessageComponent {
   toolDisplayName(tc: AiToolCall): string {
     if (tc.displayTitle) return tc.displayTitle;
     if (tc.name === 'execute_tool' && tc.args?.key) return tc.args.key;
-    // spawn_subagent → affiche le prénom du roster au lieu de "Sous-agent" générique
-    if (tc.name === 'spawn_subagent' && tc.args?.subagent_type) {
-      const profile = resolveAgentProfile({ subagentType: tc.args.subagent_type });
-      if (profile) return `Lance ${profile.emoji} ${profile.name}`;
+    // spawn_subagent → affiche le prénom du roster au lieu de "Sous-agent" générique.
+    // Mode parallel : "Lance 🔍 Marie + 📁 Tim (2 en parallèle)".
+    if (tc.name === 'spawn_subagent') {
+      const args: any = tc.args || {};
+      if (Array.isArray(args.parallel) && args.parallel.length > 0) {
+        const profiles = args.parallel
+          .map((p: any) => resolveAgentProfile({ subagentType: p?.subagent_type }))
+          .filter(Boolean) as Array<{ emoji: string; name: string }>;
+        if (profiles.length > 0) {
+          const names = profiles.map(p => `${p.emoji} ${p.name}`).join(' + ');
+          return profiles.length > 1 ? `Lance ${names} (${profiles.length} en parallèle)` : `Lance ${names}`;
+        }
+      }
+      if (args.subagent_type && args.subagent_type !== 'placeholder') {
+        const profile = resolveAgentProfile({ subagentType: args.subagent_type });
+        if (profile) return `Lance ${profile.emoji} ${profile.name}`;
+      }
     }
     if (tc.name === 'send_message_to_agent') {
       const to = tc.args?.to;

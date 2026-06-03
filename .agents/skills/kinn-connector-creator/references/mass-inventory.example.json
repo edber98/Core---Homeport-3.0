@@ -1,0 +1,24 @@
+[
+  {
+    "connector": "acme-crm",
+    "providerName": "Acme CRM",
+    "iconUrl": "https://cdn.simpleicons.org/hubspot",
+    "iconClass": "fa-solid fa-address-book",
+    "color": "#ffe9dd",
+    "tags": ["crm", "sales"],
+    "categories": ["CRM"],
+    "openapiFile": "openapi/acme-crm.openapi.json",
+    "strictAutomation": true,
+    "excludePatterns": ["/admin", "/billing", "/audit"],
+    "includePatterns": ["/contacts/.*/assign", "/contacts/.*/notes"]
+  },
+  {
+    "connector": "acme-support",
+    "providerName": "Acme Support",
+    "iconUrl": "https://cdn.simpleicons.org/zendesk",
+    "iconClass": "fa-solid fa-life-ring",
+    "color": "#e9f9f2",
+    "openapiFile": "openapi/acme-support.openapi.json",
+    "strictAutomation": true
+  }
+]

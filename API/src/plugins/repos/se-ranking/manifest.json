@@ -1,0 +1,50 @@
+{
+  "repo": {
+    "name": "se-ranking",
+    "type": "local",
+    "label": "SE Ranking"
+  },
+  "variables": {
+    "se_ranking_report": {
+      "title": "Rapport SE Ranking",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "totalCount", "label": "Nombre total", "description": "Nombre de lignes.", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "raw", "label": "Réponse brute", "description": "Réponse JSON brute.", "col": { "xs": 24 } },
+        { "type": "section", "title": "Lignes", "description": "Lignes du rapport.", "mode": "array", "key": "rows", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "textarea", "key": "json", "label": "JSON", "description": "Ligne brute au format JSON.", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "se_ranking",
+      "name": "SE Ranking",
+      "title": "SE Ranking",
+      "iconClass": "fa-solid fa-ranking-star",
+      "iconUrl": "https://seranking.com/blog/wp-content/themes/se_theme/images/ui-kit/logos/se-ranking-logo-new.svg",
+      "color": "#d6ddff",
+      "hasCredentials": true,
+      "credentialsForm": {
+        "fields": [
+          { "type": "password", "key": "apiKey", "label": "Clé API", "description": "Clé API Data ou Project SE Ranking.", "col": { "xs": 24 } }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "se_ranking_subscription_get", "name": "seRankingSubscriptionGet", "title": "Abonnement API", "subtitle": "Consulter l'abonnement et le solde", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_domain_overview", "name": "seRankingDomainOverview", "title": "Vue d'ensemble domaine", "subtitle": "Domain overview par base régionale", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "domain", "label": "Domaine" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "text", "key": "currency", "label": "Devise", "default": "USD" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_domain_worldwide", "name": "seRankingDomainWorldwide", "title": "Vue mondiale domaine", "subtitle": "Domain overview worldwide", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "domain", "label": "Domaine" }, { "type": "text", "key": "currency", "label": "Devise", "default": "USD" }, { "type": "text", "key": "fields", "label": "Champs", "default": "price,traffic,keywords" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_domain_keywords", "name": "seRankingDomainKeywords", "title": "Mots-clés domaine", "subtitle": "Keyword rankings d'un domaine", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "domain", "label": "Domaine" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 100 }, { "type": "number", "key": "offset", "label": "Offset", "default": 0 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_domain_pages", "name": "seRankingDomainPages", "title": "Pages domaine", "subtitle": "Pages classées d'un domaine", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "domain", "label": "Domaine" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 100 }, { "type": "number", "key": "offset", "label": "Offset", "default": 0 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_domain_competitors", "name": "seRankingDomainCompetitors", "title": "Concurrents domaine", "subtitle": "Concurrents organiques", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "domain", "label": "Domaine" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 100 }, { "type": "number", "key": "offset", "label": "Offset", "default": 0 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_keyword_volume", "name": "seRankingKeywordVolume", "title": "Volume mots-clés", "subtitle": "Volumes de recherche", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "textarea", "key": "keywords", "label": "Mots-clés", "description": "Séparés par des virgules." }, { "type": "text", "key": "database", "label": "Base", "default": "us" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_keyword_related", "name": "seRankingKeywordRelated", "title": "Mots-clés associés", "subtitle": "Suggestions de mots-clés", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "keyword", "label": "Mot-clé" }, { "type": "text", "key": "database", "label": "Base", "default": "us" }, { "type": "number", "key": "limit", "label": "Limite", "default": 100 }, { "type": "number", "key": "offset", "label": "Offset", "default": 0 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_backlinks_summary", "name": "seRankingBacklinksSummary", "title": "Résumé backlinks", "subtitle": "Backlink summary", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "text", "key": "targetType", "label": "Type cible", "default": "domain" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_backlinks_list", "name": "seRankingBacklinksList", "title": "Lister les backlinks", "subtitle": "Backlinks d'une cible", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "target", "label": "Cible" }, { "type": "text", "key": "targetType", "label": "Type cible", "default": "domain" }, { "type": "number", "key": "limit", "label": "Limite", "default": 100 }, { "type": "number", "key": "offset", "label": "Offset", "default": 0 } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_audit_create", "name": "seRankingAuditCreate", "title": "Créer un audit", "subtitle": "Lancer un audit de site", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "url", "label": "URL" }, { "type": "text", "key": "title", "label": "Titre" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] },
+    { "key": "se_ranking_audit_status_get", "name": "seRankingAuditStatusGet", "title": "Statut audit", "subtitle": "Lire le statut d'un audit", "schemaVersion": 2, "type": "function", "nodeKind": "function", "providerKey": "se_ranking", "authorize_catch_error": true, "args": { "fields": [ { "type": "text", "key": "auditId", "label": "ID audit" } ] }, "outputHandles": [ { "id": "ok", "type": "payload", "schema": "$var:se_ranking_report" }, { "id": "err", "type": "error" } ] }
+  ]
+}

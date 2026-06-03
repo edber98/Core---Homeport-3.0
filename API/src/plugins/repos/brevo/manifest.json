@@ -782,6 +782,175 @@
           }
         }
       ]
+    },
+    "brevo_webhook": {
+      "title": "Webhook Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du webhook.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL appelée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type du webhook.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "description",
+          "label": "Description",
+          "description": "Description.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "events",
+          "label": "Événements",
+          "description": "Événements suivis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "batched",
+          "label": "Groupé",
+          "description": "Envoi groupé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "createdAt",
+          "label": "Date de création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "modifiedAt",
+          "label": "Date de modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "brevo_webhooks": {
+      "title": "Webhooks Brevo",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Webhooks",
+          "description": "Liste",
+          "mode": "array",
+          "key": "webhooks",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "description": "Type.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "events",
+              "label": "Événements",
+              "description": "Événements.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "batched",
+              "label": "Groupé",
+              "description": "Groupé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Date de création",
+              "description": "Date.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "providers": [
@@ -2410,6 +2579,524 @@
       "risk": "write"
     },
     {
+      "key": "brevo_list_remove_contacts",
+      "name": "brevoListRemoveContacts",
+      "schemaVersion": 2,
+      "title": "Retirer des contacts d’une liste",
+      "subtitle": "Listes",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "listes"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retirer des contacts d’une liste dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Retirer des contacts d’une liste",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "listId",
+            "label": "ID de la liste",
+            "description": "Identifiant de la liste.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "emails",
+            "label": "Emails",
+            "description": "Emails séparés par virgules ou lignes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "all",
+            "label": "Tous les contacts",
+            "description": "Retirer tous les contacts de la liste.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Listes",
+      "risk": "write"
+    },
+    {
+      "key": "brevo_webhook_create",
+      "name": "brevoWebhookCreate",
+      "schemaVersion": 2,
+      "title": "Créer un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_webhook"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un webhook dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL du webhook.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "description": "Type de webhook.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "transactional",
+                "value": "transactional"
+              },
+              {
+                "label": "marketing",
+                "value": "marketing"
+              },
+              {
+                "label": "inbound",
+                "value": "inbound"
+              }
+            ],
+            "default": "transactional"
+          },
+          {
+            "type": "textarea",
+            "key": "events",
+            "label": "Événements",
+            "description": "Événements séparés par virgules.",
+            "col": {
+              "xs": 24
+            },
+            "default": "delivered,opened,click"
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "batched",
+            "label": "Groupé",
+            "description": "Envoyer les événements groupés.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Webhooks",
+      "risk": "write"
+    },
+    {
+      "key": "brevo_webhook_get",
+      "name": "brevoWebhookGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_webhook"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un webhook dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Récupérer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "webhookId",
+            "label": "ID du webhook",
+            "description": "Identifiant du webhook.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Webhooks",
+      "risk": "safe"
+    },
+    {
+      "key": "brevo_webhooks_list",
+      "name": "brevoWebhooksList",
+      "schemaVersion": 2,
+      "title": "Lister les webhooks",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_webhooks"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les webhooks dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Lister les webhooks",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "description": "Filtrer par type.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "transactional",
+                "value": "transactional"
+              },
+              {
+                "label": "marketing",
+                "value": "marketing"
+              },
+              {
+                "label": "inbound",
+                "value": "inbound"
+              }
+            ],
+            "default": "transactional"
+          },
+          {
+            "type": "select",
+            "key": "sort",
+            "label": "Tri",
+            "description": "Ordre de tri.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "desc",
+                "value": "desc"
+              },
+              {
+                "label": "asc",
+                "value": "asc"
+              }
+            ],
+            "default": "desc"
+          }
+        ]
+      },
+      "group": "Webhooks",
+      "risk": "safe"
+    },
+    {
+      "key": "brevo_webhook_update",
+      "name": "brevoWebhookUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Mettre à jour un webhook dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Mettre à jour un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "webhookId",
+            "label": "ID du webhook",
+            "description": "Identifiant du webhook.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "Nouvelle URL.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "description": "Type de webhook.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "transactional",
+                "value": "transactional"
+              },
+              {
+                "label": "marketing",
+                "value": "marketing"
+              },
+              {
+                "label": "inbound",
+                "value": "inbound"
+              }
+            ],
+            "default": "transactional"
+          },
+          {
+            "type": "textarea",
+            "key": "events",
+            "label": "Événements",
+            "description": "Événements séparés par virgules.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "batched",
+            "label": "Groupé",
+            "description": "Envoyer les événements groupés.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Webhooks",
+      "risk": "write"
+    },
+    {
+      "key": "brevo_webhook_delete",
+      "name": "brevoWebhookDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "tags": [
+        "brevo",
+        "webhooks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer un webhook dans Brevo.",
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Supprimer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "webhookId",
+            "label": "ID du webhook",
+            "description": "Identifiant du webhook.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Webhooks",
+      "risk": "write"
+    },
+    {
       "key": "brevo_webhook_event",
       "name": "brevoWebhookEvent",
       "schemaVersion": 2,
@@ -2485,6 +3172,306 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "brevo_smtp_events_list",
+      "name": "brevoSmtpEventsList",
+      "schemaVersion": 2,
+      "title": "Lister les événements SMTP",
+      "subtitle": "Logs transactionnels",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les événements transactionnels SMTP.",
+      "args": {
+        "title": "Lister les événements SMTP",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Type événement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "messageId",
+            "label": "Message ID",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SMTP"
+    },
+    {
+      "key": "brevo_event_create",
+      "name": "brevoEventCreate",
+      "schemaVersion": 2,
+      "title": "Créer un événement custom",
+      "subtitle": "Tracking événementiel",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un événement custom via API Brevo.",
+      "args": {
+        "title": "Créer un événement custom",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "eventName",
+            "label": "Nom événement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email contact",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Properties JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Events",
+      "risk": "write"
+    },
+    {
+      "key": "brevo_smtp_emails_list",
+      "name": "brevoSmtpEmailsList",
+      "schemaVersion": 2,
+      "title": "Lister les emails transactionnels",
+      "subtitle": "SMTP emails",
+      "icon": "fa-solid fa-envelope-open-text",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_contacts"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les emails transactionnels.",
+      "args": {
+        "title": "Lister les emails transactionnels",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "templateId",
+            "label": "Template ID",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SMTP"
+    },
+    {
+      "key": "brevo_smtp_email_get",
+      "name": "brevoSmtpEmailGet",
+      "schemaVersion": 2,
+      "title": "Obtenir un email transactionnel",
+      "subtitle": "SMTP email",
+      "icon": "fa-solid fa-envelope",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Brevo",
+      "providerKey": "brevo",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:brevo_email"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Récupère un email transactionnel par UUID.",
+      "args": {
+        "title": "Obtenir un email transactionnel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "uuid",
+            "label": "UUID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "SMTP"
     }
   ]
 }

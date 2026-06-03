@@ -141,3 +141,24 @@ spec:
               value: {{ .Values.kinn.kinnApi.kinn_panel_hmac_secret | default "" | quote }}
             - name: SSO_ROLE_MAP
               value: {{ .Values.kinn.kinnApi.sso_role_map | default "" | quote }}
+            # ── OAuth Bouncer (concentrateur auth.kinn.fr, injecté par Kinn-panel) ──
+            - name: KINN_OAUTH_RELAY_SECRET
+              value: {{ .Values.kinn.kinnApi.kinn_oauth_relay_secret | default "" | quote }}
+            - name: KINN_OAUTH_CONCENTRATOR_URL
+              value: {{ .Values.kinn.kinnApi.kinn_oauth_concentrator_url | default "https://auth.kinn.fr" | quote }}
+            - name: GOOGLE_OAUTH_CLIENT_ID
+              value: {{ .Values.kinn.kinnApi.google_oauth_client_id | default "" | quote }}
+            - name: GOOGLE_OAUTH_CLIENT_SECRET
+              value: {{ .Values.kinn.kinnApi.google_oauth_client_secret | default "" | quote }}
+            - name: MICROSOFT_OAUTH_CLIENT_ID
+              value: {{ .Values.kinn.kinnApi.microsoft_oauth_client_id | default "" | quote }}
+            - name: MICROSOFT_OAUTH_CLIENT_SECRET
+              value: {{ .Values.kinn.kinnApi.microsoft_oauth_client_secret | default "" | quote }}
+            - name: META_OAUTH_CLIENT_ID
+              value: {{ .Values.kinn.kinnApi.meta_oauth_client_id | default "" | quote }}
+            - name: META_OAUTH_CLIENT_SECRET
+              value: {{ .Values.kinn.kinnApi.meta_oauth_client_secret | default "" | quote }}
+            - name: TIKTOK_OAUTH_CLIENT_KEY
+              value: {{ .Values.kinn.kinnApi.tiktok_oauth_client_key | default "" | quote }}
+            - name: TIKTOK_OAUTH_CLIENT_SECRET
+              value: {{ .Values.kinn.kinnApi.tiktok_oauth_client_secret | default "" | quote }}

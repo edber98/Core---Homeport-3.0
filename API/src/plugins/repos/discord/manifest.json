@@ -1920,6 +1920,562 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "discord_remove_role_from_member",
+      "name": "discordRemoveRoleFromMember",
+      "schemaVersion": 2,
+      "title": "Retirer un rôle à un membre",
+      "subtitle": "Membres",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Discord",
+      "providerKey": "discord",
+      "tags": [
+        "discord",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Retirer un rôle à un membre",
+      "args": {
+        "title": "Retirer un rôle à un membre",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID serveur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID membre",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "role_id",
+            "label": "ID rôle",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Membres",
+      "risk": "write"
+    },
+    {
+      "key": "discord_create_dm",
+      "name": "discordCreateDm",
+      "schemaVersion": 2,
+      "title": "Créer un canal DM",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Discord",
+      "providerKey": "discord",
+      "tags": [
+        "discord",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un canal DM",
+      "args": {
+        "title": "Créer un canal DM",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messages",
+      "risk": "write"
+    },
+    {
+      "key": "discord_bulk_delete_messages",
+      "name": "discordBulkDeleteMessages",
+      "schemaVersion": 2,
+      "title": "Supprimer des messages en lot",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Discord",
+      "providerKey": "discord",
+      "tags": [
+        "discord",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer des messages en lot",
+      "args": {
+        "title": "Supprimer des messages en lot",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID canal",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "message_ids",
+            "label": "IDs messages (JSON ou CSV)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messages",
+      "risk": "write"
+    },
+    {
+      "key": "discord_pin_message",
+      "name": "discordPinMessage",
+      "schemaVersion": 2,
+      "title": "Épingler un message",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Discord",
+      "providerKey": "discord",
+      "tags": [
+        "discord",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Épingler un message",
+      "args": {
+        "title": "Épingler un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID canal",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID message",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messages",
+      "risk": "write"
+    },
+    {
+      "key": "discord_unpin_message",
+      "name": "discordUnpinMessage",
+      "schemaVersion": 2,
+      "title": "Désépingler un message",
+      "subtitle": "Messages",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Discord",
+      "providerKey": "discord",
+      "tags": [
+        "discord",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Désépingler un message",
+      "args": {
+        "title": "Désépingler un message",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "ID canal",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_id",
+            "label": "ID message",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Messages",
+      "risk": "write"
+    },
+    {
+      "key": "discord_get_guild_member",
+      "name": "discordGetGuildMember",
+      "schemaVersion": 2,
+      "title": "Récupérer un membre de serveur",
+      "subtitle": "Membres",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Discord",
+      "providerKey": "discord",
+      "tags": [
+        "discord",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un membre de serveur",
+      "args": {
+        "title": "Récupérer un membre de serveur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID serveur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID membre",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Membres",
+      "risk": "write"
+    },
+    {
+      "key": "discord_modify_guild_member",
+      "name": "discordModifyGuildMember",
+      "schemaVersion": 2,
+      "title": "Modifier un membre de serveur",
+      "subtitle": "Membres",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Discord",
+      "providerKey": "discord",
+      "tags": [
+        "discord",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:discord_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Modifier un membre de serveur",
+      "args": {
+        "title": "Modifier un membre de serveur",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "guild_id",
+            "label": "ID serveur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID membre",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "nick",
+            "label": "Nouveau pseudo",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "channel_id",
+            "label": "Canal vocal cible",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "communication_disabled_until",
+            "label": "Fin timeout (ISO-8601)",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Membres",
+      "risk": "write"
     }
   ],
   "variables": {

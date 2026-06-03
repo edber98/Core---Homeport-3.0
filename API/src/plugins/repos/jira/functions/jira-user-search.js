@@ -13,14 +13,15 @@ module.exports = {
     });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
-    const results = res.data || [];
+    const results = Array.isArray(res.data) ? res.data : [];
     const user = results[0] || {};
     return {
       ok: true,
       accountId: user.accountId || "",
       displayName: user.displayName || "",
       emailAddress: user.emailAddress || "",
-      active: user.active !== undefined ? String(user.active) : ""
-    , totalCount: accountId.length };
+      active: user.active !== undefined ? String(user.active) : "",
+      totalCount: String(results.length)
+    };
   }
 };

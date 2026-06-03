@@ -2260,6 +2260,224 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "jira_issue_assign",
+      "name": "jiraIssueAssign",
+      "schemaVersion": 2,
+      "title": "Assigner une issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_issue"
+        }
+      ],
+      "description": "Assigne une issue à un utilisateur.",
+      "args": {
+        "title": "Assigner une issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueKey",
+            "label": "Issue key",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "assigneeAccountId",
+            "label": "Assignee accountId",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "icon": "fa-solid fa-user-check",
+      "tags": [
+        "jira",
+        "assignation"
+      ],
+      "group": "Issues",
+      "risk": "write"
+    },
+    {
+      "key": "jira_issue_list_comments",
+      "name": "jiraIssueListComments",
+      "schemaVersion": 2,
+      "title": "Lister les commentaires d issue",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_issues"
+        }
+      ],
+      "description": "Liste les commentaires d une issue.",
+      "args": {
+        "title": "Lister les commentaires d issue",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "issueKey",
+            "label": "Issue key",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "icon": "fa-solid fa-comments",
+      "tags": [
+        "jira",
+        "comments"
+      ],
+      "group": "Issues",
+      "risk": "safe"
+    },
+    {
+      "key": "jira_issue_link_create",
+      "name": "jiraIssueLinkCreate",
+      "schemaVersion": 2,
+      "title": "Lier deux issues",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Jira",
+      "providerKey": "jira",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:jira_issue"
+        }
+      ],
+      "description": "Crée un lien entre deux issues.",
+      "args": {
+        "title": "Lier deux issues",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "inwardIssueKey",
+            "label": "Issue source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "outwardIssueKey",
+            "label": "Issue cible",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "typeName",
+            "label": "Type de lien",
+            "default": "Relates",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "subtitle": "Issues",
+      "icon": "fa-solid fa-link",
+      "tags": [
+        "jira",
+        "lien"
+      ],
+      "group": "Issues",
+      "risk": "write"
     }
   ]
 }

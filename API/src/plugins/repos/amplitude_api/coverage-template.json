@@ -1,0 +1,291 @@
+{
+  "connector": "amplitude_api",
+  "generatedAt": "2026-06-01T08:43:49.331Z",
+  "summary": {
+    "covered": 35,
+    "missing": 0,
+    "excluded": 0
+  },
+  "rows": [
+    {
+      "nodeKey": "amplitude_api_ingestion_events_ingest",
+      "title": "Envoyer des événements HTTP V2",
+      "group": "ingestion",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_ingestion_identify",
+      "title": "Mettre à jour les propriétés utilisateur",
+      "group": "ingestion",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_ingestion_group_identify",
+      "title": "Mettre à jour les propriétés de groupe",
+      "group": "ingestion",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_ingestion_user_map",
+      "title": "Mapper / unmapper des utilisateurs",
+      "group": "ingestion",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_cohort_list",
+      "title": "Lister les cohortes",
+      "group": "cohortes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_cohort_get",
+      "title": "Demander l'export d'une cohorte",
+      "group": "cohortes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_cohort_request_status",
+      "title": "Statut de requête cohorte",
+      "group": "cohortes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_cohort_download",
+      "title": "Télécharger une cohorte",
+      "group": "cohortes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_cohort_usage",
+      "title": "Consommation API cohortes",
+      "group": "cohortes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_cohort_upload",
+      "title": "Créer / remplacer une cohorte",
+      "group": "cohortes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_cohort_membership_update",
+      "title": "Mettre à jour la membership d'une cohorte",
+      "group": "cohortes",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_chart_csv",
+      "title": "Récupérer les résultats d'un chart",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_users",
+      "title": "Utilisateurs actifs / nouveaux",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_sessions_length",
+      "title": "Distribution des durées de session",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_sessions_average",
+      "title": "Durée moyenne de session",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_sessions_per_user",
+      "title": "Sessions moyennes par utilisateur",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_composition",
+      "title": "Composition utilisateurs",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_events_list",
+      "title": "Lister les événements",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_event_segmentation",
+      "title": "Segmentation d'événements",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_funnels",
+      "title": "Analyse de funnel",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_retention",
+      "title": "Analyse de rétention",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_user_activity",
+      "title": "Activité utilisateur",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_user_search",
+      "title": "Recherche utilisateur",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_realtime",
+      "title": "Utilisateurs actifs temps réel",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_revenue_ltv",
+      "title": "Valeur vie client",
+      "group": "dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_annotations_list",
+      "title": "Lister les annotations",
+      "group": "Dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_annotation_create",
+      "title": "Créer une annotation",
+      "group": "Dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_annotation_delete",
+      "title": "Supprimer une annotation",
+      "group": "Dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_custom_request",
+      "title": "Requête API personnalisée",
+      "group": "Advanced",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_annotation_get",
+      "title": "Récupérer une annotation",
+      "group": "Dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_annotation_update",
+      "title": "Mettre à jour une annotation",
+      "group": "Dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_annotation_categories_list",
+      "title": "Lister catégories annotations",
+      "group": "Dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_annotation_category_create",
+      "title": "Créer catégorie annotation",
+      "group": "Dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_annotation_category_update",
+      "title": "Modifier catégorie annotation",
+      "group": "Dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    },
+    {
+      "nodeKey": "amplitude_api_dashboard_annotation_category_delete",
+      "title": "Supprimer catégorie annotation",
+      "group": "Dashboard",
+      "status": "COVERED",
+      "endpoint": "",
+      "note": ""
+    }
+  ]
+}

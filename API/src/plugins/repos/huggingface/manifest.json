@@ -1,0 +1,900 @@
+{
+  "repo": {
+    "name": "huggingface",
+    "type": "local",
+    "label": "Hugging Face"
+  },
+  "variables": {
+    "huggingface_response": {
+      "title": "Réponse Hugging Face",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou titre retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat complet au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "huggingface_items": {
+      "title": "Hugging Face - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom ou titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Texte ou résumé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "huggingface",
+      "name": "Hugging Face",
+      "title": "Hugging Face",
+      "iconClass": "fa-solid fa-face-smile",
+      "iconUrl": "https://cdn.simpleicons.org/huggingface",
+      "color": "#fff8df",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Hugging Face",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Hugging Face.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://router.huggingface.co"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "huggingface_chat_create",
+      "name": "huggingfaceChatCreate",
+      "schemaVersion": 2,
+      "title": "Créer une réponse chat",
+      "subtitle": "Inference",
+      "icon": "fa-solid fa-message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appelle le endpoint chat OpenAI-compatible.",
+      "args": {
+        "title": "Créer une réponse chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Hugging Face.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Prompt utilisateur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages JSON",
+            "description": "Messages chat optionnels.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Tokens maximum",
+            "description": "Nombre de tokens.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Température.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Inference"
+    },
+    {
+      "key": "huggingface_models_list",
+      "name": "huggingfaceModelsList",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "subtitle": "Hub",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les modèles du Hub.",
+      "args": {
+        "title": "Lister les modèles",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Recherche modèle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pipelineTag",
+            "label": "Pipeline",
+            "description": "Filtre pipeline.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de modèles.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hub"
+    },
+    {
+      "key": "huggingface_model_get",
+      "name": "huggingfaceModelGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un modèle",
+      "subtitle": "Hub",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les métadonnées d'un modèle.",
+      "args": {
+        "title": "Récupérer un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "ID modèle",
+            "description": "Ex: openai/gpt-oss-20b.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hub"
+    },
+    {
+      "key": "huggingface_feature_extraction",
+      "name": "huggingfaceFeatureExtraction",
+      "schemaVersion": 2,
+      "title": "Créer des embeddings",
+      "subtitle": "Inference",
+      "icon": "fa-solid fa-vector-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une extraction de features/embeddings.",
+      "args": {
+        "title": "Créer des embeddings",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "ID modèle",
+            "description": "Modèle d'embedding.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "inputs",
+            "label": "Entrées JSON",
+            "description": "Texte ou tableau JSON.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "parameters",
+            "label": "Paramètres JSON",
+            "description": "Paramètres optionnels.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Inference"
+    },
+    {
+      "key": "huggingface_text_to_image",
+      "name": "huggingfaceTextToImage",
+      "schemaVersion": 2,
+      "title": "Générer une image",
+      "subtitle": "Inference",
+      "icon": "fa-solid fa-image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lance un modèle text-to-image.",
+      "args": {
+        "title": "Générer une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "modelId",
+            "label": "ID modèle",
+            "description": "Modèle image.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Prompt image.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "parameters",
+            "label": "Paramètres JSON",
+            "description": "Paramètres optionnels.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Inference"
+    },
+    {
+      "key": "huggingface_datasets_list",
+      "name": "huggingfaceDatasetsList",
+      "schemaVersion": 2,
+      "title": "Lister les datasets",
+      "subtitle": "Hub",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les datasets du Hub.",
+      "args": {
+        "title": "Lister les datasets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Recherche dataset.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de datasets.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hub"
+    },
+    {
+      "key": "huggingface_spaces_list",
+      "name": "huggingfaceSpacesList",
+      "schemaVersion": 2,
+      "title": "Lister les Spaces",
+      "subtitle": "Hub",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les Spaces du Hub Hugging Face.",
+      "args": {
+        "title": "Lister les Spaces",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Recherche Space.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre d'éléments.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hub"
+    },
+    {
+      "key": "huggingface_space_get",
+      "name": "huggingfaceSpaceGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un Space",
+      "subtitle": "Hub",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un Space par repoId (owner/name).",
+      "args": {
+        "title": "Récupérer un Space",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "repoId",
+            "label": "Repo ID",
+            "description": "Format owner/name.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hub"
+    },
+    {
+      "key": "huggingface_dataset_get",
+      "name": "huggingfaceDatasetGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un dataset",
+      "subtitle": "Hub",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Hugging Face",
+      "providerKey": "huggingface",
+      "tags": [
+        "huggingface",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:huggingface_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un dataset par repoId (owner/name).",
+      "args": {
+        "title": "Récupérer un dataset",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "repoId",
+            "label": "Repo ID",
+            "description": "Format owner/name.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Hub"
+    }
+  ]
+}

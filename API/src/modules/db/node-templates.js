@@ -19,8 +19,8 @@ module.exports = function(){
 
   r.get('/node-templates', async (req, res) => {
     const { category, providerKey, keys } = req.query;
-    let { limit = 100, page = 1 } = req.query;
-    limit = Math.max(1, Math.min(2000, Number(limit) || 100));
+    let { limit = 1000, page = 1 } = req.query;
+    limit = Math.max(1, Math.min(10000, Number(limit) || 1000));
     page = Math.max(1, Number(page) || 1);
     const { q, sort } = req.query;
     const baseQuery = { enabled: { $ne: false } };

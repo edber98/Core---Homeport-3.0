@@ -2285,6 +2285,232 @@
       ],
       "group": "Déclencheur",
       "risk": "safe"
+    },
+    {
+      "key": "ps_product_delete",
+      "name": "psProductDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un produit",
+      "subtitle": "Produits",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Produits",
+      "providerKey": "prestashop",
+      "description": "Supprime un produit PrestaShop.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un produit",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "productId",
+            "label": "ID produit",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Produits",
+      "tags": [
+        "suppression",
+        "prestashop"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "ps_customer_update",
+      "name": "psCustomerUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un client",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "prestashop",
+      "description": "Met à jour un client PrestaShop.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_customer"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Modifier un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "firstname",
+            "label": "Prénom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastname",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "passwd",
+            "label": "Mot de passe",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "active",
+            "label": "Actif",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clients",
+      "tags": [
+        "mise à jour",
+        "prestashop"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "ps_customer_delete",
+      "name": "psCustomerDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un client",
+      "subtitle": "Clients",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Clients",
+      "providerKey": "prestashop",
+      "description": "Supprime un client PrestaShop.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:ps_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Supprimer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "customerId",
+            "label": "ID client",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clients",
+      "tags": [
+        "suppression",
+        "prestashop"
+      ],
+      "risk": "destructive"
     }
   ]
 }

@@ -172,6 +172,127 @@
           }
         }
       ]
+    },
+    "openai_classification": {
+      "title": "Classification OpenAI",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Catégories",
+          "description": "Catégories classées par le modèle.",
+          "mode": "array",
+          "key": "categories",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "category",
+              "label": "Catégorie",
+              "description": "Nom de la catégorie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "confidence",
+              "label": "Confiance",
+              "description": "Score de confiance.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "explanation",
+              "label": "Explication",
+              "description": "Justification du classement.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "openai_result": {
+      "title": "Résultat OpenAI",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu texte.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "json",
+          "label": "JSON",
+          "description": "Réponse JSON structurée.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "openai_audio_result": {
+      "title": "Résultat audio OpenAI",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "file",
+          "key": "file",
+          "label": "Fichier audio",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "json",
+          "label": "JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "providers": [
@@ -936,6 +1057,14 @@
       "nodeKind": "function",
       "category": "AI",
       "providerKey": "openai",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:openai_classification"
+        }
+      ],
       "output_array_field": "categories",
       "outputSchema": [
         {
@@ -1137,7 +1266,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:openai_result"
         }
       ],
       "description": "Extraire des données structurées d'un contenu via OpenAI",
@@ -1388,6 +1518,372 @@
       ],
       "risk": "safe",
       "riskReason": "Appel LLM lecture (coût tokens)"
+    },
+    {
+      "key": "openai_responses_create",
+      "name": "openaiResponsesCreate",
+      "schemaVersion": 2,
+      "title": "Créer une réponse",
+      "subtitle": "Responses",
+      "icon": "fa-solid fa-reply",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "tags": [
+        "openai",
+        "responses"
+      ],
+      "group": "Responses",
+      "risk": "write",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:openai_result"
+        }
+      ],
+      "description": "Créer une réponse via l endpoint Responses.",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Créer une réponse",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-4o-mini"
+          },
+          {
+            "type": "textarea",
+            "key": "instructions",
+            "label": "Instructions système",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Input",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "col": {
+              "xs": 24
+            },
+            "default": 0.7
+          },
+          {
+            "type": "number",
+            "key": "maxOutputTokens",
+            "label": "Max output tokens",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    },
+    {
+      "key": "openai_moderations_create",
+      "name": "openaiModerationsCreate",
+      "schemaVersion": 2,
+      "title": "Modérer du contenu",
+      "subtitle": "Moderations",
+      "icon": "fa-solid fa-shield-halved",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "tags": [
+        "openai",
+        "moderation"
+      ],
+      "group": "Moderation",
+      "risk": "write",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:openai_result"
+        }
+      ],
+      "description": "Evaluer un texte avec l endpoint Moderations.",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Modérer du contenu",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "col": {
+              "xs": 24
+            },
+            "default": "omni-moderation-latest"
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Texte à modérer",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "openai_audio_transcription_create",
+      "name": "openaiAudioTranscriptionCreate",
+      "schemaVersion": 2,
+      "title": "Transcrire un audio",
+      "subtitle": "Audio",
+      "icon": "fa-solid fa-waveform-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "tags": [
+        "openai",
+        "audio",
+        "transcription"
+      ],
+      "group": "Audio",
+      "risk": "write",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:openai_result"
+        }
+      ],
+      "description": "Transcrire un audio via l endpoint Audio Transcriptions.",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Transcrire un audio",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-4o-mini-transcribe"
+          },
+          {
+            "type": "textarea",
+            "key": "audioBase64",
+            "label": "Audio base64",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "format",
+            "label": "Format",
+            "col": {
+              "xs": 24
+            },
+            "default": "wav",
+            "options": [
+              {
+                "label": "wav",
+                "value": "wav"
+              },
+              {
+                "label": "mp3",
+                "value": "mp3"
+              },
+              {
+                "label": "m4a",
+                "value": "m4a"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "key": "openai_audio_speech_create",
+      "name": "openaiAudioSpeechCreate",
+      "schemaVersion": 2,
+      "title": "Synthèse vocale",
+      "subtitle": "Audio",
+      "icon": "fa-solid fa-volume-high",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "AI",
+      "providerKey": "openai",
+      "tags": [
+        "openai",
+        "audio",
+        "speech"
+      ],
+      "group": "Audio",
+      "risk": "write",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:openai_audio_result"
+        }
+      ],
+      "description": "Générer un audio TTS via l endpoint Audio Speech.",
+      "authorize_catch_error": true,
+      "args": {
+        "displayTitle": false,
+        "displayDescription": false,
+        "title": "Synthèse vocale",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "col": {
+              "xs": 24
+            },
+            "default": "gpt-4o-mini-tts"
+          },
+          {
+            "type": "text",
+            "key": "voice",
+            "label": "Voix",
+            "col": {
+              "xs": 24
+            },
+            "default": "alloy"
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Texte à lire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "format",
+            "label": "Format audio",
+            "col": {
+              "xs": 24
+            },
+            "default": "mp3",
+            "options": [
+              {
+                "label": "mp3",
+                "value": "mp3"
+              },
+              {
+                "label": "wav",
+                "value": "wav"
+              },
+              {
+                "label": "opus",
+                "value": "opus"
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }

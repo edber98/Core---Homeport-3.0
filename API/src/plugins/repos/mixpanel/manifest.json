@@ -1,0 +1,2567 @@
+{
+  "repo": {
+    "name": "mixpanel",
+    "type": "local",
+    "label": "Mixpanel"
+  },
+  "variables": {
+    "mixpanel_action_result": {
+      "title": "Résultat action Mixpanel",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l'action a réussi.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Nom d'événement Mixpanel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "distinct_id",
+          "label": "Distinct ID",
+          "description": "Identifiant utilisateur Mixpanel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "group_key",
+          "label": "Clé groupe",
+          "description": "Clé du groupe Mixpanel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "group_id",
+          "label": "ID groupe",
+          "description": "ID du groupe Mixpanel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "project_id",
+          "label": "ID projet",
+          "description": "Identifiant projet Mixpanel.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "sent_count",
+          "label": "Nombre envoyé",
+          "description": "Nombre d'objets envoyés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "count",
+          "label": "Nombre de profils",
+          "description": "Nombre de profils renvoyés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "profiles",
+          "label": "Profils",
+          "description": "Liste des profils renvoyés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "mixpanel",
+      "name": "Mixpanel",
+      "title": "Mixpanel",
+      "iconClass": "fa-solid fa-chart-line",
+      "iconUrl": "https://cdn.simpleicons.org/mixpanel",
+      "color": "#efeaff",
+      "tags": [
+        "mixpanel",
+        "analytics",
+        "tracking"
+      ],
+      "categories": [
+        "Analyse"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Mixpanel",
+        "displayTitle": false,
+        "displayDescription": false,
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectToken",
+            "label": "Project token",
+            "description": "Token de projet pour les APIs d'ingestion (track, import, profils, groupes).",
+            "secret": true,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "serviceAccountUsername",
+            "label": "Service account username",
+            "description": "Username du service account pour les APIs Query.",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "serviceAccountSecret",
+            "label": "Service account secret",
+            "description": "Secret du service account pour les APIs Query.",
+            "secret": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ingestBaseUrl",
+            "label": "URL ingestion",
+            "description": "Base URL ingestion Mixpanel.",
+            "default": "https://api.mixpanel.com",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "queryBaseUrl",
+            "label": "URL query",
+            "description": "Base URL Query Mixpanel.",
+            "default": "https://mixpanel.com",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "mixpanel_event_track",
+      "name": "mixpanelEventTrack",
+      "schemaVersion": 2,
+      "title": "Tracker un événement",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Envoie un événement à Mixpanel via l'API Track.",
+      "args": {
+        "title": "Paramètres tracking",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Événement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Properties (JSON)",
+            "description": "Objet JSON de propriétés d'événement.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "number",
+            "key": "time",
+            "label": "Timestamp Unix (optionnel)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ip",
+            "label": "Utiliser géolocalisation IP",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    },
+    {
+      "key": "mixpanel_events_import",
+      "name": "mixpanelEventsImport",
+      "schemaVersion": 2,
+      "title": "Importer des événements",
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-file-import",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Importe un lot d'événements via l'API Import.",
+      "args": {
+        "title": "Paramètres import",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "events",
+            "label": "Événements (JSON)",
+            "description": "Tableau JSON d'objets {event, properties}.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Événements"
+    },
+    {
+      "key": "mixpanel_profile_set",
+      "name": "mixpanelProfileSet",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un profil",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-user-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Crée ou met à jour des propriétés de profil utilisateur.",
+      "args": {
+        "title": "Paramètres profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Propriétés (JSON)",
+            "default": "{}",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "ip",
+            "label": "Utiliser géolocalisation IP",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "mixpanel_profile_unset",
+      "name": "mixpanelProfileUnset",
+      "schemaVersion": 2,
+      "title": "Supprimer des propriétés profil",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-user-minus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Supprime une liste de propriétés d'un profil utilisateur.",
+      "args": {
+        "title": "Paramètres profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Propriétés à supprimer (JSON)",
+            "description": "Tableau JSON de noms de propriétés.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "mixpanel_profile_delete",
+      "name": "mixpanelProfileDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un profil",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-user-xmark",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Supprime définitivement un profil Mixpanel.",
+      "args": {
+        "title": "Paramètres profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "mixpanel_group_set",
+      "name": "mixpanelGroupSet",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un groupe",
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-users-gear",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Crée ou met à jour les propriétés d'un groupe Mixpanel.",
+      "args": {
+        "title": "Paramètres groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "groupKey",
+            "label": "Clé groupe",
+            "description": "Exemple: company, plan.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupId",
+            "label": "ID groupe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Propriétés (JSON)",
+            "default": "{}",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Groupes"
+    },
+    {
+      "key": "mixpanel_segmentation_query",
+      "name": "mixpanelSegmentationQuery",
+      "schemaVersion": 2,
+      "title": "Requête segmentation",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-chart-column",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Récupère un rapport de segmentation d'événement.",
+      "args": {
+        "title": "Paramètres requête",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Événement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "fromDate",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "toDate",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "default": "general",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "General",
+                "value": "general"
+              },
+              {
+                "label": "Unique",
+                "value": "unique"
+              },
+              {
+                "label": "Average",
+                "value": "average"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "unit",
+            "label": "Unité",
+            "default": "day",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Minute",
+                "value": "minute"
+              },
+              {
+                "label": "Heure",
+                "value": "hour"
+              },
+              {
+                "label": "Jour",
+                "value": "day"
+              },
+              {
+                "label": "Mois",
+                "value": "month"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "on",
+            "label": "Segmentation sur (on)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Filtre where",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_profiles_query",
+      "name": "mixpanelProfilesQuery",
+      "schemaVersion": 2,
+      "title": "Requête profils",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-user-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Interroge les profils utilisateurs via l'API Query Engage.",
+      "args": {
+        "title": "Paramètres profils",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "distinctIds",
+            "label": "Distinct IDs (JSON)",
+            "description": "Tableau JSON de distinct IDs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Filtre where",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "outputProperties",
+            "label": "Propriétés de sortie (JSON)",
+            "description": "Tableau JSON de propriétés à retourner.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_profile_increment",
+      "name": "mixpanelProfileIncrement",
+      "schemaVersion": 2,
+      "title": "Incrémenter un profil",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-arrow-up-1-9",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Incrémente des propriétés numériques de profil.",
+      "args": {
+        "title": "Incrémenter un profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Incréments (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "mixpanel_profile_append",
+      "name": "mixpanelProfileAppend",
+      "schemaVersion": 2,
+      "title": "Ajouter à une liste profil",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-list-ul",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Ajoute des valeurs à des propriétés liste du profil.",
+      "args": {
+        "title": "Ajouter à une liste profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Valeurs à ajouter (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "mixpanel_profile_union",
+      "name": "mixpanelProfileUnion",
+      "schemaVersion": 2,
+      "title": "Union de listes profil",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-code-merge",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Applique une union sur des propriétés liste du profil.",
+      "args": {
+        "title": "Union de listes profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Valeurs union (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "mixpanel_profile_remove",
+      "name": "mixpanelProfileRemove",
+      "schemaVersion": 2,
+      "title": "Retirer de listes profil",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-list-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Retire des valeurs de propriétés liste du profil.",
+      "args": {
+        "title": "Retirer de listes profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Valeurs à retirer (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "mixpanel_profile_track_charge",
+      "name": "mixpanelProfileTrackCharge",
+      "schemaVersion": 2,
+      "title": "Ajouter une transaction",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-receipt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Ajoute une transaction au profil utilisateur.",
+      "args": {
+        "title": "Ajouter une transaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Propriétés transaction (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "time",
+            "label": "Date/heure transaction",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "mixpanel_profile_clear_charges",
+      "name": "mixpanelProfileClearCharges",
+      "schemaVersion": 2,
+      "title": "Vider les transactions",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-broom",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Supprime toutes les transactions d'un profil.",
+      "args": {
+        "title": "Vider les transactions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "mixpanel_group_unset",
+      "name": "mixpanelGroupUnset",
+      "schemaVersion": 2,
+      "title": "Supprimer propriétés groupe",
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-users-slash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Supprime des propriétés d'un groupe.",
+      "args": {
+        "title": "Supprimer propriétés groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "groupKey",
+            "label": "Clé groupe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupId",
+            "label": "ID groupe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Propriétés à supprimer (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Groupes"
+    },
+    {
+      "key": "mixpanel_group_remove",
+      "name": "mixpanelGroupRemove",
+      "schemaVersion": 2,
+      "title": "Retirer valeurs groupe",
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-users-rectangle",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Retire des valeurs des listes de propriétés groupe.",
+      "args": {
+        "title": "Retirer valeurs groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "groupKey",
+            "label": "Clé groupe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupId",
+            "label": "ID groupe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Valeurs à retirer (JSON)",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Groupes"
+    },
+    {
+      "key": "mixpanel_group_delete",
+      "name": "mixpanelGroupDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un groupe",
+      "subtitle": "Groupes",
+      "icon": "fa-solid fa-user-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Supprime un groupe Mixpanel.",
+      "args": {
+        "title": "Supprimer un groupe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "groupKey",
+            "label": "Clé groupe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "groupId",
+            "label": "ID groupe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Groupes"
+    },
+    {
+      "key": "mixpanel_alias_create",
+      "name": "mixpanelAliasCreate",
+      "schemaVersion": 2,
+      "title": "Créer un alias identité",
+      "subtitle": "Identité",
+      "icon": "fa-solid fa-user-tag",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Crée un alias d'identité Mixpanel.",
+      "args": {
+        "title": "Créer un alias identité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "alias",
+            "label": "Alias",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "distinctId",
+            "label": "Distinct ID existant",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "strict",
+            "label": "Validation stricte",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "verbose",
+            "label": "Réponse verbose",
+            "default": true,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Identité"
+    },
+    {
+      "key": "mixpanel_segmentation_numeric_query",
+      "name": "mixpanelSegmentationNumericQuery",
+      "schemaVersion": 2,
+      "title": "Requête segmentation numeric",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-square-root-variable",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Calcule un agrégat numérique par période pour un événement.",
+      "args": {
+        "title": "Requête segmentation numeric",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Événement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "fromDate",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "toDate",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "expression",
+            "label": "Expression",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "unit",
+            "label": "Unité",
+            "default": "day",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Heure",
+                "value": "hour"
+              },
+              {
+                "label": "Jour",
+                "value": "day"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Filtre where",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_segmentation_sum_query",
+      "name": "mixpanelSegmentationSumQuery",
+      "schemaVersion": 2,
+      "title": "Requête segmentation sum",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-sigma",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Somme une expression numérique sur des événements.",
+      "args": {
+        "title": "Requête segmentation sum",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Événement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "fromDate",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "toDate",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "on",
+            "label": "Expression on",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "unit",
+            "label": "Unité",
+            "default": "day",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Heure",
+                "value": "hour"
+              },
+              {
+                "label": "Jour",
+                "value": "day"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Filtre where",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_funnels_query",
+      "name": "mixpanelFunnelsQuery",
+      "schemaVersion": 2,
+      "title": "Requête funnel",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-filter-circle-dollar",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Récupère un rapport de funnel enregistré.",
+      "args": {
+        "title": "Requête funnel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "funnelId",
+            "label": "Funnel ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "fromDate",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "toDate",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "length",
+            "label": "Fenêtre de conversion",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "lengthUnit",
+            "label": "Unité fenêtre",
+            "default": "day",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Heure",
+                "value": "hour"
+              },
+              {
+                "label": "Jour",
+                "value": "day"
+              },
+              {
+                "label": "Semaine",
+                "value": "week"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "on",
+            "label": "Segmentation on",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Filtre where",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_retention_query",
+      "name": "mixpanelRetentionQuery",
+      "schemaVersion": 2,
+      "title": "Requête rétention",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-arrows-spin",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Récupère un rapport de rétention Mixpanel.",
+      "args": {
+        "title": "Requête rétention",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "fromDate",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "toDate",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "retentionType",
+            "label": "Type rétention",
+            "default": "birth",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Birth",
+                "value": "birth"
+              },
+              {
+                "label": "Compounded",
+                "value": "compounded"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "bornEvent",
+            "label": "Born event",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Event retour",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "unit",
+            "label": "Unité",
+            "default": "day",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Jour",
+                "value": "day"
+              },
+              {
+                "label": "Semaine",
+                "value": "week"
+              },
+              {
+                "label": "Mois",
+                "value": "month"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Filtre where",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "on",
+            "label": "Segmentation on",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "unboundedRetention",
+            "label": "Rétention non bornée",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_events_export",
+      "name": "mixpanelEventsExport",
+      "schemaVersion": 2,
+      "title": "Exporter des événements",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-file-export",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Exporte les événements bruts sur une période.",
+      "args": {
+        "title": "Exporter des événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "fromDate",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "toDate",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "event",
+            "label": "Événement (optionnel)",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "Filtre where",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_annotations_create",
+      "name": "mixpanelAnnotationsCreate",
+      "schemaVersion": 2,
+      "title": "Créer une annotation",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-note-sticky",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Crée une annotation de projet.",
+      "args": {
+        "title": "Créer une annotation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "date",
+            "label": "Date",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    },
+    {
+      "key": "mixpanel_annotations_list",
+      "name": "mixpanelAnnotationsList",
+      "schemaVersion": 2,
+      "title": "Lister les annotations",
+      "subtitle": "Analytics",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mixpanel",
+      "providerKey": "mixpanel",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:mixpanel_action_result"
+        }
+      ],
+      "description": "Liste les annotations de projet.",
+      "args": {
+        "title": "Lister les annotations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "projectId",
+            "label": "Project ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "fromDate",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "toDate",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Analytics"
+    }
+  ]
+}

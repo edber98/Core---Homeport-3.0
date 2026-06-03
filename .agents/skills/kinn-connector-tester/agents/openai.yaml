@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kinn connector tester"
+  short_description: "Validate and smoke-test Kinn/Homeport connectors."
+  default_prompt: "Teste le connecteur notion"

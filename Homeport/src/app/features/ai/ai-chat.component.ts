@@ -20,6 +20,7 @@ import { AiLivePreviewComponent, detectPreviewType, LivePreviewType } from './li
 import { PreviewParserService, ParsedPreview } from './live-preview/preview-parser.service';
 import { marked } from 'marked';
 import { isWidgetKind } from './constants/widget-kinds';
+import { resolveAgentProfile } from './agents/ai-roster';
 import DOMPurify from 'dompurify';
 import { jsonrepair } from 'jsonrepair';
 
@@ -148,13 +149,19 @@ interface StreamTool {
   imports: [CommonModule, FormsModule, NzInputModule, NzButtonModule, NzIconModule, NzEmptyModule, NzTagModule, NzToolTipModule, AiMessageComponent, AiQuestionComponent, AiStructuredMessageComponent, AiDiagramRendererComponent, AiLivePreviewComponent, AiPlanProposalCardComponent],
   animations: [
     trigger('toolRotate', [
+      // Fade-in doux quand un nouveau tool prend la place du tool précédent.
+      // PAS de translateY(100%) — ça faisait sauter le bloc vers le bas et
+      // créait un décalage visuel disgracieux. Fade simple = plus propre.
       transition(':enter', [
-        style({ transform: 'translateY(100%)', opacity: 0 }),
-        animate('300ms cubic-bezier(0.16, 1, 0.3, 1)', style({ transform: 'translateY(0)', opacity: 1 })),
+        style({ opacity: 0 }),
+        animate('220ms cubic-bezier(0.16, 1, 0.3, 1)', style({ opacity: 1 })),
       ]),
+      // PAS de position:absolute en :leave — ça décolait le tool du flux
+      // pendant 200ms et tous les éléments suivants sautaient. Fade-out
+      // collapse height = transition propre, layout stable.
       transition(':leave', [
-        style({ position: 'absolute', width: '100%' }),
-        animate('200ms ease-in', style({ transform: 'translateY(-100%)', opacity: 0 })),
+        style({ overflow: 'hidden' }),
+        animate('180ms ease-in', style({ height: 0, opacity: 0, margin: 0, padding: 0 })),
       ]),
     ]),
     trigger('argsExpand', [
@@ -400,6 +407,39 @@ interface StreamTool {
 
     </div>
 
+    <!-- Bandeau jaune permission INTÉGRÉE : style claude-code, juste sous le tool
+         en cours qui l'a déclenchée. Border-left orange, compact, action inline.
+         Si plusieurs perms en attente, on les liste l'une sous l'autre dans l'ordre. -->
+    <div class="perm-inline-banner-wrap" *ngIf="pendingPermissions().length > 0">
+      <div class="perm-inline-banner" *ngFor="let pm of pendingPermissions(); trackBy: trackPermMsg">
+        <div class="pib-left">
+          <span class="pib-lock" nz-icon nzType="lock" nzTheme="outline"></span>
+          <span class="pib-text">
+            <strong *ngIf="pm.metadata?.permissionRequest?.subagentType || pm.metadata?.permissionRequest?.agentName">
+              {{ (pm.metadata?.permissionRequest?.agentEmoji || '🤖') }} {{ pm.metadata?.permissionRequest?.agentName || pm.metadata?.permissionRequest?.subagentType }}
+            </strong>
+            <ng-container *ngIf="!pm.metadata?.permissionRequest?.subagentType && !pm.metadata?.permissionRequest?.agentName">L'assistant</ng-container>
+            demande l'autorisation d'exécuter
+            <strong>{{ pm.metadata?.permissionRequest?.toolLabel || pm.metadata?.permissionRequest?.toolName }}</strong>
+          </span>
+        </div>
+        <div class="pib-actions">
+          <button nz-button nzSize="small" (click)="answerInlinePerm(pm, 'once')">
+            <span nz-icon nzType="check" nzTheme="outline"></span> Une fois
+          </button>
+          <button nz-button nzSize="small" (click)="answerInlinePerm(pm, 'session')">
+            <span nz-icon nzType="clock-circle" nzTheme="outline"></span> Conversation
+          </button>
+          <button nz-button nzType="primary" nzSize="small" (click)="answerInlinePerm(pm, 'always')">
+            <span nz-icon nzType="check-circle" nzTheme="outline"></span> Toujours
+          </button>
+          <button nz-button nzSize="small" nzDanger (click)="answerInlinePerm(pm, 'deny')">
+            <span nz-icon nzType="close" nzTheme="outline"></span> Refuser
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Indicateur subagents en cours : petite card compacte, toujours visible
          tant qu'au moins 1 subagent est actif. Click → ouvre le canvas Agents. -->
     <div class="subagent-live-indicator" *ngIf="ai.activeSubagents().length && !ai.pendingQuestion()"
@@ -512,11 +552,24 @@ interface StreamTool {
           [placeholder]="placeholderText()"
           (keydown)="onInputKeydown($event)"
           (paste)="onPaste($event)"
-          [nzAutosize]="{ minRows: 1, maxRows: 6 }"
+          [nzAutosize]="{ minRows: 3, maxRows: 10 }"
           [disabled]="audio.transcribing() || readOnly()">
         </textarea>
         <div class="input-suffix">
-          <button *ngIf="ai.streaming()" nz-button nzType="text" nzSize="small" nzShape="circle" nzDanger (click)="stopStream()">
+          <!-- Pendant le streaming : 2 boutons possibles —
+               1. Si user a tapé du texte → envoyer dans la mailbox du job en cours
+                  (pattern Claude Code, l'agent reçoit le message à son prochain tour)
+               2. Sinon → bouton stop pour interrompre -->
+          <button *ngIf="ai.streaming() && inputText.trim()"
+            nz-button nzType="primary" nzSize="small" nzShape="circle" class="chat-send-btn"
+            nz-tooltip nzTooltipTitle="Envoyer à l'agent en cours (mailbox)"
+            (click)="sendToMailbox()">
+            <i class="fa-solid fa-arrow-up"></i>
+          </button>
+          <button *ngIf="ai.streaming() && !inputText.trim()"
+            nz-button nzType="text" nzSize="small" nzShape="circle" nzDanger
+            nz-tooltip nzTooltipTitle="Interrompre l'agent"
+            (click)="stopStream()">
             <span nz-icon nzType="pause-circle" nzTheme="outline"></span>
           </button>
           <button *ngIf="!ai.streaming()" nz-button nzType="primary" nzSize="small" nzShape="circle" class="chat-send-btn" (click)="send()"
@@ -543,6 +596,16 @@ interface StreamTool {
   styles: [`
     :host { display: flex; flex-direction: column; height: 100%; min-width: 0; overflow-x: hidden; }
     .messages { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 16px; display: flex; flex-direction: column; gap: 4px; }
+    /* Max-width centrée façon ChatGPT/Claude — la conversation respire et ne
+       s'étale pas sur 1500px+ sur les grands écrans. La scrollbar reste sur
+       toute la largeur du parent (.messages), mais le contenu est centré
+       à ~768px max. */
+    .messages > * {
+      width: 100%;
+      max-width: 768px;
+      margin-left: auto;
+      margin-right: auto;
+    }
     .empty { flex: 1; display: flex; align-items: center; justify-content: center; }
     /* Grouped assistant messages — collapse space between stacked bubbles */
     .msg-wrap { display: block; }
@@ -573,7 +636,10 @@ interface StreamTool {
     .streaming-msg .ai-msg { display: flex; gap: 10px; padding: 8px 0; }
     .streaming-msg .avatar { width: 32px; height: 32px; border-radius: 50%; background: #e6f4ff; color: #e61982; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; }
     .streaming-msg .body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-    .streaming-msg .content { background: #f5f5f5; border-radius: 12px 12px 12px 2px; padding: 8px 14px; max-width: 85%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; }
+    /* Tous les blocs (texte streaming, reasoning, report-card, etc.) prennent
+       la pleine largeur du parent (.messages-wrapper 768px). Plus de max-width
+       custom — l'alignement vertical entre texte / tools / cards reste cohérent. */
+    .streaming-msg .content { background: #f5f5f5; border-radius: 12px 12px 12px 2px; padding: 8px 14px; max-width: 100%; min-width: 0; overflow: hidden; word-break: break-word; line-height: 1.5; box-sizing: border-box; }
     .streaming-msg .content :host ::ng-deep p { margin: 0 0 4px; }
     .streaming-msg .content :host ::ng-deep p:last-child { margin: 0; }
     .streaming-msg .content :host ::ng-deep code { background: #e8e8e8; padding: 1px 4px; border-radius: 3px; font-size: 13px; }
@@ -595,7 +661,10 @@ interface StreamTool {
     .streaming-msg .content ::ng-deep th, .streaming-msg .content ::ng-deep td { border: 1px solid #e8e8e8; padding: 6px 10px; text-align: left; white-space: nowrap; }
     .streaming-msg .content ::ng-deep th { background: #fafafa; font-weight: 600; font-size: 12px; }
     .streaming-msg .content ::ng-deep tr:nth-child(even) { background: #fafafa; }
-    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; transition: opacity 0.3s ease, border-color 0.3s ease; max-width: 85%; }
+    /* max-width: 100% (au lieu de 85%) car le parent .body est déjà contraint
+       à max-width: 768px côté .messages-wrapper. Avant : 85% + border-left 3px
+       créait une asymétrie visuelle quand texte et tools alternaient. */
+    .reasoning-block { border-left: 3px solid #d9d9d9; padding: 6px 12px; margin: 4px 0; border-radius: 0 8px 8px 0; transition: opacity 0.3s ease, border-color 0.3s ease; max-width: 100%; box-sizing: border-box; }
     .reasoning-block.reasoning-active { border-left-color: #722ed1; opacity: 0.9; animation: pulse-reason 2s ease-in-out infinite; }
     .reasoning-block:not(.reasoning-active) { opacity: 0.85; }
     .reasoning-header { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #999; margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; }
@@ -718,8 +787,41 @@ interface StreamTool {
     .thinking-inline { display: flex; align-items: center; gap: 5px; padding: 4px 0; opacity: 0.7; }
     .avatar-error { background: #fff2f0 !important; color: #ff4d4f !important; }
     .content-error { background: #fff2f0 !important; color: #ff4d4f; border: 1px solid #ffccc7; display: flex; align-items: center; }
-    .input-bar { width: 100%; margin: 0; padding: 6px 0 12px; box-sizing: border-box; border-top: 1px solid rgba(15, 23, 42, 0.08); }
-    .input-row { display: flex; align-items: center; gap: 6px; border: 1px solid #dbe4ef; border-radius: 20px; padding: 5px 12px; margin-inline: clamp(10px, 2vw, 24px); transition: border-color 0.2s, box-shadow 0.2s; background: #fff; }
+    /* Footer chat intégré (style ChatGPT) :
+       - PAS de border-top (plus de séparation visuelle "footer")
+       - max-width 768px centré (cohérent avec la conversation)
+       - padding latéral cohérent avec .messages */
+    .input-bar {
+      width: 100%;
+      max-width: 768px;
+      margin: 0 auto;
+      padding: 6px 16px 12px;
+      box-sizing: border-box;
+      background: transparent;
+    }
+    .input-row {
+      display: flex;
+      /* Icônes alignées en bas pour qu'elles restent collées au bas du textarea
+         quand il s'agrandit sur plusieurs lignes (style ChatGPT/Claude).
+         Avec center elles flottaient au milieu sur 3-10 lignes. */
+      align-items: flex-end;
+      gap: 6px;
+      border: 1px solid #dbe4ef; border-radius: 20px;
+      padding: 6px 12px 8px;
+      margin-inline: 0; /* centrage par .input-bar */
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fff;
+    }
+    /* Petit ajustement : les buttons icônes gardent leur taille fixe et restent
+       au niveau de la dernière ligne du textarea, pas au milieu. align-self
+       force individuellement chaque bloc bouton à se coller en bas, même si
+       align-items du parent ne s'applique pas correctement à cause de la flex
+       sizing du textarea autosize. */
+    .input-prefix,
+    .input-suffix {
+      align-self: flex-end;
+      padding-bottom: 2px;
+    }
     .input-row:hover,
     .input-row:focus-within {
       border-color: #e61982;
@@ -848,14 +950,61 @@ interface StreamTool {
     .pq-context-body ::ng-deep p:last-child { margin: 0; }
     .pq-context-body ::ng-deep code { background: #f0f0f0; padding: 0 3px; border-radius: 2px; font-size: 11px; }
 
-    /* Indicateur subagents en cours : compacte, 1 ligne, sticky */
-    .subagent-live-indicator {
-      display: flex; align-items: center; gap: 8px;
-      margin: 0 16px 6px;
+    /* Indicateur subagents en cours : compacte, 1 ligne, sticky.
+       Max-width 768px centré pour s'aligner avec la conversation et le footer. */
+    /* ── Bandeau permission INTÉGRÉE (style claude-code) ──
+       Apparaît juste sous le dernier tool en cours. Fond jaune doux,
+       border-left orange. Compact, action inline avec 4 boutons. */
+    .perm-inline-banner-wrap {
+      max-width: 768px;
+      margin: 4px auto 8px;
+      padding: 0 16px;
+      box-sizing: border-box;
+      display: flex; flex-direction: column; gap: 6px;
+      animation: pibSlide 220ms cubic-bezier(.2,.8,.2,1);
+    }
+    @keyframes pibSlide {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .perm-inline-banner {
+      display: flex; align-items: center; gap: 12px;
       padding: 8px 12px;
-      background: linear-gradient(90deg, #fff5fa 0%, #fff 100%);
+      background: #fffbe6;
+      border: 1px solid #ffe58f;
+      border-left: 3px solid #fa8c16;
+      border-radius: 6px;
+      font-size: 12px;
+      animation: pibPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes pibPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(250, 140, 22, 0); }
+      50% { box-shadow: 0 0 0 3px rgba(250, 140, 22, 0.08); }
+    }
+    .pib-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+    .pib-lock { color: #fa8c16; font-size: 14px; flex-shrink: 0; }
+    .pib-text { color: #595959; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; }
+    .pib-text strong { color: #262626; font-weight: 600; }
+    .pib-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .pib-actions button { font-size: 11px !important; padding: 0 8px !important; }
+
+    .subagent-live-indicator {
+      /* Sticky en bas pour rester visible pendant que l'user scrolle l'historique.
+         Avant : scrollait avec le contenu → disparaissait dès qu'on remontait
+         dans le chat → on perdait la trace des sub-agents qui tournent. */
+      position: sticky;
+      bottom: 8px;
+      z-index: 5;
+      display: flex; align-items: center; gap: 8px;
+      max-width: 768px;
+      margin: 6px auto;
+      padding: 8px 12px;
+      background: linear-gradient(90deg, #fff5fa 0%, rgba(255,255,255,0.96) 100%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border: 1px solid #ffd6e7;
       border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(230,25,130,0.08);
       font-size: 12px;
       color: #595959;
       cursor: pointer;
@@ -1021,6 +1170,21 @@ export class AiChatComponent implements AfterViewInit {
     return ref;
   });
 
+  /** Permission(s) en attente — affichées en bandeau intégré sous le tool en cours.
+   *  Filtrées par !answer. Triées par createdAt pour l'ordre chronologique. */
+  pendingPermissions = computed(() => {
+    return this.ai.messages()
+      .filter(m => {
+        const md: any = m?.metadata;
+        return md?.kind === 'permission_request' && md?.permissionRequest && !md.permissionRequest.answer;
+      })
+      .sort((a: any, b: any) => {
+        const ta = new Date(a.createdAt || 0).getTime();
+        const tb = new Date(b.createdAt || 0).getTime();
+        return ta - tb;
+      });
+  });
+
   messageGroups = computed(() => {
     const msgs = this.ai.messages();
     const inlineRefs = this._inlineReferencedWidgetIds();
@@ -1031,15 +1195,27 @@ export class AiChatComponent implements AfterViewInit {
       const kind = m.metadata?.kind;
       const wid = m?.metadata?.widgetId;
       const isWidget = isWidgetKind(kind);
-      // Cas 1 : widget référencé par [[WIDGET:id]] dans un message texte → masqué
-      // (il sera rendu inline à l'emplacement du marqueur, pas en bulle séparée).
-      if (isWidget && wid && inlineRefs.has(String(wid))) {
+      // ── permission_request EN ATTENTE : masquée de la timeline normale.
+      //    Elle sera affichée INTÉGRÉE en bandeau jaune juste sous le tool en
+      //    cours (style claude-code : la perm est un sous-état du tool, pas un
+      //    message à part). Une fois answered, on la laisse dans la timeline
+      //    en mode collapsed (mini bandeau reasoning-style).
+      if (kind === 'permission_request' && !m?.metadata?.permissionRequest?.answer) {
+        continue;
+      }
+      // Cas 1 : widget standalone TOUJOURS masqué du chat principal.
+      // Le widget apparaît :
+      //   - inline via [[WIDGET:id]] dans le texte (rendu par ai-message)
+      //   - OU dans le groupe reasoning/tools quand l'user déplie les raisonnements
+      //   - OU dans le panel Artefacts / Fichiers (UI dédiée)
+      // EXCEPTION : todo_list reste visible dans le chat. C'est une checklist
+      // standalone (pas un widget intégrable au flux texte) — l'user doit la
+      // voir continuellement comme une bulle de progression.
+      if (isWidget && wid && kind !== 'todo_list') {
         continue;
       }
       // Cas 2 : widget produit par un subagent (metadata.subagentJobId) → masqué
-      // de la timeline principale. Il apparaît UNIQUEMENT inline quand le parent
-      // fait sa synthèse avec [[WIDGET:id]], OU dans la fenêtre WM du subagent
-      // (subagent-todos visibles uniquement via ai-subagent-window).
+      // de la timeline principale (subagent-todos visibles uniquement via ai-subagent-window).
       if (isWidget && m?.metadata?.subagentJobId) {
         continue;
       }
@@ -1161,7 +1337,13 @@ export class AiChatComponent implements AfterViewInit {
   onInputKeydown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
-      this.send();
+      // Si l'agent travaille → envoyer dans la mailbox (pattern Claude Code).
+      // Sinon → envoi normal.
+      if (this.ai.streaming()) {
+        this.sendToMailbox();
+      } else {
+        this.send();
+      }
     }
   }
 
@@ -1394,6 +1576,83 @@ export class AiChatComponent implements AfterViewInit {
     this.stopFn?.();
     this.stopFn = undefined;
     this.interrupted = true;
+  }
+
+  /**
+   * Envoie le message courant dans la mailbox du job en cours, SANS interrompre
+   * le streaming. Pattern Claude Code : le user peut parler pendant que l'agent
+   * travaille, son message arrive comme "note utilisateur" au prochain tour LLM.
+   * L'agent principal décide quoi en faire (le suivre, le forwarder à un
+   * sous-agent via send_message_to_agent, ignorer, etc.).
+   */
+  async sendToMailbox() {
+    const text = this.inputText.trim();
+    if (!text) return;
+    const thread = this.ai.currentThread();
+    if (!thread) return;
+
+    const tid = String(thread.id || thread._id || '');
+    const wsId = (this.ai as any).wsId?.() || '';
+    const tok = (this.ai as any).auth?.token || '';
+    const url = (this.ai as any).buildFetchUrl(`/api/ai/threads/${tid}/mailbox?workspaceId=${encodeURIComponent(wsId)}`);
+
+    const messageToSend = text;
+    this.inputText = '';
+    this.cdr.detectChanges();
+
+    // ── Push OPTIMISTE local AVANT même le POST ──────────────────────
+    // Le message apparaît instantanément dans la conversation. Si le SSE
+    // arrive ensuite avec le vrai _id, _applyMessageCreated dedupe par _id
+    // (le tempId sera différent du vrai _id Mongo, donc le message DB sera
+    // ajouté à côté). On le supprime alors via un cleanup au prochain reload.
+    // En attendant : l'user voit son message immédiatement.
+    const tempId = `local-mailbox-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    const optimisticMsg: any = {
+      _id: tempId,
+      threadId: tid,
+      role: 'user',
+      content: messageToSend,
+      metadata: { kind: 'mailbox', extra: { sentDuringStreaming: true, optimistic: true } },
+      createdAt: new Date().toISOString(),
+    };
+    this.ai.messages.update((msgs: any[]) => [...msgs, optimisticMsg]);
+    this.cdr.detectChanges();
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${tok}` },
+        body: JSON.stringify({ message: messageToSend }),
+      });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '');
+        console.warn(`[mailbox] failed: ${res.status} ${txt}`);
+        // Restore input + remove optimistic message
+        this.inputText = messageToSend;
+        this.ai.messages.update((msgs: any[]) => msgs.filter(m => m._id !== tempId));
+        this.cdr.detectChanges();
+        return;
+      }
+      // Récupère le vrai messageId renvoyé par le backend et remplace l'_id
+      // du message optimiste → quand le SSE arrive plus tard avec ce même _id,
+      // _applyMessageCreated trouvera le message et le patchera au lieu de
+      // le dupliquer.
+      try {
+        const json = await res.json().catch(() => null);
+        const realId = json?.data?.messageId || json?.messageId;
+        if (realId) {
+          this.ai.messages.update((msgs: any[]) => msgs.map(m =>
+            m._id === tempId ? { ...m, _id: String(realId), metadata: { ...m.metadata, extra: { ...m.metadata?.extra, optimistic: false } } } : m
+          ));
+          this.cdr.detectChanges();
+        }
+      } catch { /* non-fatal — le SSE rattrape sinon */ }
+    } catch (e: any) {
+      console.error('[mailbox] network error:', e?.message);
+      this.inputText = messageToSend;
+      this.ai.messages.update((msgs: any[]) => msgs.filter(m => m._id !== tempId));
+      this.cdr.detectChanges();
+    }
   }
 
   retry() {
@@ -1779,16 +2038,21 @@ export class AiChatComponent implements AfterViewInit {
         this.thinkingIteration = (ev as any).iteration || 0;
         break;
       // Forward builder-relevant events (patch, snapshot, args, desc, form.update)
+      // ⚠️ Garde-fou anti-boucle : si l'event vient DÉJÀ de sideEvents$ (le sendMessage
+      // pipe sideEvents$ → subj → processStreamEvent), ne pas re-emit dans sideEvents$
+      // → sinon stack overflow. Le flag _emittedAsSide est posé par emitSideEvent.
       case 'patch':
       case 'snapshot':
       case 'args':
       case 'desc':
-        console.log('[ai-chat] forwarding side event:', ev.type, ev);
-        this.ai.emitSideEvent(ev);
+        if (!(ev as any)._emittedAsSide) {
+          console.log('[ai-chat] forwarding side event:', ev.type, ev);
+          this.ai.emitSideEvent(ev);
+        }
         break;
     }
-    // Forward form and flow events too
-    if ((ev as any).type?.startsWith?.('form.') || (ev as any).type?.startsWith?.('flow.')) {
+    // Forward form and flow events too (même garde-fou)
+    if (((ev as any).type?.startsWith?.('form.') || (ev as any).type?.startsWith?.('flow.')) && !(ev as any)._emittedAsSide) {
       console.log('[ai-chat] forwarding form/flow event:', (ev as any).type, ev);
       this.ai.emitSideEvent(ev);
     }
@@ -1832,6 +2096,27 @@ export class AiChatComponent implements AfterViewInit {
    *  Angular détruise et recrée <ai-message> à chaque delta de stream (spread
    *  object → nouvelle référence → composant recreated sans trackBy = flash). */
   trackMsgById(i: number, m: any) { return m?._id || `m:${i}`; }
+  /** trackBy pour les permissions pending intégrées. */
+  trackPermMsg = (_: number, m: any) => m?.metadata?.permissionRequest?.requestId || m?._id || `p:${_}`;
+
+  /** Répond à une permission inline (bandeau jaune sous le tool en cours). */
+  answerInlinePerm(msg: any, decision: 'once' | 'session' | 'always' | 'deny') {
+    const req = msg?.metadata?.permissionRequest;
+    if (!req) return;
+    const jobId = (req as any)?.childJobId || (msg.metadata as any)?.jobId;
+    if (!jobId) return;
+    this.ai.respondToPermission(jobId, req.requestId, decision, undefined, req.toolName, req.risk).subscribe({
+      next: () => {
+        // Optimistic local update — la perm sort de pendingPermissions() et
+        // retombe dans la timeline en mode collapsed.
+        if (msg.metadata?.permissionRequest) {
+          msg.metadata.permissionRequest.answer = decision;
+          msg.metadata.permissionRequest.answeredAt = new Date().toISOString();
+        }
+        this.cdr.markForCheck();
+      },
+    });
+  }
 
   toolLabel(name: string): string {
     return TOOL_LABELS[name] || name;
@@ -1851,14 +2136,45 @@ export class AiChatComponent implements AfterViewInit {
   }
 
   /** All completed tools excluding the one currently in the rotator — for collapsible during streaming */
+  // Tools qui produisent un widget rendu INLINE dans le flux du message
+  // (via <ai-inline-widget-collapse>). Pour ces tools, le tag dans la timeline
+  // est REDONDANT avec le widget → on les filtre pour éviter le doublon visuel.
+  // Le user voit le widget complet directement dans le message, pas un "tag aperçu"
+  // en plus.
+  private static WIDGET_INLINE_TOOLS = new Set([
+    'display_file',
+    'display_image',
+    'render_structured',
+    'render_interactive_canvas',
+    'generate_diagram',
+    'generate_document',
+    'canvas_html',
+    'todo_write',
+  ]);
+
+  /** True si ce tool produit un widget inline (auquel cas on cache son tag). */
+  private isWidgetInlineTool(t: StreamTool): boolean {
+    return AiChatComponent.WIDGET_INLINE_TOOLS.has(t.name) && t.status === 'success';
+  }
+
   completedTools(tools: StreamTool[]): StreamTool[] {
-    return tools.filter(t => t.status !== 'building' && t.status !== 'running' && t.id !== this._rotatorId);
+    return tools.filter(t =>
+      t.status !== 'building' &&
+      t.status !== 'running' &&
+      t.id !== this._rotatorId &&
+      // Cache les tools widget-inline : leur widget est déjà visible dans le message
+      !this.isWidgetInlineTool(t)
+    );
   }
 
   /** Returns single-element array for the rotator *ngFor — uses delayed switching for min display time */
   latestToolArray(tools: StreamTool[]): StreamTool[] {
     if (!this._rotatorId) return [];
     const tool = tools.find(t => t.id === this._rotatorId);
+    // Si le rotator pointe sur un tool widget terminé, on ne l'affiche pas
+    // (le widget inline suffit). Pendant le streaming/building on garde la rotation
+    // pour avoir un feedback visuel "tool en cours".
+    if (tool && this.isWidgetInlineTool(tool)) return [];
     return tool ? [tool] : [];
   }
 
@@ -1919,10 +2235,43 @@ export class AiChatComponent implements AfterViewInit {
   toolInlineSignature(t: StreamTool): string {
     const a: any = t.args;
     if (!a || typeof a !== 'object') {
-      // Pendant le streaming, on n'a que le JSON partiel
+      // Pendant le streaming, on n'a que le JSON partiel.
+      // Cas spawn_subagent en mode parallel : le prompt top-level est souvent
+      // "placeholder" (les vrais prompts sont dans parallel[]). On évite donc
+      // de tomber sur ce placeholder en cherchant d'abord subagent_type ou parallel.
       if (t.inputJson) {
+        // Détection mode parallel pour spawn_subagent → compte le nombre d'agents
+        if (t.name === 'spawn_subagent') {
+          // Détecte mode parallel : si "parallel":[ apparaît dans le JSON,
+          // on IGNORE le 1er subagent_type (qui est le placeholder top-level)
+          // et on garde uniquement les types qui apparaissent APRÈS "parallel".
+          // Avant : le regex attrapait 3 types pour 2 sub-agents → "Tim+Ada+Tim".
+          const hasParallel = /"parallel"\s*:\s*\[/.test(t.inputJson);
+          const allMatches = Array.from(t.inputJson.matchAll(/"subagent_type"\s*:\s*"([^"]+)"/g));
+          let parallelTypes: string[];
+          if (hasParallel) {
+            const parallelStartIdx = t.inputJson.search(/"parallel"\s*:\s*\[/);
+            parallelTypes = allMatches
+              .filter(m => (m.index ?? -1) > parallelStartIdx)
+              .map(m => m[1]);
+          } else {
+            parallelTypes = allMatches.map(m => m[1]);
+          }
+          if (parallelTypes.length > 1) {
+            const labels = parallelTypes.map(t => {
+              const prof = resolveAgentProfile({ subagentType: t });
+              return prof ? `${prof.emoji} ${prof.name}` : t;
+            });
+            return labels.join(' + ');
+          }
+          if (parallelTypes.length === 1) {
+            const prof = resolveAgentProfile({ subagentType: parallelTypes[0] });
+            return prof ? `${prof.emoji} ${prof.name}` : parallelTypes[0];
+          }
+        }
+        // Fallback générique — exclut "placeholder" qui est un faux ami
         const q = t.inputJson.match(/"(?:query|url|path|key|prompt|to|subagent_type)"\s*:\s*"([^"]{1,80})/);
-        if (q) return `"${q[1]}${q[1].length >= 60 ? '…' : ''}"`;
+        if (q && q[1] !== 'placeholder') return `"${q[1]}${q[1].length >= 60 ? '…' : ''}"`;
       }
       return '';
     }
@@ -1937,7 +2286,24 @@ export class AiChatComponent implements AfterViewInit {
     if (t.name === 'project_read_file' && a.path) return String(a.path);
     if (t.name === 'project_write_file' && a.path) return String(a.path);
     if (t.name === 'project_grep' && a.pattern) return `/${String(a.pattern).slice(0, 50)}/`;
-    if (t.name === 'spawn_subagent' && a.subagent_type) return String(a.subagent_type);
+    if (t.name === 'spawn_subagent') {
+      // Mode parallel : liste les agents avec emoji+nom roster (ex: "📊 Ada + 🔍 Tim")
+      if (Array.isArray(a.parallel) && a.parallel.length > 1) {
+        const labels = a.parallel.map((p: any) => {
+          const prof = resolveAgentProfile({ subagentType: p?.subagent_type });
+          return prof ? `${prof.emoji} ${prof.name}` : (p?.subagent_type || 'agent');
+        });
+        return labels.join(' + ');
+      }
+      if (Array.isArray(a.parallel) && a.parallel.length === 1) {
+        const prof = resolveAgentProfile({ subagentType: a.parallel[0]?.subagent_type });
+        return prof ? `${prof.emoji} ${prof.name}` : String(a.parallel[0]?.subagent_type || 'agent');
+      }
+      if (a.subagent_type && a.subagent_type !== 'placeholder') {
+        const prof = resolveAgentProfile({ subagentType: a.subagent_type });
+        return prof ? `${prof.emoji} ${prof.name}` : String(a.subagent_type);
+      }
+    }
     if (t.name === 'send_message_to_agent' && a.to) return `→ ${a.to}`;
     if (t.name === 'todo_write' && Array.isArray(a.todos)) return `${a.todos.length} item${a.todos.length > 1 ? 's' : ''}`;
     if (t.name === 'display_file' && a.fileId) return a.fileId;

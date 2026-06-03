@@ -2662,6 +2662,330 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "fd_ticket_reply",
+      "name": "fdTicketReply",
+      "schemaVersion": 2,
+      "title": "Répondre à un ticket",
+      "subtitle": "Tickets",
+      "icon": "fa-solid fa-reply",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "tags": [
+        "ticket",
+        "réponse",
+        "freshdesk"
+      ],
+      "group": "Tickets",
+      "risk": "write",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_note"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Ajoute une réponse à un ticket Freshdesk.",
+      "args": {
+        "title": "Répondre à un ticket",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "ticketId",
+            "label": "Ticket ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Message",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "ccEmails",
+            "label": "CC Emails",
+            "description": "Emails séparés par virgules.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "bccEmails",
+            "label": "BCC Emails",
+            "description": "Emails séparés par virgules.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "private",
+            "label": "Réponse privée",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "fd_contact_delete",
+      "name": "fdContactDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un contact",
+      "subtitle": "Contacts",
+      "icon": "fa-solid fa-user-xmark",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "tags": [
+        "contact",
+        "suppression",
+        "freshdesk"
+      ],
+      "group": "Contacts",
+      "risk": "destructive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un contact Freshdesk.",
+      "args": {
+        "title": "Supprimer un contact",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "contactId",
+            "label": "Contact ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "fd_company_update",
+      "name": "fdCompanyUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une entreprise",
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-building-circle-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "tags": [
+        "entreprise",
+        "mise-à-jour",
+        "freshdesk"
+      ],
+      "group": "Entreprises",
+      "risk": "write",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_company"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour une entreprise Freshdesk.",
+      "args": {
+        "title": "Modifier une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "companyId",
+            "label": "Entreprise ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "note",
+            "label": "Note interne",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "domains",
+            "label": "Domaines",
+            "description": "Domaines séparés par virgules.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "fd_company_delete",
+      "name": "fdCompanyDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une entreprise",
+      "subtitle": "Entreprises",
+      "icon": "fa-solid fa-building-circle-xmark",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Freshdesk",
+      "providerKey": "freshdesk",
+      "tags": [
+        "entreprise",
+        "suppression",
+        "freshdesk"
+      ],
+      "group": "Entreprises",
+      "risk": "destructive",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:fd_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime une entreprise Freshdesk.",
+      "args": {
+        "title": "Supprimer une entreprise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "companyId",
+            "label": "Entreprise ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
     }
   ]
 }

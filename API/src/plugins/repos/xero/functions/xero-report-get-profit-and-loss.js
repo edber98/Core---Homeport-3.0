@@ -1,0 +1,38 @@
+const { utils } = require('./utils');
+
+module.exports = {
+  async xero_report_get_profit_and_loss(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    const d = inputs || {};
+    let reqPath = "/Reports/ProfitAndLoss";
+    
+
+    const query = {};
+    if (d.fromdate !== undefined && d.fromdate !== null && d.fromdate !== '') query["fromdate"] = d.fromdate;
+    if (d.todate !== undefined && d.todate !== null && d.todate !== '') query["todate"] = d.todate;
+    if (d.periods !== undefined && d.periods !== null && d.periods !== '') query["periods"] = d.periods;
+    if (d.timeframe !== undefined && d.timeframe !== null && d.timeframe !== '') query["timeframe"] = d.timeframe;
+    if (d.trackingcategoryid !== undefined && d.trackingcategoryid !== null && d.trackingcategoryid !== '') query["trackingcategoryid"] = d.trackingcategoryid;
+    if (d.trackingoptionid !== undefined && d.trackingoptionid !== null && d.trackingoptionid !== '') query["trackingoptionid"] = d.trackingoptionid;
+    if (d.standardlayout !== undefined && d.standardlayout !== null && d.standardlayout !== '') query["standardlayout"] = d.standardlayout;
+
+    const body = undefined;
+
+    log('Requête en cours...');
+    const res = await utils.providerRequest(opts, reqPath, { method: 'GET', query, body });
+    if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
+
+    const r = res.data || {};
+    return {
+      ok: true,
+      ...(r && typeof r === 'object' ? r : { value: r }),
+      id: r.id || r.uuid || r.key || '',
+      name: r.name || r.title || '',
+      url: r.url || r.html_url || '',
+      status: r.status || r.state || '',
+      created_at: r.created_at || r.createdAt || '',
+      updated_at: r.updated_at || r.updatedAt || '',
+      raw: r
+    };
+  }
+};

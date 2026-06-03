@@ -27,10 +27,10 @@ module.exports = {
     if (d.topP != null) body.top_p = Number(d.topP);
 
     log('Envoi du prompt...');
-    const res = await utils.anthropicRequestStream(opts, "/messages", { body }, (text) => log(text));
+    const res = await utils.anthropicRequest(opts, "/messages", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
-    const r = res.data || {};
+    const r = utils.normalizeMessageResponse(res.data);
     return {
       ok: true,
       id: r.id,

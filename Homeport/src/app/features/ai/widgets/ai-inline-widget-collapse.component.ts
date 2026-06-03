@@ -27,99 +27,137 @@ import { AiInlineFileComponent } from '../files/ai-inline-file.component';
     AiInlineFileComponent,
   ],
   template: `
-    <div class="inline-widget" [class.is-open]="isOpen()" *ngIf="widget">
-      <button type="button" class="header" (click)="toggle()">
-        <span class="chevron">
-          <span nz-icon [nzType]="isOpen() ? 'down' : 'right'" nzTheme="outline"></span>
-        </span>
-        <span class="kind-badge">{{ kindLabel() }}</span>
-        <span class="title">{{ headerTitle() }}</span>
-      </button>
-
-      <div class="body" *ngIf="isOpen()" [ngSwitch]="widget.metadata?.kind">
-        <ai-structured-message
-          *ngSwitchCase="'structured'"
-          [data]="widget.metadata?.structured!">
-        </ai-structured-message>
-
-        <ai-canvas-html
-          *ngSwitchCase="'canvas_html'"
-          [data]="widget.metadata?.canvasHtml!">
-        </ai-canvas-html>
-
-        <ai-diagram-renderer
-          *ngSwitchCase="'diagram'"
-          [mermaid]="widget.metadata?.diagram?.mermaid || ''"
-          [title]="widget.metadata?.diagram?.title || ''">
-        </ai-diagram-renderer>
-
+    <ng-container *ngIf="widget">
+      <!-- file_inline / image_inline : ces widgets ont DÉJÀ leur propre card
+           autonome avec header + actions (download, fullscreen). Doubler avec
+           un wrapper collapse → double encadrement moche. Rendu direct.        -->
+      <ng-container *ngIf="isStandaloneWidget(); else withCollapse" [ngSwitch]="widget.metadata?.kind">
         <ai-inline-image
           *ngSwitchCase="'image_inline'"
           [data]="widget.metadata?.imageInline!">
         </ai-inline-image>
-
         <ai-inline-file
           *ngSwitchCase="'file_inline'"
           [data]="widget.metadata?.fileInline!">
         </ai-inline-file>
+      </ng-container>
 
-        <div *ngSwitchDefault class="fallback">
-          Widget type inconnu : {{ widget.metadata?.kind }}
+      <!-- Tous les autres widgets : wrapper collapse minimal et intégré -->
+      <ng-template #withCollapse>
+        <div class="inline-widget" [class.is-open]="isOpen()">
+          <button type="button" class="header" (click)="toggle()">
+            <span class="chevron">
+              <span nz-icon [nzType]="isOpen() ? 'down' : 'right'" nzTheme="outline"></span>
+            </span>
+            <span class="kind-badge">{{ kindLabel() }}</span>
+            <span class="title">{{ headerTitle() }}</span>
+          </button>
+
+          <div class="body" *ngIf="isOpen()" [ngSwitch]="widget.metadata?.kind">
+            <ai-structured-message
+              *ngSwitchCase="'structured'"
+              [data]="widget.metadata?.structured!">
+            </ai-structured-message>
+
+            <ai-canvas-html
+              *ngSwitchCase="'canvas_html'"
+              [data]="widget.metadata?.canvasHtml!">
+            </ai-canvas-html>
+
+            <ai-diagram-renderer
+              *ngSwitchCase="'diagram'"
+              [mermaid]="widget.metadata?.diagram?.mermaid || ''"
+              [title]="widget.metadata?.diagram?.title || ''">
+            </ai-diagram-renderer>
+
+            <div *ngSwitchDefault class="fallback">
+              Widget type inconnu : {{ widget.metadata?.kind }}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      </ng-template>
+    </ng-container>
   `,
   styles: [`
     :host {
       display: block;
-      max-width: 85%;
+      width: 100%;
       min-width: 0;
-      /* Fade + slide in smooth quand le widget s'ancre à sa position finale
-         (transition "bulle séparée" → "inline dans le texte" suite à [[WIDGET:id]]) */
-      animation: wc-appear 280ms cubic-bezier(0.22, 1, 0.36, 1);
+      /* Animation d'arrivée : le widget pop-up depuis le texte. max-height + opacity
+         + scale Y donne l'impression que ça "s'agrandit" à partir d'une ligne, intégré
+         au flow du texte qui le précède. */
+      animation: wc-grow-in 360ms cubic-bezier(0.22, 1, 0.36, 1);
+      transform-origin: top center;
     }
-    @keyframes wc-appear {
-      from { opacity: 0; transform: translateY(-4px) scale(0.98); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
+    @keyframes wc-grow-in {
+      0%   { opacity: 0; max-height: 0; transform: scaleY(0.6) translateY(-4px); }
+      40%  { opacity: 1; max-height: 200px; }
+      100% { opacity: 1; max-height: 1200px; transform: scaleY(1) translateY(0); }
     }
+
     .inline-widget {
-      margin: 10px 0;
-      border: 1px solid #e8e8e8;
-      border-radius: 10px;
-      background: #fff;
+      /* Plus de bordure dure : style "fold" qui s'intègre au texte qui l'entoure.
+         Légère ombre interne pour signaler que c'est un bloc cliquable, sans
+         séparation visuelle nette de la bulle parent. */
+      margin: 8px 0;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.025);
       overflow: hidden;
       max-width: 100%;
-      transition: border-color 180ms ease, box-shadow 180ms ease;
+      transition: background 180ms ease, box-shadow 180ms ease;
     }
     .inline-widget:hover {
-      border-color: #d9d9d9;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      background: rgba(0, 0, 0, 0.04);
     }
-    .inline-widget.is-open { border-color: #e8e8e8; }
+    .inline-widget.is-open {
+      background: rgba(230, 25, 130, 0.04);
+      box-shadow: 0 0 0 1px rgba(230, 25, 130, 0.10) inset;
+    }
     .header {
       display: flex; align-items: center; gap: 8px;
-      width: 100%; padding: 10px 14px;
-      background: #fafafa; border: 0; cursor: pointer;
-      text-align: left; font: inherit;
+      width: 100%; padding: 8px 12px;
+      background: transparent; border: 0; cursor: pointer;
+      text-align: left;
+      font: inherit;
+      color: inherit;
       transition: background 0.15s ease;
     }
-    .header:hover { background: #f0f0f0; }
-    .is-open .header { background: #fdf2f8; border-bottom: 1px solid #f5f5f5; }
-    .chevron { color: #8c8c8c; font-size: 11px; flex-shrink: 0; }
-    .is-open .chevron { color: #e61982; }
+    .header:hover { background: rgba(0, 0, 0, 0.03); }
+    .is-open .header {
+      background: transparent;
+      border-bottom: 1px dashed rgba(230, 25, 130, 0.18);
+    }
+    .chevron {
+      color: #8c8c8c;
+      font-size: 11px;
+      flex-shrink: 0;
+      transition: transform 200ms ease, color 200ms ease;
+    }
+    .is-open .chevron {
+      color: #e61982;
+      transform: rotate(0);
+    }
     .kind-badge {
       font-size: 10px; font-weight: 600;
-      padding: 2px 8px; border-radius: 10px;
-      background: #f0f0f0; color: #595959;
+      padding: 1px 7px; border-radius: 8px;
+      background: rgba(0, 0, 0, 0.06); color: #595959;
       text-transform: uppercase; letter-spacing: 0.3px;
       flex-shrink: 0;
     }
-    .is-open .kind-badge { background: #fce7f3; color: #e61982; }
+    .is-open .kind-badge { background: rgba(230, 25, 130, 0.12); color: #e61982; }
     .title {
-      font-size: 13px; font-weight: 500; color: #262626;
+      font-size: 13px; font-weight: 500; color: inherit;
       flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      opacity: 0.85;
     }
-    .body { padding: 12px 14px; }
+    .body {
+      padding: 10px 12px;
+      animation: wc-body-fade 220ms ease-out;
+    }
+    @keyframes wc-body-fade {
+      from { opacity: 0; transform: translateY(-2px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .fallback {
       padding: 8px; color: #ff4d4f; font-size: 12px;
       background: #fff2f0; border-radius: 6px;
@@ -131,13 +169,62 @@ export class AiInlineWidgetCollapseComponent implements OnChanges {
 
   isOpen = signal(true);
 
+  /**
+   * Pour les widgets "standalone" (file_inline, image_inline) qui ont déjà leur
+   * propre card autonome avec header + actions, on n'enveloppe PAS dans un
+   * wrapper collapse → évite le double encadrement moche signalé par l'user.
+   *
+   * Les autres widgets (structured, diagram, canvas_html) gardent leur wrapper
+   * collapse qui ajoute un header neutre + chevron pour replier.
+   */
+  isStandaloneWidget(): boolean {
+    const k = this.widget?.metadata?.kind;
+    return k === 'file_inline' || k === 'image_inline';
+  }
+
   ngOnChanges(): void {
+    // Initialise l'état d'ouverture :
+    //   1. localStorage par widgetId si une préférence user existe (persistance recharge)
+    //   2. sinon metadata.collapse.collapsed (choix initial du LLM)
+    //   3. sinon ouvert par défaut
+    const wid = this.widget?.metadata?.widgetId;
+    const stored = wid ? this._loadLocalState(String(wid)) : null;
+    if (stored !== null) {
+      this.isOpen.set(stored);
+      return;
+    }
     const collapsed = this.widget?.metadata?.['collapse']?.collapsed === true;
     this.isOpen.set(!collapsed);
   }
 
   toggle(): void {
-    this.isOpen.update(v => !v);
+    const next = !this.isOpen();
+    this.isOpen.set(next);
+    // Persiste le choix user en localStorage pour le retrouver au refresh
+    const wid = this.widget?.metadata?.widgetId;
+    if (wid) this._saveLocalState(String(wid), next);
+  }
+
+  /** Clé localStorage stable par widgetId (clé globale, pas thread-scoped — un
+   *  widgetId est censé être unique dans une conversation, et la convo est
+   *  identifiée par l'id du widget). */
+  private _storageKey(widgetId: string): string {
+    return `kinn:ai:widget-open:${widgetId}`;
+  }
+
+  private _loadLocalState(widgetId: string): boolean | null {
+    try {
+      const raw = localStorage.getItem(this._storageKey(widgetId));
+      if (raw === '1') return true;
+      if (raw === '0') return false;
+      return null;
+    } catch { return null; }
+  }
+
+  private _saveLocalState(widgetId: string, isOpen: boolean): void {
+    try {
+      localStorage.setItem(this._storageKey(widgetId), isOpen ? '1' : '0');
+    } catch { /* quota / privacy mode → silently ignore */ }
   }
 
   kindLabel(): string {

@@ -4,14 +4,169 @@
     "type": "local",
     "label": "Calendars"
   },
+  "variables": {
+    "calendars_event": {
+      "title": "Événement calendrier",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l’événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "calendarId",
+          "label": "ID de calendrier",
+          "description": "Identifiant du calendrier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summary",
+          "label": "Titre",
+          "description": "Titre ou sujet.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "datetime",
+          "key": "start",
+          "label": "Début",
+          "description": "Date de début.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "datetime",
+          "key": "end",
+          "label": "Fin",
+          "description": "Date de fin.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "htmlLink",
+          "label": "Lien",
+          "description": "Lien vers l’événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l’événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "response",
+          "label": "Réponse",
+          "description": "Réponse RSVP.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "calendars_result": {
+      "title": "Résultat calendrier",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l’action.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de résultat.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de ressource.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "calendars_event_payload": {
+      "title": "Événement webhook calendrier",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d’événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "provider",
+          "label": "Fournisseur",
+          "description": "Fournisseur calendrier.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Payload reçu.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
   "providers": [
     {
       "key": "googleCalendar",
       "name": "Google Calendar",
       "title": "Google Calendar",
       "iconClass": "fa-brands fa-google",
-      "iconUrl": "https://images.freeimages.com/fic/images/icons/2795/office_2013_hd/2000/outlook.png",
-      "color": "#4285F4",
+      "iconUrl": "https://cdn.simpleicons.org/googlecalendar",
+      "color": "#cbdeff",
       "tags": [
         "calendar"
       ],
@@ -75,7 +230,7 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "OAuth Microsoft Graph",
+        "title": "Connexion Microsoft",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -83,27 +238,32 @@
         "fields": [
           {
             "type": "text",
-            "key": "tenantId",
-            "label": "ID du tenant",
-            "description": "ID du tenant Microsoft.",
+            "key": "accountEmail",
+            "label": "Compte connecté",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "scope",
+            "label": "Périmètres accordés",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "text",
-            "key": "clientId",
-            "label": "ID client",
-            "description": "Client ID OAuth.",
+            "key": "connectedAt",
+            "label": "Connecté le",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "text",
-            "key": "clientSecret",
-            "label": "Secret client",
-            "description": "Client secret OAuth.",
+            "key": "refreshToken",
+            "label": "Jeton de rafraîchissement",
             "col": {
               "xs": 24
             },
@@ -112,6 +272,40 @@
         ],
         "displayTitle": false,
         "displayDescription": false
+      },
+      "auth": {
+        "type": "oauth2",
+        "oauth2": {
+          "useBouncer": true,
+          "vendor": "microsoft",
+          "authorizeUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+          "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+          "userinfoUrl": "https://graph.microsoft.com/v1.0/me",
+          "clientIdEnv": "MICROSOFT_OAUTH_CLIENT_ID",
+          "clientSecretEnv": "MICROSOFT_OAUTH_CLIENT_SECRET",
+          "scopes": [
+            "openid",
+            "email",
+            "profile",
+            "offline_access",
+            "User.Read",
+            "Calendars.ReadWrite"
+          ],
+          "authorizationParams": {
+            "prompt": "consent"
+          },
+          "fieldMap": {
+            "refreshToken": "token.refresh_token",
+            "accountEmail": [
+              "userinfo.mail",
+              "userinfo.userPrincipalName"
+            ],
+            "accountName": "userinfo.displayName",
+            "scope": "token.scope",
+            "tokenType": "token.token_type"
+          },
+          "requireRefreshToken": true
+        }
       }
     }
   ],
@@ -140,7 +334,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Créer un événement d’agenda (Google)",
@@ -236,7 +431,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Mettre à jour un événement d’agenda",
@@ -319,7 +515,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Répondre (RSVP) à un événement",
@@ -432,7 +629,16 @@
         "événement",
         "calendars"
       ],
-      "risk": "safe"
+      "risk": "safe",
+      "nodeKind": "event",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:calendars_event_payload"
+        }
+      ]
     },
     {
       "key": "outlook_create_event",
@@ -458,7 +664,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Créer un événement Outlook",
@@ -554,7 +761,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Mettre à jour un événement Outlook",
@@ -637,7 +845,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:calendars_event"
         }
       ],
       "description": "Répondre (RSVP) à un événement Outlook",
@@ -750,7 +959,16 @@
         "événement",
         "calendars"
       ],
-      "risk": "safe"
+      "risk": "safe",
+      "nodeKind": "event",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:calendars_event_payload"
+        }
+      ]
     }
   ]
 }

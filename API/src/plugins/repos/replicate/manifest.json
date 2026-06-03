@@ -1,0 +1,1142 @@
+{
+  "repo": {
+    "name": "replicate",
+    "type": "local",
+    "label": "Replicate"
+  },
+  "variables": {
+    "replicate_response": {
+      "title": "Réponse Replicate",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "replicate_items": {
+      "title": "Replicate - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "replicate",
+      "name": "Replicate",
+      "title": "Replicate",
+      "iconClass": "fa-solid fa-wand-magic-sparkles",
+      "iconUrl": "https://cdn.simpleicons.org/replicate/000000",
+      "color": "#f2f2f2",
+      "tags": [
+        "replicate",
+        "ia"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Replicate",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Jeton API Replicate",
+            "description": "Jeton API Replicate.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.replicate.com/v1"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "replicate_prediction_create",
+      "name": "replicatePredictionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une prédiction",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-wand-magic-sparkles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une prédiction Replicate depuis une version de modèle.",
+      "args": {
+        "title": "Créer une prédiction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "version",
+            "label": "Version",
+            "description": "ID de version du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Entrée JSON",
+            "description": "Objet JSON d'entrée du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "url",
+            "key": "webhook",
+            "label": "Webhook",
+            "description": "URL appelée à la fin de la prédiction.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Prédictions"
+    },
+    {
+      "key": "replicate_prediction_get",
+      "name": "replicatePredictionGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une prédiction",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère l'état d'une prédiction.",
+      "args": {
+        "title": "Récupérer une prédiction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "predictionId",
+            "label": "ID prédiction",
+            "description": "Identifiant de la prédiction.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Prédictions"
+    },
+    {
+      "key": "replicate_prediction_cancel",
+      "name": "replicatePredictionCancel",
+      "schemaVersion": 2,
+      "title": "Annuler une prédiction",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule une prédiction en cours.",
+      "args": {
+        "title": "Annuler une prédiction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "predictionId",
+            "label": "ID prédiction",
+            "description": "Identifiant de la prédiction.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Prédictions"
+    },
+    {
+      "key": "replicate_predictions_list",
+      "name": "replicatePredictionsList",
+      "schemaVersion": 2,
+      "title": "Lister les prédictions",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les prédictions récentes.",
+      "args": {
+        "title": "Lister les prédictions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Prédictions"
+    },
+    {
+      "key": "replicate_model_get",
+      "name": "replicateModelGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un modèle",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-cube",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les métadonnées d'un modèle public ou privé.",
+      "args": {
+        "title": "Récupérer un modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Owner du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "replicate_model_versions_list",
+      "name": "replicateModelVersionsList",
+      "schemaVersion": 2,
+      "title": "Lister les versions",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les versions d'un modèle.",
+      "args": {
+        "title": "Lister les versions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Owner du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "replicate_model_prediction_create",
+      "name": "replicateModelPredictionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une prédiction de modèle",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une prédiction via owner/model sans ID de version.",
+      "args": {
+        "title": "Créer une prédiction de modèle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Owner du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Entrée JSON",
+            "description": "Objet JSON d'entrée.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "url",
+            "key": "webhook",
+            "label": "Webhook",
+            "description": "URL appelée à la fin.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Prédictions"
+    },
+    {
+      "key": "replicate_deployment_prediction_create",
+      "name": "replicateDeploymentPredictionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une prédiction de déploiement",
+      "subtitle": "Déploiements",
+      "icon": "fa-solid fa-cloud",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une prédiction depuis un déploiement Replicate.",
+      "args": {
+        "title": "Créer une prédiction de déploiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Owner du déploiement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "deployment",
+            "label": "Déploiement",
+            "description": "Nom du déploiement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Entrée JSON",
+            "description": "Objet JSON d'entrée.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "url",
+            "key": "webhook",
+            "label": "Webhook",
+            "description": "URL appelée à la fin.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Déploiements"
+    },
+    {
+      "key": "replicate_trainings_list",
+      "name": "replicateTrainingsList",
+      "schemaVersion": 2,
+      "title": "Lister les entraînements",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les entraînements Replicate.",
+      "args": {
+        "title": "Lister les entraînements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "cursor",
+            "label": "Curseur",
+            "description": "Curseur de pagination.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entraînements"
+    },
+    {
+      "key": "replicate_training_get",
+      "name": "replicateTrainingGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un entraînement",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère l'état d'un entraînement.",
+      "args": {
+        "title": "Récupérer un entraînement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "trainingId",
+            "label": "ID entraînement",
+            "description": "Identifiant de l'entraînement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entraînements"
+    },
+    {
+      "key": "replicate_training_cancel",
+      "name": "replicateTrainingCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un entraînement",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Replicate",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un entraînement en cours.",
+      "args": {
+        "title": "Annuler un entraînement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "trainingId",
+            "label": "ID entraînement",
+            "description": "Identifiant de l'entraînement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entraînements"
+    },
+    {
+      "key": "replicate_training_create",
+      "name": "replicateTrainingCreate",
+      "schemaVersion": 2,
+      "title": "Créer un entraînement",
+      "subtitle": "Prédictions",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "replicate",
+      "tags": [
+        "replicate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:replicate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un entraînement sur une version de modèle.",
+      "args": {
+        "title": "Créer un entraînement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Propriétaire",
+            "description": "Owner du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "version",
+            "label": "Version",
+            "description": "ID de version du modèle.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Entrée JSON",
+            "description": "Objet JSON d'entraînement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destination",
+            "label": "Destination",
+            "description": "owner/name du modèle cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "webhook",
+            "label": "Webhook",
+            "description": "URL appelée à la fin.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Entraînements"
+    }
+  ]
+}

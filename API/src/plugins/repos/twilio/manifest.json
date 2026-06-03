@@ -1187,6 +1187,100 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "twilio_update_call",
+      "name": "twilioUpdateCall",
+      "schemaVersion": 2,
+      "title": "Modifier un appel",
+      "subtitle": "Appels",
+      "icon": "fa-solid fa-phone",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Twilio",
+      "providerKey": "twilio",
+      "tags": [
+        "twilio",
+        "call"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:twilio_call"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour un appel en cours (status, TwiML, URL).",
+      "args": {
+        "title": "Modifier un appel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "callSid",
+            "label": "Call SID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Status",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL TwiML",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "twiml",
+            "label": "TwiML",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "method",
+            "label": "HTTP Method",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Appels",
+      "risk": "write"
     }
   ],
   "variables": {

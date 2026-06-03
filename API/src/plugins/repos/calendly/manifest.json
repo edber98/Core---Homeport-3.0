@@ -1672,6 +1672,159 @@
       },
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "calendly_event_type_available_times_list",
+      "name": "calendlyEventTypeAvailableTimesList",
+      "schemaVersion": 2,
+      "title": "Lister les disponibilités d un type d événement",
+      "subtitle": "Disponibilités",
+      "icon": "fa-solid fa-calendar-days",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "calendly",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_events"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Disponibilités type événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "eventTypeUri",
+            "label": "URI du type d événement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "startTime",
+            "label": "Début ISO8601",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "endTime",
+            "label": "Fin ISO8601",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "calendly_generic_request",
+      "name": "calendlyGenericRequest",
+      "schemaVersion": 2,
+      "title": "Requête Calendly générique",
+      "subtitle": "Couverture avancée",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "calendly",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Requête Calendly générique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path API",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "risk": "write"
     }
   ]
 }

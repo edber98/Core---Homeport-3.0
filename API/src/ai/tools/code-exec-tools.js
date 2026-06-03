@@ -124,12 +124,29 @@ function createCodeExecExecutor(metadata, emit) {
       allowNetwork = false,
     } = input || {};
 
-    // 1. Validations
+    // 1. Validations — messages d'erreur explicites pour aider le LLM à corriger
+    // dès le 1er essai (au lieu de boucler à l'infini avec args vides).
+    if (!input || (typeof input === 'object' && Object.keys(input).length === 0)) {
+      return {
+        success: false,
+        error: 'arguments_missing',
+        message: 'Tu n\'as fourni AUCUN argument. execute_code nécessite OBLIGATOIREMENT : { language: "python" | "node", code: "<ton code>" }. Re-tente avec ces 2 champs remplis. Ne re-appelle PAS execute_code sans args.',
+        example: { language: 'python', code: 'print("hello")' },
+      };
+    }
     if (language !== 'python' && language !== 'node') {
-      return { success: false, error: `language invalide : "${language}" (attendu python|node)` };
+      return {
+        success: false,
+        error: 'language_invalid',
+        message: `language="${language}" non supporté. Attendu : "python" ou "node". Exemple : { language: "python", code: "..." }`,
+      };
     }
     if (typeof code !== 'string' || !code.length) {
-      return { success: false, error: 'code manquant' };
+      return {
+        success: false,
+        error: 'code_missing',
+        message: 'Argument "code" manquant ou vide. Fournis le code à exécuter, ex: { language: "python", code: "print(\'hello\')" }',
+      };
     }
     const codeBytes = Buffer.byteLength(code, 'utf8');
     if (codeBytes > MAX_CODE_BYTES) {
@@ -264,6 +281,19 @@ function createCodeExecExecutor(metadata, emit) {
         timedOut: !!result.timedOut,
         backend: sandbox.getBackend(),
       };
+      // ── HINT CRITIQUE pour le LLM ───────────────────────────────────
+      // Quand execute_code produit des fichiers, le LLM oublie souvent de les
+      // afficher (il écrit [[WIDGET:xxx]] sans avoir appelé display_file → le
+      // widget n'existe pas, le frontend ne rend rien, l'user ne voit RIEN).
+      // On force l'enchaînement obligatoire avec une instruction explicite.
+      if (producedFiles.length > 0) {
+        const fileList = producedFiles
+          .filter(f => f.fileId)
+          .map(f => `  - ${path.basename(f.path)} → fileId=${f.fileId}`)
+          .join('\n');
+        response._next_action_required = 'display_file';
+        response.hint = `✅ Fichier(s) généré(s) :\n${fileList}\n\n⚠️ OBLIGATOIRE : pour que l'user voie ces fichiers, tu DOIS maintenant appeler display_file({fileId, widgetId: "<nom-court>", caption: "<description>"}) pour CHAQUE fichier. SANS ce call, le fichier reste invisible côté UI. NE PAS écrire [[WIDGET:xxx]] dans ton texte sans avoir appelé display_file({widgetId: "xxx"}) auparavant — sinon le marqueur référence un widget inexistant.`;
+      }
       if (allowNetwork) {
         response.warning = 'Réseau autorisé — l\'isolation est réduite. À n\'utiliser que si strictement nécessaire.';
       }

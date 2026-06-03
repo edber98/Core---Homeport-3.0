@@ -1,0 +1,168 @@
+{
+  "repo": { "name": "resend", "type": "local", "label": "Resend" },
+  "variables": {
+    "resend_email": {
+      "title": "Email Resend",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "from", "label": "De", "col": { "xs": 24 } },
+        { "type": "text", "key": "to", "label": "À", "col": { "xs": 24 } },
+        { "type": "text", "key": "subject", "label": "Objet", "col": { "xs": 24 } },
+        { "type": "text", "key": "last_event", "label": "Dernier événement", "col": { "xs": 24 } },
+        { "type": "date", "key": "created_at", "label": "Date de création", "col": { "xs": 24 } },
+        { "type": "date", "key": "scheduled_at", "label": "Date programmée", "col": { "xs": 24 } }
+      ]
+    },
+    "resend_emails": {
+      "title": "Emails Resend",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "text", "key": "hasMore", "label": "Plus de résultats", "col": { "xs": 24 } },
+        { "type": "section", "title": "Emails", "key": "emails", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+          { "type": "text", "key": "from", "label": "De", "col": { "xs": 24 } },
+          { "type": "text", "key": "to", "label": "À", "col": { "xs": 24 } },
+          { "type": "text", "key": "subject", "label": "Objet", "col": { "xs": 24 } },
+          { "type": "text", "key": "last_event", "label": "Dernier événement", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "resend_result": {
+      "title": "Résultat Resend",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "email", "key": "email", "label": "Email", "col": { "xs": 24 } },
+        { "type": "text", "key": "success", "label": "Succès", "col": { "xs": 24 } }
+      ]
+    },
+    "resend_domain": {
+      "title": "Domaine Resend",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+        { "type": "text", "key": "region", "label": "Région", "col": { "xs": 24 } },
+        { "type": "text", "key": "sending", "label": "Envoi", "col": { "xs": 24 } },
+        { "type": "text", "key": "receiving", "label": "Réception", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "records", "label": "DNS JSON", "col": { "xs": 24 } }
+      ]
+    },
+    "resend_domains": {
+      "title": "Domaines Resend",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "section", "title": "Domaines", "key": "domains", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+          { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 24 } },
+          { "type": "text", "key": "region", "label": "Région", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    },
+    "resend_contact": {
+      "title": "Contact Resend",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+        { "type": "email", "key": "email", "label": "Email", "col": { "xs": 24 } },
+        { "type": "text", "key": "first_name", "label": "Prénom", "col": { "xs": 24 } },
+        { "type": "text", "key": "last_name", "label": "Nom", "col": { "xs": 24 } },
+        { "type": "text", "key": "unsubscribed", "label": "Désabonné", "col": { "xs": 24 } },
+        { "type": "textarea", "key": "properties", "label": "Propriétés JSON", "col": { "xs": 24 } }
+      ]
+    },
+    "resend_segments": {
+      "title": "Segments Resend",
+      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "fields": [
+        { "type": "number", "key": "totalCount", "label": "Nombre total", "col": { "xs": 24 } },
+        { "type": "section", "title": "Segments", "key": "segments", "mode": "array", "array": { "initialItems": 0, "minItems": 0 }, "fields": [
+          { "type": "text", "key": "id", "label": "ID", "col": { "xs": 24 } },
+          { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
+          { "type": "date", "key": "created_at", "label": "Date de création", "col": { "xs": 24 } }
+        ], "col": { "xs": 24 } }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "resend",
+      "name": "Resend",
+      "title": "Resend",
+      "iconUrl": "https://cdn.simpleicons.org/resend",
+      "iconClass": "fa-solid fa-envelope",
+      "color": "#dadada",
+      "tags": ["email", "transactionnel"],
+      "categories": ["Communication"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Resend",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "apiKey", "label": "Clé API", "description": "Clé Resend re_....", "secret": true, "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+          { "type": "text", "key": "baseUrl", "label": "URL API", "default": "https://api.resend.com", "col": { "xs": 24 } }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    { "key": "resend_email_send", "name": "resendEmailSend", "schemaVersion": 2, "title": "Envoyer un email", "subtitle": "Emails", "icon": "fa-solid fa-paper-plane", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["email", "envoi"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_result" }], "authorize_catch_error": true, "description": "Envoie un email transactionnel avec Resend.", "args": { "fields": [
+      { "type": "text", "key": "from", "label": "De", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "textarea", "key": "to", "label": "À", "description": "Un email par ligne.", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "text", "key": "subject", "label": "Objet", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "textarea", "key": "html", "label": "HTML", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "text", "label": "Texte", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "cc", "label": "CC", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "bcc", "label": "CCI", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "replyTo", "label": "Répondre à", "col": { "xs": 24 } },
+      { "type": "date", "key": "scheduledAt", "label": "Date programmée", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "headers", "label": "En-têtes JSON", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "attachments", "label": "Pièces jointes JSON", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "tags", "label": "Tags JSON", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "template", "label": "Template JSON", "col": { "xs": 24 } },
+      { "type": "text", "key": "idempotencyKey", "label": "Clé idempotence", "col": { "xs": 24 } }
+    ] }, "group": "Emails" },
+    { "key": "resend_email_get", "name": "resendEmailGet", "schemaVersion": 2, "title": "Récupérer un email", "subtitle": "Emails", "icon": "fa-solid fa-eye", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["lecture", "email"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_email" }], "authorize_catch_error": true, "description": "Récupère un email envoyé.", "args": { "fields": [{ "type": "text", "key": "emailId", "label": "ID email", "validators": [{ "type": "required" }], "col": { "xs": 24 } }] }, "group": "Emails" },
+    { "key": "resend_emails_list", "name": "resendEmailsList", "schemaVersion": 2, "title": "Lister les emails", "subtitle": "Emails", "icon": "fa-solid fa-list", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["lecture", "email"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_emails" }], "authorize_catch_error": true, "description": "Liste les emails envoyés.", "args": { "fields": [
+      { "type": "number", "key": "pageSize", "label": "Limite", "default": 50, "col": { "xs": 12 } },
+      { "type": "text", "key": "after", "label": "Après", "col": { "xs": 24 } },
+      { "type": "text", "key": "before", "label": "Avant", "col": { "xs": 24 } }
+    ] }, "group": "Emails" },
+    { "key": "resend_domains_list", "name": "resendDomainsList", "schemaVersion": 2, "title": "Lister les domaines", "subtitle": "Domaines", "icon": "fa-solid fa-globe", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["lecture", "domaine"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_domains" }], "authorize_catch_error": true, "description": "Liste les domaines Resend.", "args": { "fields": [] }, "group": "Domaines" },
+    { "key": "resend_domain_get", "name": "resendDomainGet", "schemaVersion": 2, "title": "Récupérer un domaine", "subtitle": "Domaines", "icon": "fa-solid fa-circle-info", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["lecture", "domaine"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_domain" }], "authorize_catch_error": true, "description": "Récupère un domaine Resend.", "args": { "fields": [{ "type": "text", "key": "domainId", "label": "ID domaine", "validators": [{ "type": "required" }], "col": { "xs": 24 } }] }, "group": "Domaines" },
+    { "key": "resend_domain_verify", "name": "resendDomainVerify", "schemaVersion": 2, "title": "Vérifier un domaine", "subtitle": "Domaines", "icon": "fa-solid fa-shield-check", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["vérification", "domaine"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_result" }], "authorize_catch_error": true, "description": "Déclenche la vérification DNS d'un domaine.", "args": { "fields": [{ "type": "text", "key": "domainId", "label": "ID domaine", "validators": [{ "type": "required" }], "col": { "xs": 24 } }] }, "group": "Domaines" },
+    { "key": "resend_contact_create", "name": "resendContactCreate", "schemaVersion": 2, "title": "Créer un contact", "subtitle": "Contacts", "icon": "fa-solid fa-user-plus", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["création", "contact"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_result" }], "authorize_catch_error": true, "description": "Crée un contact Resend.", "args": { "fields": [
+      { "type": "email", "key": "email", "label": "Email", "validators": [{ "type": "required" }], "col": { "xs": 24 } },
+      { "type": "text", "key": "firstName", "label": "Prénom", "col": { "xs": 24 } },
+      { "type": "text", "key": "lastName", "label": "Nom", "col": { "xs": 24 } },
+      { "type": "checkbox", "key": "unsubscribed", "label": "Désabonné", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "properties", "label": "Propriétés JSON", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "segments", "label": "Segments JSON", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "topics", "label": "Topics JSON", "col": { "xs": 24 } }
+    ] }, "group": "Contacts" },
+    { "key": "resend_contact_get", "name": "resendContactGet", "schemaVersion": 2, "title": "Récupérer un contact", "subtitle": "Contacts", "icon": "fa-solid fa-user", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["lecture", "contact"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_contact" }], "authorize_catch_error": true, "description": "Récupère un contact par ID ou email.", "args": { "fields": [
+      { "type": "text", "key": "contactId", "label": "ID contact", "col": { "xs": 24 } },
+      { "type": "email", "key": "email", "label": "Email", "col": { "xs": 24 } }
+    ] }, "group": "Contacts" },
+    { "key": "resend_contact_update", "name": "resendContactUpdate", "schemaVersion": 2, "title": "Modifier un contact", "subtitle": "Contacts", "icon": "fa-solid fa-user-pen", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["modification", "contact"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_result" }], "authorize_catch_error": true, "description": "Modifie un contact Resend.", "args": { "fields": [
+      { "type": "text", "key": "contactId", "label": "ID contact", "col": { "xs": 24 } },
+      { "type": "email", "key": "email", "label": "Email", "col": { "xs": 24 } },
+      { "type": "text", "key": "firstName", "label": "Prénom", "col": { "xs": 24 } },
+      { "type": "text", "key": "lastName", "label": "Nom", "col": { "xs": 24 } },
+      { "type": "checkbox", "key": "unsubscribed", "label": "Désabonné", "col": { "xs": 24 } },
+      { "type": "textarea", "key": "properties", "label": "Propriétés JSON", "col": { "xs": 24 } }
+    ] }, "group": "Contacts" },
+    { "key": "resend_contact_delete", "name": "resendContactDelete", "schemaVersion": 2, "title": "Supprimer un contact", "subtitle": "Contacts", "icon": "fa-solid fa-user-xmark", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["suppression", "contact"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_result" }], "authorize_catch_error": true, "description": "Supprime un contact Resend.", "args": { "fields": [
+      { "type": "text", "key": "contactId", "label": "ID contact", "col": { "xs": 24 } },
+      { "type": "email", "key": "email", "label": "Email", "col": { "xs": 24 } }
+    ] }, "group": "Contacts" },
+    { "key": "resend_segments_list", "name": "resendSegmentsList", "schemaVersion": 2, "title": "Lister les segments", "subtitle": "Segments", "icon": "fa-solid fa-layer-group", "type": "function", "nodeKind": "function", "category": "Resend", "providerKey": "resend", "tags": ["lecture", "segment"], "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }], "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:resend_segments" }], "authorize_catch_error": true, "description": "Liste les segments Resend.", "args": { "fields": [] }, "group": "Segments" }
+  ]
+}

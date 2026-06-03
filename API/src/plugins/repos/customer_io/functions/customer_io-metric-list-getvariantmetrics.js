@@ -1,0 +1,45 @@
+const { utils } = require('./utils');
+
+module.exports = {
+  async customer_io_metric_list_getvariantmetrics(node, msg, inputs, opts) {
+    const log = (opts && opts.log) ? opts.log : () => {};
+    const d = inputs || {};
+    let reqPath = "/v1/newsletters/{newsletter_id}/contents/{content_id}/metrics";
+    const newsletter_id = String(d.newsletter_id || '').trim();
+    if (!newsletter_id) return { ok: false, error: 'newsletter_id requis.' };
+    reqPath = reqPath.replace('{newsletter_id}', encodeURIComponent(newsletter_id));
+    const content_id = String(d.content_id || '').trim();
+    if (!content_id) return { ok: false, error: 'content_id requis.' };
+    reqPath = reqPath.replace('{content_id}', encodeURIComponent(content_id));
+
+    const query = {};
+    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
+    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
+    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+
+    const body = undefined;
+
+    log('Requête en cours...');
+    const res = await utils.providerRequest(opts, reqPath, { method: 'GET', query, body });
+    if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
+
+    const payload = res.data || {};
+    const rawItems = Array.isArray(payload.items) ? payload.items : Array.isArray(payload.results) ? payload.results : Array.isArray(payload) ? payload : [];
+    const items = rawItems.map((r) => ({
+      id: r && (r.id || r.uuid || r.key || ''),
+      name: r && (r.name || r.title || ''),
+      url: r && (r.url || r.html_url || ''),
+      status: r && (r.status || r.state || ''),
+      created_at: r && (r.created_at || r.createdAt || ''),
+      updated_at: r && (r.updated_at || r.updatedAt || ''),
+      raw: r
+    }));
+
+    return {
+      ok: true,
+      items,
+      totalCount: Number(payload.total || payload.count || items.length),
+      nextCursor: payload.next_cursor || payload.next || null
+    };
+  }
+};

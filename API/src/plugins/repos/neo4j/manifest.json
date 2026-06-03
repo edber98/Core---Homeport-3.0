@@ -1,0 +1,1404 @@
+{
+  "repo": {
+    "name": "neo4j",
+    "type": "local",
+    "label": "Neo4j"
+  },
+  "variables": {
+    "neo4j_action_result": {
+      "title": "Résultat Neo4j",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "neo4j_rows": {
+      "title": "Lignes Neo4j",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "rowCount",
+          "label": "Nombre de lignes",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "fields",
+          "label": "Colonnes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "rows",
+          "label": "Lignes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "neo4j_items": {
+      "title": "Liste Neo4j",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "items",
+          "label": "Éléments",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "neo4j_record": {
+      "title": "Élément Neo4j",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "properties",
+          "label": "Propriétés",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "neo4j",
+      "name": "Neo4j",
+      "title": "Neo4j",
+      "iconClass": "fa-solid fa-diagram-project",
+      "iconUrl": "https://cdn.simpleicons.org/neo4j",
+      "color": "#e7f7ec",
+      "tags": [
+        "neo4j",
+        "graphe",
+        "cypher"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Neo4j",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "uri",
+            "label": "URI Bolt",
+            "description": "Ex: bolt://localhost:7687",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "description": "Utilisateur Neo4j.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "description": "Mot de passe Neo4j.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Base Neo4j (optionnel).",
+            "col": {
+              "xs": 24
+            },
+            "default": "neo4j"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "neo4j_query_execute",
+      "name": "neo4jQueryExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête Cypher",
+      "subtitle": "Cypher",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête Cypher avec paramètres.",
+      "args": {
+        "title": "Exécuter une requête Cypher",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête Cypher",
+            "description": "Requête à exécuter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres de requête.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Override base cible.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cypher"
+    },
+    {
+      "key": "neo4j_query_read",
+      "name": "neo4jQueryRead",
+      "schemaVersion": 2,
+      "title": "Exécuter une lecture transactionnelle",
+      "subtitle": "Cypher",
+      "icon": "fa-solid fa-book-open-reader",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "read"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête en mode lecture transactionnelle.",
+      "args": {
+        "title": "Exécuter une lecture transactionnelle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête Cypher",
+            "description": "Requête en lecture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres de requête.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Override base cible.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cypher"
+    },
+    {
+      "key": "neo4j_query_write",
+      "name": "neo4jQueryWrite",
+      "schemaVersion": 2,
+      "title": "Exécuter une écriture transactionnelle",
+      "subtitle": "Cypher",
+      "icon": "fa-solid fa-pen-to-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "write"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête en mode écriture transactionnelle.",
+      "args": {
+        "title": "Exécuter une écriture transactionnelle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête Cypher",
+            "description": "Requête en écriture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres de requête.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Override base cible.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cypher"
+    },
+    {
+      "key": "neo4j_transaction_execute",
+      "name": "neo4jTransactionExecute",
+      "schemaVersion": 2,
+      "title": "Exécuter un lot transactionnel",
+      "subtitle": "Cypher",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "transaction"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute plusieurs requêtes dans une transaction.",
+      "args": {
+        "title": "Exécuter un lot transactionnel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "statements",
+            "label": "Statements JSON",
+            "description": "Array: [{\"query\":\"...\",\"params\":{}}].",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Override base cible.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Cypher"
+    },
+    {
+      "key": "neo4j_node_create",
+      "name": "neo4jNodeCreate",
+      "schemaVersion": 2,
+      "title": "Créer un nœud",
+      "subtitle": "Nœuds",
+      "icon": "fa-solid fa-circle-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_record"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un nœud avec labels et propriétés.",
+      "args": {
+        "title": "Créer un nœud",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "labels",
+            "label": "Labels",
+            "description": "Séparés par des virgules.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés JSON",
+            "description": "Propriétés du nœud.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Nœuds"
+    },
+    {
+      "key": "neo4j_nodes_match",
+      "name": "neo4jNodesMatch",
+      "schemaVersion": 2,
+      "title": "Rechercher des nœuds",
+      "subtitle": "Nœuds",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "search"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère des nœuds par label et clause WHERE.",
+      "args": {
+        "title": "Rechercher des nœuds",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Label",
+            "description": "Label principal du nœud.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "description": "Ex: n.email = $email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres de la clause WHERE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max de nœuds.",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Nœuds"
+    },
+    {
+      "key": "neo4j_nodes_update",
+      "name": "neo4jNodesUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des nœuds",
+      "subtitle": "Nœuds",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour les propriétés de nœuds ciblés.",
+      "args": {
+        "title": "Mettre à jour des nœuds",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Label",
+            "description": "Label principal du nœud.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "description": "Clause de filtrage.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres de filtrage.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés JSON",
+            "description": "Propriétés à appliquer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Nœuds"
+    },
+    {
+      "key": "neo4j_nodes_delete",
+      "name": "neo4jNodesDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des nœuds",
+      "subtitle": "Nœuds",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime des nœuds ciblés (DETACH optionnel).",
+      "args": {
+        "title": "Supprimer des nœuds",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Label",
+            "description": "Label principal du nœud.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "description": "Clause de filtrage.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres de filtrage.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "checkbox",
+            "key": "detach",
+            "label": "DETACH DELETE",
+            "description": "Supprimer aussi les relations.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Nœuds"
+    },
+    {
+      "key": "neo4j_relationship_create",
+      "name": "neo4jRelationshipCreate",
+      "schemaVersion": 2,
+      "title": "Créer une relation",
+      "subtitle": "Relations",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_record"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une relation entre deux nœuds.",
+      "args": {
+        "title": "Créer une relation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fromId",
+            "label": "ID source (elementId)",
+            "description": "elementId du nœud source.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "toId",
+            "label": "ID cible (elementId)",
+            "description": "elementId du nœud cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type relation",
+            "description": "Type de relation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés JSON",
+            "description": "Propriétés de relation.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Relations"
+    },
+    {
+      "key": "neo4j_relationships_delete",
+      "name": "neo4jRelationshipsDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des relations",
+      "subtitle": "Relations",
+      "icon": "fa-solid fa-unlink",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime des relations par type et filtre.",
+      "args": {
+        "title": "Supprimer des relations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type relation",
+            "description": "Type relationnel à filtrer.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "description": "Clause sur r (relation).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "description": "Paramètres WHERE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max.",
+            "col": {
+              "xs": 24
+            },
+            "default": 1000
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Relations"
+    },
+    {
+      "key": "neo4j_labels_list",
+      "name": "neo4jLabelsList",
+      "schemaVersion": 2,
+      "title": "Lister les labels",
+      "subtitle": "Métadonnées",
+      "icon": "fa-solid fa-tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les labels disponibles.",
+      "args": {
+        "title": "Lister les labels",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Override base cible.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Métadonnées"
+    },
+    {
+      "key": "neo4j_relationship_types_list",
+      "name": "neo4jRelationshipTypesList",
+      "schemaVersion": 2,
+      "title": "Lister les types de relation",
+      "subtitle": "Métadonnées",
+      "icon": "fa-solid fa-share-nodes",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les types de relation disponibles.",
+      "args": {
+        "title": "Lister les types de relation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Base",
+            "description": "Override base cible.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Métadonnées"
+    },
+    {
+      "key": "neo4j_relationships_match",
+      "name": "neo4jRelationshipsMatch",
+      "schemaVersion": 2,
+      "title": "Rechercher des relations",
+      "subtitle": "Relations",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "relations",
+        "search"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Recherche des relations par type et filtre.",
+      "args": {
+        "title": "Rechercher des relations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type relation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "default": "{}",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Relations"
+    },
+    {
+      "key": "neo4j_relationships_update",
+      "name": "neo4jRelationshipsUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des relations",
+      "subtitle": "Relations",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Neo4j",
+      "providerKey": "neo4j",
+      "tags": [
+        "neo4j",
+        "relations",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:neo4j_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Met à jour les propriétés de relations ciblées.",
+      "args": {
+        "title": "Mettre à jour des relations",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type relation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "where",
+            "label": "Clause WHERE",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "params",
+            "label": "Paramètres JSON",
+            "default": "{}",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Propriétés JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Relations"
+    }
+  ]
+}

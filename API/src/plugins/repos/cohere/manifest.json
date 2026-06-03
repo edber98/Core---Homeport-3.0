@@ -1,0 +1,706 @@
+{
+  "repo": {
+    "name": "cohere",
+    "type": "local",
+    "label": "Cohere"
+  },
+  "variables": {
+    "cohere_response": {
+      "title": "Réponse Cohere",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou modèle utilisé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat normalisé au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "cohere_items": {
+      "title": "Cohere - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination suivant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données normalisées au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "cohere",
+      "name": "Cohere",
+      "title": "Cohere",
+      "iconClass": "fa-solid fa-brain",
+      "iconUrl": "https://cdn.jsdelivr.net/npm/@lobehub/icons-static-png@1.90.0/dark/cohere-color.png",
+      "color": "#eef4f1",
+      "tags": [
+        "cohere",
+        "ia"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Cohere",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API Cohere",
+            "description": "Clé API Cohere.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.cohere.com"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "cohere_chat_create",
+      "name": "cohereChatCreate",
+      "schemaVersion": 2,
+      "title": "Créer une réponse chat",
+      "subtitle": "Chat",
+      "icon": "fa-solid fa-message",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cohere",
+      "providerKey": "cohere",
+      "tags": [
+        "cohere",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cohere_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Envoie un message à Cohere Chat v2.",
+      "args": {
+        "title": "Créer une réponse chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Instruction ou question à envoyer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Nom du modèle à utiliser.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "messages",
+            "label": "Messages JSON",
+            "description": "Tableau JSON de messages compatible chat.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Tokens maximum",
+            "description": "Nombre maximum de tokens en sortie.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Créativité de la génération.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "responseFormat",
+            "label": "Format de réponse",
+            "description": "Optionnel : json_object pour demander du JSON.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Chat"
+    },
+    {
+      "key": "cohere_embed_create",
+      "name": "cohereEmbedCreate",
+      "schemaVersion": 2,
+      "title": "Créer des embeddings",
+      "subtitle": "Embeddings",
+      "icon": "fa-solid fa-vector-square",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cohere",
+      "providerKey": "cohere",
+      "tags": [
+        "cohere",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cohere_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée des vecteurs d'embedding pour une liste de textes.",
+      "args": {
+        "title": "Créer des embeddings",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "texts",
+            "label": "Textes JSON",
+            "description": "Tableau JSON de textes.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle d'embedding.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "inputType",
+            "label": "Type d'entrée",
+            "description": "search_document, search_query, classification ou clustering.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Embeddings"
+    },
+    {
+      "key": "cohere_rerank_create",
+      "name": "cohereRerankCreate",
+      "schemaVersion": 2,
+      "title": "Réordonner des documents",
+      "subtitle": "Rerank",
+      "icon": "fa-solid fa-arrow-down-wide-short",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cohere",
+      "providerKey": "cohere",
+      "tags": [
+        "cohere",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cohere_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Réordonne des documents selon une requête.",
+      "args": {
+        "title": "Réordonner des documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "documents",
+            "label": "Documents JSON",
+            "description": "Tableau JSON de documents.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle de rerank.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "topN",
+            "label": "Top N",
+            "description": "Nombre de résultats à retourner.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Rerank"
+    },
+    {
+      "key": "cohere_classify_create",
+      "name": "cohereClassifyCreate",
+      "schemaVersion": 2,
+      "title": "Classer des textes",
+      "subtitle": "Classification",
+      "icon": "fa-solid fa-tags",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "cohere",
+      "tags": [
+        "cohere",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cohere_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Classe des textes avec Cohere Classify v2.",
+      "args": {
+        "title": "Classer des textes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "inputs",
+            "label": "Entrées JSON",
+            "description": "Tableau JSON de textes à classer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "examples",
+            "label": "Exemples JSON",
+            "description": "Exemples de classification.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle de classification.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Classification"
+    },
+    {
+      "key": "cohere_api_request",
+      "name": "cohereApiRequest",
+      "schemaVersion": 2,
+      "title": "Requête API personnalisée",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cohere",
+      "providerKey": "cohere",
+      "tags": [
+        "api",
+        "custom"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cohere_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête API Cohere personnalisée.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode",
+            "defaultValue": "GET",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Query JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "API"
+    },
+    {
+      "key": "cohere_models_list",
+      "name": "cohereModelsList",
+      "schemaVersion": 2,
+      "title": "Lister les modèles",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Cohere",
+      "providerKey": "cohere",
+      "tags": [
+        "lecture",
+        "models"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:cohere_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les modèles disponibles.",
+      "args": {
+        "fields": []
+      },
+      "group": "Modèles"
+    }
+  ]
+}

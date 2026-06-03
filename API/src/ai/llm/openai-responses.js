@@ -251,11 +251,17 @@ async function* streamOpenAIResponses(messages, tools, config) {
             totalUsage = {
               input: u.input_tokens || 0,
               output: u.output_tokens || 0,
-              reasoning: u.reasoning_tokens || 0,
+              reasoning: u.output_tokens_details?.reasoning_tokens || u.reasoning_tokens || 0,
+              // Préserve les champs provider pour l'adapter.
+              input_tokens: u.input_tokens || 0,
+              output_tokens: u.output_tokens || 0,
+              input_tokens_details: u.input_tokens_details || null,
+              output_tokens_details: u.output_tokens_details || null,
             };
           }
-          console.log(`[llm-openai-responses] response.completed → done (usage: ${JSON.stringify(totalUsage)})`);
-          yield { type: 'done', usage: totalUsage };
+          const stopReasonRaw = data.response?.status || 'completed';
+          console.log(`[llm-openai-responses] response.completed → done (usage: ${JSON.stringify(totalUsage)}, stop: ${stopReasonRaw})`);
+          yield { type: 'done', usage: totalUsage, stopReasonRaw };
           return;
         }
 

@@ -939,7 +939,7 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "Identifiants Google OAuth2",
+        "title": "Connexion Google",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -947,48 +947,74 @@
         "fields": [
           {
             "type": "text",
-            "key": "clientId",
-            "label": "Client ID",
+            "key": "accountEmail",
+            "label": "Compte connecté",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "scope",
+            "label": "Périmètres accordés",
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
-            "key": "clientSecret",
-            "label": "Client Secret",
+            "key": "connectedAt",
+            "label": "Connecté le",
             "col": {
               "xs": 24
-            },
-            "secret": true,
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           },
           {
             "type": "text",
             "key": "refreshToken",
-            "label": "Refresh Token",
+            "label": "Jeton de rafraîchissement",
             "col": {
               "xs": 24
             },
-            "secret": true,
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "secret": true
           }
         ],
         "displayTitle": false,
         "displayDescription": false
+      },
+      "auth": {
+        "type": "oauth2",
+        "oauth2": {
+          "useBouncer": true,
+          "vendor": "google",
+          "authorizeUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+          "tokenUrl": "https://oauth2.googleapis.com/token",
+          "userinfoUrl": "https://openidconnect.googleapis.com/v1/userinfo",
+          "clientIdEnv": "GOOGLE_OAUTH_CLIENT_ID",
+          "clientSecretEnv": "GOOGLE_OAUTH_CLIENT_SECRET",
+          "scopes": [
+            "openid",
+            "email",
+            "profile",
+            "https://www.googleapis.com/auth/drive",
+            "https://www.googleapis.com/auth/documents",
+            "https://www.googleapis.com/auth/spreadsheets"
+          ],
+          "authorizationParams": {
+            "access_type": "offline",
+            "include_granted_scopes": "true",
+            "prompt": "consent"
+          },
+          "fieldMap": {
+            "refreshToken": "token.refresh_token",
+            "accountEmail": "userinfo.email",
+            "accountName": "userinfo.name",
+            "scope": "token.scope",
+            "tokenType": "token.token_type"
+          },
+          "tokenAuthMethod": "basic",
+          "requireRefreshToken": true
+        }
       }
     },
     {
@@ -1031,7 +1057,7 @@
       "title": "Google Calendar",
       "iconClass": "fa-solid fa-calendar-days",
       "iconUrl": "https://cdn.simpleicons.org/googlecalendar",
-      "color": "#4285F4",
+      "color": "#d9e7ff",
       "tags": [
         "google",
         "calendar",

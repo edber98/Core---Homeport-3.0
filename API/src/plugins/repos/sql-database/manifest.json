@@ -1052,6 +1052,136 @@
       "group": "Procédures",
       "risk": "elevated",
       "riskReason": "Exécute une procédure stockée arbitraire"
+    },
+    {
+      "key": "sql_execute_transaction",
+      "name": "sqlExecuteTransaction",
+      "schemaVersion": 2,
+      "title": "Exécuter une transaction",
+      "subtitle": "Requêtes",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sql_database",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Exécuter une transaction",
+      "args": {
+        "title": "Exécuter une transaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "statements",
+            "label": "Statements JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "sql"
+      ],
+      "group": "Requêtes",
+      "risk": "write"
+    },
+    {
+      "key": "sql_count",
+      "name": "sqlCount",
+      "schemaVersion": 2,
+      "title": "Compter les lignes",
+      "subtitle": "Requêtes",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SQL Database",
+      "providerKey": "sql_database",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sql_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Compter les lignes",
+      "args": {
+        "title": "Compter les lignes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "where",
+            "label": "WHERE",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "tags": [
+        "sql"
+      ],
+      "group": "Requêtes",
+      "risk": "safe"
     }
   ]
 }

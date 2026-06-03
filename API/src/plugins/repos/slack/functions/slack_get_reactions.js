@@ -12,8 +12,8 @@ module.exports = {
     const res = await utils.slackRequest(opts, "reactions.get", body);
     if (!res.ok) return { ok: false, error: res.error, details: res.details };
 
-    const msg = res.data.message || {};
-    const list = msg.reactions || [];
+    const message = res.data.message || {};
+    const list = message.reactions || [];
     return {
       ok: true,
       reactions: list.map(r => ({

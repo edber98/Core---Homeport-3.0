@@ -1,0 +1,1698 @@
+{
+  "repo": {
+    "name": "chromadb",
+    "type": "local",
+    "label": "ChromaDB"
+  },
+  "variables": {
+    "chromadb_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "chromadb_collection": {
+      "title": "collection ChromaDB",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "chromadb_collections": {
+      "title": "collections ChromaDB",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "chromadb_document": {
+      "title": "document ChromaDB",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "chromadb_documents": {
+      "title": "documents ChromaDB",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "chromadb",
+      "name": "ChromaDB",
+      "title": "ChromaDB",
+      "iconClass": "fa-solid fa-database",
+      "iconUrl": "https://www.trychroma.com/favicon.ico",
+      "color": "#eaf4ff",
+      "tags": [
+        "chromadb",
+        "vector",
+        "retrieval"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants ChromaDB",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path",
+            "description": "URL complète du serveur Chroma (ex: http://localhost:8000).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "host",
+            "label": "Host",
+            "description": "Host Chroma (si path non fourni).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "port",
+            "label": "Port",
+            "description": "Port Chroma (si host fourni).",
+            "col": {
+              "xs": 24
+            },
+            "default": 8000
+          },
+          {
+            "type": "checkbox",
+            "key": "ssl",
+            "label": "SSL",
+            "description": "Activer HTTPS.",
+            "col": {
+              "xs": 24
+            },
+            "default": false
+          },
+          {
+            "type": "text",
+            "key": "tenant",
+            "label": "Tenant",
+            "description": "Tenant Chroma (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Database",
+            "description": "Database Chroma (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "API key Chroma (optionnel).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "Headers",
+            "description": "Headers HTTP supplémentaires JSON (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "chromadb_collection_list",
+      "name": "chromadbCollectionList",
+      "schemaVersion": 2,
+      "title": "Lister les collections",
+      "subtitle": "collections",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "collection",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_collections"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list sur collection.",
+      "args": {
+        "title": "Lister les collections",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "collections"
+    },
+    {
+      "key": "chromadb_collection_create",
+      "name": "chromadbCollectionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une collection",
+      "subtitle": "collections",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "collection",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_collection"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action create sur collection.",
+      "args": {
+        "title": "Créer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "get_or_create",
+            "label": "Get or create",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "collections"
+    },
+    {
+      "key": "chromadb_collection_get",
+      "name": "chromadbCollectionGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une collection",
+      "subtitle": "collections",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "collection",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_collection"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur collection.",
+      "args": {
+        "title": "Récupérer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID",
+            "description": "Identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "collections"
+    },
+    {
+      "key": "chromadb_collection_update",
+      "name": "chromadbCollectionUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour une collection",
+      "subtitle": "collections",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "collection",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_collection"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action update sur collection.",
+      "args": {
+        "title": "Mettre à jour une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "new_name",
+            "label": "Nouveau nom",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "collections"
+    },
+    {
+      "key": "chromadb_collection_delete",
+      "name": "chromadbCollectionDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une collection",
+      "subtitle": "collections",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "collection",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete sur collection.",
+      "args": {
+        "title": "Supprimer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "collections"
+    },
+    {
+      "key": "chromadb_document_add",
+      "name": "chromadbDocumentAdd",
+      "schemaVersion": 2,
+      "title": "Ajouter des documents",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "document",
+        "add"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action add sur document.",
+      "args": {
+        "title": "Ajouter des documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "ids",
+            "label": "IDs",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "embeddings",
+            "label": "Embeddings",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "metadatas",
+            "label": "Metadatas",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "chromadb_document_upsert",
+      "name": "chromadbDocumentUpsert",
+      "schemaVersion": 2,
+      "title": "Upsert de documents",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-code-compare",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "document",
+        "upsert"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action upsert sur document.",
+      "args": {
+        "title": "Upsert de documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "ids",
+            "label": "IDs",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "embeddings",
+            "label": "Embeddings",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "metadatas",
+            "label": "Metadatas",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "chromadb_document_get",
+      "name": "chromadbDocumentGet",
+      "schemaVersion": 2,
+      "title": "Lire des documents",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "document",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_documents"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur document.",
+      "args": {
+        "title": "Lire des documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "ids",
+            "label": "IDs",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "where",
+            "label": "Filtre metadata",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "where_document",
+            "label": "Filtre document",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "chromadb_document_query",
+      "name": "chromadbDocumentQuery",
+      "schemaVersion": 2,
+      "title": "Interroger la collection",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "document",
+        "query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_documents"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action query sur document.",
+      "args": {
+        "title": "Interroger la collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query_texts",
+            "label": "Query texts",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "query_embeddings",
+            "label": "Query embeddings",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "where",
+            "label": "Filtre metadata",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "where_document",
+            "label": "Filtre document",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "n_results",
+            "label": "Nombre de résultats",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "chromadb_document_update",
+      "name": "chromadbDocumentUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des documents",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "document",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action update sur document.",
+      "args": {
+        "title": "Mettre à jour des documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "ids",
+            "label": "IDs",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "embeddings",
+            "label": "Embeddings",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "metadatas",
+            "label": "Metadatas",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "chromadb_document_delete",
+      "name": "chromadbDocumentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des documents",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "document",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete sur document.",
+      "args": {
+        "title": "Supprimer des documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "ids",
+            "label": "IDs",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "where",
+            "label": "Filtre metadata",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "where_document",
+            "label": "Filtre document",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "chromadb_document_count",
+      "name": "chromadbDocumentCount",
+      "schemaVersion": 2,
+      "title": "Compter les documents",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "document",
+        "count"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_document"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action count sur document.",
+      "args": {
+        "title": "Compter les documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "chromadb_document_peek",
+      "name": "chromadbDocumentPeek",
+      "schemaVersion": 2,
+      "title": "Aperçu de documents",
+      "subtitle": "documents",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ChromaDB",
+      "providerKey": "chromadb",
+      "tags": [
+        "chromadb",
+        "document",
+        "peek"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_documents"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action peek sur document.",
+      "args": {
+        "title": "Aperçu de documents",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "collection_name",
+            "label": "Collection",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "documents"
+    },
+    {
+      "key": "chromadb_generic_request",
+      "name": "chromadbGenericRequest",
+      "schemaVersion": 2,
+      "title": "Action ChromaDB générique",
+      "subtitle": "Couverture avancée",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "chromadb",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:chromadb_action_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Action ChromaDB générique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "action",
+            "label": "Action interne",
+            "description": "Ex: chromadb_document_query",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "payload",
+            "label": "Payload JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "risk": "write"
+    }
+  ]
+}

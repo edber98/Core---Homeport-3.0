@@ -1,0 +1,2425 @@
+{
+  "repo": {
+    "name": "plausible",
+    "type": "local",
+    "label": "Plausible"
+  },
+  "variables": {
+    "plausible_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "plausible_stats": {
+      "title": "statistique Plausible",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "plausible_statses": {
+      "title": "statistiques Plausible",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "plausible_event": {
+      "title": "événement Plausible",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "plausible_events": {
+      "title": "événements Plausible",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "plausible_site": {
+      "title": "site Plausible",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "plausible_sites": {
+      "title": "sites Plausible",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "plausible",
+      "name": "Plausible",
+      "title": "Plausible",
+      "iconClass": "fa-solid fa-chart-simple",
+      "iconUrl": "https://cdn.simpleicons.org/plausibleanalytics",
+      "color": "#ecebff",
+      "tags": [
+        "plausible",
+        "analytics",
+        "privacy"
+      ],
+      "categories": [
+        "Analyse"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Plausible",
+        "displayTitle": false,
+        "displayDescription": false,
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "Clé API Plausible (Stats/Sites API).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base API",
+            "description": "URL de base Plausible.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://plausible.io"
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "plausible_stats_query",
+      "name": "plausibleStatsQuery",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête Stats API v2",
+      "subtitle": "statistiques",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "stats",
+        "query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action query sur statistique.",
+      "args": {
+        "title": "Exécuter une requête Stats API v2",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "metrics",
+            "label": "Métriques",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "dimensions",
+            "label": "Dimensions",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "filters",
+            "label": "Filtres",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "date_range",
+            "label": "Plage de dates",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "include",
+            "label": "Options include",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "order_by",
+            "label": "Tri",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "statistiques"
+    },
+    {
+      "key": "plausible_stats_realtime_visitors",
+      "name": "plausibleStatsRealtimeVisitors",
+      "schemaVersion": 2,
+      "title": "Récupérer les visiteurs en temps réel",
+      "subtitle": "statistiques",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "stats",
+        "realtime_visitors"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action realtime_visitors sur statistique.",
+      "args": {
+        "title": "Récupérer les visiteurs en temps réel",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "statistiques"
+    },
+    {
+      "key": "plausible_stats_aggregate",
+      "name": "plausibleStatsAggregate",
+      "schemaVersion": 2,
+      "title": "Récupérer les agrégats",
+      "subtitle": "statistiques",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "stats",
+        "aggregate"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action aggregate sur statistique.",
+      "args": {
+        "title": "Récupérer les agrégats",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "period",
+            "label": "Période",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "30d"
+          },
+          {
+            "type": "text",
+            "key": "date",
+            "label": "Date",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "metrics",
+            "label": "Métriques CSV",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "filters",
+            "label": "Filtres",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "statistiques"
+    },
+    {
+      "key": "plausible_stats_timeseries",
+      "name": "plausibleStatsTimeseries",
+      "schemaVersion": 2,
+      "title": "Récupérer la série temporelle",
+      "subtitle": "statistiques",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "stats",
+        "timeseries"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action timeseries sur statistique.",
+      "args": {
+        "title": "Récupérer la série temporelle",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "period",
+            "label": "Période",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "30d"
+          },
+          {
+            "type": "text",
+            "key": "date",
+            "label": "Date",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "metrics",
+            "label": "Métriques CSV",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "filters",
+            "label": "Filtres",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "statistiques"
+    },
+    {
+      "key": "plausible_stats_breakdown",
+      "name": "plausibleStatsBreakdown",
+      "schemaVersion": 2,
+      "title": "Récupérer un breakdown",
+      "subtitle": "statistiques",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "stats",
+        "breakdown"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action breakdown sur statistique.",
+      "args": {
+        "title": "Récupérer un breakdown",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "property",
+            "label": "Propriété",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "period",
+            "label": "Période",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "30d"
+          },
+          {
+            "type": "text",
+            "key": "date",
+            "label": "Date",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "metrics",
+            "label": "Métriques CSV",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "filters",
+            "label": "Filtres",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "statistiques"
+    },
+    {
+      "key": "plausible_event_track",
+      "name": "plausibleEventTrack",
+      "schemaVersion": 2,
+      "title": "Envoyer un événement",
+      "subtitle": "événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "event",
+        "track"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action track sur événement.",
+      "args": {
+        "title": "Envoyer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom événement",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "referrer",
+            "label": "Referrer",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "props",
+            "label": "Propriétés",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "revenue",
+            "label": "Revenu",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "interactive",
+            "label": "Interactif",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_agent",
+            "label": "User-Agent",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "x_forwarded_for",
+            "label": "X-Forwarded-For",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "événements"
+    },
+    {
+      "key": "plausible_event_health",
+      "name": "plausibleEventHealth",
+      "schemaVersion": 2,
+      "title": "Vérifier la santé API",
+      "subtitle": "événements",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "event",
+        "health"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action health sur événement.",
+      "args": {
+        "title": "Vérifier la santé API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "événements"
+    },
+    {
+      "key": "plausible_site_list",
+      "name": "plausibleSiteList",
+      "schemaVersion": 2,
+      "title": "Lister les sites",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list sur site.",
+      "args": {
+        "title": "Lister les sites",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Taille de page",
+            "description": "Nombre max par page.",
+            "col": {
+              "xs": 24
+            },
+            "default": 50
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Numéro de page.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_get",
+      "name": "plausibleSiteGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un site",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "get"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action get sur site.",
+      "args": {
+        "title": "Récupérer un site",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site Id",
+            "description": "Valeur de chemin site_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_create",
+      "name": "plausibleSiteCreate",
+      "schemaVersion": 2,
+      "title": "Créer un site",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action create sur site.",
+      "args": {
+        "title": "Créer un site",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_update",
+      "name": "plausibleSiteUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un site",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action update sur site.",
+      "args": {
+        "title": "Mettre à jour un site",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site Id",
+            "description": "Valeur de chemin site_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_delete",
+      "name": "plausibleSiteDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un site",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete sur site.",
+      "args": {
+        "title": "Supprimer un site",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site Id",
+            "description": "Valeur de chemin site_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_list_teams",
+      "name": "plausibleSiteListTeams",
+      "schemaVersion": 2,
+      "title": "Lister les équipes",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "list_teams"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list_teams sur site.",
+      "args": {
+        "title": "Lister les équipes",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_upsert_shared_link",
+      "name": "plausibleSiteUpsertSharedLink",
+      "schemaVersion": 2,
+      "title": "Créer ou trouver un lien partagé",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "upsert_shared_link"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action upsert_shared_link sur site.",
+      "args": {
+        "title": "Créer ou trouver un lien partagé",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_list_goals",
+      "name": "plausibleSiteListGoals",
+      "schemaVersion": 2,
+      "title": "Lister les objectifs",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "list_goals"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list_goals sur site.",
+      "args": {
+        "title": "Lister les objectifs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_upsert_goal",
+      "name": "plausibleSiteUpsertGoal",
+      "schemaVersion": 2,
+      "title": "Créer ou trouver un objectif",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "upsert_goal"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action upsert_goal sur site.",
+      "args": {
+        "title": "Créer ou trouver un objectif",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_delete_goal",
+      "name": "plausibleSiteDeleteGoal",
+      "schemaVersion": 2,
+      "title": "Supprimer un objectif",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "delete_goal"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete_goal sur site.",
+      "args": {
+        "title": "Supprimer un objectif",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "goal_id",
+            "label": "Goal Id",
+            "description": "Valeur de chemin goal_id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_list_custom_props",
+      "name": "plausibleSiteListCustomProps",
+      "schemaVersion": 2,
+      "title": "Lister les propriétés custom",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "list_custom_props"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list_custom_props sur site.",
+      "args": {
+        "title": "Lister les propriétés custom",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_upsert_custom_prop",
+      "name": "plausibleSiteUpsertCustomProp",
+      "schemaVersion": 2,
+      "title": "Créer une propriété custom",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "upsert_custom_prop"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action upsert_custom_prop sur site.",
+      "args": {
+        "title": "Créer une propriété custom",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_delete_custom_prop",
+      "name": "plausibleSiteDeleteCustomProp",
+      "schemaVersion": 2,
+      "title": "Supprimer une propriété custom",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "delete_custom_prop"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete_custom_prop sur site.",
+      "args": {
+        "title": "Supprimer une propriété custom",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "property",
+            "label": "Property",
+            "description": "Valeur de chemin property.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_list_guests",
+      "name": "plausibleSiteListGuests",
+      "schemaVersion": 2,
+      "title": "Lister les invités",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "list_guests"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list_guests sur site.",
+      "args": {
+        "title": "Lister les invités",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_upsert_guest",
+      "name": "plausibleSiteUpsertGuest",
+      "schemaVersion": 2,
+      "title": "Inviter ou mettre à jour un invité",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "upsert_guest"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action upsert_guest sur site.",
+      "args": {
+        "title": "Inviter ou mettre à jour un invité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Payload",
+            "description": "Corps JSON de la requête.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_site_delete_guest",
+      "name": "plausibleSiteDeleteGuest",
+      "schemaVersion": 2,
+      "title": "Supprimer un invité",
+      "subtitle": "sites",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "site",
+        "delete_guest"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete_guest sur site.",
+      "args": {
+        "title": "Supprimer un invité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Valeur de chemin email.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "sites"
+    },
+    {
+      "key": "plausible_api_request",
+      "name": "plausibleApiRequest",
+      "schemaVersion": 2,
+      "title": "Appeler un endpoint API",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Plausible",
+      "providerKey": "plausible",
+      "tags": [
+        "plausible",
+        "api",
+        "request"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:plausible_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appeler un endpoint API.",
+      "args": {
+        "title": "Appeler un endpoint API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "description": "GET, POST, PUT, PATCH, DELETE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "GET",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin endpoint",
+            "description": "Ex: /v2/users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query params",
+            "description": "Objet JSON des query params.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "En-têtes",
+            "description": "Objet JSON d’en-têtes HTTP.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body_text",
+            "label": "Body texte",
+            "description": "Corps brut (prioritaire sur body).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilitaires API"
+    }
+  ]
+}

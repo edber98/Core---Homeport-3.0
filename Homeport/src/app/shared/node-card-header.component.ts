@@ -30,11 +30,11 @@ import { AppProvider } from '../services/catalog.service';
     </div>
   `,
   styles: [`
-    .node-header { display:flex; align-items:center; gap:10px; }
+    .node-header { display:flex; align-items:center; gap:10px; min-width: 0; width: 100%; overflow: hidden; }
     .leading { flex: 0 0 auto; display:flex; align-items:center; }
     .meta { min-width:0; flex: 1 1 auto; }
-    .title { font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .subtitle { color:#8c8c8c; font-size:12px; display:flex; align-items:center; gap:6px; }
+    .title { font-weight: 600; letter-spacing: -0.01em; min-width: 0; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .subtitle { color:#8c8c8c; font-size:12px; display:flex; align-items:center; gap:6px; min-width: 0; overflow: hidden; }
     .type-badge { font-size:12px; color:#6b7280; }
     .group-badge-img { width:12px; height:12px; object-fit:contain; display:inline-block; }
     .app-icon { width:28px; height:28px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; }
@@ -73,11 +73,20 @@ export class NodeCardHeaderComponent {
     try {
       const { r, g, b: bb } = this.hexToRgb(b);
       const yiq = (r * 299 + g * 587 + bb * 114) / 1000;
-      return yiq >= 140 ? '#111' : '#fff';
-    } catch { return '#111'; }
+      // 6-char hex (cdn.simpleicons.org refuse les 3-char shorthand → 404).
+      return yiq >= 140 ? '#111111' : '#ffffff';
+    } catch { return '#111111'; }
   }
+  // Providers internes Kinn (pas d'icône sur simpleicons.org) → skip pour
+  // éviter le spam 404 dans la console.
+  private static readonly INTERNAL_PROVIDERS = new Set([
+    'events', 'logic', 'http', 'kinn', 'core', 'cron',
+  ]);
   simpleIconUrlWithColor(id: string, color?: string) {
-    const hex = (color || '#111').replace('#','');
+    if (!id || NodeCardHeaderComponent.INTERNAL_PROVIDERS.has(id.toLowerCase())) return '';
+    // Normalise la couleur : strip '#', expand 3-char → 6-char.
+    let hex = (color || '#111111').replace('#','');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
     return `https://cdn.simpleicons.org/${encodeURIComponent(id)}/${hex}`;
   }
   private hexToRgb(hex: string): { r: number; g: number; b: number } {

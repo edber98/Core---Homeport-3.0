@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kinn connector name fixer"
+  short_description: "Relit exhaustivement chaque noeud d un connecteur et reecrit titres et descriptions en francais clair."
+  default_prompt: "corrige tous les titres et descriptions du connecteur notion, noeud par noeud"

@@ -37,4 +37,20 @@ async function asanaRequest(opts, path, options = {}) {
   return { ok: true, data };
 }
 
-module.exports = { utils: { asanaRequest } };
+function mapTask(r, fallbackProject) {
+  const task = r || {};
+  const projects = Array.isArray(task.projects) ? task.projects : [];
+  return {
+    gid: task.gid || "",
+    name: task.name || "",
+    notes: task.notes || "",
+    assignee: task.assignee ? task.assignee.name || task.assignee.gid || "" : "",
+    completed: String(task.completed || false),
+    due_on: task.due_on || "",
+    project: fallbackProject || (projects[0] ? projects[0].name || projects[0].gid || "" : ""),
+    created_at: task.created_at || "",
+    modified_at: task.modified_at || ""
+  };
+}
+
+module.exports = { utils: { asanaRequest, mapTask } };

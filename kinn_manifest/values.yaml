@@ -98,6 +98,22 @@ kinn:
     # Format : "zitadelRole:kinnRole,...". "*:role" = fallback.
     # Ex : "superadmin:admin,poweruser:editor,readonly:viewer,*:viewer"
     sso_role_map: ""
+    # ── OAuth Bouncer (concentrateur auth.kinn.fr, injecté par Kinn-panel) ──
+    # Clé HS256 PARTAGÉE avec le panel + toute la flotte. DOIT être identique
+    # partout (sinon le panel ne peut pas vérifier les state JWT de l'instance).
+    kinn_oauth_relay_secret: ""
+    kinn_oauth_concentrator_url: "https://auth.kinn.fr"
+    # Identifiants OAuth par vendor. Résolus côté panel : DB OAuthProvider > env.
+    # Une seule app enregistrée par vendor (redirect = auth.kinn.fr/oauth/<vendor>/callback).
+    google_oauth_client_id: ""
+    google_oauth_client_secret: ""
+    microsoft_oauth_client_id: ""
+    microsoft_oauth_client_secret: ""
+    meta_oauth_client_id: ""
+    meta_oauth_client_secret: ""
+    # TikTok utilise client_key (et non client_id).
+    tiktok_oauth_client_key: ""
+    tiktok_oauth_client_secret: ""
   kinnHomeport:
     replicaCount: 1
     port: 80

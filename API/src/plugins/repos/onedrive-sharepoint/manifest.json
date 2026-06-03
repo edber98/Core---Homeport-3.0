@@ -20,7 +20,7 @@
       ],
       "hasCredentials": true,
       "credentialsForm": {
-        "title": "OAuth Microsoft Graph",
+        "title": "Connexion Microsoft",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -28,27 +28,32 @@
         "fields": [
           {
             "type": "text",
-            "key": "tenantId",
-            "label": "ID du tenant",
-            "description": "ID du tenant Microsoft.",
+            "key": "accountEmail",
+            "label": "Compte connecté",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "scope",
+            "label": "Périmètres accordés",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "text",
-            "key": "clientId",
-            "label": "ID client",
-            "description": "Client ID OAuth.",
+            "key": "connectedAt",
+            "label": "Connecté le",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "text",
-            "key": "clientSecret",
-            "label": "Secret client",
-            "description": "Client secret OAuth.",
+            "key": "refreshToken",
+            "label": "Jeton de rafraîchissement",
             "col": {
               "xs": 24
             },
@@ -57,6 +62,41 @@
         ],
         "displayTitle": false,
         "displayDescription": false
+      },
+      "auth": {
+        "type": "oauth2",
+        "oauth2": {
+          "useBouncer": true,
+          "vendor": "microsoft",
+          "authorizeUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+          "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+          "userinfoUrl": "https://graph.microsoft.com/v1.0/me",
+          "clientIdEnv": "MICROSOFT_OAUTH_CLIENT_ID",
+          "clientSecretEnv": "MICROSOFT_OAUTH_CLIENT_SECRET",
+          "scopes": [
+            "openid",
+            "email",
+            "profile",
+            "offline_access",
+            "User.Read",
+            "Files.ReadWrite.All",
+            "Sites.ReadWrite.All"
+          ],
+          "authorizationParams": {
+            "prompt": "consent"
+          },
+          "fieldMap": {
+            "refreshToken": "token.refresh_token",
+            "accountEmail": [
+              "userinfo.mail",
+              "userinfo.userPrincipalName"
+            ],
+            "accountName": "userinfo.displayName",
+            "scope": "token.scope",
+            "tokenType": "token.token_type"
+          },
+          "requireRefreshToken": true
+        }
       }
     },
     {
@@ -72,7 +112,86 @@
       "categories": [
         "Docs & Drive"
       ],
-      "hasCredentials": true
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Connexion Microsoft",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "accountEmail",
+            "label": "Compte connecté",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "scope",
+            "label": "Périmètres accordés",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "connectedAt",
+            "label": "Connecté le",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "refreshToken",
+            "label": "Jeton de rafraîchissement",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "auth": {
+        "type": "oauth2",
+        "oauth2": {
+          "useBouncer": true,
+          "vendor": "microsoft",
+          "authorizeUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+          "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+          "userinfoUrl": "https://graph.microsoft.com/v1.0/me",
+          "clientIdEnv": "MICROSOFT_OAUTH_CLIENT_ID",
+          "clientSecretEnv": "MICROSOFT_OAUTH_CLIENT_SECRET",
+          "scopes": [
+            "openid",
+            "email",
+            "profile",
+            "offline_access",
+            "User.Read",
+            "Sites.ReadWrite.All",
+            "Files.ReadWrite.All"
+          ],
+          "authorizationParams": {
+            "prompt": "consent"
+          },
+          "fieldMap": {
+            "refreshToken": "token.refresh_token",
+            "accountEmail": [
+              "userinfo.mail",
+              "userinfo.userPrincipalName"
+            ],
+            "accountName": "userinfo.displayName",
+            "scope": "token.scope",
+            "tokenType": "token.token_type"
+          },
+          "requireRefreshToken": true
+        }
+      }
     }
   ],
   "variables": {
@@ -173,6 +292,42 @@
           }
         }
       ]
+    },
+    "sharepoint_link": {
+      "title": "Lien SharePoint",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "url",
+          "key": "link",
+          "label": "Lien",
+          "description": "URL de partage.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "itemId",
+          "label": "Élément",
+          "description": "Identifiant de l'élément partagé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "type",
+          "label": "Type",
+          "description": "Type de lien créé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
     }
   },
   "nodeTemplates": [
@@ -201,7 +356,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:onedrive_file"
         }
       ],
       "description": "Téléverser un fichier vers OneDrive",
@@ -281,7 +437,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
         }
       ],
       "description": "Téléverser un fichier dans une bibliothèque SharePoint",
@@ -374,7 +531,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:sharepoint_link"
         }
       ],
       "description": "Créer un lien partageable avec permissions",
@@ -435,6 +593,379 @@
         "SharePoint"
       ],
       "risk": "write"
+    },
+    {
+      "key": "sharepoint_list_sites",
+      "name": "sharepointListSites",
+      "schemaVersion": 2,
+      "title": "Lister les sites SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Lister les sites SharePoint",
+      "args": {
+        "title": "Lister les sites SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "sharepoint_list_drives",
+      "name": "sharepointListDrives",
+      "schemaVersion": 2,
+      "title": "Lister les bibliothèques SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Lister les bibliothèques SharePoint",
+      "args": {
+        "title": "Lister les bibliothèques SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "ID du site",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "sharepoint_list_items",
+      "name": "sharepointListItems",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Lister les fichiers SharePoint",
+      "args": {
+        "title": "Lister les fichiers SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "ID du site",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "driveId",
+            "label": "ID du drive",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "folderPath",
+            "label": "Chemin dossier",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "sharepoint_download_file",
+      "name": "sharepointDownloadFile",
+      "schemaVersion": 2,
+      "title": "Télécharger un fichier SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Télécharger un fichier SharePoint",
+      "args": {
+        "title": "Télécharger un fichier SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "ID du site",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "driveId",
+            "label": "ID du drive",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "ID de l'item",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "sharepoint_delete_file",
+      "name": "sharepointDeleteFile",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier SharePoint",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "SharePoint",
+      "providerKey": "sharePoint",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "payload",
+          "accepts": [
+            "payload",
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:sharepoint_file"
+        }
+      ],
+      "description": "Supprimer un fichier SharePoint",
+      "args": {
+        "title": "Supprimer un fichier SharePoint",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "siteId",
+            "label": "ID du site",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "driveId",
+            "label": "ID du drive",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "itemId",
+            "label": "ID de l'item",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Fichiers",
+      "icon": "fa-solid fa-folder-open",
+      "group": "Fichiers",
+      "tags": [
+        "SharePoint"
+      ],
+      "risk": "destructive"
     }
   ]
 }

@@ -7,6 +7,17 @@ const TOKEN_URL = 'https://zoom.us/oauth/token';
 // In-memory token cache
 let _tokenCache = { token: null, expiresAt: 0 };
 
+async function readJsonResponse(res) {
+  if (res && typeof res.json === 'function') return res.json();
+  const text = res && typeof res.text === 'function' ? await res.text() : '';
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+}
+
 /**
  * Obtain a Server-to-Server OAuth2 access token.
  * Caches the token until it expires (minus 60s buffer).
@@ -38,7 +49,7 @@ async function getAccessToken(credentials) {
     throw new Error(`Zoom OAuth error ${res.status}: ${text}`);
   }
 
-  const data = await res.json();
+  const data = await readJsonResponse(res);
   _tokenCache.token = data.access_token;
   // Expire 60s early to avoid edge cases
   _tokenCache.expiresAt = now + (data.expires_in - 60) * 1000;
@@ -111,7 +122,7 @@ async function zoomApi(method, pathTemplate, inputs, credentials, options = {}) 
   let data;
   const ct = String(res.headers.get('content-type') || '');
   try {
-    if (ct.includes('application/json')) data = await res.json();
+    if (ct.includes('application/json')) data = await readJsonResponse(res);
     else data = await res.text();
   } catch {
     data = await res.text().catch(() => null);
@@ -127,4 +138,4 @@ async function zoomApi(method, pathTemplate, inputs, credentials, options = {}) 
   return { ok: true, status: res.status, data };
 }
 
-module.exports = { utils: { getAccessToken, zoomApi } };
+module.exports = { utils: { getAccessToken, zoomApi, readJsonResponse } };

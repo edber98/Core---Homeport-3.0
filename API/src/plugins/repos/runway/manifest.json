@@ -1,0 +1,900 @@
+{
+  "repo": {
+    "name": "runway",
+    "type": "local",
+    "label": "Runway"
+  },
+  "variables": {
+    "runway_response": {
+      "title": "Réponse Runway",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "data",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "runway_items": {
+      "title": "Runway - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "runway_webhook": {
+      "title": "Webhook Runway",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payload",
+          "label": "Payload",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "runway",
+      "name": "Runway",
+      "title": "Runway",
+      "iconClass": "fa-solid fa-film",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=runwayml.com&sz=128",
+      "color": "#eeeeee",
+      "tags": [
+        "runway",
+        "video",
+        "ia"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Runway",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "secret": true,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "defaultValue": "https://api.dev.runwayml.com",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "runway_text_to_video_create",
+      "name": "runwayTextToVideoCreate",
+      "schemaVersion": 2,
+      "title": "Créer une vidéo depuis un texte",
+      "subtitle": "text_to_video",
+      "icon": "fa-solid fa-wand-magic-sparkles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runway",
+      "providerKey": "runway",
+      "tags": [
+        "runway",
+        "text_to_video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:runway_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une vidéo depuis un texte",
+      "args": {
+        "title": "Créer une vidéo depuis un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "promptText",
+            "label": "Prompt",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gen4.5",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ratio",
+            "label": "Ratio",
+            "default": "1280:720",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée",
+            "default": 5,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
+    },
+    {
+      "key": "runway_image_to_video_create",
+      "name": "runwayImageToVideoCreate",
+      "schemaVersion": 2,
+      "title": "Créer une vidéo depuis une image",
+      "subtitle": "image_to_video",
+      "icon": "fa-solid fa-image",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runway",
+      "providerKey": "runway",
+      "tags": [
+        "runway",
+        "image_to_video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:runway_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une vidéo depuis une image",
+      "args": {
+        "title": "Créer une vidéo depuis une image",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "promptImage",
+            "label": "Image",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "promptText",
+            "label": "Prompt",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gen4.5",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ratio",
+            "label": "Ratio",
+            "default": "1280:720",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée",
+            "default": 5,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
+    },
+    {
+      "key": "runway_video_to_video_create",
+      "name": "runwayVideoToVideoCreate",
+      "schemaVersion": 2,
+      "title": "Créer une vidéo depuis une vidéo",
+      "subtitle": "video_to_video",
+      "icon": "fa-solid fa-film",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runway",
+      "providerKey": "runway",
+      "tags": [
+        "runway",
+        "video_to_video"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:runway_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une vidéo depuis une vidéo",
+      "args": {
+        "title": "Créer une vidéo depuis une vidéo",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "url",
+            "key": "videoUri",
+            "label": "Vidéo source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "promptText",
+            "label": "Prompt",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "strength",
+            "label": "Force",
+            "default": 0.7,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
+    },
+    {
+      "key": "runway_avatar_create",
+      "name": "runwayAvatarCreate",
+      "schemaVersion": 2,
+      "title": "Créer une vidéo avatar",
+      "subtitle": "avatar",
+      "icon": "fa-solid fa-user",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runway",
+      "providerKey": "runway",
+      "tags": [
+        "runway",
+        "avatar"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:runway_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer une vidéo avatar",
+      "args": {
+        "title": "Créer une vidéo avatar",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "scriptText",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "url",
+            "key": "audioUri",
+            "label": "Audio",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "avatarId",
+            "label": "ID avatar",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
+    },
+    {
+      "key": "runway_task_get",
+      "name": "runwayTaskGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une tâche",
+      "subtitle": "task",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runway",
+      "providerKey": "runway",
+      "tags": [
+        "runway",
+        "task"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:runway_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer une tâche",
+      "args": {
+        "title": "Récupérer une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "ID tâche",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tâches"
+    },
+    {
+      "key": "runway_tasks_list",
+      "name": "runwayTasksList",
+      "schemaVersion": 2,
+      "title": "Lister les tâches",
+      "subtitle": "tasks",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runway",
+      "providerKey": "runway",
+      "tags": [
+        "runway",
+        "tasks"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:runway_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les tâches",
+      "args": {
+        "title": "Lister les tâches",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "default": 50,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "after",
+            "label": "Curseur",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tâches"
+    },
+    {
+      "key": "runway_task_cancel",
+      "name": "runwayTaskCancel",
+      "schemaVersion": 2,
+      "title": "Annuler une tâche",
+      "subtitle": "task",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runway",
+      "providerKey": "runway",
+      "tags": [
+        "runway",
+        "task"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:runway_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annuler une tâche",
+      "args": {
+        "title": "Annuler une tâche",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "ID tâche",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tâches"
+    },
+    {
+      "key": "runway_organization_get",
+      "name": "runwayOrganizationGet",
+      "schemaVersion": 2,
+      "title": "Récupérer l'organisation",
+      "subtitle": "organization",
+      "icon": "fa-solid fa-building",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Runway",
+      "providerKey": "runway",
+      "tags": [
+        "runway",
+        "organization"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:runway_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer l'organisation",
+      "args": {
+        "title": "Récupérer l'organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Compte"
+    },
+    {
+      "key": "runway_webhook_event",
+      "name": "runwayWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Webhook",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Runway",
+      "providerKey": "runway",
+      "tags": [
+        "runway"
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:runway_webhook"
+        }
+      ],
+      "description": "Reçoit un événement Runway.",
+      "group": "Webhook"
+    }
+  ]
+}

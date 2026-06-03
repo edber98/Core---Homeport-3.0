@@ -219,6 +219,58 @@
         }
       ]
     },
+    "mistral_classification": {
+      "title": "Classification Mistral",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Catégories",
+          "description": "Catégories classées par le modèle.",
+          "mode": "array",
+          "key": "categories",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "category",
+              "label": "Catégorie",
+              "description": "Nom de la catégorie.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "confidence",
+              "label": "Confiance",
+              "description": "Score de confiance.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "explanation",
+              "label": "Explication",
+              "description": "Justification du classement.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
     "llm_text": {
       "title": "Réponse (texte)",
       "ui": {
@@ -975,6 +1027,14 @@
       "nodeKind": "function",
       "category": "AI",
       "providerKey": "mistral",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mistral_classification"
+        }
+      ],
       "output_array_field": "categories",
       "outputSchema": [
         {
@@ -1168,7 +1228,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:mistral_result"
         }
       ],
       "description": "Extraire des données structurées d'un contenu via Mistral",
@@ -1411,6 +1472,440 @@
       ],
       "risk": "safe",
       "riskReason": "Appel LLM lecture (coût tokens)"
+    },
+    {
+      "key": "mistral_create_fim_completion",
+      "name": "mistralCreateFimCompletion",
+      "schemaVersion": 2,
+      "title": "Complétion FIM",
+      "subtitle": "Code",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mistral AI",
+      "providerKey": "mistral",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mistral_completion"
+        }
+      ],
+      "description": "Génère une complétion Fill-In-The-Middle.",
+      "args": {
+        "title": "Complétion FIM",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "codestral-latest",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt prefix",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "suffix",
+            "label": "Suffix",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Temperature",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Max tokens",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Code"
+    },
+    {
+      "key": "mistral_moderate",
+      "name": "mistralModerate",
+      "schemaVersion": 2,
+      "title": "Modérer un texte",
+      "subtitle": "Safety",
+      "icon": "fa-solid fa-shield-halved",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mistral AI",
+      "providerKey": "mistral",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mistral_completion"
+        }
+      ],
+      "description": "Exécute la modération Mistral.",
+      "args": {
+        "title": "Modérer un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "mistral-moderation-latest",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "input",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Safety"
+    },
+    {
+      "key": "mistral_files_list",
+      "name": "mistralFilesList",
+      "schemaVersion": 2,
+      "title": "Lister les fichiers",
+      "subtitle": "Files",
+      "icon": "fa-solid fa-folder-open",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mistral AI",
+      "providerKey": "mistral",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mistral_result"
+        }
+      ],
+      "description": "Liste les fichiers Mistral.",
+      "args": {
+        "title": "Lister les fichiers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Page size",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "purpose",
+            "label": "Purpose",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Files"
+    },
+    {
+      "key": "mistral_file_get",
+      "name": "mistralFileGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un fichier",
+      "subtitle": "Files",
+      "icon": "fa-solid fa-file",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mistral AI",
+      "providerKey": "mistral",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mistral_result"
+        }
+      ],
+      "description": "Récupère le détail d un fichier Mistral.",
+      "args": {
+        "title": "Récupérer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "File ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Files"
+    },
+    {
+      "key": "mistral_file_upload",
+      "name": "mistralFileUpload",
+      "schemaVersion": 2,
+      "title": "Uploader un fichier",
+      "subtitle": "Files",
+      "icon": "fa-solid fa-upload",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mistral AI",
+      "providerKey": "mistral",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mistral_result"
+        }
+      ],
+      "description": "Upload un fichier (base64) pour OCR/processing.",
+      "args": {
+        "title": "Uploader un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileName",
+            "label": "Nom fichier",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "fileBase64",
+            "label": "Fichier base64",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "mimeType",
+            "label": "Mime type",
+            "default": "application/octet-stream",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "purpose",
+            "label": "Purpose",
+            "default": "ocr",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Files"
+    },
+    {
+      "key": "mistral_file_delete",
+      "name": "mistralFileDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un fichier",
+      "subtitle": "Files",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mistral AI",
+      "providerKey": "mistral",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mistral_result"
+        }
+      ],
+      "description": "Supprime un fichier Mistral.",
+      "args": {
+        "title": "Supprimer un fichier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "File ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Files"
+    },
+    {
+      "key": "mistral_ocr_process",
+      "name": "mistralOcrProcess",
+      "schemaVersion": 2,
+      "title": "OCR document",
+      "subtitle": "Vision",
+      "icon": "fa-solid fa-file-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Mistral AI",
+      "providerKey": "mistral",
+      "authorize_catch_error": true,
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:mistral_result"
+        }
+      ],
+      "description": "Exécute l OCR Mistral sur image URL ou fichier uploadé.",
+      "args": {
+        "title": "OCR document",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "mistral-ocr-latest",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "imageUrl",
+            "label": "Image URL",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "fileId",
+            "label": "File ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "includeImageBase64",
+            "label": "Inclure image base64",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Vision"
     }
   ]
 }

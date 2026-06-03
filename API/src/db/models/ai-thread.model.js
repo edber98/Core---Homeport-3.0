@@ -31,6 +31,24 @@ const AiThreadSchema = new Schema({
   //   - typingLock: { userId, acquiredAt, ttl }
   //   - formId, flowShortId, formShortId, graph, schema, branch, autonomyLevel, etc.
   metadata: { type: Schema.Types.Mixed },
+  // Compteur monotone des events SSE émis sur ce thread. Incrémenté atomiquement
+  // par emitThreadEvent (cf. jobs/job-events.js). Permet au frontend d'utiliser
+  // Last-Event-ID pour replay les events manqués au reconnect (cf. AiThreadEvent).
+  eventSeq: { type: Number, default: 0 },
+  // Mailbox au niveau THREAD : messages envoyés par l'user pendant que l'agent
+  // travaille (POST /threads/:id/mailbox). Drainés au début du prochain tour LLM
+  // du harness (qu'il y ait un AiJob ou pas — le main agent POST /messages tourne
+  // sans AiJob). Cf. harness/mailbox.js.
+  pendingMessages: {
+    type: [{
+      from: { type: String, default: 'user' },
+      fromName: { type: String },
+      message: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+      delivered: { type: Boolean, default: false },
+    }],
+    default: [],
+  },
 }, { timestamps: true });
 
 AiThreadSchema.pre('save', function (next) {

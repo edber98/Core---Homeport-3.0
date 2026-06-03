@@ -1,0 +1,1375 @@
+{
+  "repo": {
+    "name": "qonto",
+    "type": "local",
+    "label": "Qonto"
+  },
+  "variables": {
+    "qonto_response": {
+      "title": "Réponse Qonto",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "data",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qonto_items": {
+      "title": "Qonto - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "qonto_webhook": {
+      "title": "Webhook Qonto",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payload",
+          "label": "Payload",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "qonto",
+      "name": "Qonto",
+      "title": "Qonto",
+      "iconClass": "fa-solid fa-building-columns",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=qonto.com&sz=128",
+      "color": "#e5ddff",
+      "tags": [
+        "qonto",
+        "banque"
+      ],
+      "categories": [
+        "Finance"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Qonto",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "login",
+            "label": "Login",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "secretKey",
+            "label": "Clé secrète",
+            "secret": true,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "defaultValue": "https://thirdparty.qonto.com/v2",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "qonto_organization_get",
+      "name": "qontoOrganizationGet",
+      "schemaVersion": 2,
+      "title": "Récupérer l'organisation",
+      "subtitle": "organization",
+      "icon": "fa-solid fa-building",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "organization"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer l'organisation",
+      "args": {
+        "title": "Récupérer l'organisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Organisation"
+    },
+    {
+      "key": "qonto_bank_accounts_list",
+      "name": "qontoBankAccountsList",
+      "schemaVersion": 2,
+      "title": "Lister les comptes bancaires",
+      "subtitle": "bank_accounts",
+      "icon": "fa-solid fa-building-columns",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "bank_accounts"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les comptes bancaires",
+      "args": {
+        "title": "Lister les comptes bancaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Comptes"
+    },
+    {
+      "key": "qonto_transactions_list",
+      "name": "qontoTransactionsList",
+      "schemaVersion": 2,
+      "title": "Lister les transactions",
+      "subtitle": "transactions",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "transactions"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les transactions",
+      "args": {
+        "title": "Lister les transactions",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug organisation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "iban",
+            "label": "IBAN",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "updated_at_from",
+            "label": "Depuis",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "updated_at_to",
+            "label": "Jusqu'à",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "current_page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transactions"
+    },
+    {
+      "key": "qonto_transaction_get",
+      "name": "qontoTransactionGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une transaction",
+      "subtitle": "transaction",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "transaction"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer une transaction",
+      "args": {
+        "title": "Récupérer une transaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transactionId",
+            "label": "ID transaction",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transactions"
+    },
+    {
+      "key": "qonto_transaction_attachment_upload",
+      "name": "qontoTransactionAttachmentUpload",
+      "schemaVersion": 2,
+      "title": "Ajouter une pièce jointe",
+      "subtitle": "transaction",
+      "icon": "fa-solid fa-paperclip",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "transaction"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajouter une pièce jointe",
+      "args": {
+        "title": "Ajouter une pièce jointe",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transactionId",
+            "label": "ID transaction",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "url",
+            "key": "fileUrl",
+            "label": "URL fichier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "fileName",
+            "label": "Nom fichier",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Pièces jointes"
+    },
+    {
+      "key": "qonto_sepa_transfer_create",
+      "name": "qontoSepaTransferCreate",
+      "schemaVersion": 2,
+      "title": "Créer un virement SEPA",
+      "subtitle": "sepa_transfer",
+      "icon": "fa-solid fa-money-bill-transfer",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "sepa_transfer"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un virement SEPA",
+      "args": {
+        "title": "Créer un virement SEPA",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug organisation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "iban",
+            "label": "IBAN compte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "beneficiary_id",
+            "label": "ID bénéficiaire",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "default": "EUR",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Virements"
+    },
+    {
+      "key": "qonto_beneficiaries_list",
+      "name": "qontoBeneficiariesList",
+      "schemaVersion": 2,
+      "title": "Lister les bénéficiaires",
+      "subtitle": "beneficiaries",
+      "icon": "fa-solid fa-users",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "beneficiaries"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les bénéficiaires",
+      "args": {
+        "title": "Lister les bénéficiaires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug organisation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "current_page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bénéficiaires"
+    },
+    {
+      "key": "qonto_beneficiary_create",
+      "name": "qontoBeneficiaryCreate",
+      "schemaVersion": 2,
+      "title": "Créer un bénéficiaire",
+      "subtitle": "beneficiary",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "beneficiary"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un bénéficiaire",
+      "args": {
+        "title": "Créer un bénéficiaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "iban",
+            "label": "IBAN",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "bic",
+            "label": "BIC",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bénéficiaires"
+    },
+    {
+      "key": "qonto_memberships_list",
+      "name": "qontoMembershipsList",
+      "schemaVersion": 2,
+      "title": "Lister les membres",
+      "subtitle": "memberships",
+      "icon": "fa-solid fa-user-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "memberships"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les membres",
+      "args": {
+        "title": "Lister les membres",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug organisation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "current_page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Membres"
+    },
+    {
+      "key": "qonto_labels_list",
+      "name": "qontoLabelsList",
+      "schemaVersion": 2,
+      "title": "Lister les labels",
+      "subtitle": "labels",
+      "icon": "fa-solid fa-tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "labels"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les labels",
+      "args": {
+        "title": "Lister les labels",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug organisation",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Labels"
+    },
+    {
+      "key": "qonto_client_create",
+      "name": "qontoClientCreate",
+      "schemaVersion": 2,
+      "title": "Créer un client",
+      "subtitle": "client",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "client"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer un client",
+      "args": {
+        "title": "Créer un client",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "vat_number",
+            "label": "TVA",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "payload",
+            "label": "Payload JSON",
+            "description": "Données avancées à envoyer à l'API.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Clients"
+    },
+    {
+      "key": "qonto_invoices_list",
+      "name": "qontoInvoicesList",
+      "schemaVersion": 2,
+      "title": "Lister les factures",
+      "subtitle": "invoices",
+      "icon": "fa-solid fa-file-invoice",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "invoices"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les factures",
+      "args": {
+        "title": "Lister les factures",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug organisation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "current_page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures"
+    },
+    {
+      "key": "qonto_webhook_event",
+      "name": "qontoWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Webhook",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto"
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_webhook"
+        }
+      ],
+      "description": "Reçoit un événement Qonto.",
+      "group": "Webhook"
+    },
+    {
+      "key": "qonto_sepa_transfers_list",
+      "name": "qontoSepaTransfersList",
+      "schemaVersion": 2,
+      "title": "Lister les virements SEPA",
+      "subtitle": "sepa_transfers",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "transactions"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les virements SEPA",
+      "args": {
+        "title": "Lister les virements SEPA",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Slug organisation",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "current_page",
+            "label": "Page",
+            "default": 1,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "per_page",
+            "label": "Taille page",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Virements"
+    },
+    {
+      "key": "qonto_sepa_transfer_get",
+      "name": "qontoSepaTransferGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un virement SEPA",
+      "subtitle": "sepa_transfer",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Qonto",
+      "providerKey": "qonto",
+      "tags": [
+        "qonto",
+        "transaction"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:qonto_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un virement SEPA",
+      "args": {
+        "title": "Récupérer un virement SEPA",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transferId",
+            "label": "ID virement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Virements"
+    }
+  ]
+}

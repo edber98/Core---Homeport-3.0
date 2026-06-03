@@ -1,0 +1,1998 @@
+{
+  "repo": {
+    "name": "adyen",
+    "type": "local",
+    "label": "Adyen"
+  },
+  "variables": {
+    "adyen_payment_link": {
+      "title": "Lien de paiement Adyen",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "reference",
+          "label": "Référence",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "date",
+          "key": "expiresAt",
+          "label": "Expiration",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "reusable",
+          "label": "Réutilisable",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "merchantAccount",
+          "label": "Compte marchand",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "adyen_payment_methods": {
+      "title": "Moyens de paiement Adyen",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "paymentMethods",
+          "label": "Moyens de paiement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "storedPaymentMethods",
+          "label": "Moyens enregistrés",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "adyen_session": {
+      "title": "Session Adyen",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "resultCode",
+          "label": "Code résultat",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pspReference",
+          "label": "PSP reference",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "sessionData",
+          "label": "Données de session",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "expiresAt",
+          "label": "Expiration",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "amount",
+          "label": "Montant",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "merchantAccount",
+          "label": "Compte marchand",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "reference",
+          "label": "Référence",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "adyen_payment": {
+      "title": "Paiement Adyen",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "resultCode",
+          "label": "Code résultat",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "pspReference",
+          "label": "PSP reference",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "refusalReason",
+          "label": "Raison du refus",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "merchantReference",
+          "label": "Référence marchand",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "action",
+          "label": "Action",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "amount",
+          "label": "Montant",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "adyen_modification": {
+      "title": "Modification Adyen",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "pspReference",
+          "label": "PSP reference",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "paymentPspReference",
+          "label": "PSP reference du paiement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "reference",
+          "label": "Référence",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "adyen",
+      "name": "Adyen",
+      "title": "Adyen",
+      "iconClass": "fa-solid fa-credit-card",
+      "iconUrl": "https://cdn.simpleicons.org/adyen",
+      "color": "#cef5dd",
+      "tags": [
+        "adyen",
+        "paiement",
+        "checkout"
+      ],
+      "categories": [
+        "Paiement"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Adyen",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API envoyée dans l'en-tête X-API-Key.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "description": "Compte marchand Adyen utilisé par défaut.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "default": "https://checkout-test.adyen.com",
+            "description": "Utiliser l'URL live Adyen appropriée en production.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "apiVersion",
+            "label": "Version Checkout",
+            "default": "v70",
+            "description": "Version de l'API Checkout, par exemple v70.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "adyen_payment_link_create",
+      "name": "adyenPaymentLinkCreate",
+      "schemaVersion": 2,
+      "title": "Créer un lien de paiement",
+      "subtitle": "Payment links",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "paiement",
+        "lien",
+        "checkout"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_payment_link"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un lien Pay by Link Adyen.",
+      "args": {
+        "title": "Créer un lien de paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "value",
+            "label": "Montant mineur",
+            "default": 1000,
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "default": "EUR",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "default": "order-123",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "default": "Commande 123",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "countryCode",
+            "label": "Pays",
+            "default": "FR",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "shopperLocale",
+            "label": "Locale",
+            "default": "fr-FR",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "email",
+            "key": "shopperEmail",
+            "label": "Email client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "shopperReference",
+            "label": "Référence client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "returnUrl",
+            "label": "URL de retour",
+            "default": "https://example.com/return",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "expiresAt",
+            "label": "Expiration",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "reusable",
+            "label": "Réutilisable",
+            "default": false,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "json",
+            "key": "allowedPaymentMethods",
+            "label": "Moyens autorisés",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "extraData",
+            "label": "Données additionnelles",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé d'idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Payment links"
+    },
+    {
+      "key": "adyen_payment_link_get",
+      "name": "adyenPaymentLinkGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un lien de paiement",
+      "subtitle": "Payment links",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "paiement",
+        "lien"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_payment_link"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les détails d'un lien de paiement.",
+      "args": {
+        "title": "Récupérer un lien de paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "linkId",
+            "label": "ID du lien",
+            "default": "PL123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Payment links"
+    },
+    {
+      "key": "adyen_payment_link_expire",
+      "name": "adyenPaymentLinkExpire",
+      "schemaVersion": 2,
+      "title": "Expirer un lien de paiement",
+      "subtitle": "Payment links",
+      "icon": "fa-solid fa-clock",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "paiement",
+        "lien",
+        "expiration"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_payment_link"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Expire immédiatement un lien de paiement.",
+      "args": {
+        "title": "Expirer un lien de paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "linkId",
+            "label": "ID du lien",
+            "default": "PL123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Cle idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Payment links"
+    },
+    {
+      "key": "adyen_payment_methods_list",
+      "name": "adyenPaymentMethodsList",
+      "schemaVersion": 2,
+      "title": "Lister les moyens de paiement",
+      "subtitle": "Checkout",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "paiement",
+        "méthodes"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_payment_methods"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les moyens de paiement disponibles pour une transaction.",
+      "args": {
+        "title": "Lister les moyens de paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "value",
+            "label": "Montant mineur",
+            "default": 1000,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "default": "EUR",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "countryCode",
+            "label": "Pays",
+            "default": "FR",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "shopperLocale",
+            "label": "Locale",
+            "default": "fr-FR",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "shopperReference",
+            "label": "Référence client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "channel",
+            "label": "Canal",
+            "default": "Web",
+            "options": [
+              "Web",
+              "iOS",
+              "Android"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "json",
+            "key": "extraData",
+            "label": "Données additionnelles",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checkout"
+    },
+    {
+      "key": "adyen_session_create",
+      "name": "adyenSessionCreate",
+      "schemaVersion": 2,
+      "title": "Créer une session de paiement",
+      "subtitle": "Checkout",
+      "icon": "fa-solid fa-window-restore",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "paiement",
+        "session",
+        "checkout"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_session"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une session pour Drop-in, Components ou Hosted Checkout.",
+      "args": {
+        "title": "Créer une session de paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "value",
+            "label": "Montant mineur",
+            "default": 1000,
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "default": "EUR",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "default": "order-123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "returnUrl",
+            "label": "URL de retour",
+            "default": "https://example.com/return",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "countryCode",
+            "label": "Pays",
+            "default": "FR",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "shopperLocale",
+            "label": "Locale",
+            "default": "fr-FR",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "email",
+            "key": "shopperEmail",
+            "label": "Email client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "shopperReference",
+            "label": "Référence client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "channel",
+            "label": "Canal",
+            "default": "Web",
+            "options": [
+              "Web",
+              "iOS",
+              "Android"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "date",
+            "key": "expiresAt",
+            "label": "Expiration",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "json",
+            "key": "extraData",
+            "label": "Données additionnelles",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé d'idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checkout"
+    },
+    {
+      "key": "adyen_session_get",
+      "name": "adyenSessionGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une session",
+      "subtitle": "Checkout",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "paiement",
+        "session"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_session"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère le résultat d'une session de paiement.",
+      "args": {
+        "title": "Récupérer une session",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "sessionId",
+            "label": "ID de session",
+            "default": "CS123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Checkout"
+    },
+    {
+      "key": "adyen_payment_create",
+      "name": "adyenPaymentCreate",
+      "schemaVersion": 2,
+      "title": "Démarrer un paiement",
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-credit-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "paiement",
+        "autorisation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_payment"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Démarre une transaction via Checkout API.",
+      "args": {
+        "title": "Démarrer un paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "value",
+            "label": "Montant mineur",
+            "default": 1000,
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "default": "EUR",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "default": "order-123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "paymentMethod",
+            "label": "Moyen de paiement",
+            "default": {
+              "type": "scheme"
+            },
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "returnUrl",
+            "label": "URL de retour",
+            "default": "https://example.com/return",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "email",
+            "key": "shopperEmail",
+            "label": "Email client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "shopperReference",
+            "label": "Référence client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "shopperIP",
+            "label": "IP client",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "select",
+            "key": "channel",
+            "label": "Canal",
+            "default": "Web",
+            "options": [
+              "Web",
+              "iOS",
+              "Android"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "select",
+            "key": "shopperInteraction",
+            "label": "Interaction",
+            "options": [
+              "Ecommerce",
+              "ContAuth",
+              "Moto",
+              "POS"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "select",
+            "key": "recurringProcessingModel",
+            "label": "Modèle récurrent",
+            "options": [
+              "CardOnFile",
+              "Subscription",
+              "UnscheduledCardOnFile"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "countryCode",
+            "label": "Pays",
+            "default": "FR",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "json",
+            "key": "extraData",
+            "label": "Données additionnelles",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé d'idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Paiements"
+    },
+    {
+      "key": "adyen_payment_details_submit",
+      "name": "adyenPaymentDetailsSubmit",
+      "schemaVersion": 2,
+      "title": "Soumettre les détails de paiement",
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-arrow-right-to-bracket",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "paiement",
+        "détails"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_payment"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Soumet les détails demandés après une action 3DS ou redirection.",
+      "args": {
+        "title": "Soumettre les détails de paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "details",
+            "label": "Détails",
+            "default": {
+              "redirectResult": "test"
+            },
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "paymentData",
+            "label": "Données de paiement",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Paiements"
+    },
+    {
+      "key": "adyen_payment_capture",
+      "name": "adyenPaymentCapture",
+      "schemaVersion": 2,
+      "title": "Capturer un paiement",
+      "subtitle": "Modifications",
+      "icon": "fa-solid fa-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "capture",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_modification"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Capture un paiement autorisé.",
+      "args": {
+        "title": "Capturer un paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentPspReference",
+            "label": "PSP reference du paiement",
+            "default": "PSP123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "value",
+            "label": "Montant mineur",
+            "default": 1000,
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "default": "EUR",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé d'idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modifications"
+    },
+    {
+      "key": "adyen_payment_adjust_authorisation",
+      "name": "adyenPaymentAdjustAuthorisation",
+      "schemaVersion": 2,
+      "title": "Ajuster une autorisation",
+      "subtitle": "Modifications",
+      "icon": "fa-solid fa-sliders",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "autorisation",
+        "montant",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_modification"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Ajuste le montant dune autorisation existante.",
+      "args": {
+        "title": "Ajuster une autorisation",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentPspReference",
+            "label": "PSP reference du paiement",
+            "default": "PSP123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "value",
+            "label": "Nouveau montant mineur",
+            "default": 1000,
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "default": "EUR",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Reference",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Cle idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modifications"
+    },
+    {
+      "key": "adyen_payment_cancel",
+      "name": "adyenPaymentCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un paiement",
+      "subtitle": "Modifications",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "annulation",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_modification"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un paiement autorisé non capturé.",
+      "args": {
+        "title": "Annuler un paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentPspReference",
+            "label": "PSP reference du paiement",
+            "default": "PSP123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé d'idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modifications"
+    },
+    {
+      "key": "adyen_payment_capture_cancel",
+      "name": "adyenPaymentCaptureCancel",
+      "schemaVersion": 2,
+      "title": "Annuler une capture",
+      "subtitle": "Modifications",
+      "icon": "fa-solid fa-xmark",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "capture",
+        "annulation",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_modification"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule une capture si possible, sinon applique la logique cancelOrRefund Adyen.",
+      "args": {
+        "title": "Annuler une capture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentPspReference",
+            "label": "PSP reference du paiement",
+            "default": "PSP123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Reference",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Cle idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modifications"
+    },
+    {
+      "key": "adyen_payment_refund",
+      "name": "adyenPaymentRefund",
+      "schemaVersion": 2,
+      "title": "Rembourser un paiement",
+      "subtitle": "Modifications",
+      "icon": "fa-solid fa-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "remboursement",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_modification"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rembourse un paiement capturé.",
+      "args": {
+        "title": "Rembourser un paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentPspReference",
+            "label": "PSP reference du paiement",
+            "default": "PSP123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "value",
+            "label": "Montant mineur",
+            "default": 1000,
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "default": "EUR",
+            "col": {
+              "xs": 12
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé d'idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modifications"
+    },
+    {
+      "key": "adyen_payment_reverse",
+      "name": "adyenPaymentReverse",
+      "schemaVersion": 2,
+      "title": "Annuler ou rembourser",
+      "subtitle": "Modifications",
+      "icon": "fa-solid fa-shuffle",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Adyen",
+      "providerKey": "adyen",
+      "tags": [
+        "reversal",
+        "remboursement",
+        "annulation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:adyen_modification"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Utilise le reversal Adyen pour annuler ou rembourser selon l'état du paiement.",
+      "args": {
+        "title": "Annuler ou rembourser",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentPspReference",
+            "label": "PSP reference du paiement",
+            "default": "PSP123",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantAccount",
+            "label": "Compte marchand",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé d'idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modifications"
+    }
+  ]
+}

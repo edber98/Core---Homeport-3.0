@@ -1,0 +1,1109 @@
+{
+  "repo": {
+    "name": "weaviate",
+    "type": "local",
+    "label": "Weaviate"
+  },
+  "variables": {
+    "weaviate_response": {
+      "title": "Réponse Weaviate",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou titre retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat complet au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "weaviate_items": {
+      "title": "Weaviate - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom ou titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Texte ou résumé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "weaviate",
+      "name": "Weaviate",
+      "title": "Weaviate",
+      "iconClass": "fa-solid fa-database",
+      "iconUrl": "https://weaviate.io/favicon.ico",
+      "color": "#e6fbf9",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Weaviate",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Weaviate.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": ""
+          },
+          {
+            "type": "text",
+            "key": "allowAnonymous",
+            "label": "Autoriser sans clé",
+            "description": "true pour une instance Weaviate sans authentification.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "weaviate_schema_list",
+      "name": "weaviateSchemaList",
+      "schemaVersion": 2,
+      "title": "Lister les collections",
+      "subtitle": "Schéma",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les collections/classes.",
+      "args": {
+        "title": "Lister les collections",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Schéma"
+    },
+    {
+      "key": "weaviate_schema_create",
+      "name": "weaviateSchemaCreate",
+      "schemaVersion": 2,
+      "title": "Créer une collection",
+      "subtitle": "Schéma",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une classe/collection.",
+      "args": {
+        "title": "Créer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "description": "Nom de la classe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Propriétés JSON",
+            "description": "Tableau JSON de propriétés.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "vectorizer",
+            "label": "Vectorizer JSON",
+            "description": "Configuration vectorizer.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Schéma"
+    },
+    {
+      "key": "weaviate_schema_get",
+      "name": "weaviateSchemaGet",
+      "schemaVersion": 2,
+      "title": "Récupérer une collection",
+      "subtitle": "Schéma",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère une classe/collection.",
+      "args": {
+        "title": "Récupérer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "description": "Nom de la classe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Schéma"
+    },
+    {
+      "key": "weaviate_schema_delete",
+      "name": "weaviateSchemaDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une collection",
+      "subtitle": "Schéma",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime une classe/collection.",
+      "args": {
+        "title": "Supprimer une collection",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "description": "Nom de la classe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Schéma"
+    },
+    {
+      "key": "weaviate_object_create",
+      "name": "weaviateObjectCreate",
+      "schemaVersion": 2,
+      "title": "Créer un objet",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un objet Weaviate.",
+      "args": {
+        "title": "Créer un objet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "description": "Nom de la classe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Propriétés JSON",
+            "description": "Propriétés de l'objet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID",
+            "description": "UUID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "vector",
+            "label": "Vecteur JSON",
+            "description": "Vecteur optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "weaviate_object_get",
+      "name": "weaviateObjectGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un objet",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un objet par ID.",
+      "args": {
+        "title": "Récupérer un objet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "description": "Nom de la classe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID",
+            "description": "UUID de l'objet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "weaviate_object_update",
+      "name": "weaviateObjectUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un objet",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Remplace un objet Weaviate.",
+      "args": {
+        "title": "Mettre à jour un objet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "description": "Nom de la classe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID",
+            "description": "UUID de l'objet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "properties",
+            "label": "Propriétés JSON",
+            "description": "Propriétés de l'objet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "weaviate_object_delete",
+      "name": "weaviateObjectDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un objet",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un objet.",
+      "args": {
+        "title": "Supprimer un objet",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "description": "Nom de la classe.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "ID",
+            "description": "UUID de l'objet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "weaviate_graphql_query",
+      "name": "weaviateGraphqlQuery",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête GraphQL",
+      "subtitle": "Recherche",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une recherche GraphQL Weaviate.",
+      "args": {
+        "title": "Exécuter une requête GraphQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête",
+            "description": "Requête GraphQL.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "variables",
+            "label": "Variables JSON",
+            "description": "Variables optionnelles.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Recherche"
+    },
+    {
+      "key": "weaviate_objects_batch_create",
+      "name": "weaviateObjectsBatchCreate",
+      "schemaVersion": 2,
+      "title": "Créer des objets en batch",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée plusieurs objets.",
+      "args": {
+        "title": "Créer des objets en batch",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "objects",
+            "label": "Objets JSON",
+            "description": "Tableau JSON d'objets.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets"
+    },
+    {
+      "key": "weaviate_objects_list",
+      "name": "weaviateObjectsList",
+      "schemaVersion": 2,
+      "title": "Lister les objets",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les objets",
+      "args": {
+        "title": "Lister les objets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets",
+      "risk": "safe"
+    },
+    {
+      "key": "weaviate_objects_batch_delete",
+      "name": "weaviateObjectsBatchDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer des objets (batch)",
+      "subtitle": "Objets",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Weaviate",
+      "providerKey": "weaviate",
+      "tags": [
+        "weaviate",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:weaviate_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprimer des objets (batch)",
+      "args": {
+        "title": "Supprimer des objets (batch)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "className",
+            "label": "Classe",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "whereFilter",
+            "label": "Filtre where JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Objets",
+      "risk": "destructive"
+    }
+  ]
+}

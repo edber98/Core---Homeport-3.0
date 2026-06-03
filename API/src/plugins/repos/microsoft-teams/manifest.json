@@ -4,6 +4,89 @@
     "type": "local",
     "label": "Microsoft Teams"
   },
+  "variables": {
+    "teams_message_result": {
+      "title": "Résultat message Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "teamId",
+          "label": "Équipe",
+          "description": "Identifiant de l'équipe.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "channelId",
+          "label": "Canal",
+          "description": "Identifiant du canal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "webUrl",
+          "label": "URL",
+          "description": "Lien vers le message.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Contenu envoyé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "teams_event": {
+      "title": "Événement Teams",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "description": "Type d'événement reçu.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Payload du webhook.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
   "providers": [
     {
       "key": "msteams",
@@ -94,7 +177,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:teams_message_result"
         }
       ],
       "description": "Publier un message dans un canal Teams",
@@ -169,7 +253,8 @@
         {
           "id": "ok",
           "name": "Success",
-          "type": "payload"
+          "type": "payload",
+          "schema": "$var:teams_message_result"
         }
       ],
       "description": "Envoyer une carte adaptative",
@@ -229,8 +314,17 @@
       "subtitle": "Déclencheur",
       "icon": "fa-solid fa-bolt",
       "type": "event",
+      "nodeKind": "event",
       "category": "Teams",
       "providerKey": "msteams",
+      "outputHandles": [
+        {
+          "id": "event",
+          "name": "Event",
+          "type": "payload",
+          "schema": "$var:teams_event"
+        }
+      ],
       "description": "Déclenchement sur webhook entrant",
       "args": {
         "title": "Webhook",

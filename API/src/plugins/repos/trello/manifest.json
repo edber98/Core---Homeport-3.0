@@ -5153,6 +5153,69 @@
         "trello"
       ],
       "risk": "destructive"
+    },
+    {
+      "key": "trello_board_delete",
+      "name": "trelloBoardDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un board",
+      "subtitle": "Boards",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Trello",
+      "providerKey": "trello",
+      "tags": [
+        "trello",
+        "board"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:trello_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime un board Trello.",
+      "args": {
+        "title": "Supprimer un board",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "boardId",
+            "label": "ID board",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Boards",
+      "risk": "destructive"
     }
   ],
   "variables": {

@@ -40,6 +40,26 @@
         },
         "fields": [
           {
+            "type": "select",
+            "key": "evaluation_mode",
+            "label": "Mode d'évaluation",
+            "description": "Exclusif : if / else if / else (première branche qui matche). Cumulatif : toutes les branches qui matchent se déclenchent en parallèle.",
+            "default": "exclusive",
+            "options": [
+              {
+                "label": "Exclusif — première branche qui matche",
+                "value": "exclusive"
+              },
+              {
+                "label": "Cumulatif — toutes les branches qui matchent (parallèle)",
+                "value": "parallel"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "section",
             "title": "Branches",
             "description": "Définissez les branches et leurs conditions.",
@@ -123,7 +143,7 @@
             "type": "checkbox",
             "key": "else_enabled",
             "label": "Activer Else",
-            "description": "Ajouter une branche par défaut (sinon).",
+            "description": "Ajouter une branche par défaut, déclenchée quand AUCUNE condition ne matche (s'applique aux deux modes).",
             "col": {
               "xs": 24
             },

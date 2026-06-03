@@ -1310,6 +1310,224 @@
       },
       "group": "Réactions",
       "risk": "write"
+    },
+    {
+      "key": "linkedin_create_reaction",
+      "name": "linkedinCreateReaction",
+      "schemaVersion": 2,
+      "title": "Créer une réaction",
+      "subtitle": "Réactions",
+      "icon": "fa-solid fa-thumbs-up",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "linkedin",
+        "réaction"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_post"
+        }
+      ],
+      "description": "Ajoute une réaction à un post.",
+      "args": {
+        "title": "Créer une réaction",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postUrn",
+            "label": "Post URN",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "actorUrn",
+            "label": "Actor URN",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reactionType",
+            "label": "Type",
+            "default": "LIKE",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Engagement",
+      "risk": "write"
+    },
+    {
+      "key": "linkedin_delete_comment",
+      "name": "linkedinDeleteComment",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaires",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "linkedin",
+        "commentaire"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_post"
+        }
+      ],
+      "description": "Supprime un commentaire sur un post.",
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postUrn",
+            "label": "Post URN",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "Comment ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Engagement",
+      "risk": "destructive"
+    },
+    {
+      "key": "linkedin_get_post",
+      "name": "linkedinGetPost",
+      "schemaVersion": 2,
+      "title": "Récupérer un post",
+      "subtitle": "Posts",
+      "icon": "fa-solid fa-file-lines",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LinkedIn",
+      "providerKey": "linkedin",
+      "tags": [
+        "linkedin",
+        "lecture"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:li_post"
+        }
+      ],
+      "description": "Récupère un post précis.",
+      "args": {
+        "title": "Récupérer un post",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "postUrn",
+            "label": "Post URN",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Posts",
+      "risk": "safe"
     }
   ]
 }

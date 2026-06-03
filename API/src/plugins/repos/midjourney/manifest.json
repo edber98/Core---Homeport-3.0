@@ -1,0 +1,648 @@
+{
+  "repo": {
+    "name": "midjourney",
+    "type": "local",
+    "label": "Midjourney"
+  },
+  "variables": {
+    "midjourney_submit_jobs_result": {
+      "title": "Résultat soumission Midjourney",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si la soumission a réussi.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code statut API",
+          "description": "Code de statut retourné par l'API Midjourney.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour de l'API.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "taskId",
+          "label": "Identifiant tâche",
+          "description": "Identifiant de la tâche Midjourney.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse complète de l'API.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "midjourney_job_status_result": {
+      "title": "Statut des jobs Midjourney",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code statut API",
+          "description": "Code de statut retourné par l'API Midjourney.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour de l'API.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total de tâches retournées.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "inProgressCount",
+          "label": "En cours",
+          "description": "Nombre de tâches en cours.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "completedCount",
+          "label": "Terminées",
+          "description": "Nombre de tâches terminées avec succès.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "failedCount",
+          "label": "Échouées",
+          "description": "Nombre de tâches en échec.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Tâches",
+          "description": "Liste des tâches Midjourney.",
+          "mode": "array",
+          "key": "jobs",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "taskId",
+              "label": "Identifiant tâche",
+              "description": "Identifiant de la tâche.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "status",
+              "label": "Statut",
+              "description": "Code statut de la tâche (0, 1, 2).",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "statusLabel",
+              "label": "Libellé statut",
+              "description": "Traduction du statut de la tâche.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "jobId",
+              "label": "Identifiant job",
+              "description": "Identifiant du job final si terminé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "image",
+              "label": "Image principale",
+              "description": "URL de l'image principale.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "images",
+              "label": "Images",
+              "description": "Liste des URLs d'images.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "prompt",
+              "label": "Prompt",
+              "description": "Prompt original soumis.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "mjPrompt",
+              "label": "Prompt Midjourney",
+              "description": "Prompt final retenu par Midjourney.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "failReason",
+              "label": "Raison échec",
+              "description": "Raison d'échec si la tâche échoue.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "createdAt",
+              "label": "Créée le",
+              "description": "Date de création de la tâche.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "width",
+              "label": "Largeur",
+              "description": "Largeur de sortie en pixels.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "height",
+              "label": "Hauteur",
+              "description": "Hauteur de sortie en pixels.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Payload brut de la tâche.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse complète de l'API.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "midjourney",
+      "name": "Midjourney",
+      "title": "Midjourney",
+      "iconClass": "fa-solid fa-image",
+      "iconUrl": "https://www.google.com/s2/favicons?domain=midjourney.com&sz=128",
+      "color": "#f2f2f2",
+      "tags": [
+        "midjourney",
+        "image",
+        "ai"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Midjourney API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API fournie par midjourney-api.com.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base API",
+            "description": "URL de base du provider Midjourney API.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://api.midjourney-api.com"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "midjourney_submit_jobs",
+      "name": "midjourneySubmitJobs",
+      "schemaVersion": 2,
+      "title": "Soumettre un job Midjourney",
+      "subtitle": "Génération",
+      "icon": "fa-solid fa-wand-magic-sparkles",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Midjourney",
+      "providerKey": "midjourney",
+      "tags": [
+        "midjourney",
+        "image",
+        "génération"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:midjourney_submit_jobs_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une nouvelle tâche Midjourney à partir d'un prompt.",
+      "args": {
+        "title": "Soumettre un job Midjourney",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Prompt image Midjourney (ex: style, ratio, paramètres).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "mode",
+            "label": "Mode",
+            "description": "Mode de génération Midjourney.",
+            "col": {
+              "xs": 24
+            },
+            "default": "fast",
+            "options": [
+              {
+                "label": "Rapide",
+                "value": "fast"
+              },
+              {
+                "label": "Détendu",
+                "value": "relaxed"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "hookUrl",
+            "label": "URL webhook",
+            "description": "URL appelée lorsque la tâche est terminée (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout (secondes)",
+            "description": "Délai max du job (300 à 1200, défaut 600).",
+            "col": {
+              "xs": 24
+            },
+            "default": 600
+          },
+          {
+            "type": "json",
+            "key": "extraBody",
+            "label": "Payload JSON additionnel",
+            "description": "Fusionné au body final pour options avancées non exposées.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
+    },
+    {
+      "key": "midjourney_job_status",
+      "name": "midjourneyJobStatus",
+      "schemaVersion": 2,
+      "title": "Récupérer le statut des jobs",
+      "subtitle": "Suivi",
+      "icon": "fa-solid fa-rotate",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Midjourney",
+      "providerKey": "midjourney",
+      "tags": [
+        "midjourney",
+        "jobs",
+        "suivi"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:midjourney_job_status_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Interroge l'état d'une ou plusieurs tâches Midjourney.",
+      "args": {
+        "title": "Récupérer le statut des jobs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "taskIds",
+            "label": "Identifiants des tâches",
+            "description": "Liste des task IDs (JSON array, une ligne par ID ou séparés par virgules).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Suivi"
+    },
+    {
+      "key": "midjourney_fetch_job",
+      "name": "midjourneyFetchJob",
+      "schemaVersion": 2,
+      "title": "Récupérer un job Midjourney",
+      "subtitle": "Suivi",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Midjourney",
+      "providerKey": "midjourney",
+      "tags": [
+        "midjourney",
+        "job",
+        "fetch"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:midjourney_job_status_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un job Midjourney par taskId.",
+      "args": {
+        "title": "Récupérer un job Midjourney",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Suivi"
+    },
+    {
+      "key": "midjourney_job_action",
+      "name": "midjourneyJobAction",
+      "schemaVersion": 2,
+      "title": "Lancer une action sur job",
+      "subtitle": "Génération",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Midjourney",
+      "providerKey": "midjourney",
+      "tags": [
+        "midjourney",
+        "action"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:midjourney_submit_jobs_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Soumet une action Midjourney (upsample/variation/reroll) sur un taskId.",
+      "args": {
+        "title": "Lancer une action sur job",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "taskId",
+            "label": "Task ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "customId",
+            "label": "Custom ID action",
+            "description": "Ex: MJ::JOB::upsample::1",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "hookUrl",
+            "label": "Webhook URL",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Génération"
+    }
+  ]
+}

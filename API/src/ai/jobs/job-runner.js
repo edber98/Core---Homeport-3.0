@@ -62,11 +62,19 @@ function _buildJobContext(job, ac, opts = {}) {
 
   async function persistCheckpoint(iteration, conversation) {
     try {
-      // Cap transcript size at 400 entries — older entries dropped
-      const trimmed = (conversation || []).slice(-400);
+      // Aucune troncature : on persiste TOUT le transcript pour ne perdre AUCUNE info
+      // au resume après crash. Garde-fou sur la taille pour éviter le hard-cap Mongo
+      // 16MB : si on s'approche (>12MB), on log un warning explicite avant que la
+      // requête ne plante. Pas de slice silencieux : mieux vaut faillir bruyamment.
+      const full = conversation || [];
+      let estimatedBytes = 0;
+      try { estimatedBytes = JSON.stringify(full).length; } catch { estimatedBytes = -1; }
+      if (estimatedBytes > 12 * 1024 * 1024) {
+        console.warn(`[job-runner] checkpoint near Mongo doc limit: ${(estimatedBytes / 1024 / 1024).toFixed(1)}MB for job=${jobId} iter=${iteration} (16MB hard limit). Migrate to AiMessage source-of-truth.`);
+      }
       await AiJob.updateOne(
         { id: jobId },
-        { $set: { iteration, transcript: trimmed, heartbeatAt: new Date() } },
+        { $set: { iteration, transcript: full, heartbeatAt: new Date() } },
       );
     } catch (e) {
       console.error('[job-runner] checkpoint failed:', e?.message);
@@ -368,7 +376,7 @@ function _buildJobContext(job, ac, opts = {}) {
     heartbeat,
     broadcast,
     onAbort,
-    waitForPermission: (requestId, timeoutMs) => waitForPermission(jobId, requestId, timeoutMs),
+    waitForPermission: (requestId, timeoutMs, opts) => waitForPermission(jobId, requestId, timeoutMs, opts),
     waitForPlanApproval: (requestId, timeoutMs) => waitForPlanApproval(jobId, requestId, timeoutMs),
   };
 }
@@ -565,13 +573,18 @@ async function runJob(jobId, opts = {}) {
             messageId: String(opts._streamingMessageId),
           });
         } else {
-          await AiMessage.create({
+          const msg = await AiMessage.create({
             threadId: job.threadId,
             role: 'assistant',
             content: finalText.trim(),
             toolCalls: finalToolCalls,
           });
-          emitThreadEvent(String(job.threadId), { type: 'ai.message.created', kind: 'resume_final' });
+          // messageId inclus → auto-hydrate avec le message complet
+          emitThreadEvent(String(job.threadId), {
+            type: 'ai.message.created',
+            kind: 'resume_final',
+            messageId: String(msg._id),
+          });
         }
       } catch (e) {
         console.warn('[job-runner] resume final message persist failed:', e?.message);
@@ -678,8 +691,9 @@ async function _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt, error
     }
   } catch { /* roster optionnel */ }
 
+  let reportMsg = null;
   try {
-    await AiMessage.create({
+    reportMsg = await AiMessage.create({
       threadId: job.threadId,
       role: 'assistant',
       content,
@@ -709,11 +723,17 @@ async function _maybeCreateAgentReport(job, { opts, toolCalls, finishedAt, error
   }
 
   try {
+    // ⚠️ CRITIQUE : on doit inclure messageId pour que l'auto-hydration backend
+    // (job-events.js _hydrateMessageEvent) charge le AiMessage complet dans
+    // l'event. Sans ça le frontend reçoit une notification vide → fallback
+    // scheduleReloadMessages 400ms → la card sub-agent reste sur "en cours…"
+    // jusqu'au refresh manuel. Reproduit par user 2026-05-20.
     emitThreadEvent(String(job.threadId), {
       type: 'ai.message.created',
       kind: 'agent_report',
       jobId: job.id,
       status,
+      messageId: reportMsg ? String(reportMsg._id) : undefined,
     });
   } catch { /* non-fatal */ }
 }
@@ -786,6 +806,40 @@ async function _maybeResumeParent(job) {
     return;
   }
 
+  // ── CRITIQUE : skip si le PARENT MAIN AGENT est EN TRAIN de tourner ──
+  // Distinguer :
+  //   - Mode SYNC : parent fait `await spawn_subagent()` → status=running avec
+  //     heartbeat frais. L'await retournera et il continuera naturellement
+  //     → skip le resume (sinon on spawnerait un main parallèle = double boulot).
+  //   - Mode ASYNC : parent a fini son loop après spawn_subagent({async:true})
+  //     → status='queued' ou 'completed', plus de heartbeat actif. Il attend
+  //     d'être réveillé par le resume → on DOIT lancer le resume.
+  //
+  // Le bug précédent : on skip tant que status ∈ {queued, running, waiting_*}.
+  // Conséquence : en mode async, parent='queued' → on skipait alors qu'il fallait
+  // resume → le main n'a jamais repris après le retour des sub-agents.
+  if (job.parentJobId) {
+    try {
+      const parentDoc = await AiJob.findOne(
+        { _id: job.parentJobId },
+        'status type heartbeatAt'
+      ).lean();
+      if (parentDoc) {
+        const parentRunningFresh = parentDoc.status === 'running'
+          && parentDoc.heartbeatAt
+          && new Date(parentDoc.heartbeatAt) >= staleThreshold;
+        if (parentRunningFresh) {
+          console.log(`[resume-parent] skip job=${job.id} : parent ${job.parentJobId} en mode SYNC (status=running + heartbeat frais) — il reprendra via son await spawn_subagent`);
+          return;
+        }
+        // Sinon : queued / completed / waiting / running-stale → on lance le resume
+        console.log(`[resume-parent] parent ${job.parentJobId} status=${parentDoc.status} (heartbeat stale ou inactif) → resume nécessaire`);
+      }
+    } catch (e) {
+      console.warn('[resume-parent] parent check failed:', e?.message);
+    }
+  }
+
   // 2-4. On ne filtre PLUS par "significant message" ni par "hasSpawnedSubagents".
   // Avec le flow actuel (widget inline, agent_report, todo, permission_requests),
   // le dernier message parent "texte pur" peut être bien plus ancien que les 8
@@ -815,10 +869,20 @@ async function _maybeResumeParent(job) {
   const summaries = recentJobs.reverse().map((j, i) => {
     const subj = j.subagentInstructions ? j.subagentInstructions.slice(0, 120) : '(sans description)';
     const status = j.status === 'error' ? `❌ ${j.error || 'error'}` : '✅ terminé';
-    const summary = (j.result?.summary || '').slice(0, 4000);
+    // Digest court (pattern claude-code) : 1re phrase ou ~280 chars max. Le full
+    // summary reste accessible côté UI dans la modal sub-agent dédiée. Sans cette
+    // troncature, le parent reçoit 4 000 chars et réécrit tout → double résumé.
+    const fullSummary = String(j.result?.summary || '').replace(/\s+/g, ' ').trim();
+    let summary = fullSummary;
+    const firstStop = fullSummary.search(/(?<=[.!?])\s+(?=[A-Z[])/);
+    if (firstStop > 30 && firstStop < 280) {
+      summary = fullSummary.slice(0, firstStop + 1);
+    } else if (fullSummary.length > 280) {
+      summary = fullSummary.slice(0, 277) + '…';
+    }
     const widgets = Array.isArray(j.result?.widgets) ? j.result.widgets : [];
     const widgetBlock = widgets.length
-      ? `\n**Widgets inline produits (référence-les avec [[WIDGET:id]]) :**\n${widgets.map(w => `- [[WIDGET:${w.widgetId}]] — ${w.kind} : ${w.title || '(sans titre)'}`).join('\n')}`
+      ? `\n**Widgets inline produits (référence-les avec [[WIDGET:id]] — NE PAS recopier leur contenu) :**\n${widgets.map(w => `- [[WIDGET:${w.widgetId}]] — ${w.kind} : ${w.title || '(sans titre)'}`).join('\n')}`
       : '';
     // Artefacts : fichiers produits (fileId/name/path), images, exports
     const artifacts = Array.isArray(j.result?.artifacts) ? j.result.artifacts : [];
@@ -843,7 +907,7 @@ async function _maybeResumeParent(job) {
     const artifactBlock = fileArtifacts.length
       ? `\n**Fichiers/artefacts produits (display_file avec fileId pour afficher) :**\n${fileArtifacts.slice(0, 10).map(f => `- ${f.name}${f.fileId ? ` (fileId=${f.fileId})` : ''}${f.mimeType ? ` · ${f.mimeType}` : ''}`).join('\n')}`
       : '';
-    return `### Job ${i + 1} — ${j.subagentType || 'subagent'} (${status})\n**Tâche :** ${subj}\n**Résultat complet du subagent :**\n${summary || '(vide)'}${widgetBlock}${artifactBlock}`;
+    return `### Job ${i + 1} — ${j.subagentType || 'subagent'} (${status})\n**Tâche :** ${subj}\n**Accroche (1 phrase — le rapport complet est dans la modal sub-agent côté UI) :**\n${summary || '(vide)'}${widgetBlock}${artifactBlock}`;
   }).join('\n\n---\n\n');
 
   // Agrège tous les widgetIds produits par l'ensemble des subagents (pour
@@ -884,11 +948,37 @@ async function _maybeResumeParent(job) {
 
   console.log(`[resume-parent] thread=${threadId} : ${recentJobs.length} subagents terminés, déclenchement du resume`);
 
-  // Récupère le dernier message user pour rappeler la demande originale
+  // Récupère le dernier message user (hors mailbox) pour rappeler la demande originale.
+  // Mailbox = consigne interim, pas la demande originale.
   let userRequest = '';
   try {
-    const lastUser = await AiMessage.findOne({ threadId, role: 'user' }).sort({ createdAt: -1 }).lean();
+    const lastUser = await AiMessage.findOne({
+      threadId,
+      role: 'user',
+      $or: [
+        { 'metadata.kind': { $exists: false } },
+        { 'metadata.kind': null },
+        { 'metadata.kind': { $nin: ['mailbox'] } },
+      ],
+    }).sort({ createdAt: -1 }).lean();
     if (lastUser?.content) userRequest = String(lastUser.content).slice(0, 1000);
+  } catch {}
+
+  // Récupère la todo principale existante pour que le LLM resume la continue
+  // (au lieu de la recréer de zéro avec des items différents).
+  let existingTodoSnapshot = '';
+  try {
+    const todoMsg = await AiMessage.findOne({
+      threadId,
+      'metadata.kind': 'todo_list',
+      'metadata.widgetId': { $regex: /^session-todos/ },
+      'metadata.subagentJobId': { $exists: false },
+    }).sort({ createdAt: -1 }).lean();
+    const todos = todoMsg?.metadata?.todoList?.todos || [];
+    if (todos.length) {
+      existingTodoSnapshot = '\n\nTODO PRINCIPALE EN COURS (continue-la avec EXACTEMENT ces ids — ne crée pas une nouvelle todo) :\n' +
+        todos.map(t => `- id="${t.id}" content="${t.content}" status=${t.status}`).join('\n');
+    }
   } catch {}
 
   // Deux modes :
@@ -904,6 +994,7 @@ async function _maybeResumeParent(job) {
 
 DEMANDE ORIGINALE :
 ${userRequest || '(non récupérée)'}
+${existingTodoSnapshot}
 
 RÉSULTATS DES SOUS-AGENTS (à utiliser pour produire le livrable) :
 
@@ -911,7 +1002,7 @@ ${summaries}
 
 TA MISSION :
 
-1. Relis la checklist (\`todo_write\`). Marque \`completed\` ce qui est VRAIMENT fait. Marque \`cancelled\` avec \`errorReason\` ce qui a échoué (subagent en error, résultat vide). Ne masque JAMAIS un step non fait en le passant silencieusement à \`completed\`.
+1. **CONTINUE la todo principale existante** (ids ci-dessus) via \`todo_write\` : marque \`completed\` ce qui est VRAIMENT fait, \`cancelled\` avec \`errorReason\` ce qui a échoué. **NE CRÉE PAS** une nouvelle todo avec des ids différents — réutilise EXACTEMENT t1/t2/t3/... existants. Ne masque JAMAIS un step non fait en le passant silencieusement à \`completed\`.
 
 2. Pour chaque step qui reste nécessaire à la demande user :
    - Tâche de génération finale (xlsx / pdf / diagram / rapport structuré) → produis-la toi-même MAINTENANT : \`activate_capsule\` puis \`execute_code\` / \`render_structured\` / \`generate_document\` / \`display_file\`.
@@ -925,6 +1016,7 @@ TA MISSION :
 
 DEMANDE ORIGINALE :
 ${userRequest || '(non récupérée)'}
+${existingTodoSnapshot}
 
 RÉSULTATS DES SOUS-AGENTS (tu as tout ce qu'il faut) :
 
@@ -932,7 +1024,7 @@ ${summaries}
 
 ${allWidgetIds.length ? `WIDGETS DÉJÀ PRODUITS (référence-les via [[WIDGET:id]] dans ton texte, NE LES RECRÉE PAS) :\n${allWidgetIds.map(w => `  [[WIDGET:${w}]]`).join('\n')}\n\n` : ''}TA MISSION (exactement 2 étapes) :
 
-1. Appelle \`todo_write\` UNE fois : marque \`completed\` les steps VRAIMENT faits et \`cancelled\` avec \`errorReason\` les steps qui ont échoué. Ne masque JAMAIS un step non fait en le passant silencieusement à \`completed\`.
+1. **CONTINUE la todo principale ci-dessus** via \`todo_write\` UNE fois : réutilise EXACTEMENT les ids existants (t1/t2/...). Marque \`completed\` les steps VRAIMENT faits, \`cancelled\` avec \`errorReason\` ceux qui ont échoué. **NE CRÉE PAS** une nouvelle todo avec des ids différents.
 
 2. Écris UN message final à l'utilisateur, naturel et utile :
    - Place les \`[[WIDGET:id]]\` inline aux endroits pertinents (pas tous groupés à la fin).

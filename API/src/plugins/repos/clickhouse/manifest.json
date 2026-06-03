@@ -1,0 +1,869 @@
+{
+  "repo": {
+    "name": "clickhouse",
+    "type": "local",
+    "label": "Clickhouse"
+  },
+  "variables": {
+    "clickhouse_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickhouse_query": {
+      "title": "requête ClickHouse",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "clickhouse_queries": {
+      "title": "requêtes ClickHouse",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "clickhouse",
+      "name": "ClickHouse",
+      "title": "ClickHouse",
+      "iconClass": "fa-solid fa-database",
+      "iconUrl": "https://cdn.simpleicons.org/clickhouse",
+      "color": "#fff7d6",
+      "tags": [
+        "clickhouse",
+        "sql",
+        "analytics"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants ClickHouse",
+        "displayTitle": false,
+        "displayDescription": false,
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL HTTP",
+            "description": "Ex: http://localhost:8123",
+            "col": {
+              "xs": 24
+            },
+            "default": "http://localhost:8123",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "description": "Nom d’utilisateur ClickHouse.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "description": "Mot de passe ClickHouse.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "clickhouse_query_select",
+      "name": "clickhouseQuerySelect",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête SELECT",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickHouse",
+      "providerKey": "clickhouse",
+      "tags": [
+        "clickhouse",
+        "query",
+        "select"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickhouse_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action select sur requête.",
+      "args": {
+        "title": "Exécuter une requête SELECT",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "SQL",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Database",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "default_format",
+            "label": "Format réponse",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "default": "JSON"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "clickhouse_query_command",
+      "name": "clickhouseQueryCommand",
+      "schemaVersion": 2,
+      "title": "Exécuter une commande SQL",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickHouse",
+      "providerKey": "clickhouse",
+      "tags": [
+        "clickhouse",
+        "query",
+        "command"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickhouse_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action command sur requête.",
+      "args": {
+        "title": "Exécuter une commande SQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "SQL",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Database",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "clickhouse_query_insert_json_each_row",
+      "name": "clickhouseQueryInsertJsonEachRow",
+      "schemaVersion": 2,
+      "title": "Insérer des lignes JSONEachRow",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickHouse",
+      "providerKey": "clickhouse",
+      "tags": [
+        "clickhouse",
+        "query",
+        "insert_json_each_row"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickhouse_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action insert_json_each_row sur requête.",
+      "args": {
+        "title": "Insérer des lignes JSONEachRow",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "rows",
+            "label": "Lignes",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "clickhouse_query_list_tables",
+      "name": "clickhouseQueryListTables",
+      "schemaVersion": 2,
+      "title": "Lister les tables",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickHouse",
+      "providerKey": "clickhouse",
+      "tags": [
+        "clickhouse",
+        "query",
+        "list_tables"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickhouse_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list_tables sur requête.",
+      "args": {
+        "title": "Lister les tables",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Database",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "clickhouse_query_describe_table",
+      "name": "clickhouseQueryDescribeTable",
+      "schemaVersion": 2,
+      "title": "Décrire une table",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickHouse",
+      "providerKey": "clickhouse",
+      "tags": [
+        "clickhouse",
+        "query",
+        "describe_table"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickhouse_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action describe_table sur requête.",
+      "args": {
+        "title": "Décrire une table",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "table",
+            "label": "Table",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "database",
+            "label": "Database",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "clickhouse_query_ping",
+      "name": "clickhouseQueryPing",
+      "schemaVersion": 2,
+      "title": "Tester la connectivité",
+      "subtitle": "requêtes",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickHouse",
+      "providerKey": "clickhouse",
+      "tags": [
+        "clickhouse",
+        "query",
+        "ping"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickhouse_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action ping sur requête.",
+      "args": {
+        "title": "Tester la connectivité",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "requêtes"
+    },
+    {
+      "key": "clickhouse_api_request",
+      "name": "clickhouseApiRequest",
+      "schemaVersion": 2,
+      "title": "Appeler un endpoint API",
+      "subtitle": "API",
+      "icon": "fa-solid fa-code",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickHouse",
+      "providerKey": "clickhouse",
+      "tags": [
+        "clickhouse",
+        "api",
+        "request"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickhouse_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appeler un endpoint API.",
+      "args": {
+        "title": "Appeler un endpoint API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "description": "GET, POST, PUT, PATCH, DELETE.",
+            "col": {
+              "xs": 24
+            },
+            "default": "GET",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Chemin endpoint",
+            "description": "Ex: /v2/users",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "query",
+            "label": "Query params",
+            "description": "Objet JSON des query params.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "headers",
+            "label": "En-têtes",
+            "description": "Objet JSON d’en-têtes HTTP.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "body",
+            "label": "Body JSON",
+            "description": "Payload JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body_text",
+            "label": "Body texte",
+            "description": "Corps brut (prioritaire sur body).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Utilitaires API"
+    },
+    {
+      "key": "clickhouse_query_list_databases",
+      "name": "clickhouseQueryListDatabases",
+      "schemaVersion": 2,
+      "title": "Lister les bases",
+      "subtitle": "Query",
+      "icon": "fa-solid fa-database",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "ClickHouse",
+      "providerKey": "clickhouse",
+      "tags": [
+        "lecture",
+        "database"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:clickhouse_queries"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les bases de données ClickHouse.",
+      "args": {
+        "fields": []
+      },
+      "group": "Requêtes"
+    }
+  ]
+}

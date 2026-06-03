@@ -1,0 +1,915 @@
+{
+  "repo": {
+    "name": "influxdb",
+    "type": "local",
+    "label": "InfluxDB"
+  },
+  "variables": {
+    "influxdb_action_result": {
+      "title": "Résultat InfluxDB",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "influxdb_rows": {
+      "title": "Lignes InfluxDB",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "rowCount",
+          "label": "Nombre de lignes",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "fields",
+          "label": "Colonnes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "rows",
+          "label": "Lignes",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "influxdb_items": {
+      "title": "Liste InfluxDB",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "json",
+          "key": "items",
+          "label": "Éléments",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "influxdb_record": {
+      "title": "Élément InfluxDB",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "properties",
+          "label": "Propriétés",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Réponse brute",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "influxdb",
+      "name": "InfluxDB",
+      "title": "InfluxDB",
+      "iconClass": "fa-solid fa-chart-line",
+      "iconUrl": "https://cdn.simpleicons.org/influxdb",
+      "color": "#e8f4ff",
+      "tags": [
+        "influxdb",
+        "time-series",
+        "flux"
+      ],
+      "categories": [
+        "Base de données"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants InfluxDB",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL InfluxDB",
+            "description": "Ex: https://eu-central-1-1.aws.cloud2.influxdata.com",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "token",
+            "label": "Token API",
+            "description": "Token InfluxDB.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "secret": true
+          },
+          {
+            "type": "text",
+            "key": "org",
+            "label": "Organisation",
+            "description": "Organisation InfluxDB.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket par défaut",
+            "description": "Bucket par défaut.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "influxdb_query_flux",
+      "name": "influxdbQueryFlux",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête Flux",
+      "subtitle": "Requêtes",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "flux"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête Flux et retourne les lignes.",
+      "args": {
+        "title": "Exécuter une requête Flux",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête Flux",
+            "description": "Requête Flux.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Requêtes"
+    },
+    {
+      "key": "influxdb_query_influxql",
+      "name": "influxdbQueryInfluxql",
+      "schemaVersion": 2,
+      "title": "Exécuter une requête InfluxQL",
+      "subtitle": "Requêtes",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "influxql"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_rows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Exécute une requête SQL/InfluxQL via l’API query.",
+      "args": {
+        "title": "Exécuter une requête InfluxQL",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête InfluxQL",
+            "description": "Requête InfluxQL.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Requêtes"
+    },
+    {
+      "key": "influxdb_write_records",
+      "name": "influxdbWriteRecords",
+      "schemaVersion": 2,
+      "title": "Écrire des lignes line protocol",
+      "subtitle": "Écriture",
+      "icon": "fa-solid fa-arrow-up",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "write"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Écrit une ou plusieurs lignes line protocol.",
+      "args": {
+        "title": "Écrire des lignes line protocol",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "records",
+            "label": "Records",
+            "description": "Une ligne par record.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "description": "Bucket cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "precision",
+            "label": "Précision",
+            "description": "ns, us, ms, s",
+            "col": {
+              "xs": 24
+            },
+            "default": "ns"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Écriture"
+    },
+    {
+      "key": "influxdb_write_point",
+      "name": "influxdbWritePoint",
+      "schemaVersion": 2,
+      "title": "Écrire un point JSON",
+      "subtitle": "Écriture",
+      "icon": "fa-solid fa-location-dot",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "write"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Écrit un point via measurement/tags/fields/time.",
+      "args": {
+        "title": "Écrire un point JSON",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "measurement",
+            "label": "Measurement",
+            "description": "Nom measurement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "tags",
+            "label": "Tags JSON",
+            "description": "Tags key/value.",
+            "col": {
+              "xs": 24
+            },
+            "default": "{}"
+          },
+          {
+            "type": "json",
+            "key": "fields",
+            "label": "Fields JSON",
+            "description": "Fields key/value.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "time",
+            "label": "Timestamp",
+            "description": "Timestamp RFC3339 ou epoch optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "description": "Bucket cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Écriture"
+    },
+    {
+      "key": "influxdb_delete_data",
+      "name": "influxdbDeleteData",
+      "schemaVersion": 2,
+      "title": "Supprimer des données",
+      "subtitle": "Écriture",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Supprime des données sur une plage temporelle.",
+      "args": {
+        "title": "Supprimer des données",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "description": "Bucket cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "start",
+            "label": "Début RFC3339",
+            "description": "Ex: 2025-01-01T00:00:00Z",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "stop",
+            "label": "Fin RFC3339",
+            "description": "Ex: 2025-01-02T00:00:00Z",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "predicate",
+            "label": "Predicate",
+            "description": "Ex: _measurement=\"cpu\"",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Écriture"
+    },
+    {
+      "key": "influxdb_buckets_list",
+      "name": "influxdbBucketsList",
+      "schemaVersion": 2,
+      "title": "Lister les buckets",
+      "subtitle": "Métadonnées",
+      "icon": "fa-solid fa-boxes-stacked",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les buckets accessibles.",
+      "args": {
+        "title": "Lister les buckets",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre max.",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Métadonnées"
+    },
+    {
+      "key": "influxdb_measurements_list",
+      "name": "influxdbMeasurementsList",
+      "schemaVersion": 2,
+      "title": "Lister les measurements",
+      "subtitle": "Métadonnées",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les measurements d’un bucket.",
+      "args": {
+        "title": "Lister les measurements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucket",
+            "label": "Bucket",
+            "description": "Bucket cible (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "start",
+            "label": "Fenêtre début",
+            "description": "Ex: -30d",
+            "col": {
+              "xs": 24
+            },
+            "default": "-30d"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Métadonnées"
+    },
+    {
+      "key": "influxdb_retention_rules_list",
+      "name": "influxdbRetentionRulesList",
+      "schemaVersion": 2,
+      "title": "Lister les règles de rétention",
+      "subtitle": "Gouvernance",
+      "icon": "fa-solid fa-clock-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "retention",
+        "bucket"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les règles de rétention d un bucket.",
+      "args": {
+        "title": "Lister les règles de rétention",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "bucketId",
+            "label": "ID bucket",
+            "description": "Identifiant du bucket.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Gouvernance"
+    },
+    {
+      "key": "influxdb_labels_list",
+      "name": "influxdbLabelsList",
+      "schemaVersion": 2,
+      "title": "Lister les labels",
+      "subtitle": "Gouvernance",
+      "icon": "fa-solid fa-tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "InfluxDB",
+      "providerKey": "influxdb",
+      "tags": [
+        "influxdb",
+        "labels"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Succès",
+          "type": "payload",
+          "schema": "$var:influxdb_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les labels InfluxDB exploitables pour catégoriser les ressources.",
+      "args": {
+        "title": "Lister les labels",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximum (1-500).",
+            "col": {
+              "xs": 24
+            },
+            "default": 100
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Gouvernance"
+    }
+  ]
+}

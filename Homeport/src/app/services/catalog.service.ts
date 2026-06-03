@@ -74,6 +74,7 @@ export type AppProvider = {
   hasCredentials?: boolean;              // if true, this provider expects credentials
   allowWithoutCredentials?: boolean;     // if true, nodes may run without credentials
   credentialsForm?: any;                 // FormSchema for credentials (built via form-builder)
+  auth?: any;                            // config d'auth managée (ex: { type:'oauth2', oauth2:{...} })
 };
 
 // Credentials storage
@@ -275,13 +276,13 @@ export class CatalogService {
 
   // ===== Public API (Node Templates)
   listNodeTemplates(): Observable<NodeTemplate[]> {
-    return this.listNodeTemplatesPage({ page: 1, limit: 2000 });
+    return this.listNodeTemplatesPage({ page: 1, limit: 10000 });
   }
   listNodeTemplatesPage(params?: { page?: number; limit?: number; q?: string; category?: string; sort?: string; providerKey?: string; keys?: string[] }): Observable<NodeTemplate[]> {
     if (environment.useBackend) {
       const apiParams: any = {
         page: params?.page ?? 1,
-        limit: params?.limit ?? 2000,
+        limit: params?.limit ?? 10000,
         q: params?.q,
         category: params?.category,
         sort: params?.sort,
@@ -410,7 +411,7 @@ export class CatalogService {
   // ===== Public API (Apps / Providers)
   listApps(): Observable<AppProvider[]> {
     if (environment.useBackend) {
-      return this.providersApi.list({ page: 1, limit: 1000 }).pipe(map(list => (list || []).map((p: any) => ({
+      return this.providersApi.list({ page: 1, limit: 5000 }).pipe(map(list => (list || []).map((p: any) => ({
         id: p.key,
         name: p.name,
         title: p.title || p.name,
@@ -423,6 +424,7 @@ export class CatalogService {
         hasCredentials: !!p.hasCredentials,
         allowWithoutCredentials: !!p.allowWithoutCredentials,
         credentialsForm: p.credentialsForm,
+        auth: p.auth,
       } as AppProvider))));
     }
     return of(this.load<AppProvider[]>(this.APP_LIST_KEY, [])).pipe(delay(CatalogService.LATENCY));

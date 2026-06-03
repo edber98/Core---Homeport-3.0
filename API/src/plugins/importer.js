@@ -32,13 +32,14 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
     const key = p.key; if (!key) continue;
     summary.providerKeys.push(key);
     const credForm = p.credentialsForm || p.credentials || null;
+    const auth = p.auth || null;
     // Only local repos may define display order; use value from manifest when present, otherwise ignore
     const effOrder = isLocalRepo && (typeof p.order === 'number') ? p.order : undefined;
-    const checksum = checksumJSON({ key: p.key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags, categories: p.categories, order: effOrder, enabled: p.enabled, hasCredentials: p.hasCredentials, allowWithoutCredentials: p.allowWithoutCredentials, credentialsForm: credForm });
+    const checksum = checksumJSON({ key: p.key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags, categories: p.categories, order: effOrder, enabled: p.enabled, hasCredentials: p.hasCredentials, allowWithoutCredentials: p.allowWithoutCredentials, credentialsForm: credForm, auth });
     const existing = await Provider.findOne({ key });
     if (!existing){
       if (!dryRun){
-        const doc = { key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, checksum };
+        const doc = { key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, auth, checksum };
         if (repo && repo.id){ doc.repoId = repo.id; doc.repoName = repo.name; doc.repos = [repo.id]; doc.repoNames = [repo.name]; }
         await Provider.create(doc);
       }
@@ -53,8 +54,9 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
       } else {
         if (!dryRun){
           const before = existing.checksum;
-          Object.assign(existing, { name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, checksum });
+          Object.assign(existing, { name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, auth, checksum });
           existing.markModified('credentialsForm');
+          existing.markModified('auth');
           if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; }
           if (repo && repo.id){
             const rid = String(repo.id);

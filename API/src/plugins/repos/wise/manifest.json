@@ -1,0 +1,1440 @@
+{
+  "repo": {
+    "name": "wise",
+    "type": "local",
+    "label": "Wise"
+  },
+  "variables": {
+    "wise_response": {
+      "title": "Réponse Wise",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom ou titre retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "description": "URL retournée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "description": "Texte principal retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "description": "Résultat complet au format JSON.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "wise_items": {
+      "title": "Wise - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'éléments retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "description": "Curseur de pagination.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments retournés.",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom ou titre.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "description": "Texte ou résumé.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "description": "Données au format JSON.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "wise",
+      "name": "Wise",
+      "title": "Wise",
+      "iconClass": "fa-solid fa-money-bill-transfer",
+      "iconUrl": "https://cdn.simpleicons.org/wise",
+      "color": "#f3fde9",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "categories": [
+        "Productivité"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Wise",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API",
+            "description": "Clé API Wise.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL de base",
+            "description": "URL de base de l'API.",
+            "col": {
+              "xs": 24
+            },
+            "defaultValue": "https://api.wise.com"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "wise_profiles_list",
+      "name": "wiseProfilesList",
+      "schemaVersion": 2,
+      "title": "Lister les profils",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les profils Wise.",
+      "args": {
+        "title": "Lister les profils",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "wise_quote_create",
+      "name": "wiseQuoteCreate",
+      "schemaVersion": 2,
+      "title": "Créer un devis",
+      "subtitle": "Devis",
+      "icon": "fa-solid fa-calculator",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un devis de transfert.",
+      "args": {
+        "title": "Créer un devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "description": "Profil Wise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "sourceCurrency",
+            "label": "Devise source",
+            "description": "Ex: EUR.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "targetCurrency",
+            "label": "Devise cible",
+            "description": "Ex: USD.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "description": "Montant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "payOut",
+            "label": "Pay out",
+            "description": "Méthode de paiement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "preferredPayIn",
+            "label": "Pay in",
+            "description": "Méthode pay-in.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "targetAccount",
+            "label": "ID destinataire",
+            "description": "Compte destinataire optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Devis"
+    },
+    {
+      "key": "wise_quote_get",
+      "name": "wiseQuoteGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un devis",
+      "subtitle": "Devis",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un devis.",
+      "args": {
+        "title": "Récupérer un devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "description": "Profil Wise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "quoteId",
+            "label": "ID devis",
+            "description": "Identifiant du devis.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Devis"
+    },
+    {
+      "key": "wise_recipients_list",
+      "name": "wiseRecipientsList",
+      "schemaVersion": 2,
+      "title": "Lister les destinataires",
+      "subtitle": "Destinataires",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les comptes destinataires.",
+      "args": {
+        "title": "Lister les destinataires",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "description": "Profil Wise.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Filtre devise.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Destinataires"
+    },
+    {
+      "key": "wise_recipient_create",
+      "name": "wiseRecipientCreate",
+      "schemaVersion": 2,
+      "title": "Créer un destinataire",
+      "subtitle": "Destinataires",
+      "icon": "fa-solid fa-user-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un compte destinataire.",
+      "args": {
+        "title": "Créer un destinataire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "description": "Profil Wise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "accountHolderName",
+            "label": "Titulaire",
+            "description": "Nom du titulaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Devise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Type de compte Wise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "details",
+            "label": "Détails JSON",
+            "description": "Détails bancaires.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Destinataires"
+    },
+    {
+      "key": "wise_transfer_requirements_get",
+      "name": "wiseTransferRequirementsGet",
+      "schemaVersion": 2,
+      "title": "Vérifier les exigences",
+      "subtitle": "Transferts",
+      "icon": "fa-solid fa-clipboard-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les champs requis avant transfert.",
+      "args": {
+        "title": "Vérifier les exigences",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "targetAccount",
+            "label": "ID destinataire",
+            "description": "Compte destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "quoteUuid",
+            "label": "ID devis",
+            "description": "UUID du devis.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "details",
+            "label": "Détails JSON",
+            "description": "Détails de transfert.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transferts"
+    },
+    {
+      "key": "wise_transfer_create",
+      "name": "wiseTransferCreate",
+      "schemaVersion": 2,
+      "title": "Créer un transfert",
+      "subtitle": "Transferts",
+      "icon": "fa-solid fa-paper-plane",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un transfert Wise non financé.",
+      "args": {
+        "title": "Créer un transfert",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "targetAccount",
+            "label": "ID destinataire",
+            "description": "Compte destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "quoteUuid",
+            "label": "ID devis",
+            "description": "UUID du devis.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "customerTransactionId",
+            "label": "ID transaction client",
+            "description": "UUID d'idempotence.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "details",
+            "label": "Détails JSON",
+            "description": "Référence et champs exigés.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transferts"
+    },
+    {
+      "key": "wise_transfers_list",
+      "name": "wiseTransfersList",
+      "schemaVersion": 2,
+      "title": "Lister les transferts",
+      "subtitle": "Transferts",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les transferts.",
+      "args": {
+        "title": "Lister les transferts",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "description": "Profil Wise.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Filtre statut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de transferts.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transferts"
+    },
+    {
+      "key": "wise_transfer_get",
+      "name": "wiseTransferGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un transfert",
+      "subtitle": "Transferts",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un transfert.",
+      "args": {
+        "title": "Récupérer un transfert",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transferId",
+            "label": "ID transfert",
+            "description": "Identifiant du transfert.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transferts"
+    },
+    {
+      "key": "wise_transfer_cancel",
+      "name": "wiseTransferCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un transfert",
+      "subtitle": "Transferts",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un transfert non terminé.",
+      "args": {
+        "title": "Annuler un transfert",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transferId",
+            "label": "ID transfert",
+            "description": "Identifiant du transfert.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transferts"
+    },
+    {
+      "key": "wise_transfer_fund",
+      "name": "wiseTransferFund",
+      "schemaVersion": 2,
+      "title": "Financer un transfert",
+      "subtitle": "Transferts",
+      "icon": "fa-solid fa-credit-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Finance un transfert existant avec le pay-in choisi.",
+      "args": {
+        "title": "Financer un transfert",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "description": "Profil Wise.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "transferId",
+            "label": "ID transfert",
+            "description": "Identifiant du transfert.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Type de financement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transferts"
+    },
+    {
+      "key": "wise_transfer_receipt_get",
+      "name": "wiseTransferReceiptGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un reçu",
+      "subtitle": "Transferts",
+      "icon": "fa-solid fa-file-pdf",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère le reçu PDF d'un transfert en base64.",
+      "args": {
+        "title": "Récupérer un reçu",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "transferId",
+            "label": "ID transfert",
+            "description": "Identifiant du transfert.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Transferts"
+    },
+    {
+      "key": "wise_profile_get",
+      "name": "wiseProfileGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un profil",
+      "subtitle": "Profils",
+      "icon": "fa-solid fa-money-bill-transfer",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un profil",
+      "args": {
+        "title": "Récupérer un profil",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Profils"
+    },
+    {
+      "key": "wise_recipient_get",
+      "name": "wiseRecipientGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un bénéficiaire",
+      "subtitle": "Bénéficiaires",
+      "icon": "fa-solid fa-money-bill-transfer",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupérer un bénéficiaire",
+      "args": {
+        "title": "Récupérer un bénéficiaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "recipientId",
+            "label": "ID bénéficiaire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Bénéficiaires"
+    },
+    {
+      "key": "wise_quote_requirements_get",
+      "name": "wiseQuoteRequirementsGet",
+      "schemaVersion": 2,
+      "title": "Lister les exigences de devis",
+      "subtitle": "Devis",
+      "icon": "fa-solid fa-money-bill-transfer",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Wise",
+      "providerKey": "wise",
+      "tags": [
+        "wise",
+        "automation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wise_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Lister les exigences de devis",
+      "args": {
+        "title": "Lister les exigences de devis",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "profileId",
+            "label": "ID profil",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "source",
+            "label": "Devise source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Devise cible",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "sourceAmount",
+            "label": "Montant source",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Devis"
+    }
+  ]
+}

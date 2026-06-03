@@ -1,0 +1,1096 @@
+{
+  "repo": {
+    "name": "langchain",
+    "type": "local",
+    "label": "LangChain"
+  },
+  "variables": {
+    "langchain_response": {
+      "title": "Réponse LangChain",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "url",
+          "label": "URL",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "text",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "data",
+          "label": "Données",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "result_json",
+          "label": "Résultat JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "langchain_items": {
+      "title": "LangChain - liste",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Curseur suivant",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "section",
+          "title": "Éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "url",
+              "key": "url",
+              "label": "URL",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "text",
+              "label": "Texte",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "textarea",
+              "key": "result_json",
+              "label": "Données JSON",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "langchain_webhook": {
+      "title": "Webhook LangChain",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "event",
+          "label": "Événement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "payload",
+          "label": "Payload",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "langchain",
+      "name": "LangChain",
+      "title": "LangChain",
+      "iconClass": "fa-solid fa-link",
+      "iconUrl": "https://cdn.simpleicons.org/langchain",
+      "color": "#e1f4e5",
+      "tags": [
+        "langchain",
+        "ia",
+        "llm"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants LangChain",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "Clé API OpenAI",
+            "secret": true,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "defaultModel",
+            "label": "Modèle par défaut",
+            "defaultValue": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "default": 0,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "langchain_chat_invoke",
+      "name": "langchainChatInvoke",
+      "schemaVersion": 2,
+      "title": "Appeler un modèle de chat",
+      "subtitle": "Modèles",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Appeler un modèle de chat",
+      "args": {
+        "title": "Appeler un modèle de chat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "system",
+            "label": "Système",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Modèles"
+    },
+    {
+      "key": "langchain_prompt_format",
+      "name": "langchainPromptFormat",
+      "schemaVersion": 2,
+      "title": "Formater un prompt",
+      "subtitle": "Prompts",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Formater un prompt",
+      "args": {
+        "title": "Formater un prompt",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "template",
+            "label": "Template",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "variables",
+            "label": "Variables",
+            "default": {},
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Prompts"
+    },
+    {
+      "key": "langchain_text_summarize",
+      "name": "langchainTextSummarize",
+      "schemaVersion": 2,
+      "title": "Résumer un texte",
+      "subtitle": "Chaînes",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Résumer un texte",
+      "args": {
+        "title": "Résumer un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Chaînes"
+    },
+    {
+      "key": "langchain_json_extract",
+      "name": "langchainJsonExtract",
+      "schemaVersion": 2,
+      "title": "Extraire en JSON",
+      "subtitle": "Chaînes",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Extraire en JSON",
+      "args": {
+        "title": "Extraire en JSON",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "schema",
+            "label": "Schéma attendu",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Chaînes"
+    },
+    {
+      "key": "langchain_classify",
+      "name": "langchainClassify",
+      "schemaVersion": 2,
+      "title": "Classifier un texte",
+      "subtitle": "Chaînes",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Classifier un texte",
+      "args": {
+        "title": "Classifier un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "labels",
+            "label": "Labels",
+            "default": [
+              "urgent",
+              "normal"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Chaînes"
+    },
+    {
+      "key": "langchain_embeddings_create",
+      "name": "langchainEmbeddingsCreate",
+      "schemaVersion": 2,
+      "title": "Créer des embeddings",
+      "subtitle": "Embeddings",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Créer des embeddings",
+      "args": {
+        "title": "Créer des embeddings",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "json",
+            "key": "texts",
+            "label": "Textes",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle embeddings",
+            "default": "text-embedding-3-small",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Embeddings"
+    },
+    {
+      "key": "langchain_text_split",
+      "name": "langchainTextSplit",
+      "schemaVersion": 2,
+      "title": "Découper un texte",
+      "subtitle": "Documents",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_items"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Découper un texte",
+      "args": {
+        "title": "Découper un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "chunkSize",
+            "label": "Taille",
+            "default": 1000,
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "chunkOverlap",
+            "label": "Chevauchement",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Documents"
+    },
+    {
+      "key": "langchain_rag_answer",
+      "name": "langchainRagAnswer",
+      "schemaVersion": 2,
+      "title": "Répondre avec contexte",
+      "subtitle": "RAG",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Répondre avec contexte",
+      "args": {
+        "title": "Répondre avec contexte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "question",
+            "label": "Question",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "RAG"
+    },
+    {
+      "key": "langchain_keywords_extract",
+      "name": "langchainKeywordsExtract",
+      "schemaVersion": 2,
+      "title": "Extraire des mots-clés",
+      "subtitle": "Texte",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Extraire des mots-clés",
+      "args": {
+        "title": "Extraire des mots-clés",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Texte",
+      "risk": "safe"
+    },
+    {
+      "key": "langchain_text_translate",
+      "name": "langchainTextTranslate",
+      "schemaVersion": 2,
+      "title": "Traduire un texte",
+      "subtitle": "Texte",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Traduire un texte",
+      "args": {
+        "title": "Traduire un texte",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "targetLanguage",
+            "label": "Langue cible",
+            "default": "fr",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Texte",
+      "risk": "safe"
+    },
+    {
+      "key": "langchain_sentiment_analyze",
+      "name": "langchainSentimentAnalyze",
+      "schemaVersion": 2,
+      "title": "Analyser le sentiment",
+      "subtitle": "Texte",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "LangChain",
+      "providerKey": "langchain",
+      "tags": [
+        "langchain"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:langchain_response"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Analyser le sentiment",
+      "args": {
+        "title": "Analyser le sentiment",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "default": "gpt-4o-mini",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Texte",
+      "risk": "safe"
+    }
+  ]
+}

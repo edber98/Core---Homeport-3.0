@@ -3229,6 +3229,424 @@
       ],
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "wp_category_update",
+      "name": "wpCategoryUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier une catégorie",
+      "subtitle": "Catégories",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "wordpress",
+      "icon": "fa-solid fa-pen-to-square",
+      "description": "Modifie une catégorie.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_category"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier une catégorie",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "ID catégorie",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "parent",
+            "label": "Parent",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Catégories",
+      "tags": [
+        "mise-à-jour",
+        "wordpress"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "wp_category_delete",
+      "name": "wpCategoryDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer une catégorie",
+      "subtitle": "Catégories",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Catégories",
+      "providerKey": "wordpress",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprime une catégorie.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer une catégorie",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "ID catégorie",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Catégories",
+      "tags": [
+        "suppression",
+        "wordpress"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "wp_tag_get",
+      "name": "wpTagGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un tag",
+      "subtitle": "Tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Tags",
+      "providerKey": "wordpress",
+      "icon": "fa-solid fa-tag",
+      "description": "Récupère un tag.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_tag"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Récupérer un tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "tagId",
+            "label": "ID tag",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tags",
+      "tags": [
+        "lecture",
+        "wordpress"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "wp_tag_update",
+      "name": "wpTagUpdate",
+      "schemaVersion": 2,
+      "title": "Modifier un tag",
+      "subtitle": "Tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Tags",
+      "providerKey": "wordpress",
+      "icon": "fa-solid fa-pen-to-square",
+      "description": "Modifie un tag.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_tag"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Modifier un tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "tagId",
+            "label": "ID tag",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tags",
+      "tags": [
+        "mise-à-jour",
+        "wordpress"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "wp_tag_delete",
+      "name": "wpTagDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un tag",
+      "subtitle": "Tags",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Tags",
+      "providerKey": "wordpress",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprime un tag.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer un tag",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "tagId",
+            "label": "ID tag",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Tags",
+      "tags": [
+        "suppression",
+        "wordpress"
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "wp_comment_delete",
+      "name": "wpCommentDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un commentaire",
+      "subtitle": "Commentaires",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Commentaires",
+      "providerKey": "wordpress",
+      "icon": "fa-solid fa-trash",
+      "description": "Supprime un commentaire.",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:wp_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Supprimer un commentaire",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "commentId",
+            "label": "ID commentaire",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commentaires",
+      "tags": [
+        "suppression",
+        "wordpress"
+      ],
+      "risk": "destructive"
     }
   ]
 }

@@ -1,0 +1,1495 @@
+{
+  "repo": {
+    "name": "checkout-com",
+    "type": "local",
+    "label": "Checkout.com"
+  },
+  "variables": {
+    "checkout_com_payment": {
+      "title": "Paiement Checkout.com",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "approved",
+          "label": "Approuvé",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "action_id",
+          "label": "ID action",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "reference",
+          "label": "Référence",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount",
+          "label": "Montant",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "response_code",
+          "label": "Code réponse",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "response_summary",
+          "label": "Résumé réponse",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "processed_on",
+          "label": "Date traitement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "redirect_url",
+          "label": "URL redirection",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "checkout_com_payments": {
+      "title": "Paiements Checkout.com",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "hasMore",
+          "label": "Plus de résultats",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Paiements",
+          "key": "payments",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "reference",
+              "label": "Référence",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount",
+              "label": "Montant",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "checkout_com_payment_link": {
+      "title": "Lien de paiement Checkout.com",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "payment_id",
+          "label": "ID paiement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount",
+          "label": "Montant",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "reference",
+          "label": "Référence",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_on",
+          "label": "Date de création",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "expires_on",
+          "label": "Expiration",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "redirect_url",
+          "label": "URL paiement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "self_url",
+          "label": "URL API",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "checkout_com_actions": {
+      "title": "Actions de paiement Checkout.com",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Actions",
+          "key": "actions",
+          "mode": "array",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "action_id",
+              "label": "ID action",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "type",
+              "label": "Type",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount",
+              "label": "Montant",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "currency",
+              "label": "Devise",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "processed_on",
+              "label": "Date traitement",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "checkout_com_action": {
+      "title": "Action Checkout.com",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "payment_id",
+          "label": "ID paiement",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "action_id",
+          "label": "ID action",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "reference",
+          "label": "Référence",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "checkout_com",
+      "name": "CheckoutCom",
+      "title": "Checkout.com",
+      "iconClass": "fa-solid fa-credit-card",
+      "iconUrl": "https://cdn.prod.website-files.com/64db80a5e88c6b1723ff760b/67988c06f847e3d5f1219d4c_Checkout.com%20logo%202025.svg",
+      "color": "#ccfff5",
+      "tags": [
+        "paiement",
+        "checkout"
+      ],
+      "categories": [
+        "Paiement"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Checkout.com",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "secretKey",
+            "label": "Clé secrète",
+            "description": "Clé sk_sbox_... ou sk_....",
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "baseUrl",
+            "label": "URL API",
+            "description": "URL propre à votre environnement Checkout.com.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "checkout_com_payment_link_create",
+      "name": "checkoutComPaymentLinkCreate",
+      "schemaVersion": 2,
+      "title": "Créer un lien de paiement",
+      "subtitle": "Payment Links",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "paiement",
+        "lien"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_payment_link"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée un lien de paiement Checkout.com.",
+      "args": {
+        "fields": [
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays facturation",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "email",
+            "key": "customerEmail",
+            "label": "Email client",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "returnUrl",
+            "label": "URL retour",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "expiresOn",
+            "label": "Expiration",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "products",
+            "label": "Produits JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "metadata",
+            "label": "Métadonnées JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Payment Links"
+    },
+    {
+      "key": "checkout_com_payment_link_get",
+      "name": "checkoutComPaymentLinkGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un lien",
+      "subtitle": "Payment Links",
+      "icon": "fa-solid fa-eye",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "lecture",
+        "lien"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_payment_link"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère un lien de paiement.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "linkId",
+            "label": "ID lien",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Payment Links"
+    },
+    {
+      "key": "checkout_com_payment_request",
+      "name": "checkoutComPaymentRequest",
+      "schemaVersion": 2,
+      "title": "Demander un paiement",
+      "subtitle": "Payments",
+      "icon": "fa-solid fa-credit-card",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_payment"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Crée une demande de paiement.",
+      "args": {
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "source",
+            "label": "Source JSON",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "capture",
+            "label": "Capturer",
+            "default": true,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "successUrl",
+            "label": "URL succès",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "failureUrl",
+            "label": "URL échec",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "processingChannelId",
+            "label": "ID canal",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "customer",
+            "label": "Client JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "metadata",
+            "label": "Métadonnées JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "extra",
+            "label": "Options avancées JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Payments"
+    },
+    {
+      "key": "checkout_com_payment_get",
+      "name": "checkoutComPaymentGet",
+      "schemaVersion": 2,
+      "title": "Récupérer un paiement",
+      "subtitle": "Payments",
+      "icon": "fa-solid fa-circle-info",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "lecture",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_payment"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Récupère les détails d'un paiement.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentId",
+            "label": "ID paiement",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Payments"
+    },
+    {
+      "key": "checkout_com_payments_list",
+      "name": "checkoutComPaymentsList",
+      "schemaVersion": 2,
+      "title": "Lister par référence",
+      "subtitle": "Payments",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "lecture",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_payments"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les paiements d'une référence.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "default": 10,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "skip",
+            "label": "Décalage",
+            "default": 0,
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      },
+      "group": "Payments"
+    },
+    {
+      "key": "checkout_com_payments_search",
+      "name": "checkoutComPaymentsSearch",
+      "schemaVersion": 2,
+      "title": "Rechercher des paiements",
+      "subtitle": "Payments",
+      "icon": "fa-solid fa-magnifying-glass",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "recherche",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_payments"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Recherche des paiements Checkout.com.",
+      "args": {
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "query",
+            "label": "Requête",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "default": 10,
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "date",
+            "key": "from",
+            "label": "Depuis",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "to",
+            "label": "Jusqu'à",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Payments"
+    },
+    {
+      "key": "checkout_com_payment_actions_list",
+      "name": "checkoutComPaymentActionsList",
+      "schemaVersion": 2,
+      "title": "Lister les actions",
+      "subtitle": "Payments",
+      "icon": "fa-solid fa-clock-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "lecture",
+        "actions"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_actions"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Liste les actions d'un paiement.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentId",
+            "label": "ID paiement",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Payments"
+    },
+    {
+      "key": "checkout_com_payment_capture",
+      "name": "checkoutComPaymentCapture",
+      "schemaVersion": 2,
+      "title": "Capturer un paiement",
+      "subtitle": "Actions",
+      "icon": "fa-solid fa-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "capture",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_action"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Capture un paiement autorisé.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentId",
+            "label": "ID paiement",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "select",
+            "key": "captureType",
+            "label": "Type capture",
+            "options": [
+              "",
+              "Final",
+              "NonFinal"
+            ],
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "metadata",
+            "label": "Métadonnées JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Actions"
+    },
+    {
+      "key": "checkout_com_payment_refund",
+      "name": "checkoutComPaymentRefund",
+      "schemaVersion": 2,
+      "title": "Rembourser un paiement",
+      "subtitle": "Actions",
+      "icon": "fa-solid fa-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "remboursement",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_action"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Rembourse un paiement.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentId",
+            "label": "ID paiement",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "captureActionId",
+            "label": "ID action capture",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "metadata",
+            "label": "Métadonnées JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Actions"
+    },
+    {
+      "key": "checkout_com_payment_void",
+      "name": "checkoutComPaymentVoid",
+      "schemaVersion": 2,
+      "title": "Annuler un paiement",
+      "subtitle": "Actions",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Checkout.com",
+      "providerKey": "checkout_com",
+      "tags": [
+        "annulation",
+        "paiement"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_action"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Annule un paiement autorisé.",
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentId",
+            "label": "ID paiement",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "metadata",
+            "label": "Métadonnées JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Clé idempotence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "group": "Actions"
+    },
+    {
+      "key": "checkout_com_payment_links_list",
+      "name": "checkoutComPaymentLinksList",
+      "schemaVersion": 2,
+      "title": "Lister les liens de paiement",
+      "subtitle": "Payment links",
+      "icon": "fa-solid fa-link",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "checkoutCom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_payments"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Lister les liens de paiement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "reference",
+            "label": "Référence",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    },
+    {
+      "key": "checkout_com_generic_request",
+      "name": "checkoutComGenericRequest",
+      "schemaVersion": 2,
+      "title": "Requête Checkout.com générique",
+      "subtitle": "Couverture avancée",
+      "icon": "fa-solid fa-terminal",
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "checkoutCom",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:checkout_com_payment"
+        }
+      ],
+      "authorize_skip_error": true,
+      "args": {
+        "title": "Requête Checkout.com générique",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode HTTP",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "path",
+            "label": "Path API",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "idempotencyKey",
+            "label": "Idempotency key",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "risk": "write"
+    }
+  ]
+}

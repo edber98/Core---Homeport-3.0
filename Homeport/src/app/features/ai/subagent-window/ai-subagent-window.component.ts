@@ -85,20 +85,27 @@ interface TimelineItem {
             <span>En attente d'activité…</span>
           </div>
 
-          <!-- Messages user → subagent (mailbox poke), affichés chronologiquement -->
+          <!-- Messages user → subagent (mailbox poke), affichés chronologiquement.
+               Design claude-code : badge timestamp + statut delivered/pending clair. -->
           <div *ngFor="let it of userMessages(); trackBy: trackItem" class="sw-msg in" [class.pending]="it.pending">
             <div class="sw-msg-from">
-              {{ it.fromName || 'Utilisateur' }} → {{ profile?.name }}
+              <span class="sw-msg-direction">
+                <span nz-icon nzType="mail" nzTheme="outline"></span>
+                {{ it.fromName || 'Vous' }} → {{ profile?.name }}
+              </span>
+              <span class="sw-msg-time" *ngIf="it.at">{{ relativeTime(it.at) }}</span>
+            </div>
+            <div class="sw-msg-text" [innerHTML]="renderMd(it.text || '')"></div>
+            <div class="sw-msg-status">
               <span class="sw-pending-chip" *ngIf="it.pending">
-                <span nz-icon nzType="clock-circle" nzTheme="outline"></span>
-                En attente de prise en compte
+                <span nz-icon nzType="loading" nzTheme="outline"></span>
+                En attente de prise en compte par {{ profile?.name }}
               </span>
               <span class="sw-delivered-chip" *ngIf="it.pending === false">
-                <span nz-icon nzType="check" nzTheme="outline"></span>
+                <span nz-icon nzType="check-circle" nzTheme="fill"></span>
                 Pris en compte
               </span>
             </div>
-            <div class="sw-msg-text" [innerHTML]="renderMd(it.text || '')"></div>
           </div>
 
           <!-- Rendering via ai-message : même look que le chat principal
@@ -206,20 +213,52 @@ interface TimelineItem {
       color: #595959;
       max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
-    .sw-msg { padding: 8px 10px; border-radius: 8px; }
-    .sw-msg.in { background: #fff7e6; border-left: 3px solid #fa8c16; }
-    .sw-msg.in.pending { background: #fffbe6; border-left-color: #faad14; border-left-style: dashed; }
+    /* Messages user → sub-agent : design plus lisible inspiré claude-code.
+       Avant : chips inline cramped, peu distinctives.
+       Maintenant : bandeau header dédié + body texte + footer status.
+       Animation pulse douce quand pending = on voit "en cours de traitement". */
+    .sw-msg {
+      padding: 10px 12px;
+      border-radius: 10px;
+      box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+      transition: background 0.3s ease, border-left-color 0.3s ease;
+    }
+    .sw-msg.in {
+      background: linear-gradient(180deg, #fff7e6 0%, #fffbf0 100%);
+      border-left: 3px solid #fa8c16;
+    }
+    .sw-msg.in.pending {
+      background: #fffbe6;
+      border-left-color: #faad14;
+      border-left-style: dashed;
+      animation: swPendingPulse 1.8s ease-in-out infinite;
+    }
+    @keyframes swPendingPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(250,173,20,0.0); }
+      50%      { box-shadow: 0 0 0 4px rgba(250,173,20,0.12); }
+    }
     .sw-msg.out { background: #e6f7ff; border-left: 3px solid #1890ff; }
     .sw-msg-from {
-      font-size: 10.5px; color: #8c8c8c; font-weight: 600; margin-bottom: 3px;
+      font-size: 11px; color: #595959; font-weight: 600; margin-bottom: 6px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .sw-msg-direction { display: inline-flex; align-items: center; gap: 5px; }
+    .sw-msg-direction [nz-icon] { color: #fa8c16; font-size: 13px; }
+    .sw-msg-time { font-weight: 500; color: #bfbfbf; font-size: 10.5px; font-variant-numeric: tabular-nums; }
+    /* Footer status — chips delivered/pending plus visibles, alignés au footer
+       du message au lieu de chips inline cramped. */
+    .sw-msg-status {
+      margin-top: 6px;
       display: flex; align-items: center; gap: 6px;
     }
     .sw-pending-chip, .sw-delivered-chip {
-      font-size: 10px; padding: 1px 6px; border-radius: 10px;
-      display: inline-flex; align-items: center; gap: 3px;
-      margin-left: auto;
+      font-size: 10.5px; padding: 2px 8px; border-radius: 12px;
+      display: inline-flex; align-items: center; gap: 4px;
+      font-weight: 600;
     }
     .sw-pending-chip { background: #fffbe6; color: #d48806; border: 1px solid #ffe58f; }
+    .sw-pending-chip [nz-icon] { animation: swPendingSpin 1.5s linear infinite; }
+    @keyframes swPendingSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     .sw-delivered-chip { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
     .sw-msg-text { font-size: 12.5px; line-height: 1.5; }
     .sw-msg-text ::ng-deep p { margin: 0 0 4px; }
@@ -431,23 +470,89 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
         if (md.kind === 'todo_list') return false;
         return isWidgetKind(md.kind);
       });
-      if (!mine.length) return;
-      this._events.update(arr => {
-        const existing = new Set(arr.filter(x => x.kind === 'widget').map(x => x.id));
-        const next = [...arr];
-        for (const m of mine) {
-          const id = `widget-${m._id}`;
+      if (mine.length) {
+        this._events.update(arr => {
+          const existing = new Set(arr.filter(x => x.kind === 'widget').map(x => x.id));
+          const next = [...arr];
+          for (const m of mine) {
+            const id = `widget-${m._id}`;
+            if (existing.has(id)) continue;
+            next.push({
+              id,
+              kind: 'widget',
+              at: new Date((m as any).createdAt || Date.now()),
+              widget: m,
+            });
+          }
+          return next.sort((a, b) => a.at.getTime() - b.at.getTime());
+        });
+      }
+      // ── Reconstruction historique (cas modal ouverte après fin du job) ──
+      // Quand le user ouvre la modal APRÈS que le sub-agent ait terminé, on
+      // ne souscrit plus au SSE (_subscribeJobStream skip si completed). Du coup
+      // la timeline restait vide. On reconstitue donc text_out + tool depuis :
+      //   - le AiMessage agent_report (kind: 'agent_report') → contient summary + toolCount
+      //   - les AiMessages tagués subagentJobId qui ont des toolCalls
+      this._loadHistoricalEvents(msgs).catch(() => {});
+    } catch { /* non-fatal */ }
+  }
+
+  /** Si modal ouverte après job terminé, reconstitue la timeline depuis les AiMessages. */
+  private async _loadHistoricalEvents(allMsgs: AiMessage[]): Promise<void> {
+    // Ne pas overwrite si du live a déjà streamé.
+    const hasLive = this._events().some(e => e.kind === 'text_out' || e.kind === 'tool');
+    if (hasLive) return;
+
+    const reports = allMsgs.filter(m => {
+      const md: any = m.metadata || {};
+      return md.kind === 'agent_report' && md.agentReport?.jobId === this.jobId;
+    });
+    const toolMsgs = allMsgs.filter(m => {
+      const md: any = m.metadata || {};
+      return md.subagentJobId === this.jobId && Array.isArray((m as any).toolCalls) && (m as any).toolCalls.length;
+    });
+
+    this._events.update(arr => {
+      const next = [...arr];
+      const existing = new Set(arr.map(e => e.id));
+
+      // 1) Tool calls historiques
+      for (const m of toolMsgs) {
+        const tcs = (m as any).toolCalls || [];
+        for (const tc of tcs) {
+          const id = `htool-${tc.id || tc.name + '-' + (m._id || '')}`;
           if (existing.has(id)) continue;
           next.push({
             id,
-            kind: 'widget',
+            kind: 'tool',
             at: new Date((m as any).createdAt || Date.now()),
-            widget: m,
+            toolName: tc.name,
+            toolArgs: tc.args,
+            toolResult: tc.result,
+            toolStatus: (tc.status === 'error' ? 'error' : 'success') as any,
+            toolDuration: tc.duration,
           });
+          existing.add(id);
         }
-        return next.sort((a, b) => a.at.getTime() - b.at.getTime());
-      });
-    } catch { /* non-fatal */ }
+      }
+
+      // 2) Texte final / summary du sub-agent (depuis agent_report)
+      for (const r of reports) {
+        const id = `htext-${r._id}`;
+        if (existing.has(id)) continue;
+        const md: any = r.metadata || {};
+        const text = md.agentReport?.summary || r.content || '';
+        if (!text) continue;
+        next.push({
+          id,
+          kind: 'text_out',
+          at: new Date((r as any).createdAt || Date.now()),
+          text,
+        });
+        existing.add(id);
+      }
+      return next.sort((a, b) => a.at.getTime() - b.at.getTime());
+    });
   }
 
   ngOnChanges(c: SimpleChanges): void {
@@ -972,5 +1077,25 @@ export class AiSubagentWindowComponent implements OnInit, OnChanges, OnDestroy {
     if (status === 'in_progress') return 'sync';
     if (status === 'cancelled') return 'stop';
     return 'clock-circle';
+  }
+
+  /**
+   * Affiche un temps relatif lisible humain : "à l'instant", "il y a 5s",
+   * "il y a 2min", "il y a 1h". Au-delà de 24h, affiche la date locale.
+   * Utilisé dans la timeline modal pour montrer le moment exact de chaque action.
+   */
+  relativeTime(at: Date | string | number): string {
+    if (!at) return '';
+    const d = at instanceof Date ? at : new Date(at);
+    const diffMs = Date.now() - d.getTime();
+    if (diffMs < 0) return 'à l\'instant';
+    const s = Math.floor(diffMs / 1000);
+    if (s < 5) return 'à l\'instant';
+    if (s < 60) return `il y a ${s}s`;
+    const m = Math.floor(s / 60);
+    if (m < 60) return `il y a ${m}min`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `il y a ${h}h`;
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
   }
 }

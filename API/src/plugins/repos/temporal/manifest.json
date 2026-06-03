@@ -1,0 +1,1761 @@
+{
+  "repo": {
+    "name": "temporal",
+    "type": "local",
+    "label": "Temporal"
+  },
+  "variables": {
+    "temporal_action_result": {
+      "title": "Résultat action",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "checkbox",
+          "key": "ok",
+          "label": "Succès",
+          "description": "Indique si l’action est réussie.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "status",
+          "label": "Code HTTP",
+          "description": "Code HTTP retourné.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "temporal_workflow": {
+      "title": "workflow Temporal",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "temporal_workflows": {
+      "title": "workflows Temporal",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "temporal_schedule": {
+      "title": "schedule Temporal",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "url",
+          "label": "URL",
+          "description": "URL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "created_at",
+          "label": "Date création",
+          "description": "Date de création.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "updated_at",
+          "label": "Date modification",
+          "description": "Date de modification.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse API brute.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "temporal_schedules": {
+      "title": "schedules Temporal",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Éléments",
+          "description": "Liste des éléments",
+          "mode": "array",
+          "key": "items",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "url",
+              "label": "URL",
+              "description": "URL.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "created_at",
+              "label": "Date création",
+              "description": "Date de création.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "updated_at",
+              "label": "Date modification",
+              "description": "Date de modification.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "description": "Réponse API brute.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre total d’éléments.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "nextCursor",
+          "label": "Cursor suivant",
+          "description": "Cursor de page suivant.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "temporal",
+      "name": "Temporal",
+      "title": "Temporal",
+      "iconClass": "fa-solid fa-diagram-project",
+      "iconUrl": "https://cdn.simpleicons.org/temporal",
+      "color": "#ece8ff",
+      "tags": [
+        "temporal",
+        "workflow",
+        "orchestration"
+      ],
+      "categories": [
+        "IA"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants Temporal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "address",
+            "label": "Adresse",
+            "description": "Adresse Temporal (ex: localhost:7233).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "namespace",
+            "label": "Namespace",
+            "description": "Namespace Temporal.",
+            "col": {
+              "xs": 24
+            },
+            "default": "default"
+          },
+          {
+            "type": "text",
+            "key": "apiKey",
+            "label": "API Key",
+            "description": "API key Temporal Cloud (optionnel).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          },
+          {
+            "type": "checkbox",
+            "key": "tls",
+            "label": "TLS",
+            "description": "Activer TLS.",
+            "col": {
+              "xs": 24
+            },
+            "default": false
+          },
+          {
+            "type": "text",
+            "key": "serverName",
+            "label": "Server Name",
+            "description": "Nom serveur TLS (optionnel).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "clientCertPem",
+            "label": "Client Cert PEM",
+            "description": "Certificat client PEM (optionnel, mTLS).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "clientKeyPem",
+            "label": "Client Key PEM",
+            "description": "Clé privée client PEM (optionnel, mTLS).",
+            "col": {
+              "xs": 24
+            },
+            "secret": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "temporal_workflow_start",
+      "name": "temporalWorkflowStart",
+      "schemaVersion": 2,
+      "title": "Démarrer un workflow",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "start"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_workflow"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action start sur workflow.",
+      "args": {
+        "title": "Démarrer un workflow",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workflow_id",
+            "label": "Workflow ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "workflow_type",
+            "label": "Workflow type",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "task_queue",
+            "label": "Task queue",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "args",
+            "label": "Arguments",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows"
+    },
+    {
+      "key": "temporal_workflow_list",
+      "name": "temporalWorkflowList",
+      "schemaVersion": 2,
+      "title": "Lister les workflows",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_workflows"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list sur workflow.",
+      "args": {
+        "title": "Lister les workflows",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Page size",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "next_page_token",
+            "label": "Next token",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows"
+    },
+    {
+      "key": "temporal_workflow_describe",
+      "name": "temporalWorkflowDescribe",
+      "schemaVersion": 2,
+      "title": "Décrire un workflow",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "describe"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_workflow"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action describe sur workflow.",
+      "args": {
+        "title": "Décrire un workflow",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workflow_id",
+            "label": "Workflow ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "Run ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows"
+    },
+    {
+      "key": "temporal_workflow_signal",
+      "name": "temporalWorkflowSignal",
+      "schemaVersion": 2,
+      "title": "Envoyer un signal",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "signal"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action signal sur workflow.",
+      "args": {
+        "title": "Envoyer un signal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workflow_id",
+            "label": "Workflow ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "Run ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "signal",
+            "label": "Nom du signal",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "args",
+            "label": "Arguments",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows"
+    },
+    {
+      "key": "temporal_workflow_query",
+      "name": "temporalWorkflowQuery",
+      "schemaVersion": 2,
+      "title": "Interroger un workflow",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "query"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_workflow"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action query sur workflow.",
+      "args": {
+        "title": "Interroger un workflow",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workflow_id",
+            "label": "Workflow ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "Run ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Nom de la query",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "args",
+            "label": "Arguments",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows"
+    },
+    {
+      "key": "temporal_workflow_result",
+      "name": "temporalWorkflowResult",
+      "schemaVersion": 2,
+      "title": "Récupérer le résultat",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "result"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_workflow"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action result sur workflow.",
+      "args": {
+        "title": "Récupérer le résultat",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workflow_id",
+            "label": "Workflow ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "Run ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "follow_runs",
+            "label": "Suivre les runs chaînés",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows"
+    },
+    {
+      "key": "temporal_workflow_cancel",
+      "name": "temporalWorkflowCancel",
+      "schemaVersion": 2,
+      "title": "Annuler un workflow",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "cancel"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action cancel sur workflow.",
+      "args": {
+        "title": "Annuler un workflow",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workflow_id",
+            "label": "Workflow ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "Run ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows"
+    },
+    {
+      "key": "temporal_workflow_terminate",
+      "name": "temporalWorkflowTerminate",
+      "schemaVersion": 2,
+      "title": "Terminer un workflow",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "terminate"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action terminate sur workflow.",
+      "args": {
+        "title": "Terminer un workflow",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workflow_id",
+            "label": "Workflow ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "Run ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "reason",
+            "label": "Raison",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows"
+    },
+    {
+      "key": "temporal_schedule_list",
+      "name": "temporalScheduleList",
+      "schemaVersion": 2,
+      "title": "Lister les schedules",
+      "subtitle": "schedules",
+      "icon": "fa-solid fa-list",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "schedule",
+        "list"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_schedules"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action list sur schedule.",
+      "args": {
+        "title": "Lister les schedules",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Page size",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "next_page_token",
+            "label": "Next token",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "schedules"
+    },
+    {
+      "key": "temporal_schedule_create",
+      "name": "temporalScheduleCreate",
+      "schemaVersion": 2,
+      "title": "Créer un schedule",
+      "subtitle": "schedules",
+      "icon": "fa-solid fa-plus",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "schedule",
+        "create"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_schedule"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action create sur schedule.",
+      "args": {
+        "title": "Créer un schedule",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schedule_id",
+            "label": "Schedule ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "spec",
+            "label": "Spec",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "action",
+            "label": "Action",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "schedules"
+    },
+    {
+      "key": "temporal_schedule_describe",
+      "name": "temporalScheduleDescribe",
+      "schemaVersion": 2,
+      "title": "Décrire un schedule",
+      "subtitle": "schedules",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "schedule",
+        "describe"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_schedule"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action describe sur schedule.",
+      "args": {
+        "title": "Décrire un schedule",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schedule_id",
+            "label": "Schedule ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "schedules"
+    },
+    {
+      "key": "temporal_schedule_update",
+      "name": "temporalScheduleUpdate",
+      "schemaVersion": 2,
+      "title": "Mettre à jour un schedule",
+      "subtitle": "schedules",
+      "icon": "fa-solid fa-pen",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "schedule",
+        "update"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action update sur schedule.",
+      "args": {
+        "title": "Mettre à jour un schedule",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schedule_id",
+            "label": "Schedule ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "update",
+            "label": "Update",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "schedules"
+    },
+    {
+      "key": "temporal_schedule_delete",
+      "name": "temporalScheduleDelete",
+      "schemaVersion": 2,
+      "title": "Supprimer un schedule",
+      "subtitle": "schedules",
+      "icon": "fa-solid fa-trash",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "schedule",
+        "delete"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action delete sur schedule.",
+      "args": {
+        "title": "Supprimer un schedule",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schedule_id",
+            "label": "Schedule ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "schedules"
+    },
+    {
+      "key": "temporal_schedule_trigger",
+      "name": "temporalScheduleTrigger",
+      "schemaVersion": 2,
+      "title": "Déclencher un schedule",
+      "subtitle": "schedules",
+      "icon": "fa-solid fa-bolt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "schedule",
+        "trigger"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "Action trigger sur schedule.",
+      "args": {
+        "title": "Déclencher un schedule",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "schedule_id",
+            "label": "Schedule ID",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "overlap",
+            "label": "Overlap",
+            "description": "",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "schedules"
+    },
+    {
+      "key": "temporal_workflow_signal_with_start",
+      "name": "temporalWorkflowSignalWithStart",
+      "schemaVersion": 2,
+      "title": "Signaler et démarrer workflow",
+      "subtitle": "workflows",
+      "icon": "fa-solid fa-play",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Temporal",
+      "providerKey": "temporal",
+      "tags": [
+        "temporal",
+        "workflow",
+        "signal_with_start"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:temporal_action_result"
+        }
+      ],
+      "authorize_catch_error": true,
+      "description": "SignalWithStart: démarre le workflow si absent puis envoie le signal.",
+      "args": {
+        "title": "Signaler et démarrer workflow",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "workflow_id",
+            "label": "Workflow ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "workflow_type",
+            "label": "Workflow Type",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "task_queue",
+            "label": "Task Queue",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "signal",
+            "label": "Signal",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "args",
+            "label": "Workflow args JSON",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "signal_args",
+            "label": "Signal args JSON",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "workflows",
+      "risk": "write"
+    }
+  ]
+}

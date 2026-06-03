@@ -70,17 +70,33 @@ module.exports = {
   OPENAI_MODEL: process.env.OPENAI_MODEL || 'gpt-5.2',
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
   ANTHROPIC_MODEL: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-5-20250929',
+  // Provider OpenAI-compatible auto-hébergé (vLLM, Ollama, LM Studio, ...)
+  // AI_BASE_URL : URL du serveur (ex: 'http://192.168.1.10:8000/v1')
+  // VLLM_MODEL  : modèle exposé par le serveur (ex: 'Qwen/Qwen3.6-35B-A3B-FP8')
+  // VLLM_API_KEY: souvent 'local' ou laissé vide (vLLM accepte n'importe quoi)
+  AI_BASE_URL: process.env.AI_BASE_URL || process.env.VLLM_BASE_URL || '',
+  VLLM_MODEL: process.env.VLLM_MODEL || process.env.AI_MODEL_VLLM || '',
+  VLLM_API_KEY: process.env.VLLM_API_KEY || 'local',
   get AI_PROVIDER() {
     if (process.env.AI_PROVIDER) return process.env.AI_PROVIDER;
+    if (this.AI_BASE_URL) return 'vllm';
     if (this.ANTHROPIC_API_KEY) return 'anthropic';
     return 'openai';
   },
   get AI_MODEL() {
-    if (this.AI_PROVIDER === 'anthropic' || this.AI_PROVIDER === 'claude') return this.ANTHROPIC_MODEL;
+    const p = this.AI_PROVIDER;
+    if (p === 'anthropic' || p === 'claude') return this.ANTHROPIC_MODEL;
+    if (['vllm','ollama','lmstudio','openai-compatible','openai-compat'].includes(p)) {
+      return this.VLLM_MODEL || this.OPENAI_MODEL;
+    }
     return this.OPENAI_MODEL;
   },
   get AI_API_KEY() {
-    if (this.AI_PROVIDER === 'anthropic' || this.AI_PROVIDER === 'claude') return this.ANTHROPIC_API_KEY;
+    const p = this.AI_PROVIDER;
+    if (p === 'anthropic' || p === 'claude') return this.ANTHROPIC_API_KEY;
+    if (['vllm','ollama','lmstudio','openai-compatible','openai-compat'].includes(p)) {
+      return this.VLLM_API_KEY;
+    }
     return this.OPENAI_API_KEY;
   },
   AI_TEMPERATURE: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
@@ -128,4 +144,10 @@ module.exports = {
       : ''),
   // Secret HMAC pour les webhooks /internal/* poussés par Kinn-panel
   KINN_PANEL_HMAC_SECRET: process.env.KINN_PANEL_HMAC_SECRET || '',
+  // === OAuth Bouncer (concentrateur auth.kinn.fr) ===
+  // Clé HS256 PARTAGÉE avec le panel + toute la flotte (signe/vérifie les `state` JWT).
+  // Doit être IDENTIQUE partout. Générer 1x: `openssl rand -hex 32`.
+  KINN_OAUTH_RELAY_SECRET: process.env.KINN_OAUTH_RELAY_SECRET || '',
+  // URL du concentrateur. Le redirect_uri envoyé aux providers est `${url}/oauth/{vendor}/callback`.
+  KINN_OAUTH_CONCENTRATOR_URL: (process.env.KINN_OAUTH_CONCENTRATOR_URL || 'https://auth.kinn.fr').replace(/\/+$/, ''),
 };

@@ -1,0 +1,39 @@
+const { utils } = require("./utils");
+
+module.exports = {
+  async mixpanel_segmentation_query(node, msg, inputs, opts) {
+    const d = inputs || {};
+    const projectId = String(d.projectId || "").trim();
+    const event = String(d.event || "").trim();
+    const fromDate = String(d.fromDate || "").trim();
+    const toDate = String(d.toDate || "").trim();
+
+    if (!projectId || !event || !fromDate || !toDate) {
+      return { ok: false, error: "projectId, event, fromDate et toDate sont requis." };
+    }
+
+    const query = {
+      project_id: projectId,
+      event,
+      from_date: fromDate,
+      to_date: toDate,
+      type: d.type || "general",
+      unit: d.unit || "day",
+      where: d.where || undefined,
+      on: d.on || undefined,
+      limit: d.limit || undefined
+    };
+
+    const res = await utils.mixpanelQueryRequest(opts, "/api/query/segmentation", { query });
+    if (!res.ok) return { ok: false, error: res.error, status: res.status, raw: res.details };
+
+    return {
+      ok: true,
+      status: res.status,
+      message: "Rapport segmentation recupere.",
+      event,
+      project_id: projectId,
+      raw: res.data
+    };
+  }
+};

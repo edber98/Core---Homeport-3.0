@@ -1,0 +1,1393 @@
+{
+  "repo": {
+    "name": "bill",
+    "type": "local",
+    "label": "BILL"
+  },
+  "variables": {
+    "bill_session": {
+      "title": "Session BILL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "sessionId",
+          "label": "Session ID",
+          "description": "Session API BILL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "organizationId",
+          "label": "Organisation",
+          "description": "Identifiant de l'organisation.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "bill_vendor": {
+      "title": "Fournisseur BILL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom du fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "email",
+          "label": "E-mail",
+          "description": "Adresse e-mail.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut BILL.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "archived",
+          "label": "Archivé",
+          "description": "Fournisseur archivé.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "bill_vendors": {
+      "title": "Fournisseurs BILL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de fournisseurs.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Fournisseurs",
+          "description": "Liste des fournisseurs.",
+          "mode": "array",
+          "key": "vendors",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "description": "Nom.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "email",
+              "label": "E-mail",
+              "description": "E-mail.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "bill_bill": {
+      "title": "Facture fournisseur BILL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "vendorId",
+          "label": "Fournisseur",
+          "description": "ID du fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "dueDate",
+          "label": "Échéance",
+          "description": "Date d'échéance.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "invoiceNumber",
+          "label": "N° facture",
+          "description": "Numéro de facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "paymentStatus",
+          "label": "Statut paiement",
+          "description": "Statut du paiement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "bill_bills": {
+      "title": "Factures fournisseurs BILL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de factures.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Factures",
+          "description": "Liste des factures.",
+          "mode": "array",
+          "key": "bills",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "vendorId",
+              "label": "Fournisseur",
+              "description": "ID fournisseur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "dueDate",
+              "label": "Échéance",
+              "description": "Échéance.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "paymentStatus",
+              "label": "Statut",
+              "description": "Statut paiement.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "bill_payment": {
+      "title": "Paiement BILL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du paiement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "vendorId",
+          "label": "Fournisseur",
+          "description": "ID fournisseur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "billId",
+          "label": "Facture",
+          "description": "ID facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "processDate",
+          "label": "Date traitement",
+          "description": "Date de traitement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du paiement.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "bill_payments": {
+      "title": "Paiements BILL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de paiements.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "section",
+          "title": "Paiements",
+          "description": "Liste des paiements.",
+          "mode": "array",
+          "key": "payments",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "description": "Identifiant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "vendorId",
+              "label": "Fournisseur",
+              "description": "ID fournisseur.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "billId",
+              "label": "Facture",
+              "description": "ID facture.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "amount",
+              "label": "Montant",
+              "description": "Montant.",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "description": "Statut.",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "bill_webhook": {
+      "title": "Événement BILL",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "eventType",
+          "label": "Type",
+          "description": "Type d'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "resourceId",
+          "label": "Ressource",
+          "description": "ID ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Payload brut.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "bill",
+      "name": "BILL",
+      "title": "BILL",
+      "iconClass": "fa-solid fa-file-invoice-dollar",
+      "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Bill.com_Logo_2019.png",
+      "color": "#ffe4cc",
+      "hasCredentials": true,
+      "credentialsForm": {
+        "fields": [
+          {
+            "type": "select",
+            "key": "environment",
+            "label": "Environnement",
+            "default": "sandbox",
+            "options": [
+              {
+                "label": "Sandbox",
+                "value": "sandbox"
+              },
+              {
+                "label": "Production",
+                "value": "production"
+              }
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "password",
+            "key": "devKey",
+            "label": "Clé développeur",
+            "description": "Developer key BILL.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "password",
+            "key": "sessionId",
+            "label": "Session ID",
+            "description": "Session API issue de /v3/login.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "bill_login",
+      "name": "billLogin",
+      "title": "Connexion",
+      "subtitle": "Créer une session API BILL",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur"
+          },
+          {
+            "type": "password",
+            "key": "password",
+            "label": "Mot de passe"
+          },
+          {
+            "type": "text",
+            "key": "organizationId",
+            "label": "Organisation"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_session"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_vendors_list",
+      "name": "billVendorsList",
+      "title": "Lister les fournisseurs",
+      "subtitle": "Récupérer les fournisseurs BILL",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "start",
+            "label": "Offset"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_vendors"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_vendor_get",
+      "name": "billVendorGet",
+      "title": "Obtenir un fournisseur",
+      "subtitle": "Lire un fournisseur BILL",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_vendor"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_vendor_create",
+      "name": "billVendorCreate",
+      "title": "Créer un fournisseur",
+      "subtitle": "Créer un fournisseur BILL",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom"
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "E-mail"
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone"
+          },
+          {
+            "type": "text",
+            "key": "payeeName",
+            "label": "Nom bénéficiaire"
+          },
+          {
+            "type": "json",
+            "key": "addressJson",
+            "label": "Adresse JSON"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_vendor"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_vendor_update",
+      "name": "billVendorUpdate",
+      "title": "Mettre à jour un fournisseur",
+      "subtitle": "Modifier un fournisseur BILL",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom"
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "E-mail"
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone"
+          },
+          {
+            "type": "json",
+            "key": "addressJson",
+            "label": "Adresse JSON"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_vendor"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_vendor_archive",
+      "name": "billVendorArchive",
+      "title": "Archiver un fournisseur",
+      "subtitle": "Archiver un fournisseur BILL",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_vendor"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_bills_list",
+      "name": "billBillsList",
+      "title": "Lister les factures",
+      "subtitle": "Récupérer les factures fournisseurs",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "start",
+            "label": "Offset"
+          },
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur"
+          },
+          {
+            "type": "text",
+            "key": "paymentStatus",
+            "label": "Statut paiement"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bills"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_bill_get",
+      "name": "billBillGet",
+      "title": "Obtenir une facture",
+      "subtitle": "Lire une facture fournisseur",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "billId",
+            "label": "ID facture"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bill"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_bill_create",
+      "name": "billBillCreate",
+      "title": "Créer une facture",
+      "subtitle": "Créer une facture fournisseur",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur"
+          },
+          {
+            "type": "date",
+            "key": "dueDate",
+            "label": "Échéance"
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "default": 1
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description"
+          },
+          {
+            "type": "text",
+            "key": "invoiceNumber",
+            "label": "N° facture"
+          },
+          {
+            "type": "date",
+            "key": "invoiceDate",
+            "label": "Date facture"
+          },
+          {
+            "type": "json",
+            "key": "billLineItemsJson",
+            "label": "Lignes JSON"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bill"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_bill_update",
+      "name": "billBillUpdate",
+      "title": "Mettre à jour une facture",
+      "subtitle": "Modifier une facture fournisseur",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "billId",
+            "label": "ID facture"
+          },
+          {
+            "type": "date",
+            "key": "dueDate",
+            "label": "Échéance"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description"
+          },
+          {
+            "type": "json",
+            "key": "billLineItemsJson",
+            "label": "Lignes JSON"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bill"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_payments_list",
+      "name": "billPaymentsList",
+      "title": "Lister les paiements",
+      "subtitle": "Récupérer les paiements BILL",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "default": 50
+          },
+          {
+            "type": "text",
+            "key": "start",
+            "label": "Offset"
+          },
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur"
+          },
+          {
+            "type": "text",
+            "key": "billId",
+            "label": "ID facture"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_payments"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_payment_create",
+      "name": "billPaymentCreate",
+      "title": "Créer un paiement",
+      "subtitle": "Créer un paiement fournisseur",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur"
+          },
+          {
+            "type": "text",
+            "key": "billId",
+            "label": "ID facture"
+          },
+          {
+            "type": "number",
+            "key": "amount",
+            "label": "Montant",
+            "default": 1
+          },
+          {
+            "type": "date",
+            "key": "processDate",
+            "label": "Date traitement"
+          },
+          {
+            "type": "text",
+            "key": "fundingBankAccountId",
+            "label": "Compte bancaire source"
+          },
+          {
+            "type": "checkbox",
+            "key": "createBill",
+            "label": "Créer la facture"
+          },
+          {
+            "type": "json",
+            "key": "billPaymentsJson",
+            "label": "Paiements factures JSON"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_payment"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_webhook_event",
+      "name": "billWebhookEvent",
+      "title": "Événement webhook",
+      "subtitle": "Recevoir un événement BILL",
+      "schemaVersion": 2,
+      "type": "event",
+      "nodeKind": "event",
+      "providerKey": "bill",
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_webhook"
+        }
+      ]
+    },
+    {
+      "key": "bill_payment_get",
+      "name": "billPaymentGet",
+      "title": "Obtenir un paiement",
+      "subtitle": "Lire un paiement BILL",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentId",
+            "label": "ID paiement"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_payment"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_bill_delete",
+      "name": "billBillDelete",
+      "title": "Supprimer une facture",
+      "subtitle": "Supprimer une facture fournisseur",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "billId",
+            "label": "ID facture"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bill"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ],
+      "risk": "destructive"
+    },
+    {
+      "key": "bill_payments_bulk_create",
+      "name": "billPaymentsBulkCreate",
+      "title": "Créer des paiements en lot",
+      "subtitle": "Paiements BILL en lot",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_payment"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "bill_payment_cancel",
+      "name": "billPaymentCancel",
+      "title": "Annuler un paiement",
+      "subtitle": "Annuler un paiement BILL",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "paymentId",
+            "label": "ID paiement"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_payment"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "bill_vendor_credit_create",
+      "name": "billVendorCreditCreate",
+      "title": "Créer un avoir fournisseur",
+      "subtitle": "Vendor credit",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bill"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "bill_vendor_credits_list",
+      "name": "billVendorCreditsList",
+      "title": "Lister les avoirs fournisseur",
+      "subtitle": "Vendor credits",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite"
+          },
+          {
+            "type": "text",
+            "key": "start",
+            "label": "Offset"
+          },
+          {
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bills"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_vendor_credit_get",
+      "name": "billVendorCreditGet",
+      "title": "Obtenir un avoir fournisseur",
+      "subtitle": "Vendor credit",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorCreditId",
+            "label": "ID vendor credit"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bill"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "key": "bill_vendor_credit_update",
+      "name": "billVendorCreditUpdate",
+      "title": "Mettre à jour un avoir fournisseur",
+      "subtitle": "Vendor credit",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorCreditId",
+            "label": "ID vendor credit"
+          },
+          {
+            "type": "textarea",
+            "key": "body",
+            "label": "Body JSON"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bill"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "bill_vendor_credit_archive",
+      "name": "billVendorCreditArchive",
+      "title": "Archiver un avoir fournisseur",
+      "subtitle": "Vendor credit",
+      "schemaVersion": 2,
+      "type": "function",
+      "nodeKind": "function",
+      "providerKey": "bill",
+      "authorize_catch_error": true,
+      "args": {
+        "fields": [
+          {
+            "type": "text",
+            "key": "vendorCreditId",
+            "label": "ID vendor credit"
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "type": "payload",
+          "schema": "$var:bill_bill"
+        },
+        {
+          "id": "err",
+          "type": "error"
+        }
+      ],
+      "risk": "write"
+    }
+  ]
+}

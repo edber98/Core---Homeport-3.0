@@ -1678,6 +1678,527 @@
       },
       "group": "Événements",
       "risk": "safe"
+    },
+    {
+      "key": "airtable_records_create_batch",
+      "name": "airtableRecordsCreateBatch",
+      "schemaVersion": 2,
+      "title": "Créer des enregistrements (batch)",
+      "subtitle": "Enregistrements",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Airtable",
+      "providerKey": "airtable",
+      "tags": [
+        "création",
+        "batch",
+        "airtable"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:airtable_records"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée plusieurs enregistrements en une requête.",
+      "args": {
+        "title": "Créer des enregistrements (batch)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseId",
+            "label": "Base ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tableIdOrName",
+            "label": "Table ID ou nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "records",
+            "label": "Records JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enregistrements",
+      "risk": "write"
+    },
+    {
+      "key": "airtable_records_update_batch",
+      "name": "airtableRecordsUpdateBatch",
+      "schemaVersion": 2,
+      "title": "Mettre à jour des enregistrements (batch)",
+      "subtitle": "Enregistrements",
+      "icon": "fa-solid fa-layer-group",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Airtable",
+      "providerKey": "airtable",
+      "tags": [
+        "update",
+        "batch",
+        "airtable"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:airtable_records"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Met à jour plusieurs enregistrements en une requête.",
+      "args": {
+        "title": "Mettre à jour des enregistrements (batch)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseId",
+            "label": "Base ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tableIdOrName",
+            "label": "Table ID ou nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "records",
+            "label": "Records JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enregistrements",
+      "risk": "write"
+    },
+    {
+      "key": "airtable_records_upsert",
+      "name": "airtableRecordsUpsert",
+      "schemaVersion": 2,
+      "title": "Upsert enregistrements",
+      "subtitle": "Enregistrements",
+      "icon": "fa-solid fa-code-merge",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Airtable",
+      "providerKey": "airtable",
+      "tags": [
+        "upsert",
+        "batch",
+        "airtable"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:airtable_records"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée ou met à jour en une requête selon les champs de fusion.",
+      "args": {
+        "title": "Upsert enregistrements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseId",
+            "label": "Base ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tableIdOrName",
+            "label": "Table ID ou nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "records",
+            "label": "Records JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "fieldsToMergeOn",
+            "label": "FieldsToMergeOn JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enregistrements",
+      "risk": "write"
+    },
+    {
+      "key": "airtable_records_delete_batch",
+      "name": "airtableRecordsDeleteBatch",
+      "schemaVersion": 2,
+      "title": "Supprimer des enregistrements (batch)",
+      "subtitle": "Enregistrements",
+      "icon": "fa-solid fa-trash-can",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Airtable",
+      "providerKey": "airtable",
+      "tags": [
+        "suppression",
+        "batch",
+        "airtable"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:airtable_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime plusieurs enregistrements en une requête.",
+      "args": {
+        "title": "Supprimer des enregistrements (batch)",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseId",
+            "label": "Base ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "tableIdOrName",
+            "label": "Table ID ou nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "recordIds",
+            "label": "Record IDs JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Enregistrements",
+      "risk": "destructive"
+    },
+    {
+      "key": "airtable_webhooks_list",
+      "name": "airtableWebhooksList",
+      "schemaVersion": 2,
+      "title": "Lister les webhooks",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-bell",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Airtable",
+      "providerKey": "airtable",
+      "tags": [
+        "webhook",
+        "liste",
+        "airtable"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:airtable_records"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les webhooks configurés sur une base.",
+      "args": {
+        "title": "Lister les webhooks",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseId",
+            "label": "Base ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "risk": "safe"
+    },
+    {
+      "key": "airtable_webhook_create",
+      "name": "airtableWebhookCreate",
+      "schemaVersion": 2,
+      "title": "Créer un webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-bell",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Airtable",
+      "providerKey": "airtable",
+      "tags": [
+        "webhook",
+        "création",
+        "airtable"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:airtable_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un webhook Airtable sur une base.",
+      "args": {
+        "title": "Créer un webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "baseId",
+            "label": "Base ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "notificationUrl",
+            "label": "Notification URL",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "specification",
+            "label": "Specification JSON",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "risk": "write"
     }
   ]
 }

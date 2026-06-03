@@ -1,0 +1,1087 @@
+{
+  "repo": {
+    "name": "paypal",
+    "type": "local",
+    "label": "PayPal"
+  },
+  "variables": {
+    "paypal_order": {
+      "title": "Commande PayPal",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la commande.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut PayPal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "intent",
+          "label": "Intent",
+          "description": "Intent de paiement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "approveUrl",
+          "label": "URL d'approbation",
+          "description": "Lien à transmettre au payeur.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "captureId",
+          "label": "Capture",
+          "description": "Identifiant de capture si disponible.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant principal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Devise ISO.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "paypal_invoice": {
+      "title": "Facture PayPal",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de la facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "number",
+          "label": "Numéro",
+          "description": "Numéro de facture.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "total",
+          "label": "Total",
+          "description": "Montant total.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "url",
+          "key": "detailUrl",
+          "label": "URL",
+          "description": "Lien de consultation.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "paypal_refund": {
+      "title": "Remboursement PayPal",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant du remboursement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut du remboursement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "amount",
+          "label": "Montant",
+          "description": "Montant remboursé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "currency",
+          "label": "Devise",
+          "description": "Devise ISO.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "paypal_result": {
+      "title": "Résultat PayPal",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "description": "Statut de l'opération.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de retour.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "paypal_event": {
+      "title": "Événement PayPal",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "description": "Identifiant de l'événement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "eventType",
+          "label": "Type",
+          "description": "Type d'événement PayPal.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "resourceType",
+          "label": "Ressource",
+          "description": "Type de ressource.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "payload",
+          "label": "Payload",
+          "description": "Payload JSON reçu.",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "paypal",
+      "name": "PayPal",
+      "title": "PayPal",
+      "iconClass": "fa-brands fa-paypal",
+      "color": "#003087",
+      "tags": [
+        "payment",
+        "invoice",
+        "paypal"
+      ],
+      "categories": [
+        "Paiement"
+      ],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants PayPal",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "clientId",
+            "label": "Client ID",
+            "description": "Client ID de l'application REST PayPal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "clientSecret",
+            "label": "Secret client",
+            "description": "Secret client de l'application REST PayPal.",
+            "col": {
+              "xs": 24
+            },
+            "secret": true,
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "environment",
+            "label": "Environnement",
+            "description": "Sandbox ou production.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Sandbox",
+                "value": "sandbox"
+              },
+              {
+                "label": "Production",
+                "value": "live"
+              }
+            ],
+            "default": "sandbox"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "paypal_order_create",
+      "name": "paypalOrderCreate",
+      "schemaVersion": 2,
+      "title": "Créer une commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-cart-shopping",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_order"
+        }
+      ],
+      "description": "Créer une commande PayPal Orders v2.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "select",
+            "key": "intent",
+            "label": "Intent",
+            "description": "Action attendue après approbation.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Capture",
+                "value": "CAPTURE"
+              },
+              {
+                "label": "Autorisation",
+                "value": "AUTHORIZE"
+              }
+            ],
+            "default": "CAPTURE"
+          },
+          {
+            "type": "text",
+            "key": "amount",
+            "label": "Montant",
+            "description": "Montant à payer.",
+            "col": {
+              "xs": 24
+            },
+            "default": "10.00"
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Devise ISO.",
+            "col": {
+              "xs": 24
+            },
+            "default": "EUR"
+          },
+          {
+            "type": "text",
+            "key": "referenceId",
+            "label": "Référence",
+            "description": "Référence interne.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "returnUrl",
+            "label": "URL retour",
+            "description": "URL après approbation.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://example.test/paypal/return"
+          },
+          {
+            "type": "url",
+            "key": "cancelUrl",
+            "label": "URL annulation",
+            "description": "URL après annulation.",
+            "col": {
+              "xs": 24
+            },
+            "default": "https://example.test/paypal/cancel"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commandes",
+      "tags": [
+        "création",
+        "PayPal"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "paypal_order_get",
+      "name": "paypalOrderGet",
+      "schemaVersion": 2,
+      "title": "Lire une commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-receipt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_order"
+        }
+      ],
+      "description": "Récupérer les détails d'une commande.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lire une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "Commande",
+            "description": "Identifiant de commande PayPal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commandes",
+      "tags": [
+        "lecture",
+        "PayPal"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "paypal_order_capture",
+      "name": "paypalOrderCapture",
+      "schemaVersion": 2,
+      "title": "Capturer une commande",
+      "subtitle": "Commandes",
+      "icon": "fa-solid fa-check",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_order"
+        }
+      ],
+      "description": "Capturer les fonds d'une commande approuvée.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Capturer une commande",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "orderId",
+            "label": "Commande",
+            "description": "Identifiant de commande PayPal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Commandes",
+      "tags": [
+        "capture",
+        "PayPal"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "paypal_capture_refund",
+      "name": "paypalCaptureRefund",
+      "schemaVersion": 2,
+      "title": "Rembourser une capture",
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-rotate-left",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_refund"
+        }
+      ],
+      "description": "Créer un remboursement sur une capture.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Rembourser une capture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "captureId",
+            "label": "Capture",
+            "description": "Identifiant de capture PayPal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "amount",
+            "label": "Montant",
+            "description": "Montant à rembourser.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Devise ISO.",
+            "col": {
+              "xs": 24
+            },
+            "default": "EUR"
+          },
+          {
+            "type": "textarea",
+            "key": "note",
+            "label": "Note",
+            "description": "Note du remboursement.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Paiements",
+      "tags": [
+        "remboursement",
+        "PayPal"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "paypal_invoice_create",
+      "name": "paypalInvoiceCreate",
+      "schemaVersion": 2,
+      "title": "Créer une facture",
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-file-invoice",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_invoice"
+        }
+      ],
+      "description": "Créer une facture PayPal Invoicing v2.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Créer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "recipientEmail",
+            "label": "Email client",
+            "description": "Adresse email du destinataire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "currency",
+            "label": "Devise",
+            "description": "Devise ISO.",
+            "col": {
+              "xs": 24
+            },
+            "default": "EUR"
+          },
+          {
+            "type": "textarea",
+            "key": "items",
+            "label": "Lignes JSON",
+            "description": "Lignes de facture au format JSON PayPal.",
+            "col": {
+              "xs": 24
+            },
+            "default": "[{\"name\":\"Service\",\"quantity\":\"1\",\"unit_amount\":{\"currency_code\":\"EUR\",\"value\":\"10.00\"}}]"
+          },
+          {
+            "type": "textarea",
+            "key": "note",
+            "label": "Note",
+            "description": "Note client.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures",
+      "tags": [
+        "création",
+        "PayPal"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "paypal_invoice_send",
+      "name": "paypalInvoiceSend",
+      "schemaVersion": 2,
+      "title": "Envoyer une facture",
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-paper-plane",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_result"
+        }
+      ],
+      "description": "Envoyer une facture PayPal existante.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Envoyer une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "Facture",
+            "description": "Identifiant de facture PayPal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "sendToRecipient",
+            "label": "Envoyer au client",
+            "description": "Demander à PayPal d'envoyer la notification.",
+            "col": {
+              "xs": 24
+            },
+            "default": true
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures",
+      "tags": [
+        "envoi",
+        "PayPal"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "paypal_invoice_get",
+      "name": "paypalInvoiceGet",
+      "schemaVersion": 2,
+      "title": "Lire une facture",
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-file-invoice-dollar",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_invoice"
+        }
+      ],
+      "description": "Récupérer les détails d'une facture.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lire une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "Facture",
+            "description": "Identifiant de facture PayPal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures",
+      "tags": [
+        "lecture",
+        "PayPal"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "paypal_invoice_cancel",
+      "name": "paypalInvoiceCancel",
+      "schemaVersion": 2,
+      "title": "Annuler une facture",
+      "subtitle": "Factures",
+      "icon": "fa-solid fa-ban",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_result"
+        }
+      ],
+      "description": "Annuler une facture PayPal.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Annuler une facture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "invoiceId",
+            "label": "Facture",
+            "description": "Identifiant de facture PayPal.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "note",
+            "label": "Note",
+            "description": "Raison ou note d'annulation.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Factures",
+      "tags": [
+        "annulation",
+        "PayPal"
+      ],
+      "risk": "write"
+    },
+    {
+      "key": "paypal_webhook_event",
+      "name": "paypalWebhookEvent",
+      "schemaVersion": 2,
+      "title": "Événement webhook",
+      "subtitle": "Webhooks",
+      "icon": "fa-solid fa-bolt",
+      "type": "event",
+      "nodeKind": "event",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "outputHandles": [
+        {
+          "id": "event",
+          "name": "Event",
+          "type": "payload",
+          "schema": "$var:paypal_event"
+        }
+      ],
+      "description": "Déclencheur pour les événements webhook PayPal.",
+      "args": {
+        "title": "Événement webhook",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "eventType",
+            "label": "Type d'événement",
+            "description": "Filtrer sur un type d'événement PayPal, ou *.",
+            "col": {
+              "xs": 24
+            },
+            "default": "*"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Webhooks",
+      "tags": [
+        "événement",
+        "PayPal"
+      ],
+      "risk": "safe"
+    },
+    {
+      "key": "paypal_capture_get",
+      "name": "paypalCaptureGet",
+      "schemaVersion": 2,
+      "title": "Lire une capture",
+      "subtitle": "Paiements",
+      "icon": "fa-solid fa-receipt",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "PayPal",
+      "providerKey": "paypal",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:paypal_result"
+        }
+      ],
+      "description": "Récupérer les détails d'une capture PayPal.",
+      "authorize_catch_error": true,
+      "args": {
+        "title": "Lire une capture",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "captureId",
+            "label": "ID capture",
+            "description": "Identifiant de la capture.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "group": "Paiements",
+      "tags": [
+        "lecture",
+        "PayPal"
+      ],
+      "risk": "safe"
+    }
+  ]
+}

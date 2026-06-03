@@ -14,6 +14,8 @@ const ProviderSchema = new Schema({
   hasCredentials: { type: Boolean, default: false },
   allowWithoutCredentials: { type: Boolean, default: false },
   credentialsForm: { type: Schema.Types.Mixed },
+  // Config d'authentification managée (ex: OAuth2). { type:'oauth2', oauth2:{ vendor, useBouncer, authorizeUrl, ... } }
+  auth: { type: Schema.Types.Mixed },
   checksum: { type: String },
   // Origin repo (optional)
   repoId: { type: Types.ObjectId, ref: 'PluginRepo', index: true },
