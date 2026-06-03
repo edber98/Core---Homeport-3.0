@@ -18,6 +18,9 @@ function fail(message, meta) { failures.push({ message, ...(meta || {}) }); }
 function warn(message, meta) { warnings.push({ message, ...(meta || {}) }); }
 function rel(file) { return path.relative(root, file); }
 
+const GENERIC_BODY_FIELD_KEYS = new Set(["body", "payload", "payloadjson", "data", "attributes", "requestattributes", "request_root_key", "requestrootkey", "request_resource_id", "requestresourceid"]);
+const GENERIC_BODY_FIELD_TYPES = new Set(["json", "json_editor", "textarea", "text"]);
+
 function findRepoRoot(start) {
   let dir = start;
   while (dir && dir !== path.dirname(dir)) {
@@ -114,6 +117,7 @@ async function validateManifest(connectorName) {
     if (!t.providerKey) fail(`${connectorName}: providerKey requis: ${t.key}`);
     if (t.providerKey && providerKeys.size && !providerKeys.has(t.providerKey)) fail(`${connectorName}: providerKey inconnu ${t.providerKey}: ${t.key}`);
     if (!Array.isArray(t.outputHandles) || !t.outputHandles.length) fail(`${connectorName}: outputHandles[] requis: ${t.key}`);
+    validateArgsFields(connectorName, t);
     for (const h of t.outputHandles || []) {
       const handleId = h && h.id ? String(h.id) : "ok";
       const isErrorHandle = handleId === "err" || handleId === "error";
@@ -185,6 +189,30 @@ function flattenFields(fields) {
     else out.push(field);
   }
   return out;
+}
+
+function validateArgsFields(connectorName, template) {
+  const argsFields = (template.args && Array.isArray(template.args.fields)) ? template.args.fields : [];
+  const flatFields = flattenFields(argsFields);
+  if (!flatFields.length) return;
+
+  const genericBodyFields = flatFields.filter((field) => {
+    const key = String(field.key || "").toLowerCase();
+    const type = String(field.type || "").toLowerCase();
+    return GENERIC_BODY_FIELD_KEYS.has(key) && GENERIC_BODY_FIELD_TYPES.has(type);
+  });
+
+  if (genericBodyFields.length === 1 && flatFields.length === 1) {
+    const field = genericBodyFields[0];
+    fail(`${connectorName}: ${template.key} utilise un champ générique unique ${field.key}; exposer un champ par attribut du body accepté`);
+    return;
+  }
+
+  const pseudoStructuredKeys = new Set(["requestrootkey", "request_root_key", "requestresourceid", "request_resource_id", "requestattributes", "request_attributes"]);
+  const pseudoStructuredFields = flatFields.filter((field) => pseudoStructuredKeys.has(String(field.key || "").toLowerCase()));
+  if (pseudoStructuredFields.length) {
+    fail(`${connectorName}: ${template.key} utilise des champs pseudo-structurés (${pseudoStructuredFields.map((field) => field.key).join(', ')}); exposer les vrais attributs du body un par un`);
+  }
 }
 
 function sampleValue(key, field) {

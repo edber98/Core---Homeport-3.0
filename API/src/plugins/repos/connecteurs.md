@@ -3,7 +3,7 @@
 | Connecteur | Testé |
 | --- | --- |
 | _audits | Non |
-| activecampaign | Non |
+| activecampaign | Oui |
 | adyen | Oui |
 | ahrefs | Oui |
 | aircall | Non |
@@ -12,6 +12,7 @@
 | anthropic | Oui |
 | apify | Oui |
 | apollo | Oui |
+| appsmith | Non |
 | asana | Oui |
 | assemblyai | Oui |
 | atera | Oui |
@@ -52,6 +53,7 @@
 | dropbox | Oui |
 | dropcontact | Non |
 | e2b | Non |
+| ebay | Non |
 | elasticsearch | Non |
 | elevenlabs | Oui |
 | email | Non |
@@ -151,6 +153,8 @@
 | redis | Oui |
 | replicate | Oui |
 | resend | Oui |
+| retool | Non |
+| revolut_business | Non |
 | ringcentral | Non |
 | runway | Oui |
 | salesforce | Oui |
@@ -189,6 +193,7 @@
 | wise | Oui |
 | woocommerce | Oui |
 | wordpress | Oui |
+| xero | Non |
 | yousign | Oui |
 | zendesk | Oui |
 | zoom | Oui |

@@ -13,6 +13,7 @@ const {
   writeJson,
   mergeByKey
 } = require('./lib/bulk-utils');
+const { humanizeFieldLabel, humanizeFieldDescription } = require('./lib/field-labels');
 
 const DEFAULT_ACTIONS = ['list', 'get', 'create', 'update', 'delete'];
 
@@ -53,16 +54,51 @@ function parseArgs(argv) {
 function normalizeField(f) {
   const key = toSnake(f && (f.key || f.name));
   if (!key) return null;
-  return {
+
+  const normalized = {
     type: f.type || 'text',
     key,
-    label: f.label || titleCase(key),
-    description: f.description || '',
+    label: f.label || humanizeFieldLabel({ key, bodyPath: f.bodyPath, in: f.in || null }),
+    description: f.description || humanizeFieldDescription({ key, bodyPath: f.bodyPath, in: f.in || null }),
     required: !!f.required,
     in: f.in || null,
     default: f.default,
     options: Array.isArray(f.options) ? f.options : null
   };
+
+  if (Array.isArray(f.bodyPath) && f.bodyPath.length) {
+    normalized.bodyPath = f.bodyPath.map((part) => toSnake(part)).filter(Boolean);
+  } else if (String(f.in || '').toLowerCase() === 'body') {
+    normalized.bodyPath = [key];
+  }
+
+  if (Array.isArray(f.fields) && f.fields.length) normalized.fields = f.fields.map(normalizeField).filter(Boolean);
+  if (f.mode) normalized.mode = f.mode;
+  if (f.array && typeof f.array === 'object') normalized.array = f.array;
+  return normalized;
+}
+
+function flattenArgDefs(args) {
+  const out = [];
+  for (const arg of args || []) {
+    if (!arg || typeof arg !== 'object') continue;
+    if (Array.isArray(arg.fields) && arg.fields.length) {
+      out.push(...flattenArgDefs(arg.fields));
+      continue;
+    }
+    out.push(arg);
+  }
+  return out;
+}
+
+function rejectGenericBodyArgs(args, context) {
+  for (const arg of flattenArgDefs(args || [])) {
+    if (!arg || String(arg.in || '').toLowerCase() !== 'body') continue;
+    const key = toSnake(arg.key);
+    if (['body', 'payload', 'payload_json', 'payloadjson', 'data', 'attributes', 'request_attributes', 'request_root_key', 'request_resource_id'].includes(key)) {
+      throw new Error(`${context}: champ body générique interdit (${arg.key}). Déclare un champ par attribut du body.`);
+    }
+  }
 }
 
 function pathParams(pathTemplate) {
@@ -213,13 +249,17 @@ function templateField(arg) {
   const f = {
     type: arg.type || 'text',
     key: arg.key,
-    label: arg.label || titleCase(arg.key),
-    description: arg.description || '',
+    label: arg.label || humanizeFieldLabel({ key: arg.key, bodyPath: arg.bodyPath, in: arg.in || null }),
+    description: arg.description || humanizeFieldDescription({ key: arg.key, bodyPath: arg.bodyPath, in: arg.in || null }),
     col: { xs: 24 }
   };
   if (arg.default !== undefined) f.default = arg.default;
   if (arg.options && Array.isArray(arg.options) && arg.options.length) f.options = arg.options;
   if (arg.required) f.validators = [{ type: 'required' }];
+  if (Array.isArray(arg.bodyPath) && arg.bodyPath.length) f.bodyPath = arg.bodyPath;
+  if (Array.isArray(arg.fields) && arg.fields.length) f.fields = arg.fields.map(templateField);
+  if (arg.mode) f.mode = arg.mode;
+  if (arg.array) f.array = arg.array;
   return f;
 }
 
@@ -227,7 +267,14 @@ function defaultArgsFor(actionKey, outputMode, pathTemplate, method) {
   const args = [];
   const params = pathParams(pathTemplate);
   for (const p of params) {
-    args.push({ key: p, type: 'text', label: titleCase(p), description: `Valeur de chemin ${p}.`, required: true, in: 'path' });
+    args.push({
+      key: p,
+      type: 'text',
+      label: humanizeFieldLabel({ key: p, in: 'path' }),
+      description: humanizeFieldDescription({ key: p, in: 'path' }),
+      required: true,
+      in: 'path'
+    });
   }
 
   if (actionKey === 'list' || actionKey === 'search') {
@@ -237,15 +284,34 @@ function defaultArgsFor(actionKey, outputMode, pathTemplate, method) {
   }
 
   if (outputMode === 'item' && actionKey === 'get' && !params.includes('id')) {
-    args.push({ key: 'id', type: 'text', label: 'ID', description: 'Identifiant.', required: true, in: 'path' });
-  }
-
-  if (['POST', 'PATCH', 'PUT'].includes(method)) {
-    const required = actionKey === 'create' || actionKey === 'upsert' || actionKey === 'custom';
-    args.push({ key: 'body', type: 'json', label: 'Payload', description: 'Corps JSON de la requête.', required, in: 'body' });
+    args.push({ key: 'id', type: 'text', label: 'Identifiant', description: 'Renseignez l’identifiant.', required: true, in: 'path' });
   }
 
   return args;
+}
+
+function bodyPathForArg(arg) {
+  const explicit = Array.isArray(arg.bodyPath) ? arg.bodyPath.map((part) => toSnake(part)).filter(Boolean) : [];
+  return explicit.length ? explicit : [toSnake(arg.key)].filter(Boolean);
+}
+
+function bodyAssignmentLines(arg) {
+  const pathParts = bodyPathForArg(arg);
+  if (!pathParts.length) return [];
+
+  const valueRef = `d.${arg.key}`;
+  const lines = [`if (${valueRef} !== undefined && ${valueRef} !== null && ${valueRef} !== "") {`];
+  let cursor = 'body';
+
+  for (let i = 0; i < pathParts.length - 1; i += 1) {
+    const segment = JSON.stringify(pathParts[i]);
+    lines.push(`      if (!${cursor}[${segment}] || typeof ${cursor}[${segment}] !== 'object' || Array.isArray(${cursor}[${segment}])) ${cursor}[${segment}] = {};`);
+    cursor = `${cursor}[${segment}]`;
+  }
+
+  lines.push(`      ${cursor}[${JSON.stringify(pathParts[pathParts.length - 1])}] = ${valueRef};`);
+  lines.push('    }');
+  return lines;
 }
 
 function renderHandler(fnName, method, pathTemplate, outputMode, args = []) {
@@ -260,17 +326,18 @@ function renderHandler(fnName, method, pathTemplate, outputMode, args = []) {
     ].join('\n    ');
   }).join('\n    ');
 
+  const bodyArgs = flattenArgDefs(args).filter((arg) => arg && arg.in === 'body' && arg.key);
+  rejectGenericBodyArgs(bodyArgs, fnName);
+  const bodyLines = bodyArgs.flatMap((arg) => bodyAssignmentLines(arg));
   const bodyBlock = ['POST', 'PATCH', 'PUT'].includes(method)
-    ? `let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }`
-    : `const body = undefined;`;
+    ? bodyLines.length
+      ? `const body = {};
+    ${bodyLines.join('\n    ')}
+    const requestBody = Object.keys(body).length ? body : undefined;`
+      : `const requestBody = undefined;`
+    : `const requestBody = undefined;`;
 
-  const queryArgs = args
+  const queryArgs = flattenArgDefs(args)
     .filter((arg) => arg && arg.in === 'query' && arg.key)
     .map((arg) => {
       return `if (d.${arg.key} !== undefined && d.${arg.key} !== null && d.${arg.key} !== '') query[${JSON.stringify(arg.key)}] = d.${arg.key};`;
@@ -335,7 +402,7 @@ module.exports = {
     ${bodyBlock}
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: '${method}', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: '${method}', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     ${returnBlock}
@@ -465,12 +532,14 @@ function generateFromSpec(specInput, opts = {}) {
       const args = [];
 
       const explicitArgs = Array.isArray(actionRaw.args) ? actionRaw.args.map(normalizeField).filter(Boolean) : [];
+      rejectGenericBodyArgs(explicitArgs, `${resourceKey}.${actionKey}`);
       const byKey = new Map();
       if (actionRaw.disableDefaultArgs !== true) {
         for (const a of defaultArgsFor(actionKey, outputMode, reqPath, method)) byKey.set(a.key, a);
       }
       for (const a of explicitArgs) byKey.set(a.key, { ...byKey.get(a.key), ...a });
       for (const a of byKey.values()) args.push(a);
+      rejectGenericBodyArgs(args, `${resourceKey}.${actionKey}`);
 
       const schema = outputMode === 'list'
         ? `${providerKey}_${pluralKey}`

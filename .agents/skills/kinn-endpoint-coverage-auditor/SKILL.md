@@ -55,6 +55,7 @@ Prioriser toujours:
    - 1 handler par action.
    - Nommage et structure alignes connecteur existant.
    - Champs args clairs, schemas sortie coherents.
+   - Pour chaque endpoint acceptant un body, ajouter un champ distinct par attribut documente du body; ne pas utiliser un unique champ generique `body`/`payload`/`data`.
 5. Valider:
    - JSON manifest parse.
    - `require()` de tous les handlers sans erreur.
@@ -67,6 +68,7 @@ Prioriser toujours:
 
 1. Construire une matrice exhaustive endpoint par endpoint depuis la doc officielle.
 2. Classer chaque endpoint en `COVERED`, `MISSING` ou `EXCLUDED`.
+2bis. Pour chaque endpoint avec body, extraire depuis la doc officielle la liste des attributs acceptes et les mapper explicitement aux champs du noeud.
 3. Ajouter tous les `MISSING` metier dans le meme tour, sans attendre validation intermediaire.
 4. Reboucler une seconde passe de verification; si un endpoint metier reste `MISSING`, continuer les ajouts.
 5. Ne terminer que lorsque `MISSING = 0` sur le perimetre metier retenu.
@@ -80,6 +82,7 @@ Definition perimetre metier:
 
 - Reutiliser les helpers `utils.js` du connecteur avant de creer de nouvelles abstractions.
 - Ajouter des noeuds dedies pour les endpoints metier frequents.
+- Si la doc liste des proprietes de body, les exposer une par une dans `args.fields`; un champ JSON fourre-tout est interdit sauf si l API accepte reellement un blob opaque non documente.
 - Ajouter aussi les endpoints metier moins frequents mais utiles en automation (pas seulement le top frequents).
 - Marquer les risques (`write`, `destructive`) dans manifest quand applicable.
 - Ne pas casser les noeuds existants ni renommer sans necessite.
@@ -88,6 +91,7 @@ Definition perimetre metier:
 
 Toujours fournir:
 - `Coverage metier`: X/Y (%)
+- `Body attributes couverts`: pour chaque endpoint avec body, liste simple des attributs exposes dans le noeud
 - `Endpoints ajoutes`: liste simple
 - `Endpoints exclus`: liste + motif court
 - `Validation`: manifest parse + handlers load

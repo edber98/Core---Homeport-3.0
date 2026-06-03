@@ -12,16 +12,23 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.savedresponse_title !== undefined && d.savedresponse_title !== null && d.savedresponse_title !== "") {
+          if (!body["savedresponse"] || typeof body["savedresponse"] !== 'object' || Array.isArray(body["savedresponse"])) body["savedresponse"] = {};
+          body["savedresponse"]["title"] = d.savedresponse_title;
+        }
+    if (d.savedresponse_subject !== undefined && d.savedresponse_subject !== null && d.savedresponse_subject !== "") {
+          if (!body["savedresponse"] || typeof body["savedresponse"] !== 'object' || Array.isArray(body["savedresponse"])) body["savedresponse"] = {};
+          body["savedresponse"]["subject"] = d.savedresponse_subject;
+        }
+    if (d.savedresponse_body !== undefined && d.savedresponse_body !== null && d.savedresponse_body !== "") {
+          if (!body["savedresponse"] || typeof body["savedresponse"] !== 'object' || Array.isArray(body["savedresponse"])) body["savedresponse"] = {};
+          body["savedresponse"]["body"] = d.savedresponse_body;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

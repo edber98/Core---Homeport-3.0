@@ -12,16 +12,26 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.fieldvalue_contact !== undefined && d.fieldvalue_contact !== null && d.fieldvalue_contact !== "") {
+          if (!body["fieldvalue"] || typeof body["fieldvalue"] !== 'object' || Array.isArray(body["fieldvalue"])) body["fieldvalue"] = {};
+          body["fieldvalue"]["contact"] = d.fieldvalue_contact;
+        }
+    if (d.fieldvalue_field !== undefined && d.fieldvalue_field !== null && d.fieldvalue_field !== "") {
+          if (!body["fieldvalue"] || typeof body["fieldvalue"] !== 'object' || Array.isArray(body["fieldvalue"])) body["fieldvalue"] = {};
+          body["fieldvalue"]["field"] = d.fieldvalue_field;
+        }
+    if (d.fieldvalue_value !== undefined && d.fieldvalue_value !== null && d.fieldvalue_value !== "") {
+          if (!body["fieldvalue"] || typeof body["fieldvalue"] !== 'object' || Array.isArray(body["fieldvalue"])) body["fieldvalue"] = {};
+          body["fieldvalue"]["value"] = d.fieldvalue_value;
+        }
+    if (d.usedefaults !== undefined && d.usedefaults !== null && d.usedefaults !== "") {
+          body["usedefaults"] = d.usedefaults;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

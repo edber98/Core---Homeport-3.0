@@ -12,16 +12,39 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.dealgroup_title !== undefined && d.dealgroup_title !== null && d.dealgroup_title !== "") {
+          if (!body["dealgroup"] || typeof body["dealgroup"] !== 'object' || Array.isArray(body["dealgroup"])) body["dealgroup"] = {};
+          body["dealgroup"]["title"] = d.dealgroup_title;
+        }
+    if (d.dealgroup_currency !== undefined && d.dealgroup_currency !== null && d.dealgroup_currency !== "") {
+          if (!body["dealgroup"] || typeof body["dealgroup"] !== 'object' || Array.isArray(body["dealgroup"])) body["dealgroup"] = {};
+          body["dealgroup"]["currency"] = d.dealgroup_currency;
+        }
+    if (d.dealgroup_allgroups !== undefined && d.dealgroup_allgroups !== null && d.dealgroup_allgroups !== "") {
+          if (!body["dealgroup"] || typeof body["dealgroup"] !== 'object' || Array.isArray(body["dealgroup"])) body["dealgroup"] = {};
+          body["dealgroup"]["allgroups"] = d.dealgroup_allgroups;
+        }
+    if (d.dealgroup_allusers !== undefined && d.dealgroup_allusers !== null && d.dealgroup_allusers !== "") {
+          if (!body["dealgroup"] || typeof body["dealgroup"] !== 'object' || Array.isArray(body["dealgroup"])) body["dealgroup"] = {};
+          body["dealgroup"]["allusers"] = d.dealgroup_allusers;
+        }
+    if (d.dealgroup_autoassign !== undefined && d.dealgroup_autoassign !== null && d.dealgroup_autoassign !== "") {
+          if (!body["dealgroup"] || typeof body["dealgroup"] !== 'object' || Array.isArray(body["dealgroup"])) body["dealgroup"] = {};
+          body["dealgroup"]["autoassign"] = d.dealgroup_autoassign;
+        }
+    if (d.dealgroup_users !== undefined && d.dealgroup_users !== null && d.dealgroup_users !== "") {
+          if (!body["dealgroup"] || typeof body["dealgroup"] !== 'object' || Array.isArray(body["dealgroup"])) body["dealgroup"] = {};
+          body["dealgroup"]["users"] = d.dealgroup_users;
+        }
+    if (d.dealgroup_groups !== undefined && d.dealgroup_groups !== null && d.dealgroup_groups !== "") {
+          if (!body["dealgroup"] || typeof body["dealgroup"] !== 'object' || Array.isArray(body["dealgroup"])) body["dealgroup"] = {};
+          body["dealgroup"]["groups"] = d.dealgroup_groups;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

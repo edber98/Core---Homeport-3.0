@@ -12,16 +12,37 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.schema_slug !== undefined && d.schema_slug !== null && d.schema_slug !== "") {
+          if (!body["schema"] || typeof body["schema"] !== 'object' || Array.isArray(body["schema"])) body["schema"] = {};
+          body["schema"]["slug"] = d.schema_slug;
+        }
+    if (d.schema_labels_singular !== undefined && d.schema_labels_singular !== null && d.schema_labels_singular !== "") {
+          if (!body["schema"] || typeof body["schema"] !== 'object' || Array.isArray(body["schema"])) body["schema"] = {};
+          if (!body["schema"]["labels"] || typeof body["schema"]["labels"] !== 'object' || Array.isArray(body["schema"]["labels"])) body["schema"]["labels"] = {};
+          body["schema"]["labels"]["singular"] = d.schema_labels_singular;
+        }
+    if (d.schema_labels_plural !== undefined && d.schema_labels_plural !== null && d.schema_labels_plural !== "") {
+          if (!body["schema"] || typeof body["schema"] !== 'object' || Array.isArray(body["schema"])) body["schema"] = {};
+          if (!body["schema"]["labels"] || typeof body["schema"]["labels"] !== 'object' || Array.isArray(body["schema"]["labels"])) body["schema"]["labels"] = {};
+          body["schema"]["labels"]["plural"] = d.schema_labels_plural;
+        }
+    if (d.schema_description !== undefined && d.schema_description !== null && d.schema_description !== "") {
+          if (!body["schema"] || typeof body["schema"] !== 'object' || Array.isArray(body["schema"])) body["schema"] = {};
+          body["schema"]["description"] = d.schema_description;
+        }
+    if (d.schema_fields !== undefined && d.schema_fields !== null && d.schema_fields !== "") {
+          if (!body["schema"] || typeof body["schema"] !== 'object' || Array.isArray(body["schema"])) body["schema"] = {};
+          body["schema"]["fields"] = d.schema_fields;
+        }
+    if (d.schema_relationships !== undefined && d.schema_relationships !== null && d.schema_relationships !== "") {
+          if (!body["schema"] || typeof body["schema"] !== 'object' || Array.isArray(body["schema"])) body["schema"] = {};
+          body["schema"]["relationships"] = d.schema_relationships;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

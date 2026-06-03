@@ -12,16 +12,27 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.account_name !== undefined && d.account_name !== null && d.account_name !== "") {
+          if (!body["account"] || typeof body["account"] !== 'object' || Array.isArray(body["account"])) body["account"] = {};
+          body["account"]["name"] = d.account_name;
+        }
+    if (d.account_accounturl !== undefined && d.account_accounturl !== null && d.account_accounturl !== "") {
+          if (!body["account"] || typeof body["account"] !== 'object' || Array.isArray(body["account"])) body["account"] = {};
+          body["account"]["accounturl"] = d.account_accounturl;
+        }
+    if (d.account_owner !== undefined && d.account_owner !== null && d.account_owner !== "") {
+          if (!body["account"] || typeof body["account"] !== 'object' || Array.isArray(body["account"])) body["account"] = {};
+          body["account"]["owner"] = d.account_owner;
+        }
+    if (d.account_fields !== undefined && d.account_fields !== null && d.account_fields !== "") {
+          if (!body["account"] || typeof body["account"] !== 'object' || Array.isArray(body["account"])) body["account"] = {};
+          body["account"]["fields"] = d.account_fields;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

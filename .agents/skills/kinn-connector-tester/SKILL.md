@@ -47,6 +47,7 @@ node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector
 - `nodeTemplate.name` is `camelCase`.
 - `providerKey` references an existing provider.
 - Payload output handles reference declared `$var:` schemas.
+- Les noeuds ne doivent pas exposer un unique champ générique `body`/`payload`/`payloadJson`/`data`/`attributes`; les attributs du body doivent être modélisés comme champs distincts.
 - Every non-event node has a matching handler export.
 - Handler files can be loaded with `require()`.
 - Handlers do not use `node.args`.
@@ -81,6 +82,10 @@ When live testing:
 ## Reporting
 
 Lead with failures. Include:
+
+Quand une erreur de granularité body est détectée, le rapport doit citer le noeud fautif et indiquer que le body doit être découpé en champs explicites par attribut accepté par l endpoint.
+Le rapport doit aussi préciser qu un renommage cosmétique du champ générique vers `payloadJson` ou équivalent n est pas une correction valide.
+
 
 - connector name;
 - command(s) run;

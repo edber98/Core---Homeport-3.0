@@ -211,6 +211,12 @@ Read [references/endpoint-selection.md](references/endpoint-selection.md) for th
 - Keep handler returns stable and small; map API responses into predictable fields instead of returning huge raw objects by default.
 - Include pagination inputs on list/search nodes: usually `pageSize`/`per_page`, cursor/page when supported.
 - For JSON-heavy provider features, use `json` or `textarea` args and validate JSON in the handler with clear errors.
+- Ne jamais exposer un unique champ générique `body`, `payload`, `payloadJson`, `data`, `attributes`, `requestAttributes`, `requestRootKey` ou `requestResourceId` pour un endpoint `POST`/`PATCH`/`PUT`.
+- Pour chaque endpoint avec request body, créer un champ par attribut accepté par l endpoint, y compris pour les objets imbriqués: chaque feuille doit devenir un champ dédié avec une clé stable en `snake_case` dérivée de son chemin dans le body.
+- Les objets imbriqués doivent être reconstruits automatiquement dans le handler via leur chemin `bodyPath`. Les tableaux ou objets réellement libres peuvent rester un champ `json`, mais seulement pour cet attribut précis, jamais pour tout le body.
+- Les labels de champs générés doivent être en français compréhensible pour un utilisateur métier. Interdiction d’exposer des libellés techniques bruts du type `Accountcustomfielddatum Customeraccountid`, `Dealstage Cardregion1` ou `Ecomorder Externalid`.
+- Pour les champs d’un objet racine déjà implicite dans le noeud (par exemple une adresse dans un noeud "Créer une adresse"), ne pas répéter inutilement le contexte dans chaque label: préférer `Nom de l’entreprise`, `Adresse ligne 1`, `Ville`, et non `Nom de l’entreprise de l’adresse`, `Adresse ligne 1 de l’adresse`, `Ville de l’adresse`.
+- Si le schéma du body n est pas suffisamment connu pour faire ce mapping attribut par attribut correctement, arrêter la génération et compléter le mapping avant de produire le connecteur.
 - Never access `node.args`; use `inputs`.
 - Credentials live in `opts.credentials`.
 - Progress logs use `opts.log`, with short French messages.
