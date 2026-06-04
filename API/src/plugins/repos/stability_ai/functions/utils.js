@@ -46,4 +46,21 @@ async function providerRequest(opts, path, options = {}) {
   return { ok: true, status: res.status, data };
 }
 
-module.exports = { utils: { providerRequest } };
+function parseJsonInput(value, label, fallback) {
+  if (value === undefined || value === null || value === '') return fallback;
+  if (typeof value === 'object') return value;
+  try { return JSON.parse(String(value)); } catch { throw new Error(`JSON invalide dans ${label}.`); }
+}
+
+function bodyFromFields(inputs, fields, jsonFields = []) {
+  const d = inputs || {};
+  const out = {};
+  for (const key of fields) {
+    const value = d[key];
+    if (value === undefined || value === null || value === '') continue;
+    out[key] = jsonFields.includes(key) ? parseJsonInput(value, key, undefined) : value;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
+module.exports = { utils: { providerRequest, parseJsonInput, bodyFromFields } };

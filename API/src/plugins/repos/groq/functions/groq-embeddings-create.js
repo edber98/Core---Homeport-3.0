@@ -3,8 +3,8 @@ const { utils } = require("./utils");
 module.exports = {
   async groq_embeddings_create(node, msg, inputs, opts) {
     const d = inputs || {};
-    const input = d.input;
-    if (input === undefined || input === null || input === "") return { ok: false, error: "input requis." };
+    const input = d.embeddingInput;
+    if (input === undefined || input === null || input === "") return { ok: false, error: "embeddingInput requis." };
     const body = {
       model: String(d.model || "text-embedding-3-small").trim(),
       input

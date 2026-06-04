@@ -4,10 +4,10 @@ module.exports = {
   async sql_execute_query(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
-    if (!d.query) return { ok: false, error: "Requête SQL requise." };
+    if (!d.sqlQuery) return { ok: false, error: "Requête SQL requise." };
 
     const credentials = (opts && opts.credentials) || {};
-    const res = await utils.executeQuery(credentials, d.query);
+    const res = await utils.executeQuery(credentials, d.sqlQuery);
     if (!res.ok) return res;
 
     const rows = (res.rows || []).map(r => ({ data: JSON.stringify(r) }));

@@ -7,10 +7,10 @@ module.exports = {
       pagination: { per_page: Math.max(1, Math.min(parseInt(d.perPage, 10) || 20, 150)) }
     };
 
-    if (d.query) {
-      if (typeof d.query === "object") body.query = d.query;
+    if (d.searchQuery) {
+      if (typeof d.searchQuery === "object") body.query = d.searchQuery;
       else {
-        try { body.query = JSON.parse(String(d.query)); } catch { return { ok: false, error: "JSON invalide dans query." }; }
+        try { body.query = JSON.parse(String(d.searchQuery)); } catch { return { ok: false, error: "JSON invalide dans query." }; }
       }
     }
 

@@ -711,28 +711,29 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "grant_type",
+            "label": "Grant type",
+            "description": "Attribut grant_type du body OAuth.",
+            "col": {
+              "xs": 24
+            },
+            "default": "client_credentials"
+          },
+          {
+            "type": "text",
+            "key": "client_id",
+            "label": "Client ID",
+            "description": "Attribut client_id du body OAuth.",
             "col": {
               "xs": 24
             }
           },
           {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "type": "password",
+            "key": "client_secret",
+            "label": "Client secret",
+            "description": "Attribut client_secret du body OAuth.",
             "col": {
               "xs": 24
             }
@@ -819,24 +820,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -915,38 +898,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "text",
-            "key": "id",
-            "label": "ID",
-            "description": "Identifiant.",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1025,24 +976,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1109,28 +1042,19 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "email",
+            "key": "data_subject_email",
+            "label": "Data subject email",
+            "description": "Attribut data_subject_email du body.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "key": "data_subject_site_id_to_user_id_map",
+            "label": "Site ID to user ID map",
+            "description": "Attribut data_subject_site_id_to_user_id_map du body.",
             "col": {
               "xs": 24
             }

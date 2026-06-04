@@ -4,7 +4,7 @@ module.exports = {
   async mistral_moderate(node, msg, inputs, opts) {
     const d = inputs || {};
     const model = String(d.model || "mistral-moderation-latest").trim();
-    const input = String(d.input || "").trim();
+    const input = String(d.moderationInput || "").trim();
     if (!input) return { ok: false, error: "Missing input." };
 
     const res = await utils.mistralRequest(opts, "/moderations", {

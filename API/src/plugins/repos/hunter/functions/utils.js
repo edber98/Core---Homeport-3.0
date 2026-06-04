@@ -61,4 +61,20 @@ async function providerRequest(opts, path, options = {}) {
   return { ok: true, status: res.status, data };
 }
 
-module.exports = { utils: { providerRequest } };
+function parseBodyValue(value, type, label) {
+  if (value === undefined || value === null || value === '') return { present: false };
+  if (type === 'number') { const n = Number(value); return Number.isFinite(n) ? { present: true, value: n } : { present: false }; }
+  if (type === 'json') { if (typeof value === 'object') return { present: true, value }; try { return { present: true, value: JSON.parse(String(value)) }; } catch { return { error: 'JSON invalide dans ' + label + '.' }; } }
+  return { present: true, value: String(value) };
+}
+function buildBodyFromInputs(inputs, defs) {
+  const body = {};
+  for (const def of defs || []) {
+    const parsed = parseBodyValue(inputs[def.source], def.type, def.source);
+    if (parsed.error) return { __invalid: parsed.error };
+    if (!parsed.present) continue;
+    body[def.target || def.source] = parsed.value;
+  }
+  return Object.keys(body).length ? body : undefined;
+}
+module.exports = { utils: { providerRequest, buildBodyFromInputs } };

@@ -13,7 +13,7 @@ module.exports = {
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
     // Propager automatiquement les autres entrées en query params.
-    const reserved = new Set(['body', 'pageSize', 'page', 'search']);
+    const reserved = new Set(['chatRequest', 'pageSize', 'page', 'search']);
     for (const [k, v] of Object.entries(d)) {
       if (reserved.has(k)) continue;
       if (v === undefined || v === null || v === '') continue;
@@ -21,10 +21,10 @@ module.exports = {
     }
 
     let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
+    if (d.chatRequest !== undefined && d.chatRequest !== null && d.chatRequest !== '') {
+      if (typeof d.chatRequest === 'object') body = d.chatRequest;
       else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
+        try { body = JSON.parse(String(d.chatRequest)); } catch { return { ok: false, error: 'JSON invalide dans chatRequest.' }; }
       }
     }
 

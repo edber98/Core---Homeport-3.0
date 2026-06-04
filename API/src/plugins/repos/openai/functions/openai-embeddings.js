@@ -5,8 +5,8 @@ module.exports = {
     const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const model = String(d.model || "text-embedding-3-small");
-    const parsed = utils.parseJson(d.input, null);
-    const input = Array.isArray(parsed) ? parsed.map(String) : [String(d.input || "")];
+    const parsed = utils.parseJson(d.embeddingInput, null);
+    const input = Array.isArray(parsed) ? parsed.map(String) : [String(d.embeddingInput || "")];
 
     log("Calcul des embeddings...");
     const res = await utils.openaiRequest(opts, "/embeddings", { model, input });

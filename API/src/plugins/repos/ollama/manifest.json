@@ -515,9 +515,9 @@
           },
           {
             "type": "textarea",
-            "key": "options",
-            "label": "Options (JSON)",
-            "description": "Options de génération (temperature, top_p, etc.).",
+            "key": "generationOptions",
+            "label": "Options de génération",
+            "description": "Objet JSON options envoyé à Ollama.",
             "col": {
               "xs": 24
             }
@@ -668,9 +668,9 @@
           },
           {
             "type": "textarea",
-            "key": "options",
-            "label": "Options (JSON)",
-            "description": "Options de génération (temperature, top_p, etc.).",
+            "key": "generationOptions",
+            "label": "Options de génération",
+            "description": "Objet JSON options envoyé à Ollama.",
             "col": {
               "xs": 24
             }
@@ -785,9 +785,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Texte",
-            "description": "Texte unique à vectoriser.",
+            "key": "embeddingInput",
+            "label": "Entrée embedding",
+            "description": "Texte à vectoriser.",
             "col": {
               "xs": 24
             }
@@ -830,9 +830,9 @@
           },
           {
             "type": "textarea",
-            "key": "options",
-            "label": "Options (JSON)",
-            "description": "Options de runtime Ollama.",
+            "key": "embeddingOptions",
+            "label": "Options embedding",
+            "description": "Objet JSON options envoyé à Ollama.",
             "col": {
               "xs": 24
             }

@@ -42,7 +42,7 @@ module.exports = {
     }
 
     try {
-      const options = utils.parseJsonInput(d.options, "options", undefined);
+      const options = utils.parseJsonInput(d.generationOptions, "options", undefined);
       if (options && typeof options === "object") body.options = options;
     } catch (e) {
       return { ok: false, error: e.message };

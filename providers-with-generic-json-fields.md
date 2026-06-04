@@ -60,73 +60,73 @@ Total: `107` providers.
 | Firebase ✓ | `firebase` | 1 | `data` |
 | Firecrawl ✓ | `firecrawl` | 6 | `options` |
 | Front | `front` | 95 | `body` |
-| Fullstory | `fullstory` | 5 | `body`, `headers`, `query` |
-| Groq | `groq` | 2 | `input` |
-| Heap | `heap` | 1 | `body`, `headers`, `query` |
+| Fullstory ✓ | `fullstory` | 5 | `body`, `headers`, `query` |
+| Groq ✓ | `groq` | 2 | `input` |
+| Heap ✓ | `heap` | 1 | `body`, `headers`, `query` |
 | Help Scout | `helpscout` | 14 | `body` |
-| Home Assistant | `home-assistant` | 2 | `attributes`, `data` |
-| Hotjar | `hotjar` | 5 | `body`, `headers`, `query` |
-| HTTP | `http` | 1 | `body`, `headers` |
-| Hunter | `hunter` | 8 | `body` |
+| Home Assistant ✓ | `home-assistant` | 2 | `attributes`, `data` |
+| Hotjar ✓ | `hotjar` | 5 | `body`, `headers`, `query` |
+| HTTP ✓ | `http` | 1 | `body`, `headers` |
+| Hunter ✓ | `hunter` | 8 | `body` |
 | Instantly | `instantly` | 56 | `body` |
-| Intercom | `intercom` | 3 | `body`, `query` |
+| Intercom ✓ | `intercom` | 3 | `body`, `query` |
 | Iterable | `iterable` | 64 | `body` |
-| Kafka | `kafka` | 1 | `headers` |
-| Kinn | `kinn` | 2 | `data`, `input` |
-| Klaviyo | `klaviyo` | 7 | `data`, `payload` |
+| Kafka ✓ | `kafka` | 1 | `headers` |
+| Kinn ✓ | `kinn` | 2 | `data`, `input` |
+| Klaviyo ✓ | `klaviyo` | 7 | `data`, `payload` |
 | Langgraph | `langgraph` | 36 | `body`, `headers`, `query` |
 | Lemlist | `lemlist` | 34 | `body` |
-| LiveChat | `livechat` | 9 | `body` |
-| LlamaIndex | `llamaindex` | 2 | `body` |
-| Loom | `loom` | 1 | `payload` |
+| LiveChat ✓ | `livechat` | 9 | `body` |
+| LlamaIndex ✓ | `llamaindex` | 2 | `body` |
+| Loom ✓ | `loom` | 1 | `payload` |
 | Mailgun | `mailgun` | 66 | `body` |
-| MariaDB | `mariadb` | 2 | `data` |
-| Matomo | `matomo` | 1 | `body`, `headers`, `query` |
+| MariaDB ✓ | `mariadb` | 2 | `data` |
+| Matomo ✓ | `matomo` | 1 | `body`, `headers`, `query` |
 | Mem0 | `mem0` | 17 | `body` |
 | Milvus | `milvus` | 27 | `body` |
-| Miro | `miro` | 2 | `data` |
-| Mistral AI | `mistral` | 1 | `input` |
-| Modal | `modal` | 6 | `body`, `headers`, `query` |
-| MySQL | `mysql` | 2 | `data` |
-| NATS | `nats` | 3 | `headers`, `payload` |
-| Neon | `neon` | 3 | `data` |
-| Ollama | `ollama` | 3 | `options` |
-| OpenAI | `openai` | 2 | `input` |
-| OpenInterpreter | `openinterpreter` | 1 | `body` |
-| OpenRouter | `openrouter` | 8 | `body` |
+| Miro ✓ | `miro` | 2 | `data` |
+| Mistral AI ✓ | `mistral` | 1 | `input` |
+| Modal ✓ | `modal` | 6 | `body`, `headers`, `query` |
+| MySQL ✓ | `mysql` | 2 | `data` |
+| NATS ✓ | `nats` | 3 | `headers`, `payload` |
+| Neon ✓ | `neon` | 3 | `data` |
+| Ollama ✓ | `ollama` | 3 | `options` |
+| OpenAI ✓ | `openai` | 2 | `input` |
+| OpenInterpreter ✓ | `openinterpreter` | 1 | `body` |
+| OpenRouter ✓ | `openrouter` | 8 | `body` |
 | Outreach | `outreach` | 100 | `body` |
 | People Data Labs | `people_data_labs` | 14 | `body` |
-| Perplexity | `perplexity` | 1 | `options` |
+| Perplexity ✓ | `perplexity` | 1 | `options` |
 | PhantomBuster | `phantombuster` | 30 | `body` |
-| PlanetScale | `planetscale` | 3 | `data` |
-| Plausible | `plausible` | 7 | `body`, `headers`, `query` |
-| PostgreSQL | `postgresql` | 3 | `data` |
-| PostHog | `posthog` | 6 | `body`, `payload`, `query` |
-| Postmark | `postmark` | 8 | `body` |
-| Proxycurl | `proxycurl` | 4 | `body` |
-| Qdrant | `qdrant` | 1 | `payload` |
-| Qonto | `qonto` | 4 | `payload` |
-| RabbitMQ | `rabbitmq` | 3 | `payload` |
-| Redis | `redis` | 2 | `data` |
-| Replicate | `replicate` | 4 | `input` |
-| Resend | `resend` | 1 | `headers` |
+| PlanetScale ✓ | `planetscale` | 3 | `data` |
+| Plausible ✓ | `plausible` | 7 | `body`, `headers`, `query` |
+| PostgreSQL ✓ | `postgresql` | 3 | `data` |
+| PostHog ✓ | `posthog` | 6 | `body`, `payload`, `query` |
+| Postmark ✓ | `postmark` | 8 | `body` |
+| Proxycurl ✓ | `proxycurl` | 4 | `body` |
+| Qdrant ✓ | `qdrant` | 1 | `payload` |
+| Qonto ✓ | `qonto` | 4 | `payload` |
+| RabbitMQ ✓ | `rabbitmq` | 3 | `payload` |
+| Redis ✓ | `redis` | 2 | `data` |
+| Replicate ✓ | `replicate` | 4 | `input` |
+| Resend ✓ | `resend` | 1 | `headers` |
 | Retool | `retool` | 29 | `body` |
 | Revolut Business | `revolut_business` | 24 | `body` |
 | RingCentral | `ringcentral` | 23 | `body` |
-| Runway | `runway` | 4 | `payload` |
+| Runway ✓ | `runway` | 4 | `payload` |
 | Salesloft | `salesloft` | 59 | `body` |
-| SAP | `sap` | 1 | `body` |
+| SAP ✓ | `sap` | 1 | `body` |
 | Segment | `segment` | 21 | `body`, `headers`, `query` |
 | SendGrid | `sendgrid` | 103 | `body` |
 | Smartlead | `smartlead` | 51 | `body` |
-| Snowflake | `snowflake` | 7 | `body`, `headers`, `query` |
-| SQL Database (MySQL / PostgreSQL) | `sql-database` | 2 | `data` |
-| Stability AI | `stability_ai` | 4 | `body` |
-| Substack | `substack` | 1 | `body` |
-| Supabase | `supabase` | 3 | `data` |
+| Snowflake ✓ | `snowflake` | 7 | `body`, `headers`, `query` |
+| SQL Database (MySQL / PostgreSQL) ✓ | `sql-database` | 2 | `data` |
+| Stability AI ✓ | `stability_ai` | 4 | `body` |
+| Substack ✓ | `substack` | 1 | `body` |
+| Supabase ✓ | `supabase` | 3 | `data` |
 | Talkdesk | `talkdesk` | 155 | `body` |
-| Telegram Bot | `telegram` | 1 | `options` |
-| TimescaleDB | `timescaledb` | 3 | `data` |
+| Telegram Bot ✓ | `telegram` | 1 | `options` |
+| TimescaleDB ✓ | `timescaledb` | 3 | `data` |
 | Together AI | `together_ai` | 16 | `body` |
 | Vercel ✓ | `vercel` | 1 | `payload` |
 | vLLM ✓ | `vllm` | 14 | `body` |

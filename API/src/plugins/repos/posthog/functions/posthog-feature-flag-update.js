@@ -11,7 +11,7 @@ module.exports = {
     if (!flagId) return { ok: false, error: "flagId requis." };
 
     let payload = {};
-    try { payload = utils.parseJsonInput(d.payload, "payload", { defaultValue: {}, allowArray: false }); }
+    try { payload = utils.bodyFromFields(d, ["key", "name", "active", "filters", "deleted", "rollout_percentage", "tags", "description"], ["filters", "tags"]); }
     catch (e) { return { ok: false, error: e.message }; }
 
     if (!Object.keys(payload).length) return { ok: false, error: "payload vide." };

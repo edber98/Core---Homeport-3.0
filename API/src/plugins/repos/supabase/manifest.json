@@ -587,8 +587,8 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données (JSON)",
+            "key": "recordData",
+            "label": "Données de la ligne",
             "col": {
               "xs": 24
             },
@@ -597,7 +597,7 @@
                 "type": "required"
               }
             ],
-            "description": "Objet ou tableau d'objets."
+            "description": "Objet JSON à insérer."
           }
         ],
         "displayTitle": false,
@@ -663,8 +663,8 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données (JSON)",
+            "key": "recordData",
+            "label": "Données à modifier",
             "col": {
               "xs": 24
             },
@@ -672,7 +672,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Objet JSON à mettre à jour."
           },
           {
             "type": "text",
@@ -752,8 +753,8 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données (JSON)",
+            "key": "recordData",
+            "label": "Données upsert",
             "col": {
               "xs": 24
             },
@@ -761,7 +762,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Objet JSON à upserter."
           },
           {
             "type": "text",

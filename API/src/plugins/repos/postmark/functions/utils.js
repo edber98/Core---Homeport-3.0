@@ -46,4 +46,30 @@ async function providerRequest(opts, path, options = {}) {
   return { ok: true, status: res.status, data };
 }
 
-module.exports = { utils: { providerRequest } };
+function parseBodyValue(value, type, label) {
+  if (value === undefined || value === null || value === '') return { present: false };
+  if (type === 'checkbox') return { present: true, value: Boolean(value) };
+  if (type === 'number') {
+    const n = Number(value);
+    return Number.isFinite(n) ? { present: true, value: n } : { present: false };
+  }
+  if (type === 'json') {
+    if (typeof value === 'object') return { present: true, value };
+    try { return { present: true, value: JSON.parse(String(value)) }; }
+    catch { return { error: 'JSON invalide dans ' + label + '.' }; }
+  }
+  return { present: true, value: String(value) };
+}
+
+function buildBodyFromInputs(inputs, fields) {
+  const body = {};
+  for (const field of fields || []) {
+    const parsed = parseBodyValue(inputs[field.source], field.type, field.source);
+    if (parsed.error) return { __invalid: parsed.error };
+    if (!parsed.present) continue;
+    body[field.target || field.source] = parsed.value;
+  }
+  return Object.keys(body).length ? body : undefined;
+}
+
+module.exports = { utils: { providerRequest, buildBodyFromInputs } };

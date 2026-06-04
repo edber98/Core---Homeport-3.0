@@ -1526,10 +1526,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "domain",
+            "label": "Domain",
+            "description": "Attribut domain du body Plausible.",
             "col": {
               "xs": 24
             },
@@ -1538,6 +1538,24 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "timezone",
+            "label": "Timezone",
+            "description": "Attribut timezone du body Plausible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tracker_script_configuration",
+            "label": "Tracker script configuration",
+            "description": "Attribut tracker_script_configuration du body.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1604,10 +1622,28 @@
             ]
           },
           {
+            "type": "text",
+            "key": "domain",
+            "label": "Domain",
+            "description": "Attribut domain du body Plausible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "timezone",
+            "label": "Timezone",
+            "description": "Attribut timezone du body Plausible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "tracker_script_configuration",
+            "label": "Tracker script configuration",
+            "description": "Attribut tracker_script_configuration du body.",
             "col": {
               "xs": 24
             }
@@ -1776,10 +1812,19 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "Attribut site_id du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut name du body.",
             "col": {
               "xs": 24
             }
@@ -1884,10 +1929,55 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "Attribut site_id du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "goal_type",
+            "label": "Goal type",
+            "description": "Attribut goal_type du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "event_name",
+            "label": "Event name",
+            "description": "Attribut event_name du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page_path",
+            "label": "Page path",
+            "description": "Attribut page_path du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "display_name",
+            "label": "Display name",
+            "description": "Attribut display_name du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "custom_props",
+            "label": "Custom props",
+            "description": "Attribut custom_props du body.",
             "col": {
               "xs": 24
             }
@@ -2056,10 +2146,19 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "Attribut site_id du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "property",
+            "label": "Property",
+            "description": "Attribut property du body.",
             "col": {
               "xs": 24
             }
@@ -2228,10 +2327,28 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "site_id",
+            "label": "Site ID",
+            "description": "Attribut site_id du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Attribut email du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "role",
+            "label": "Role",
+            "description": "Attribut role du body.",
             "col": {
               "xs": 24
             }
@@ -2307,8 +2424,8 @@
       "group": "sites"
     },
     {
-      "key": "plausible_api_request",
-      "name": "plausibleApiRequest",
+      "key": "plausible_custom_request",
+      "name": "plausibleCustomRequest",
       "schemaVersion": 2,
       "title": "Appeler un endpoint API",
       "subtitle": "API",
@@ -2381,36 +2498,36 @@
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query params",
-            "description": "Objet JSON des query params.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet JSON des paramètres URL.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "En-têtes",
-            "description": "Objet JSON d’en-têtes HTTP.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON.",
+            "key": "requestBody",
+            "label": "Corps JSON",
+            "description": "Objet JSON envoyé comme corps de requête.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "textarea",
-            "key": "body_text",
-            "label": "Body texte",
-            "description": "Corps brut (prioritaire sur body).",
+            "key": "bodyText",
+            "label": "Corps texte",
+            "description": "Corps brut, prioritaire sur le corps JSON.",
             "col": {
               "xs": 24
             }

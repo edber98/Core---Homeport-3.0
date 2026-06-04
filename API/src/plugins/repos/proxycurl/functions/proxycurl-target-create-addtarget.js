@@ -9,26 +9,22 @@ module.exports = {
     if (!feed_id) return { ok: false, error: 'feed_id requis.' };
     reqPath = reqPath.replace('{feed_id}', encodeURIComponent(feed_id));
 
+    const bodyFields = ['website_url', 'settings'];
     const query = {};
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
     // Propager automatiquement les autres entrées en query params.
-    const reserved = new Set(['body', 'pageSize', 'page', 'search']);
+    const reserved = new Set(['body', 'pageSize', 'page', 'search', 'feed_id', ...bodyFields]);
     for (const [k, v] of Object.entries(d)) {
       if (reserved.has(k)) continue;
       if (v === undefined || v === null || v === '') continue;
       query[k] = v;
     }
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    let body;
+    try { body = utils.bodyFromFields(d, bodyFields, ['settings']); } catch (e) { return { ok: false, error: e.message }; }
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

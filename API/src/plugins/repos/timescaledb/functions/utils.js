@@ -55,7 +55,7 @@ async function run(key, inputs, opts) {
   const d = inputs || {};
   const credentials = (opts && opts.credentials) || {};
   try {
-    if (key === "timescaledb_query_execute") { const r = await query(credentials, d.query, parseJson(d.params, "params", [])); return r.ok ? rowsResult(r) : r; }
+    if (key === "timescaledb_query_execute") { const r = await query(credentials, d.sqlQuery, parseJson(d.params, "params", [])); return r.ok ? rowsResult(r) : r; }
     if (key === "timescaledb_transaction_execute") { const r = await transaction(credentials, parseJson(d.queries, "queries", [])); return r.ok ? rowsResult(r) : r; }
     if (key === "timescaledb_tables_list") { const r = await query(credentials, "SELECT table_schema, table_name, table_type FROM information_schema.tables WHERE table_schema = $1 ORDER BY table_name", [d.schema || "public"]); return r.ok ? { ok: true, tables: r.rows, totalCount: r.rows.length, raw: r } : r; }
     if (key === "timescaledb_table_describe") { const r = await query(credentials, "SELECT column_name, data_type, is_nullable, column_default FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2 ORDER BY ordinal_position", [d.schema || "public", d.table]); return r.ok ? { ok: true, columns: r.rows, totalCount: r.rows.length, raw: r } : r; }
@@ -70,14 +70,14 @@ async function run(key, inputs, opts) {
       return r.ok ? rowsResult(r) : r;
     }
     if (key === "timescaledb_record_insert") {
-      const data = parseJson(d.data, "data", {});
+      const data = parseJson(d.recordData, "recordData", {});
       const keys = Object.keys(data);
       const sql = "INSERT INTO " + tableName(d) + " (" + keys.map(quoteIdentifier).join(", ") + ") VALUES (" + keys.map((_, i) => "$" + (i + 1)).join(", ") + ") RETURNING *";
       const r = await query(credentials, sql, keys.map((k) => data[k]));
       return r.ok ? writeResult(r, "Ligne insérée.") : r;
     }
     if (key === "timescaledb_records_update") {
-      const data = parseJson(d.data, "data", {});
+      const data = parseJson(d.recordData, "recordData", {});
       const keys = Object.keys(data);
       const sql = "UPDATE " + tableName(d) + " SET " + keys.map((k, i) => quoteIdentifier(k) + " = $" + (i + 1)).join(", ") + " WHERE " + d.where + " RETURNING *";
       const r = await query(credentials, sql, keys.map((k) => data[k]));
@@ -88,7 +88,7 @@ async function run(key, inputs, opts) {
       return r.ok ? writeResult(r, "Lignes supprimées.") : r;
     }
     if (key === "timescaledb_record_upsert") {
-      const data = parseJson(d.data, "data", {});
+      const data = parseJson(d.recordData, "recordData", {});
       const keys = Object.keys(data);
       if (!keys.length) return { ok: false, error: "Données vides." };
       const conflictColumns = String(d.conflictColumns || "").split(",").map((x) => x.trim()).filter(Boolean);

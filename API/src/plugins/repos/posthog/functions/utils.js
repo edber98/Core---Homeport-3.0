@@ -160,6 +160,19 @@ function mapPerson(r) {
   };
 }
 
+function bodyFromFields(inputs, fields, jsonFields = []) {
+  const d = inputs || {};
+  const out = {};
+  for (const key of fields) {
+    const value = d[key];
+    if (value === undefined || value === null || value === "") continue;
+    out[key] = jsonFields.includes(key)
+      ? parseJsonInput(value, key, { defaultValue: undefined })
+      : value;
+  }
+  return out;
+}
+
 module.exports = {
   utils: {
     asObject,
@@ -171,6 +184,7 @@ module.exports = {
     getProjectId,
     mapFeatureFlag,
     mapCohort,
-    mapPerson
+    mapPerson,
+    bodyFromFields
   }
 };

@@ -266,9 +266,9 @@
         "fields": [
           {
             "type": "text",
-            "key": "query",
+            "key": "searchQuery",
             "label": "Recherche",
-            "description": "Recherche par nom.",
+            "description": "Texte de recherche des tableaux.",
             "col": {
               "xs": 24
             }
@@ -762,9 +762,9 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données JSON",
-            "description": "Bloc data de l'item.",
+            "key": "itemData",
+            "label": "Données de l’élément",
+            "description": "Objet JSON data de l’élément Miro.",
             "col": {
               "xs": 24
             },
@@ -1169,9 +1169,9 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données JSON",
-            "description": "Bloc data.",
+            "key": "itemData",
+            "label": "Données de l’élément",
+            "description": "Objet JSON data à modifier.",
             "col": {
               "xs": 24
             }

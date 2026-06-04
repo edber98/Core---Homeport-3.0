@@ -650,9 +650,9 @@
           },
           {
             "type": "text",
-            "key": "query",
-            "label": "Query",
-            "description": "",
+            "key": "retrievalQuery",
+            "label": "Requête de récupération",
+            "description": "Question ou recherche envoyée au pipeline.",
             "col": {
               "xs": 24
             },
@@ -1080,9 +1080,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "",
+            "key": "chatRequest",
+            "label": "Requête de chat",
+            "description": "Objet JSON de création de session de chat.",
             "col": {
               "xs": 24
             },
@@ -1350,9 +1350,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Body (JSON)",
-            "description": "Payload de création document.",
+            "key": "documentRequest",
+            "label": "Document",
+            "description": "Objet JSON du document à créer.",
             "col": {
               "xs": 24
             },

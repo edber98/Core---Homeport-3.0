@@ -7,321 +7,1102 @@
   "variables": {
     "home_assistant_status": {
       "title": "Statut Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "message", "label": "Message", "description": "Message retourné par l'API.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message retourné par l'API.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "home_assistant_config": {
       "title": "Configuration Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "location_name", "label": "Nom du lieu", "description": "Nom de l'instance.", "col": { "xs": 24 } },
-        { "type": "text", "key": "version", "label": "Version", "description": "Version Home Assistant.", "col": { "xs": 24 } },
-        { "type": "text", "key": "time_zone", "label": "Fuseau horaire", "description": "Fuseau horaire configuré.", "col": { "xs": 24 } },
-        { "type": "text", "key": "unit_system", "label": "Système d'unités", "description": "Système d'unités.", "col": { "xs": 24 } },
-        { "type": "text", "key": "latitude", "label": "Latitude", "description": "Latitude du lieu.", "col": { "xs": 24 } },
-        { "type": "text", "key": "longitude", "label": "Longitude", "description": "Longitude du lieu.", "col": { "xs": 24 } },
-        { "type": "json", "key": "raw", "label": "Données brutes", "description": "Configuration complète.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "location_name",
+          "label": "Nom du lieu",
+          "description": "Nom de l'instance.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "version",
+          "label": "Version",
+          "description": "Version Home Assistant.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "time_zone",
+          "label": "Fuseau horaire",
+          "description": "Fuseau horaire configuré.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "unit_system",
+          "label": "Système d'unités",
+          "description": "Système d'unités.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "latitude",
+          "label": "Latitude",
+          "description": "Latitude du lieu.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "longitude",
+          "label": "Longitude",
+          "description": "Longitude du lieu.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Configuration complète.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "home_assistant_state": {
       "title": "État Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "entity_id", "label": "ID entité", "description": "Identifiant de l'entité.", "col": { "xs": 24 } },
-        { "type": "text", "key": "state", "label": "État", "description": "Valeur de l'état.", "col": { "xs": 24 } },
-        { "type": "date", "key": "last_changed", "label": "Dernier changement", "description": "Date du dernier changement.", "col": { "xs": 24 } },
-        { "type": "date", "key": "last_updated", "label": "Dernière mise à jour", "description": "Date de dernière mise à jour.", "col": { "xs": 24 } },
-        { "type": "json", "key": "attributes", "label": "Attributs", "description": "Attributs de l'entité.", "col": { "xs": 24 } },
-        { "type": "json", "key": "context", "label": "Contexte", "description": "Contexte Home Assistant.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "entity_id",
+          "label": "ID entité",
+          "description": "Identifiant de l'entité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "state",
+          "label": "État",
+          "description": "Valeur de l'état.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "last_changed",
+          "label": "Dernier changement",
+          "description": "Date du dernier changement.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "date",
+          "key": "last_updated",
+          "label": "Dernière mise à jour",
+          "description": "Date de dernière mise à jour.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "attributes",
+          "label": "Attributs",
+          "description": "Attributs de l'entité.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "context",
+          "label": "Contexte",
+          "description": "Contexte Home Assistant.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "home_assistant_states": {
       "title": "États Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre d'états retournés.", "col": { "xs": 24 } },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'états retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "États",
           "description": "Liste des états.",
           "mode": "array",
           "key": "states",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "entity_id", "label": "ID entité", "col": { "xs": 24 } },
-            { "type": "text", "key": "state", "label": "État", "col": { "xs": 24 } },
-            { "type": "date", "key": "last_changed", "label": "Dernier changement", "col": { "xs": 24 } },
-            { "type": "date", "key": "last_updated", "label": "Dernière mise à jour", "col": { "xs": 24 } },
-            { "type": "json", "key": "attributes", "label": "Attributs", "col": { "xs": 24 } },
-            { "type": "json", "key": "context", "label": "Contexte", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "entity_id",
+              "label": "ID entité",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "last_changed",
+              "label": "Dernier changement",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "last_updated",
+              "label": "Dernière mise à jour",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "attributes",
+              "label": "Attributs",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "context",
+              "label": "Contexte",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_services": {
       "title": "Services Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre de services retournés.", "col": { "xs": 24 } },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de services retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Services",
           "description": "Liste des services.",
           "mode": "array",
           "key": "services",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "domain", "label": "Domaine", "col": { "xs": 24 } },
-            { "type": "text", "key": "service", "label": "Service", "col": { "xs": 24 } },
-            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-            { "type": "text", "key": "description", "label": "Description", "col": { "xs": 24 } },
-            { "type": "json", "key": "fields", "label": "Champs", "col": { "xs": 24 } },
-            { "type": "json", "key": "target", "label": "Cible", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "domain",
+              "label": "Domaine",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "service",
+              "label": "Service",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "fields",
+              "label": "Champs",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "target",
+              "label": "Cible",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_service_result": {
       "title": "Résultat de service Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "domain", "label": "Domaine", "description": "Domaine appelé.", "col": { "xs": 24 } },
-        { "type": "text", "key": "service", "label": "Service", "description": "Service appelé.", "col": { "xs": 24 } },
-        { "type": "number", "key": "totalCount", "label": "États modifiés", "description": "Nombre d'états retournés.", "col": { "xs": 24 } },
-        { "type": "json", "key": "response", "label": "Réponse", "description": "Réponse du service si disponible.", "col": { "xs": 24 } },
+        {
+          "type": "text",
+          "key": "domain",
+          "label": "Domaine",
+          "description": "Domaine appelé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "service",
+          "label": "Service",
+          "description": "Service appelé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "États modifiés",
+          "description": "Nombre d'états retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "response",
+          "label": "Réponse",
+          "description": "Réponse du service si disponible.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "États modifiés",
           "description": "États retournés après l'appel.",
           "mode": "array",
           "key": "states",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "entity_id", "label": "ID entité", "col": { "xs": 24 } },
-            { "type": "text", "key": "state", "label": "État", "col": { "xs": 24 } },
-            { "type": "date", "key": "last_changed", "label": "Dernier changement", "col": { "xs": 24 } },
-            { "type": "date", "key": "last_updated", "label": "Dernière mise à jour", "col": { "xs": 24 } },
-            { "type": "json", "key": "attributes", "label": "Attributs", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "entity_id",
+              "label": "ID entité",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "last_changed",
+              "label": "Dernier changement",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "last_updated",
+              "label": "Dernière mise à jour",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "attributes",
+              "label": "Attributs",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_event": {
       "title": "Événement Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "event_type", "label": "Type d'événement", "description": "Type de l'événement émis.", "col": { "xs": 24 } },
-        { "type": "text", "key": "message", "label": "Message", "description": "Message de confirmation.", "col": { "xs": 24 } },
-        { "type": "json", "key": "event_data", "label": "Données événement", "description": "Données envoyées.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "event_type",
+          "label": "Type d'événement",
+          "description": "Type de l'événement émis.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de confirmation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "event_data",
+          "label": "Données événement",
+          "description": "Données envoyées.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "home_assistant_template": {
       "title": "Template Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "result", "label": "Résultat", "description": "Texte rendu par le template.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "result",
+          "label": "Résultat",
+          "description": "Texte rendu par le template.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "home_assistant_history": {
       "title": "Historique Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre de changements retournés.", "col": { "xs": 24 } },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de changements retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Changements",
           "description": "États historiques.",
           "mode": "array",
           "key": "changes",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "entity_id", "label": "ID entité", "col": { "xs": 24 } },
-            { "type": "text", "key": "state", "label": "État", "col": { "xs": 24 } },
-            { "type": "date", "key": "last_changed", "label": "Dernier changement", "col": { "xs": 24 } },
-            { "type": "date", "key": "last_updated", "label": "Dernière mise à jour", "col": { "xs": 24 } },
-            { "type": "json", "key": "attributes", "label": "Attributs", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "entity_id",
+              "label": "ID entité",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "state",
+              "label": "État",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "last_changed",
+              "label": "Dernier changement",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "last_updated",
+              "label": "Dernière mise à jour",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "attributes",
+              "label": "Attributs",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_logbook": {
       "title": "Journal Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre d'entrées retournées.", "col": { "xs": 24 } },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'entrées retournées.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Entrées",
           "description": "Entrées du journal.",
           "mode": "array",
           "key": "entries",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-            { "type": "text", "key": "entity_id", "label": "ID entité", "col": { "xs": 24 } },
-            { "type": "text", "key": "message", "label": "Message", "col": { "xs": 24 } },
-            { "type": "date", "key": "when", "label": "Date", "col": { "xs": 24 } },
-            { "type": "text", "key": "domain", "label": "Domaine", "col": { "xs": 24 } },
-            { "type": "json", "key": "raw", "label": "Données brutes", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "entity_id",
+              "label": "ID entité",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "message",
+              "label": "Message",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "when",
+              "label": "Date",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "domain",
+              "label": "Domaine",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_components": {
       "title": "Composants Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre de composants retournés.", "col": { "xs": 24 } },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de composants retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Composants",
           "description": "Liste des composants chargés.",
           "mode": "array",
           "key": "components",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "component", "label": "Composant", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "component",
+              "label": "Composant",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_events": {
       "title": "Événements Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre d'événements retournés.", "col": { "xs": 24 } },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'événements retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Événements",
           "description": "Types d'événements disponibles.",
           "mode": "array",
           "key": "events",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "event", "label": "Événement", "col": { "xs": 24 } },
-            { "type": "number", "key": "listener_count", "label": "Écouteurs", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "event",
+              "label": "Événement",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "number",
+              "key": "listener_count",
+              "label": "Écouteurs",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_deleted_state": {
       "title": "État supprimé Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "entity_id", "label": "ID entité", "description": "Entité supprimée.", "col": { "xs": 24 } },
-        { "type": "text", "key": "deleted", "label": "Supprimé", "description": "Suppression effectuée.", "col": { "xs": 24 } },
-        { "type": "text", "key": "message", "label": "Message", "description": "Message de confirmation.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "entity_id",
+          "label": "ID entité",
+          "description": "Entité supprimée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "deleted",
+          "label": "Supprimé",
+          "description": "Suppression effectuée.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "description": "Message de confirmation.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "home_assistant_error_log": {
       "title": "Journal d'erreurs Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "lineCount", "label": "Nombre de lignes", "description": "Nombre de lignes retournées.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "log", "label": "Journal", "description": "Journal d'erreurs.", "col": { "xs": 24 } },
+        {
+          "type": "number",
+          "key": "lineCount",
+          "label": "Nombre de lignes",
+          "description": "Nombre de lignes retournées.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "log",
+          "label": "Journal",
+          "description": "Journal d'erreurs.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Lignes",
           "description": "Lignes du journal.",
           "mode": "array",
           "key": "lines",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "value", "label": "Ligne", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "value",
+              "label": "Ligne",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_camera_snapshot": {
       "title": "Image caméra Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "entity_id", "label": "ID caméra", "description": "Entité caméra.", "col": { "xs": 24 } },
-        { "type": "text", "key": "contentType", "label": "Type de contenu", "description": "Type MIME de l'image.", "col": { "xs": 24 } },
-        { "type": "number", "key": "size", "label": "Taille", "description": "Taille en octets.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "dataBase64", "label": "Image base64", "description": "Contenu de l'image encodé en base64.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "entity_id",
+          "label": "ID caméra",
+          "description": "Entité caméra.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "contentType",
+          "label": "Type de contenu",
+          "description": "Type MIME de l'image.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "size",
+          "label": "Taille",
+          "description": "Taille en octets.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "dataBase64",
+          "label": "Image base64",
+          "description": "Contenu de l'image encodé en base64.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "home_assistant_calendars": {
       "title": "Calendriers Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre de calendriers retournés.", "col": { "xs": 24 } },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre de calendriers retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Calendriers",
           "description": "Liste des calendriers.",
           "mode": "array",
           "key": "calendars",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "entity_id", "label": "ID calendrier", "col": { "xs": 24 } },
-            { "type": "text", "key": "name", "label": "Nom", "col": { "xs": 24 } },
-            { "type": "json", "key": "raw", "label": "Données brutes", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "entity_id",
+              "label": "ID calendrier",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "name",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_calendar_events": {
       "title": "Événements calendrier Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "entity_id", "label": "ID calendrier", "description": "Calendrier interrogé.", "col": { "xs": 24 } },
-        { "type": "number", "key": "totalCount", "label": "Nombre total", "description": "Nombre d'événements retournés.", "col": { "xs": 24 } },
+        {
+          "type": "text",
+          "key": "entity_id",
+          "label": "ID calendrier",
+          "description": "Calendrier interrogé.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre total",
+          "description": "Nombre d'événements retournés.",
+          "col": {
+            "xs": 24
+          }
+        },
         {
           "type": "section",
           "title": "Événements",
           "description": "Liste des événements calendrier.",
           "mode": "array",
           "key": "events",
-          "array": { "initialItems": 0, "minItems": 0 },
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
           "fields": [
-            { "type": "text", "key": "summary", "label": "Résumé", "col": { "xs": 24 } },
-            { "type": "text", "key": "description", "label": "Description", "col": { "xs": 24 } },
-            { "type": "text", "key": "location", "label": "Lieu", "col": { "xs": 24 } },
-            { "type": "date", "key": "start", "label": "Début", "col": { "xs": 24 } },
-            { "type": "date", "key": "end", "label": "Fin", "col": { "xs": 24 } },
-            { "type": "json", "key": "raw", "label": "Données brutes", "col": { "xs": 24 } }
+            {
+              "type": "text",
+              "key": "summary",
+              "label": "Résumé",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "location",
+              "label": "Lieu",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "start",
+              "label": "Début",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "date",
+              "key": "end",
+              "label": "Fin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "json",
+              "key": "raw",
+              "label": "Données brutes",
+              "col": {
+                "xs": 24
+              }
+            }
           ],
-          "col": { "xs": 24 }
+          "col": {
+            "xs": 24
+          }
         }
       ]
     },
     "home_assistant_config_check": {
       "title": "Validation configuration Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "result", "label": "Résultat", "description": "Résultat de validation.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "errors", "label": "Erreurs", "description": "Erreurs de configuration.", "col": { "xs": 24 } },
-        { "type": "json", "key": "raw", "label": "Données brutes", "description": "Réponse complète.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "result",
+          "label": "Résultat",
+          "description": "Résultat de validation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "errors",
+          "label": "Erreurs",
+          "description": "Erreurs de configuration.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "raw",
+          "label": "Données brutes",
+          "description": "Réponse complète.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "home_assistant_intent_response": {
       "title": "Réponse intent Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "name", "label": "Nom", "description": "Nom de l'intent.", "col": { "xs": 24 } },
-        { "type": "json", "key": "response", "label": "Réponse", "description": "Réponse de l'intent.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "name",
+          "label": "Nom",
+          "description": "Nom de l'intent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "response",
+          "label": "Réponse",
+          "description": "Réponse de l'intent.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     },
     "home_assistant_conversation_response": {
       "title": "Réponse conversation Home Assistant",
-      "ui": { "layout": "vertical", "labelsOnTop": true },
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
       "fields": [
-        { "type": "text", "key": "conversation_id", "label": "ID conversation", "description": "Identifiant de conversation.", "col": { "xs": 24 } },
-        { "type": "textarea", "key": "response_text", "label": "Réponse texte", "description": "Réponse formulée par l'agent.", "col": { "xs": 24 } },
-        { "type": "json", "key": "response", "label": "Réponse", "description": "Réponse complète.", "col": { "xs": 24 } }
+        {
+          "type": "text",
+          "key": "conversation_id",
+          "label": "ID conversation",
+          "description": "Identifiant de conversation.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "response_text",
+          "label": "Réponse texte",
+          "description": "Réponse formulée par l'agent.",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "json",
+          "key": "response",
+          "label": "Réponse",
+          "description": "Réponse complète.",
+          "col": {
+            "xs": 24
+          }
+        }
       ]
     }
   },
@@ -333,12 +1114,21 @@
       "iconClass": "fa-solid fa-house-signal",
       "iconUrl": "https://cdn.simpleicons.org/homeassistant",
       "color": "#d5f3ff",
-      "tags": ["domotique", "iot", "automation"],
-      "categories": ["Automatisation"],
+      "tags": [
+        "domotique",
+        "iot",
+        "automation"
+      ],
+      "categories": [
+        "Automatisation"
+      ],
       "hasCredentials": true,
       "credentialsForm": {
         "title": "Identifiants Home Assistant",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "text",
@@ -346,17 +1136,29 @@
             "label": "URL de l'instance",
             "description": "URL de Home Assistant, par exemple http://homeassistant.local:8123.",
             "default": "http://homeassistant.local:8123",
-            "col": { "xs": 24 },
-            "validators": [{ "type": "required" }]
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
             "type": "text",
             "key": "accessToken",
             "label": "Jeton d'accès longue durée",
             "description": "Jeton Bearer créé dans le profil Home Assistant.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "secret": true,
-            "validators": [{ "type": "required" }]
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -376,12 +1178,41 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "home_assistant"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_status" }],
+      "tags": [
+        "lecture",
+        "home_assistant"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_status"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Vérifie que l'API Home Assistant répond.",
-      "args": { "title": "Tester l'API", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Tester l'API",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Connexion"
     },
     {
@@ -395,12 +1226,41 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "configuration"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_config" }],
+      "tags": [
+        "lecture",
+        "configuration"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_config"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère la configuration générale de l'instance.",
-      "args": { "title": "Récupérer la configuration", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Récupérer la configuration",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Configuration"
     },
     {
@@ -414,17 +1274,57 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "états"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_states" }],
+      "tags": [
+        "lecture",
+        "états"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_states"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les états connus par Home Assistant.",
       "args": {
         "title": "Lister les états",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "domain", "label": "Domaine", "description": "Filtre optionnel, par exemple light ou sensor.", "col": { "xs": 24 } },
-          { "type": "number", "key": "pageSize", "label": "Limite", "description": "Nombre maximum d'états à retourner.", "default": 100, "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "description": "Filtre optionnel, par exemple light ou sensor.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "description": "Nombre maximum d'états à retourner.",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -442,16 +1342,52 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "états"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_state" }],
+      "tags": [
+        "lecture",
+        "états"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_state"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère l'état d'une entité.",
       "args": {
         "title": "Récupérer un état",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "entityId", "label": "ID entité", "description": "Identifiant complet, par exemple light.salon.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+          {
+            "type": "text",
+            "key": "entityId",
+            "label": "ID entité",
+            "description": "Identifiant complet, par exemple light.salon.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -469,18 +1405,75 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["écriture", "états"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_state" }],
+      "tags": [
+        "écriture",
+        "états"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_state"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Crée ou remplace l'état d'une entité.",
       "args": {
         "title": "Définir un état",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "entityId", "label": "ID entité", "description": "Identifiant complet, par exemple sensor.workflow.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "text", "key": "state", "label": "État", "description": "Nouvelle valeur de l'état.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "json", "key": "attributes", "label": "Attributs", "description": "Objet JSON d'attributs optionnels.", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "entityId",
+            "label": "ID entité",
+            "description": "Identifiant complet, par exemple sensor.workflow.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "state",
+            "label": "État",
+            "description": "Nouvelle valeur de l'état.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "stateAttributes",
+            "label": "Attributs de l’état",
+            "description": "Objet JSON des attributs Home Assistant.",
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -498,16 +1491,47 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "services"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_services" }],
+      "tags": [
+        "lecture",
+        "services"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_services"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les services disponibles.",
       "args": {
         "title": "Lister les services",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "domain", "label": "Domaine", "description": "Filtre optionnel, par exemple light ou notify.", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "description": "Filtre optionnel, par exemple light ou notify.",
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -525,19 +1549,85 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["action", "services"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_service_result" }],
+      "tags": [
+        "action",
+        "services"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_service_result"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Appelle un service Home Assistant avec des données JSON.",
       "args": {
         "title": "Appeler un service",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "domain", "label": "Domaine", "description": "Domaine du service, par exemple light.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "text", "key": "service", "label": "Service", "description": "Nom du service, par exemple turn_on.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "json", "key": "serviceData", "label": "Données du service", "description": "Objet JSON envoyé au service.", "col": { "xs": 24 } },
-          { "type": "checkbox", "key": "returnResponse", "label": "Retourner la réponse", "description": "Demande la réponse du service quand celui-ci la supporte.", "default": false, "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domaine",
+            "description": "Domaine du service, par exemple light.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "service",
+            "label": "Service",
+            "description": "Nom du service, par exemple turn_on.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "serviceData",
+            "label": "Données du service",
+            "description": "Objet JSON envoyé au service.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "returnResponse",
+            "label": "Retourner la réponse",
+            "description": "Demande la réponse du service quand celui-ci la supporte.",
+            "default": false,
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -555,17 +1645,61 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["action", "événements"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_event" }],
+      "tags": [
+        "action",
+        "événements"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_event"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Émet un événement sur le bus Home Assistant.",
       "args": {
         "title": "Émettre un événement",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "eventType", "label": "Type d'événement", "description": "Nom de l'événement à émettre.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "json", "key": "eventData", "label": "Données événement", "description": "Objet JSON optionnel.", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "eventType",
+            "label": "Type d'événement",
+            "description": "Nom de l'événement à émettre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "eventData",
+            "label": "Données événement",
+            "description": "Objet JSON optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -583,16 +1717,52 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "templates"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_template" }],
+      "tags": [
+        "lecture",
+        "templates"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_template"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Rend un template Home Assistant.",
       "args": {
         "title": "Rendre un template",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "textarea", "key": "template", "label": "Template", "description": "Template Jinja à rendre.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+          {
+            "type": "textarea",
+            "key": "template",
+            "label": "Template",
+            "description": "Template Jinja à rendre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -610,19 +1780,75 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "historique"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_history" }],
+      "tags": [
+        "lecture",
+        "historique"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_history"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère l'historique des états.",
       "args": {
         "title": "Lire l'historique",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "startTime", "label": "Début", "description": "Date ISO optionnelle. Vide pour la valeur par défaut Home Assistant.", "col": { "xs": 24 } },
-          { "type": "text", "key": "endTime", "label": "Fin", "description": "Date ISO optionnelle.", "col": { "xs": 24 } },
-          { "type": "text", "key": "entityIds", "label": "Entités", "description": "Liste séparée par des virgules, par exemple sensor.temp,light.salon.", "col": { "xs": 24 } },
-          { "type": "number", "key": "pageSize", "label": "Limite", "description": "Nombre maximum de changements à retourner.", "default": 100, "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "startTime",
+            "label": "Début",
+            "description": "Date ISO optionnelle. Vide pour la valeur par défaut Home Assistant.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "endTime",
+            "label": "Fin",
+            "description": "Date ISO optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "entityIds",
+            "label": "Entités",
+            "description": "Liste séparée par des virgules, par exemple sensor.temp,light.salon.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "description": "Nombre maximum de changements à retourner.",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -640,19 +1866,75 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "journal"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_logbook" }],
+      "tags": [
+        "lecture",
+        "journal"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_logbook"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère les entrées du journal Home Assistant.",
       "args": {
         "title": "Lire le journal",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "startTime", "label": "Début", "description": "Date ISO optionnelle.", "col": { "xs": 24 } },
-          { "type": "text", "key": "endTime", "label": "Fin", "description": "Date ISO optionnelle.", "col": { "xs": 24 } },
-          { "type": "text", "key": "entityId", "label": "ID entité", "description": "Filtre optionnel sur une entité.", "col": { "xs": 24 } },
-          { "type": "number", "key": "pageSize", "label": "Limite", "description": "Nombre maximum d'entrées à retourner.", "default": 100, "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "startTime",
+            "label": "Début",
+            "description": "Date ISO optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "endTime",
+            "label": "Fin",
+            "description": "Date ISO optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "entityId",
+            "label": "ID entité",
+            "description": "Filtre optionnel sur une entité.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "description": "Nombre maximum d'entrées à retourner.",
+            "default": 100,
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -670,17 +1952,57 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "configuration"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_components" }],
+      "tags": [
+        "lecture",
+        "configuration"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_components"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les composants chargés dans Home Assistant.",
       "args": {
         "title": "Lister les composants",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "search", "label": "Recherche", "description": "Filtre optionnel sur le nom du composant.", "col": { "xs": 24 } },
-          { "type": "number", "key": "pageSize", "label": "Limite", "description": "Nombre maximum de composants à retourner.", "default": 200, "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Filtre optionnel sur le nom du composant.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Limite",
+            "description": "Nombre maximum de composants à retourner.",
+            "default": 200,
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -698,12 +2020,41 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "configuration"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_config_check" }],
+      "tags": [
+        "lecture",
+        "configuration"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_config_check"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Déclenche une validation de la configuration Home Assistant.",
-      "args": { "title": "Valider la configuration", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Valider la configuration",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Configuration"
     },
     {
@@ -717,16 +2068,47 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "événements"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_events" }],
+      "tags": [
+        "lecture",
+        "événements"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_events"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les types d'événements disponibles.",
       "args": {
         "title": "Lister les événements",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "search", "label": "Recherche", "description": "Filtre optionnel sur le nom de l'événement.", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Filtre optionnel sur le nom de l'événement.",
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -744,17 +2126,67 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["suppression", "états"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_deleted_state" }],
+      "tags": [
+        "suppression",
+        "états"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_deleted_state"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Supprime la représentation d'état d'une entité.",
       "args": {
         "title": "Supprimer un état",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "entityId", "label": "ID entité", "description": "Identifiant complet, par exemple sensor.workflow.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "checkbox", "key": "confirmDelete", "label": "Confirmer la suppression", "description": "Doit être coché pour supprimer l'état.", "default": false, "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+          {
+            "type": "text",
+            "key": "entityId",
+            "label": "ID entité",
+            "description": "Identifiant complet, par exemple sensor.workflow.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "confirmDelete",
+            "label": "Confirmer la suppression",
+            "description": "Doit être coché pour supprimer l'état.",
+            "default": false,
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -772,16 +2204,48 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "journal"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_error_log" }],
+      "tags": [
+        "lecture",
+        "journal"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_error_log"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère les erreurs enregistrées pendant la session courante.",
       "args": {
         "title": "Lire le journal d'erreurs",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "number", "key": "pageSize", "label": "Nombre de lignes", "description": "Nombre maximum de lignes à retourner.", "default": 200, "col": { "xs": 24 } }
+          {
+            "type": "number",
+            "key": "pageSize",
+            "label": "Nombre de lignes",
+            "description": "Nombre maximum de lignes à retourner.",
+            "default": 200,
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -799,17 +2263,61 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "caméra"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_camera_snapshot" }],
+      "tags": [
+        "lecture",
+        "caméra"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_camera_snapshot"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Récupère une image d'une entité caméra.",
       "args": {
         "title": "Capturer une image caméra",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "entityId", "label": "ID caméra", "description": "Identifiant complet, par exemple camera.entree.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "text", "key": "timestamp", "label": "Timestamp", "description": "Valeur optionnelle pour éviter le cache.", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "entityId",
+            "label": "ID caméra",
+            "description": "Identifiant complet, par exemple camera.entree.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "timestamp",
+            "label": "Timestamp",
+            "description": "Valeur optionnelle pour éviter le cache.",
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -827,12 +2335,41 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "calendriers"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_calendars" }],
+      "tags": [
+        "lecture",
+        "calendriers"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_calendars"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les calendriers disponibles.",
-      "args": { "title": "Lister les calendriers", "ui": { "layout": "vertical", "labelsOnTop": true }, "fields": [], "displayTitle": false, "displayDescription": false },
+      "args": {
+        "title": "Lister les calendriers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
       "group": "Calendriers"
     },
     {
@@ -846,18 +2383,80 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["lecture", "calendriers"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_calendar_events" }],
+      "tags": [
+        "lecture",
+        "calendriers"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_calendar_events"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Liste les événements d'un calendrier sur une période.",
       "args": {
         "title": "Lister les événements calendrier",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "entityId", "label": "ID calendrier", "description": "Identifiant complet, par exemple calendar.travail.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "text", "key": "start", "label": "Début", "description": "Date de début ISO.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "text", "key": "end", "label": "Fin", "description": "Date de fin ISO.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] }
+          {
+            "type": "text",
+            "key": "entityId",
+            "label": "ID calendrier",
+            "description": "Identifiant complet, par exemple calendar.travail.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "start",
+            "label": "Début",
+            "description": "Date de début ISO.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "end",
+            "label": "Fin",
+            "description": "Date de fin ISO.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -875,17 +2474,61 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["action", "intents"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_intent_response" }],
+      "tags": [
+        "action",
+        "intents"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_intent_response"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Exécute un intent Home Assistant avec des données JSON.",
       "args": {
         "title": "Exécuter un intent",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "text", "key": "name", "label": "Nom", "description": "Nom de l'intent, par exemple SetTimer.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "json", "key": "data", "label": "Données", "description": "Objet JSON de données intent.", "col": { "xs": 24 } }
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de l'intent, par exemple SetTimer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "intentData",
+            "label": "Données intent",
+            "description": "Objet JSON data envoyé à l’intent.",
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false
@@ -903,19 +2546,79 @@
       "nodeKind": "function",
       "category": "Home Assistant",
       "providerKey": "home_assistant",
-      "tags": ["action", "conversation"],
-      "inputHandles": [{ "id": "in", "name": "In", "type": "any", "accepts": ["any", "payload"] }],
-      "outputHandles": [{ "id": "ok", "name": "Success", "type": "payload", "schema": "$var:home_assistant_conversation_response" }],
+      "tags": [
+        "action",
+        "conversation"
+      ],
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:home_assistant_conversation_response"
+        }
+      ],
       "authorize_catch_error": true,
       "description": "Envoie une phrase à l'agent Conversation Home Assistant.",
       "args": {
         "title": "Traiter une conversation",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
-          { "type": "textarea", "key": "text", "label": "Texte", "description": "Phrase à traiter.", "col": { "xs": 24 }, "validators": [{ "type": "required" }] },
-          { "type": "text", "key": "language", "label": "Langue", "description": "Langue optionnelle, par exemple fr ou en.", "col": { "xs": 24 } },
-          { "type": "text", "key": "agentId", "label": "ID agent", "description": "Agent conversationnel optionnel.", "col": { "xs": 24 } },
-          { "type": "text", "key": "conversationId", "label": "ID conversation", "description": "Identifiant optionnel pour poursuivre une conversation.", "col": { "xs": 24 } }
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "description": "Phrase à traiter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "language",
+            "label": "Langue",
+            "description": "Langue optionnelle, par exemple fr ou en.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "agentId",
+            "label": "ID agent",
+            "description": "Agent conversationnel optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "conversationId",
+            "label": "ID conversation",
+            "description": "Identifiant optionnel pour poursuivre une conversation.",
+            "col": {
+              "xs": 24
+            }
+          }
         ],
         "displayTitle": false,
         "displayDescription": false

@@ -2466,10 +2466,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Model OpenRouter à utiliser.",
             "col": {
               "xs": 24
             },
@@ -2478,6 +2478,200 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "messages",
+            "label": "Messages",
+            "description": "Tableau messages chat completions.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "models",
+            "label": "Modèles de secours",
+            "description": "Tableau de modèles de fallback.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "provider",
+            "label": "Routage provider",
+            "description": "Objet provider OpenRouter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "transforms",
+            "label": "Transforms",
+            "description": "Tableau transforms OpenRouter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "route",
+            "label": "Route",
+            "description": "Route OpenRouter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Sampling temperature.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "topP",
+            "label": "Top P",
+            "description": "Nucleus sampling.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "topK",
+            "label": "Top K",
+            "description": "Top-k sampling.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "frequencyPenalty",
+            "label": "Pénalité fréquence",
+            "description": "frequency_penalty.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "presencePenalty",
+            "label": "Pénalité présence",
+            "description": "presence_penalty.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "repetitionPenalty",
+            "label": "Pénalité répétition",
+            "description": "repetition_penalty.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Tokens max",
+            "description": "max_tokens.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "responseFormat",
+            "label": "Format de réponse",
+            "description": "Objet response_format.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "stop",
+            "label": "Stop",
+            "description": "String ou tableau stop.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream",
+            "label": "Streaming",
+            "description": "Active stream.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tools",
+            "label": "Outils",
+            "description": "Tableau tools.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "toolChoice",
+            "label": "Choix outil",
+            "description": "Valeur tool_choice.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "seed",
+            "label": "Seed",
+            "description": "Seed de génération.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "logprobs",
+            "label": "Logprobs",
+            "description": "Active logprobs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "topLogprobs",
+            "label": "Top logprobs",
+            "description": "top_logprobs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "metadata",
+            "label": "Métadonnées",
+            "description": "Objet metadata.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2544,10 +2738,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Model OpenRouter à utiliser.",
             "col": {
               "xs": 24
             },
@@ -2556,6 +2750,200 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "messages",
+            "label": "Messages",
+            "description": "Tableau messages chat completions.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "models",
+            "label": "Modèles de secours",
+            "description": "Tableau de modèles de fallback.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "provider",
+            "label": "Routage provider",
+            "description": "Objet provider OpenRouter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "transforms",
+            "label": "Transforms",
+            "description": "Tableau transforms OpenRouter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "route",
+            "label": "Route",
+            "description": "Route OpenRouter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Sampling temperature.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "topP",
+            "label": "Top P",
+            "description": "Nucleus sampling.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "topK",
+            "label": "Top K",
+            "description": "Top-k sampling.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "frequencyPenalty",
+            "label": "Pénalité fréquence",
+            "description": "frequency_penalty.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "presencePenalty",
+            "label": "Pénalité présence",
+            "description": "presence_penalty.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "repetitionPenalty",
+            "label": "Pénalité répétition",
+            "description": "repetition_penalty.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxTokens",
+            "label": "Tokens max",
+            "description": "max_tokens.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "responseFormat",
+            "label": "Format de réponse",
+            "description": "Objet response_format.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "stop",
+            "label": "Stop",
+            "description": "String ou tableau stop.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream",
+            "label": "Streaming",
+            "description": "Active stream.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tools",
+            "label": "Outils",
+            "description": "Tableau tools.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "toolChoice",
+            "label": "Choix outil",
+            "description": "Valeur tool_choice.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "seed",
+            "label": "Seed",
+            "description": "Seed de génération.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "logprobs",
+            "label": "Logprobs",
+            "description": "Active logprobs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "topLogprobs",
+            "label": "Top logprobs",
+            "description": "top_logprobs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "metadata",
+            "label": "Métadonnées",
+            "description": "Objet metadata.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2804,10 +3192,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle embedding.",
             "col": {
               "xs": 24
             },
@@ -2816,6 +3204,47 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "embeddingInput",
+            "label": "Input",
+            "description": "Texte ou tableau envoyé dans input.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "encodingFormat",
+            "label": "Format encodage",
+            "description": "encoding_format.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "dimensions",
+            "label": "Dimensions",
+            "description": "Nombre de dimensions.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "Utilisateur",
+            "description": "Identifiant utilisateur.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -3185,10 +3614,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle rerank.",
             "col": {
               "xs": 24
             },
@@ -3197,6 +3626,61 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "rerankQuery",
+            "label": "Query",
+            "description": "Texte query.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "Tableau des documents à reranker.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "topN",
+            "label": "Top N",
+            "description": "Nombre de documents à retourner.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "returnDocuments",
+            "label": "Retourner documents",
+            "description": "Active return_documents.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxChunksPerDoc",
+            "label": "Chunks max par document",
+            "description": "max_chunks_per_doc.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -3249,10 +3733,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle Responses.",
             "col": {
               "xs": 24
             },
@@ -3261,6 +3745,101 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "responseInput",
+            "label": "Input",
+            "description": "Texte, tableau ou objet input.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "instructions",
+            "label": "Instructions",
+            "description": "Instructions système.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tools",
+            "label": "Outils",
+            "description": "Tableau tools.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "toolChoice",
+            "label": "Choix outil",
+            "description": "tool_choice.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "Sampling temperature.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxOutputTokens",
+            "label": "Tokens sortie max",
+            "description": "max_output_tokens.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "text",
+            "label": "Texte",
+            "description": "Objet text.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "reasoning",
+            "label": "Reasoning",
+            "description": "Objet reasoning.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "metadata",
+            "label": "Métadonnées",
+            "description": "Objet metadata.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "store",
+            "label": "Stocker",
+            "description": "Active store.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -3313,10 +3892,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle TTS.",
             "col": {
               "xs": 24
             },
@@ -3325,6 +3904,52 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "textarea",
+            "key": "speechInput",
+            "label": "Texte",
+            "description": "Texte envoyé dans input.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "voice",
+            "label": "Voix",
+            "description": "Voix à utiliser.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "responseFormat",
+            "label": "Format audio",
+            "description": "response_format.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "speed",
+            "label": "Vitesse",
+            "description": "Vitesse de parole.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -3377,10 +4002,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "fileBase64",
+            "label": "Fichier base64",
+            "description": "Contenu du fichier audio en base64.",
             "col": {
               "xs": 24
             },
@@ -3389,6 +4014,83 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "fileName",
+            "label": "Nom du fichier",
+            "description": "Nom du fichier audio.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "mimeType",
+            "label": "Type MIME",
+            "description": "Type MIME audio.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle transcription.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "language",
+            "label": "Langue",
+            "description": "Langue source.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Prompt de transcription.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "responseFormat",
+            "label": "Format réponse",
+            "description": "response_format.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Température",
+            "description": "temperature.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "timestampGranularities",
+            "label": "Granularités timestamp",
+            "description": "Tableau timestamp_granularities.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -3490,10 +4192,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "model",
+            "label": "Modèle",
+            "description": "Modèle vidéo.",
             "col": {
               "xs": 24
             },
@@ -3502,6 +4204,56 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "textarea",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Prompt vidéo.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "url",
+            "key": "imageUrl",
+            "label": "Image source",
+            "description": "URL image source.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "duration",
+            "label": "Durée",
+            "description": "Durée demandée.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "aspectRatio",
+            "label": "Ratio",
+            "description": "Aspect ratio.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "metadata",
+            "label": "Métadonnées",
+            "description": "Objet metadata.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,

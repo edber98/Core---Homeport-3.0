@@ -29,7 +29,7 @@ module.exports = {
       const c = await buildKinnClient(opts);
       const formId = String(inputs.formId || '').trim();
       if (!formId) return fail('formId requis');
-      const data = inputs.data || {};
+      const data = inputs.formData || {};
       const res = await c.fetchKinn(`/api/forms/${encodeURIComponent(formId)}/submit`, {
         method: 'POST',
         body: JSON.stringify({ data }),

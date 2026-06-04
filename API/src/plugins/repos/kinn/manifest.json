@@ -2158,12 +2158,13 @@
           },
           {
             "type": "json",
-            "key": "input",
-            "label": "Input (payload)",
+            "key": "runInput",
+            "label": "Entrée du run",
             "default": "{}",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON envoyé dans input au flow."
           },
           {
             "type": "checkbox",
@@ -6049,12 +6050,13 @@
           },
           {
             "type": "json",
-            "key": "data",
+            "key": "formData",
             "label": "Données du formulaire",
             "default": "{}",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON envoyé dans data au formulaire."
           }
         ],
         "ui": {

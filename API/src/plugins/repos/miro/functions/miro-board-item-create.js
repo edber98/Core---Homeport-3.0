@@ -4,18 +4,18 @@ module.exports = {
   async miro_board_item_create(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
-    for (const key of ["boardId","type","data"]) {
+    for (const key of ["boardId","type","itemData"]) {
       if (d[key] === undefined || d[key] === null || d[key] === "") return { ok: false, error: `${key} requis.` };
     }
     const json = {};
     try {
-      for (const key of ["data","position"]) json[key] = utils.parseJsonInput(d[key], key, undefined);
+      for (const key of ["itemData","position"]) json[key] = utils.parseJsonInput(d[key], key, undefined);
     } catch (e) {
       return { ok: false, error: e.message };
     }
     const path = `/boards/${encodeURIComponent(String(d.boardId))}/items`;
     const query = {};
-    const body = ({ type: String(d.type), data: json.data, position: json.position });
+    const body = ({ type: String(d.type), data: json.itemData, position: json.position });
     log("Appel API en cours...");
     const options = { method: "POST", query, body };
     const res = await utils.miroRequest(opts, path, options);

@@ -14,12 +14,11 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let body;
+    try {
+      body = utils.bodyFromFields(d, ['init_image', 'init_image_mode', 'text_prompts', 'image_strength', 'cfg_scale', 'clip_guidance_preset', 'samples', 'sampler', 'seed', 'steps', 'step_schedule_start', 'step_schedule_end', 'style_preset', 'extras'], ['text_prompts', 'extras']);
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
 
     log('Requête en cours...');

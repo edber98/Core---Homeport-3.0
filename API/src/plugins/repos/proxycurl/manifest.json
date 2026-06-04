@@ -3261,10 +3261,37 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut name du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_public",
+            "label": "Is public",
+            "description": "Attribut is_public du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email_notifications",
+            "label": "Email notifications",
+            "description": "Attribut email_notifications du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "targets",
+            "label": "Targets",
+            "description": "Attribut targets du body.",
             "col": {
               "xs": 24
             },
@@ -3403,18 +3430,49 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut name du body.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_public",
+            "label": "Is public",
+            "description": "Attribut is_public du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_suspended",
+            "label": "Is suspended",
+            "description": "Attribut is_suspended du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "suspension_reason",
+            "label": "Suspension reason",
+            "description": "Attribut suspension_reason du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email_notifications",
+            "label": "Email notifications",
+            "description": "Attribut email_notifications du body.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -4059,10 +4117,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "website_url",
+            "label": "Website URL",
+            "description": "Attribut website_url du body.",
             "col": {
               "xs": 24
             },
@@ -4071,6 +4129,15 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "settings",
+            "label": "Settings",
+            "description": "Attribut settings du body.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -4152,9 +4219,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "settings",
+            "label": "Settings",
+            "description": "Attribut settings du body.",
             "col": {
               "xs": 24
             },

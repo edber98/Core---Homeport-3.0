@@ -175,7 +175,7 @@ async function run(key, inputs, opts) {
       if (!topic) return { ok: false, error: 'topic requis.' };
       if (!value) return { ok: false, error: 'value requis.' };
 
-      const headersRaw = parseJson(d.headers, 'headers', {});
+      const headersRaw = parseJson(d.messageHeaders, 'messageHeaders', {});
       const headers = {};
       Object.entries(headersRaw || {}).forEach(([k, v]) => {
         if (v !== undefined && v !== null) headers[String(k)] = String(v);

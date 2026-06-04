@@ -8,7 +8,7 @@ module.exports = {
     catch (e) { return { ok: false, error: e.message }; }
 
     let payload = {};
-    try { payload = utils.parseJsonInput(d.payload, "payload", { defaultValue: {}, allowArray: false }); }
+    try { payload = utils.bodyFromFields(d, ["name", "description", "groups", "is_static", "deleted"], ["groups"]); }
     catch (e) { return { ok: false, error: e.message }; }
 
     if (!payload.name) return { ok: false, error: "payload.name requis pour creer un cohort." };

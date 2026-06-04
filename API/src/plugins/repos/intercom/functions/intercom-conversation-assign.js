@@ -9,7 +9,7 @@ module.exports = {
     if (!(d.assigneeId || "").trim()) return { ok: false, error: "Missing assigneeId." };
 
     const body = { message_type: "assignment", type: "admin", admin_id: d.adminId, assignee_id: d.assigneeId };
-    if (d.body) body.body = d.body;
+    if (d.messageText ?? d.noteBody) body.body = d.messageText ?? d.noteBody;
     log('Appel API en cours...');
     const res = await utils.intercomRequest(opts, `/conversations/${d.conversationId}/parts`, { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };

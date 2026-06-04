@@ -358,27 +358,27 @@
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "description": "Headers additionnels JSON.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query JSON",
-            "description": "Paramètres query JSON.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet JSON des paramètres URL.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload JSON",
-            "description": "Corps JSON optionnel.",
+            "key": "requestBody",
+            "label": "Corps JSON",
+            "description": "Objet JSON envoyé dans le corps de requête.",
             "col": {
               "xs": 24
             }
@@ -449,18 +449,18 @@
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "description": "Headers additionnels JSON.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query JSON",
-            "description": "Paramètres query JSON.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet JSON des paramètres URL.",
             "col": {
               "xs": 24
             }
@@ -531,27 +531,27 @@
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "description": "Headers additionnels JSON.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query JSON",
-            "description": "Paramètres query JSON.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet JSON des paramètres URL.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload JSON",
-            "description": "Corps JSON.",
+            "key": "requestBody",
+            "label": "Corps JSON",
+            "description": "Objet JSON envoyé dans le corps de requête.",
             "col": {
               "xs": 24
             }
@@ -622,27 +622,27 @@
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "description": "Headers additionnels JSON.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query JSON",
-            "description": "Paramètres query JSON.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet JSON des paramètres URL.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload JSON",
-            "description": "Corps JSON.",
+            "key": "requestBody",
+            "label": "Corps JSON",
+            "description": "Objet JSON envoyé dans le corps de requête.",
             "col": {
               "xs": 24
             }
@@ -713,27 +713,27 @@
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "description": "Headers additionnels JSON.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query JSON",
-            "description": "Paramètres query JSON.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet JSON des paramètres URL.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload JSON",
-            "description": "Corps JSON.",
+            "key": "requestBody",
+            "label": "Corps JSON",
+            "description": "Objet JSON envoyé dans le corps de requête.",
             "col": {
               "xs": 24
             }
@@ -804,18 +804,18 @@
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "description": "Headers additionnels JSON.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query JSON",
-            "description": "Paramètres query JSON.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet JSON des paramètres URL.",
             "col": {
               "xs": 24
             }
