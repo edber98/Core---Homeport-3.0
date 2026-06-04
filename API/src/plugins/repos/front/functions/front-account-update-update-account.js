@@ -10,16 +10,21 @@ module.exports = {
     reqPath = reqPath.replace('{account_id}', encodeURIComponent(account_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.description !== undefined && d.description !== null && d.description !== '') {
+      body["description"] = d.description;
+    }
+    if (d.domains !== undefined && d.domains !== null && d.domains !== '') {
+      body["domains"] = d.domains;
+    }
+    if (d.custom_fields !== undefined && d.custom_fields !== null && d.custom_fields !== '') {
+      body["custom_fields"] = d.custom_fields;
     }
 
     log('Requête en cours...');
@@ -39,3 +44,4 @@ module.exports = {
     };
   }
 };
+

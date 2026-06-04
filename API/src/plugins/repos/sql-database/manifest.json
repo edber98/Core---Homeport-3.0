@@ -407,7 +407,7 @@
         "fields": [
           {
             "type": "textarea",
-            "key": "query",
+            "key": "sqlQuery",
             "label": "Requête SQL",
             "col": {
               "xs": 24
@@ -470,7 +470,7 @@
         "fields": [
           {
             "type": "textarea",
-            "key": "query",
+            "key": "sqlQuery",
             "label": "Requête SQL",
             "col": {
               "xs": 24
@@ -480,7 +480,7 @@
                 "type": "required"
               }
             ],
-            "description": "Utiliser ? pour MySQL ou $1,$2 pour PostgreSQL."
+            "description": "Requête SQL paramétrée à exécuter."
           },
           {
             "type": "textarea",
@@ -793,8 +793,8 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données (JSON objet)",
+            "key": "recordData",
+            "label": "Données de la ligne",
             "col": {
               "xs": 24
             },
@@ -803,7 +803,7 @@
                 "type": "required"
               }
             ],
-            "description": "Objet clé-valeur des données."
+            "description": "Objet JSON colonne/valeur à insérer."
           }
         ],
         "displayTitle": false,
@@ -870,8 +870,8 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données (JSON objet)",
+            "key": "recordData",
+            "label": "Données à modifier",
             "col": {
               "xs": 24
             },
@@ -880,7 +880,7 @@
                 "type": "required"
               }
             ],
-            "description": "Objet clé-valeur des nouvelles données."
+            "description": "Objet JSON colonne/valeur à mettre à jour."
           },
           {
             "type": "text",

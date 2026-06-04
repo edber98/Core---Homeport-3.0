@@ -132,7 +132,10 @@
       ],
       "args": {
         "title": "Déclencheur HTTP",
-        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
         "fields": [
           {
             "type": "resolver",
@@ -141,26 +144,56 @@
             "description": "URLs publiques où l'extérieur doit envoyer la requête. Persistantes, ne changent que sur clic 'Régénérer'.",
             "resolver": "core_webhook_url",
             "variants": [
-              { "id": "production", "label": "Production" },
-              { "id": "test",       "label": "Test" }
+              {
+                "id": "production",
+                "label": "Production"
+              },
+              {
+                "id": "test",
+                "label": "Test"
+              }
             ],
             "actions": [
-              { "id": "rotate_url", "label": "Régénérer l'URL", "confirm": true, "requiresAdmin": true }
+              {
+                "id": "rotate_url",
+                "label": "Régénérer l'URL",
+                "confirm": true,
+                "requiresAdmin": true
+              }
             ],
             "copyable": true,
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "select",
             "key": "method",
             "label": "Méthode HTTP attendue",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "options": [
-              { "label": "GET", "value": "GET" },
-              { "label": "POST", "value": "POST" },
-              { "label": "PUT", "value": "PUT" },
-              { "label": "PATCH", "value": "PATCH" },
-              { "label": "DELETE", "value": "DELETE" }
+              {
+                "label": "GET",
+                "value": "GET"
+              },
+              {
+                "label": "POST",
+                "value": "POST"
+              },
+              {
+                "label": "PUT",
+                "value": "PUT"
+              },
+              {
+                "label": "PATCH",
+                "value": "PATCH"
+              },
+              {
+                "label": "DELETE",
+                "value": "DELETE"
+              }
             ],
             "default": "POST"
           },
@@ -169,13 +202,30 @@
             "key": "auth_mode",
             "label": "Mode d'authentification",
             "description": "Comment l'extérieur doit prouver son identité pour appeler ce déclencheur.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "options": [
-              { "label": "Public (aucune auth)", "value": "public" },
-              { "label": "Bearer token",          "value": "token" },
-              { "label": "HTTP Basic (user/pwd)", "value": "basic" },
-              { "label": "Signature HMAC",        "value": "hmac" },
-              { "label": "PAT Kinn (du workspace)", "value": "pat" }
+              {
+                "label": "Public (aucune auth)",
+                "value": "public"
+              },
+              {
+                "label": "Bearer token",
+                "value": "token"
+              },
+              {
+                "label": "HTTP Basic (user/pwd)",
+                "value": "basic"
+              },
+              {
+                "label": "Signature HMAC",
+                "value": "hmac"
+              },
+              {
+                "label": "PAT Kinn (du workspace)",
+                "value": "pat"
+              }
             ],
             "default": "token"
           },
@@ -188,18 +238,48 @@
             "secret": true,
             "copyable": true,
             "actions": [
-              { "id": "rotate_secret", "label": "Régénérer le token", "confirm": true, "requiresAdmin": true }
+              {
+                "id": "rotate_secret",
+                "label": "Régénérer le token",
+                "confirm": true,
+                "requiresAdmin": true
+              }
             ],
-            "visibleIf": { "==": [{ "var": "auth_mode" }, "token"] },
-            "col": { "xs": 24 }
+            "visibleIf": {
+              "==": [
+                {
+                  "var": "auth_mode"
+                },
+                "token"
+              ]
+            },
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "text",
             "key": "auth_username",
             "label": "Nom d'utilisateur (HTTP Basic)",
-            "visibleIf": { "==": [{ "var": "auth_mode" }, "basic"] },
-            "requiredIf": { "==": [{ "var": "auth_mode" }, "basic"] },
-            "col": { "xs": 24 }
+            "visibleIf": {
+              "==": [
+                {
+                  "var": "auth_mode"
+                },
+                "basic"
+              ]
+            },
+            "requiredIf": {
+              "==": [
+                {
+                  "var": "auth_mode"
+                },
+                "basic"
+              ]
+            },
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "resolver",
@@ -209,23 +289,55 @@
             "secret": true,
             "copyable": true,
             "actions": [
-              { "id": "rotate_secret", "label": "Régénérer le mot de passe", "confirm": true, "requiresAdmin": true }
+              {
+                "id": "rotate_secret",
+                "label": "Régénérer le mot de passe",
+                "confirm": true,
+                "requiresAdmin": true
+              }
             ],
-            "visibleIf": { "==": [{ "var": "auth_mode" }, "basic"] },
-            "col": { "xs": 24 }
+            "visibleIf": {
+              "==": [
+                {
+                  "var": "auth_mode"
+                },
+                "basic"
+              ]
+            },
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "select",
             "key": "hmac_algo",
             "label": "Algorithme HMAC",
             "options": [
-              { "label": "SHA-256", "value": "sha256" },
-              { "label": "SHA-1",   "value": "sha1" },
-              { "label": "SHA-512", "value": "sha512" }
+              {
+                "label": "SHA-256",
+                "value": "sha256"
+              },
+              {
+                "label": "SHA-1",
+                "value": "sha1"
+              },
+              {
+                "label": "SHA-512",
+                "value": "sha512"
+              }
             ],
             "default": "sha256",
-            "visibleIf": { "==": [{ "var": "auth_mode" }, "hmac"] },
-            "col": { "xs": 24 }
+            "visibleIf": {
+              "==": [
+                {
+                  "var": "auth_mode"
+                },
+                "hmac"
+              ]
+            },
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "resolver",
@@ -236,31 +348,51 @@
             "secret": true,
             "copyable": true,
             "actions": [
-              { "id": "rotate_secret", "label": "Régénérer le secret", "confirm": true, "requiresAdmin": true }
+              {
+                "id": "rotate_secret",
+                "label": "Régénérer le secret",
+                "confirm": true,
+                "requiresAdmin": true
+              }
             ],
-            "visibleIf": { "==": [{ "var": "auth_mode" }, "hmac"] },
-            "col": { "xs": 24 }
+            "visibleIf": {
+              "==": [
+                {
+                  "var": "auth_mode"
+                },
+                "hmac"
+              ]
+            },
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "schema_builder",
             "key": "payload_schema",
             "label": "Schéma du payload reçu",
             "description": "Décrit la structure attendue du body. Définit l'output disponible pour les nodes en aval.",
-            "col": { "xs": 24 }
+            "col": {
+              "xs": 24
+            }
           },
           {
             "type": "checkbox",
             "key": "cors",
             "label": "Autoriser CORS",
             "description": "Active l'en-tête Access-Control-Allow-Origin: *.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "default": true
           },
           {
             "type": "number",
             "key": "respondStatus",
             "label": "Code HTTP de réponse",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "default": 200
           },
           {
@@ -268,7 +400,9 @@
             "key": "respondBody",
             "label": "Corps de réponse (JSON/texte)",
             "description": "Vide = JSON par défaut { ok: true, flowId, triggered: true }.",
-            "col": { "xs": 24 },
+            "col": {
+              "xs": 24
+            },
             "default": ""
           }
         ],
@@ -276,7 +410,10 @@
         "displayDescription": false
       },
       "group": "Webhooks",
-      "tags": ["http", "trigger"]
+      "tags": [
+        "http",
+        "trigger"
+      ]
     },
     {
       "key": "http",
@@ -366,9 +503,9 @@
           },
           {
             "type": "textarea",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "En-têtes au format JSON.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP.",
             "col": {
               "xs": 24
             },
@@ -376,9 +513,9 @@
           },
           {
             "type": "textarea",
-            "key": "body",
-            "label": "Body (JSON)",
-            "description": "Corps de la requête au format JSON.",
+            "key": "requestBody",
+            "label": "Corps de requête",
+            "description": "Corps texte ou JSON à envoyer.",
             "col": {
               "xs": 24
             },

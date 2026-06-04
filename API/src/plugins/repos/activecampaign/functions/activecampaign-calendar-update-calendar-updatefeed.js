@@ -14,16 +14,23 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.calendar_title !== undefined && d.calendar_title !== null && d.calendar_title !== "") {
+          if (!body["calendar"] || typeof body["calendar"] !== 'object' || Array.isArray(body["calendar"])) body["calendar"] = {};
+          body["calendar"]["title"] = d.calendar_title;
+        }
+    if (d.calendar_type !== undefined && d.calendar_type !== null && d.calendar_type !== "") {
+          if (!body["calendar"] || typeof body["calendar"] !== 'object' || Array.isArray(body["calendar"])) body["calendar"] = {};
+          body["calendar"]["type"] = d.calendar_type;
+        }
+    if (d.calendar_notification !== undefined && d.calendar_notification !== null && d.calendar_notification !== "") {
+          if (!body["calendar"] || typeof body["calendar"] !== 'object' || Array.isArray(body["calendar"])) body["calendar"] = {};
+          body["calendar"]["notification"] = d.calendar_notification;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

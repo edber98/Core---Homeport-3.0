@@ -15,10 +15,10 @@ module.exports = {
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
     let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
+    if (d.emailBatch !== undefined && d.emailBatch !== null && d.emailBatch !== '') {
+      if (typeof d.emailBatch === 'object') body = d.emailBatch;
       else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
+        try { body = JSON.parse(String(d.emailBatch)); } catch { return { ok: false, error: 'JSON invalide dans emailBatch.' }; }
       }
     }
 

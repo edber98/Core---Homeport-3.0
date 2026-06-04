@@ -12,21 +12,14 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    // Propager automatiquement les autres entrées en query params.
-    const reserved = new Set(['body', 'pageSize', 'page', 'search']);
-    for (const [k, v] of Object.entries(d)) {
-      if (reserved.has(k)) continue;
-      if (v === undefined || v === null || v === '') continue;
-      query[k] = v;
-    }
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    let contacts;
+    try { contacts = typeof d.contacts === 'object' ? d.contacts : JSON.parse(String(d.contacts || '[]')); }
+    catch { return { ok: false, error: 'JSON invalide dans les contacts.' }; }
+    if (!Array.isArray(contacts) || contacts.length === 0) return { ok: false, error: 'Au moins un contact est requis.' };
+    const body = { data: contacts };
+    if (d.siren !== undefined && d.siren !== null && d.siren !== '') body.siren = d.siren === true || String(d.siren).toLowerCase() === 'true';
+    if (d.language !== undefined && d.language !== null && d.language !== '') body.language = String(d.language);
+    if (d.customCallbackUrl !== undefined && d.customCallbackUrl !== null && d.customCallbackUrl !== '') body.custom_callback_url = String(d.customCallbackUrl);
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

@@ -13,20 +13,16 @@ module.exports = {
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
     // Propager automatiquement les autres entrées en query params.
-    const reserved = new Set(['body', 'pageSize', 'page', 'search']);
+    const reserved = new Set(['pageSize', 'page', 'search', 'searchQuery', 'intent', 'limit', 'country']);
     for (const [k, v] of Object.entries(d)) {
       if (reserved.has(k)) continue;
       if (v === undefined || v === null || v === '') continue;
       query[k] = v;
     }
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const builtBody = utils.buildRequestBody(d, [{"key": "searchQuery", "bodyKey": "query", "type": "string"}, {"key": "intent", "type": "string"}, {"key": "limit", "type": "number"}, {"key": "country", "type": "string"}]);
+    if (!builtBody.ok) return builtBody;
+    const body = builtBody.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

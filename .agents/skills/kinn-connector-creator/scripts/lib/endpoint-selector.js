@@ -1,4 +1,5 @@
 const { toSnake, titleCase, pluralize } = require('./bulk-utils');
+const { humanizeFieldLabel, humanizeFieldDescription } = require('./field-labels');
 
 const EXCLUDED_SEGMENTS = new Set([
   'billing', 'billings', 'invoice', 'invoices', 'subscription', 'subscriptions', 'plan', 'plans',
@@ -179,10 +180,135 @@ function pathScore(pathname) {
 
 function inferArgType(paramSchema) {
   const t = String((paramSchema && paramSchema.type) || '').toLowerCase();
+  const format = String((paramSchema && paramSchema.format) || '').toLowerCase();
   if (t === 'integer' || t === 'number') return 'number';
   if (t === 'boolean') return 'checkbox';
+  if (format === 'date' || format === 'date-time') return 'date';
+  if (format === 'email') return 'email';
+  if (format === 'tel' || format === 'phone') return 'tel';
   if (t === 'array' || t === 'object') return 'json';
   return 'text';
+}
+function resolveRef(root, value) {
+  if (!isObject(value) || !value.$ref || typeof value.$ref !== 'string') return value;
+  if (!value.$ref.startsWith('#/')) return value;
+  const parts = value.$ref.slice(2).split('/').map((p) => p.replace(/~1/g, '/').replace(/~0/g, '~'));
+  let current = root;
+  for (const part of parts) {
+    if (!isObject(current) && !Array.isArray(current)) return value;
+    current = current[part];
+    if (current === undefined) return value;
+  }
+  return isObject(current) ? { ...current } : current;
+}
+
+function dereferenceSchema(root, schema) {
+  let current = schema;
+  let safety = 0;
+  while (isObject(current) && current.$ref && safety < 12) {
+    current = resolveRef(root, current);
+    safety += 1;
+  }
+  return current;
+}
+
+function requestBodySchema(openapi, operation) {
+  const requestBody = resolveRef(openapi, operation && operation.requestBody);
+  if (!isObject(requestBody) || !isObject(requestBody.content)) return null;
+
+  const content =
+    requestBody.content['application/json'] ||
+    requestBody.content['application/*+json'] ||
+    Object.values(requestBody.content).find((entry) => isObject(entry) && entry.schema);
+
+  if (!isObject(content) || !content.schema) return null;
+  return dereferenceSchema(openapi, content.schema);
+}
+
+function normalizeSchemaObject(openapi, rawSchema) {
+  const schema = dereferenceSchema(openapi, rawSchema);
+  if (!isObject(schema)) return schema;
+  if (!Array.isArray(schema.allOf) || !schema.allOf.length) return schema;
+
+  const merged = { ...schema };
+  delete merged.allOf;
+
+  const mergedProperties = { ...(isObject(schema.properties) ? schema.properties : {}) };
+  const mergedRequired = new Set(Array.isArray(schema.required) ? schema.required : []);
+
+  for (const part of schema.allOf) {
+    const resolved = normalizeSchemaObject(openapi, part);
+    if (!isObject(resolved)) continue;
+    if (!merged.type && resolved.type) merged.type = resolved.type;
+    if (!merged.description && resolved.description) merged.description = resolved.description;
+    if (isObject(resolved.properties)) Object.assign(mergedProperties, resolved.properties);
+    for (const item of Array.isArray(resolved.required) ? resolved.required : []) mergedRequired.add(item);
+  }
+
+  if (Object.keys(mergedProperties).length) merged.properties = mergedProperties;
+  if (mergedRequired.size) merged.required = [...mergedRequired];
+  return merged;
+}
+
+function isStructuredObjectSchema(schema) {
+  return isObject(schema)
+    && String(schema.type || '').toLowerCase() === 'object'
+    && isObject(schema.properties)
+    && Object.keys(schema.properties).length > 0;
+}
+
+function bodyFieldKey(pathParts) {
+  return pathParts.map((part) => toSnake(part)).filter(Boolean).join('_');
+}
+
+function bodyFieldLabel(pathParts) {
+  return humanizeFieldLabel({ bodyPath: pathParts, in: 'body' });
+}
+
+function bodyFieldDescription(pathParts, schema) {
+  return humanizeFieldDescription({
+    bodyPath: pathParts,
+    description: schema && schema.description ? schema.description : '',
+    in: 'body'
+  });
+}
+
+function flattenBodySchemaArgs(openapi, rawSchema, pathParts = []) {
+  const schema = normalizeSchemaObject(openapi, rawSchema);
+  if (!isStructuredObjectSchema(schema)) return [];
+
+  const required = new Set(Array.isArray(schema.required) ? schema.required.map((value) => toSnake(value)) : []);
+  const args = [];
+
+  for (const [name, innerRawSchema] of Object.entries(schema.properties)) {
+    const segment = toSnake(name);
+    if (!segment) continue;
+
+    const propSchema = normalizeSchemaObject(openapi, innerRawSchema);
+    const currentPath = [...pathParts, segment];
+
+    if (isStructuredObjectSchema(propSchema)) {
+      args.push(...flattenBodySchemaArgs(openapi, propSchema, currentPath));
+      continue;
+    }
+
+    args.push({
+      key: bodyFieldKey(currentPath),
+      bodyPath: currentPath,
+      type: inferArgType(propSchema || {}),
+      label: bodyFieldLabel(currentPath),
+      description: bodyFieldDescription(currentPath, propSchema),
+      required: required.has(segment),
+      in: 'body'
+    });
+  }
+
+  return args;
+}
+
+function bodyArgsFromSchema(openapi, operation) {
+  const schema = requestBodySchema(openapi, operation);
+  return flattenBodySchemaArgs(openapi, schema);
 }
 
 function inferOutput(actionKey, method) {
@@ -320,22 +446,29 @@ function buildSpecFromOpenApi(openapi, options = {}) {
         args.push({
           key: rawName,
           type,
-          label: titleCase(rawName),
-          description: p.description || `${inKey === 'path' ? 'Paramètre de chemin' : 'Paramètre de requête'} ${rawName}.`,
+          label: humanizeFieldLabel({ key: rawName, in: inKey }),
+          description: humanizeFieldDescription({ key: rawName, description: p.description || '', in: inKey }),
           required: !!p.required,
           in: inKey
         });
       }
 
       if (operation.requestBody && ['post', 'patch', 'put'].includes(methodLc)) {
-        args.push({
-          key: 'body',
-          type: 'json',
-          label: 'Payload',
-          description: 'Corps JSON de la requête.',
-          required: !!operation.requestBody.required,
-          in: 'body'
-        });
+        const bodyArgs = bodyArgsFromSchema(openapi, operation);
+        if (!bodyArgs.length) {
+          excluded.push({
+            method: methodLc.toUpperCase(),
+            path: pathname,
+            reason: 'Request body non exploitable automatiquement: propriétés du body introuvables'
+          });
+          continue;
+        }
+        for (const arg of bodyArgs) {
+          if (!seenArgs.has(arg.key)) {
+            seenArgs.add(arg.key);
+            args.push(arg);
+          }
+        }
       }
 
       const action = {

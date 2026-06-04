@@ -11,7 +11,7 @@ module.exports = {
     if (!cohortId) return { ok: false, error: "cohortId requis." };
 
     let payload = {};
-    try { payload = utils.parseJsonInput(d.payload, "payload", { defaultValue: {}, allowArray: false }); }
+    try { payload = utils.bodyFromFields(d, ["person_ids", "person_id"], ["person_ids"]); }
     catch (e) { return { ok: false, error: e.message }; }
 
     if (!payload.person_ids && !payload.person_id) {

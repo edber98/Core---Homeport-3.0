@@ -14,16 +14,14 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.first_name !== undefined && d.first_name !== null && d.first_name !== '') body.first_name = d.first_name;
+    if (d.last_name !== undefined && d.last_name !== null && d.last_name !== '') body.last_name = d.last_name;
+    if (d.company_name !== undefined && d.company_name !== null && d.company_name !== '') body.company_name = d.company_name;
+    if (d.information !== undefined && d.information !== null && d.information !== '') body.information = d.information;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

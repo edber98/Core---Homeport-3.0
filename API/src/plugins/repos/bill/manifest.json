@@ -1165,9 +1165,86 @@
       "args": {
         "fields": [
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON"
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "processDate",
+            "label": "Date de traitement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "exchangeRateBatchId",
+            "label": "ID lot de taux de change",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "fundingAccount",
+            "label": "Compte de financement",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "payments",
+            "label": "Paiements",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "processingOptions",
+            "label": "Options de traitement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "transactionNumber",
+            "label": "Numéro de transaction",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cardFundingPurpose",
+            "label": "Motif de financement carte",
+            "col": {
+              "xs": 24
+            }
           }
         ]
       },
@@ -1229,9 +1306,80 @@
       "args": {
         "fields": [
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON"
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "referenceNumber",
+            "label": "Numéro de référence",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "creditDate",
+            "label": "Date de l’avoir",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "applyToChartOfAccountId",
+            "label": "ID compte comptable d’application",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "applyToBankAccountId",
+            "label": "ID compte bancaire d’application",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "vendorCreditLineItems",
+            "label": "Lignes d’avoir fournisseur",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ]
       },
@@ -1335,12 +1483,66 @@
           {
             "type": "text",
             "key": "vendorCreditId",
-            "label": "ID vendor credit"
+            "label": "ID vendor credit",
+            "col": {
+              "xs": 24
+            }
           },
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON"
+            "type": "text",
+            "key": "vendorId",
+            "label": "ID fournisseur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "referenceNumber",
+            "label": "Numéro de référence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "creditDate",
+            "label": "Date de l’avoir",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "applyToChartOfAccountId",
+            "label": "ID compte comptable d’application",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "applyToBankAccountId",
+            "label": "ID compte bancaire d’application",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "vendorCreditLineItems",
+            "label": "Lignes d’avoir fournisseur",
+            "col": {
+              "xs": 24
+            }
           }
         ]
       },

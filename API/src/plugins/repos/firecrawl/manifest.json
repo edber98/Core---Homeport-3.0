@@ -279,10 +279,127 @@
             }
           },
           {
+            "type": "checkbox",
+            "key": "onlyMainContent",
+            "label": "Contenu principal uniquement",
+            "description": "Extrait seulement le contenu principal.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "textarea",
-            "key": "options",
-            "label": "Options JSON",
-            "description": "Options Firecrawl supplémentaires.",
+            "key": "includeTags",
+            "label": "Balises à inclure",
+            "description": "Tableau JSON de sélecteurs à inclure.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "excludeTags",
+            "label": "Balises à exclure",
+            "description": "Tableau JSON de sélecteurs à exclure.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxAge",
+            "label": "Âge cache maximum",
+            "description": "Âge maximum du cache en millisecondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "requestHeaders",
+            "label": "En-têtes de page",
+            "description": "Objet JSON des en-têtes envoyés au site cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "waitFor",
+            "label": "Attente avant extraction",
+            "description": "Temps d’attente en millisecondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout",
+            "description": "Timeout en millisecondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "parsers",
+            "label": "Parsers",
+            "description": "Tableau JSON des parsers à activer.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "actions",
+            "label": "Actions navigateur",
+            "description": "Tableau JSON des actions Firecrawl.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "location",
+            "label": "Localisation",
+            "description": "Objet JSON de localisation.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "mobile",
+            "label": "Mode mobile",
+            "description": "Utilise un rendu mobile.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "skipTlsVerification",
+            "label": "Ignorer TLS",
+            "description": "Ignore la validation TLS.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "removeBase64Images",
+            "label": "Retirer les images base64",
+            "description": "Supprime les images encodées en base64.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "blockAds",
+            "label": "Bloquer les publicités",
+            "description": "Bloque les publicités pendant le chargement.",
             "col": {
               "xs": 24
             }
@@ -360,10 +477,60 @@
             }
           },
           {
+            "type": "text",
+            "key": "search",
+            "label": "Recherche",
+            "description": "Requête pour ordonner les URLs par pertinence.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "sitemap",
+            "label": "Mode sitemap",
+            "description": "Mode de traitement du sitemap.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              "include",
+              "skip",
+              "only"
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "includeSubdomains",
+            "label": "Inclure les sous-domaines",
+            "description": "Inclut les sous-domaines du site.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ignoreQueryParameters",
+            "label": "Ignorer les paramètres URL",
+            "description": "Ignore les paramètres de query string.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout",
+            "description": "Timeout en millisecondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "textarea",
-            "key": "options",
-            "label": "Options JSON",
-            "description": "Options Firecrawl supplémentaires.",
+            "key": "location",
+            "label": "Localisation",
+            "description": "Objet JSON de localisation.",
             "col": {
               "xs": 24
             }
@@ -442,9 +609,72 @@
           },
           {
             "type": "textarea",
-            "key": "options",
-            "label": "Options JSON",
-            "description": "Options Firecrawl supplémentaires.",
+            "key": "includePaths",
+            "label": "Chemins à inclure",
+            "description": "Tableau JSON des chemins à inclure.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "excludePaths",
+            "label": "Chemins à exclure",
+            "description": "Tableau JSON des chemins à exclure.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxDiscoveryDepth",
+            "label": "Profondeur de découverte",
+            "description": "Profondeur maximale de découverte des liens.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "allowBackwardLinks",
+            "label": "Autoriser les liens arrière",
+            "description": "Autorise les liens vers des chemins parents.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "allowExternalLinks",
+            "label": "Autoriser les liens externes",
+            "description": "Autorise les liens externes au domaine.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ignoreSitemap",
+            "label": "Ignorer le sitemap",
+            "description": "N’utilise pas le sitemap.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "scrapeOptions",
+            "label": "Options de scraping",
+            "description": "Objet JSON scrapeOptions appliqué à chaque page.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "webhook",
+            "label": "Webhook",
+            "description": "URL webhook appelée à la fin du crawl.",
             "col": {
               "xs": 24
             }
@@ -561,8 +791,17 @@
         },
         "fields": [
           {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "textarea",
-            "key": "query",
+            "key": "searchQuery",
             "label": "Requête",
             "description": "Requête de recherche.",
             "col": {
@@ -575,19 +814,46 @@
             ]
           },
           {
-            "type": "number",
-            "key": "limit",
-            "label": "Limite",
-            "description": "Nombre de résultats.",
+            "type": "textarea",
+            "key": "sources",
+            "label": "Sources",
+            "description": "Tableau JSON des sources de recherche.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "textarea",
-            "key": "options",
-            "label": "Options JSON",
-            "description": "Options Firecrawl supplémentaires.",
+            "key": "categories",
+            "label": "Catégories",
+            "description": "Tableau JSON des catégories.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "tbs",
+            "label": "Filtre temporel",
+            "description": "Paramètre temporel de recherche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "location",
+            "label": "Localisation",
+            "description": "Objet JSON de localisation.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "scrapeOptions",
+            "label": "Options de scraping",
+            "description": "Objet JSON scrapeOptions pour les résultats.",
             "col": {
               "xs": 24
             }
@@ -678,10 +944,28 @@
             }
           },
           {
-            "type": "textarea",
-            "key": "options",
-            "label": "Options JSON",
-            "description": "Options Firecrawl supplémentaires.",
+            "type": "checkbox",
+            "key": "enableWebSearch",
+            "label": "Activer la recherche web",
+            "description": "Étend l’extraction via recherche web.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ignoreSitemap",
+            "label": "Ignorer le sitemap",
+            "description": "Ignore les sitemaps pendant l’extraction.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "allowExternalLinks",
+            "label": "Autoriser les liens externes",
+            "description": "Autorise les liens externes pendant l’extraction.",
             "col": {
               "xs": 24
             }
@@ -750,9 +1034,135 @@
           },
           {
             "type": "textarea",
-            "key": "options",
-            "label": "Options JSON",
-            "description": "Options de scraping supplémentaires.",
+            "key": "formats",
+            "label": "Formats JSON",
+            "description": "Tableau JSON des formats souhaités.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "onlyMainContent",
+            "label": "Contenu principal uniquement",
+            "description": "Extrait seulement le contenu principal.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "includeTags",
+            "label": "Balises à inclure",
+            "description": "Tableau JSON de sélecteurs à inclure.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "excludeTags",
+            "label": "Balises à exclure",
+            "description": "Tableau JSON de sélecteurs à exclure.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxAge",
+            "label": "Âge cache maximum",
+            "description": "Âge maximum du cache en millisecondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "requestHeaders",
+            "label": "En-têtes de page",
+            "description": "Objet JSON des en-têtes envoyés au site cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "waitFor",
+            "label": "Attente avant extraction",
+            "description": "Temps d’attente en millisecondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout",
+            "description": "Timeout en millisecondes.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "parsers",
+            "label": "Parsers",
+            "description": "Tableau JSON des parsers à activer.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "actions",
+            "label": "Actions navigateur",
+            "description": "Tableau JSON des actions Firecrawl.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "location",
+            "label": "Localisation",
+            "description": "Objet JSON de localisation.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "mobile",
+            "label": "Mode mobile",
+            "description": "Utilise un rendu mobile.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "skipTlsVerification",
+            "label": "Ignorer TLS",
+            "description": "Ignore la validation TLS.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "removeBase64Images",
+            "label": "Retirer les images base64",
+            "description": "Supprime les images encodées en base64.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "blockAds",
+            "label": "Bloquer les publicités",
+            "description": "Bloque les publicités pendant le chargement.",
             "col": {
               "xs": 24
             }

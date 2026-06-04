@@ -6,7 +6,7 @@
   },
   "variables": {
     "docker_response": {
-      "title": "Réponse Docker",
+      "title": "R\u00e9ponse Docker",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -55,7 +55,7 @@
         {
           "type": "json",
           "key": "data",
-          "label": "Données",
+          "label": "Donn\u00e9es",
           "col": {
             "xs": 24
           }
@@ -63,7 +63,7 @@
         {
           "type": "textarea",
           "key": "result_json",
-          "label": "Résultat JSON",
+          "label": "R\u00e9sultat JSON",
           "col": {
             "xs": 24
           }
@@ -95,7 +95,7 @@
         },
         {
           "type": "section",
-          "title": "Éléments",
+          "title": "\u00c9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -146,7 +146,7 @@
             {
               "type": "textarea",
               "key": "result_json",
-              "label": "Données JSON",
+              "label": "Donn\u00e9es JSON",
               "col": {
                 "xs": 24
               }
@@ -168,7 +168,7 @@
         {
           "type": "text",
           "key": "event",
-          "label": "Événement",
+          "label": "\u00c9v\u00e9nement",
           "col": {
             "xs": 24
           }
@@ -205,7 +205,7 @@
         "conteneurs"
       ],
       "categories": [
-        "Développement"
+        "D\u00e9veloppement"
       ],
       "hasCredentials": true,
       "credentialsForm": {
@@ -244,7 +244,7 @@
       "name": "dockerSystemVersion",
       "schemaVersion": 2,
       "title": "Version Docker",
-      "subtitle": "Système",
+      "subtitle": "Syst\u00e8me",
       "icon": "fa-brands fa-docker",
       "type": "function",
       "nodeKind": "function",
@@ -284,14 +284,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Système"
+      "group": "Syst\u00e8me"
     },
     {
       "key": "docker_system_info",
       "name": "dockerSystemInfo",
       "schemaVersion": 2,
-      "title": "Informations système",
-      "subtitle": "Système",
+      "title": "Informations syst\u00e8me",
+      "subtitle": "Syst\u00e8me",
       "icon": "fa-brands fa-docker",
       "type": "function",
       "nodeKind": "function",
@@ -320,9 +320,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Informations système",
+      "description": "Informations syst\u00e8me",
       "args": {
-        "title": "Informations système",
+        "title": "Informations syst\u00e8me",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -331,7 +331,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Système"
+      "group": "Syst\u00e8me"
     },
     {
       "key": "docker_containers_list",
@@ -378,7 +378,7 @@
           {
             "type": "checkbox",
             "key": "all",
-            "label": "Inclure arrêtés",
+            "label": "Inclure arr\u00eat\u00e9s",
             "default": true,
             "col": {
               "xs": 24
@@ -455,7 +455,7 @@
       "key": "docker_container_create",
       "name": "dockerContainerCreate",
       "schemaVersion": 2,
-      "title": "Créer un conteneur",
+      "title": "Cr\u00e9er un conteneur",
       "subtitle": "Conteneurs",
       "icon": "fa-brands fa-docker",
       "type": "function",
@@ -485,9 +485,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer un conteneur",
+      "description": "Cr\u00e9er un conteneur",
       "args": {
-        "title": "Créer un conteneur",
+        "title": "Cr\u00e9er un conteneur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -496,16 +496,101 @@
           {
             "type": "text",
             "key": "name",
-            "label": "Nom",
+            "label": "Nom du conteneur",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nom optionnel transmis en param\u00e8tre de cr\u00e9ation."
+          },
+          {
+            "type": "text",
+            "key": "Image",
+            "label": "Image",
+            "col": {
+              "xs": 24
+            },
+            "description": "Image Docker \u00e0 utiliser, par exemple nginx:latest.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "Cmd",
+            "label": "Commande",
+            "col": {
+              "xs": 24
+            },
+            "description": "Tableau de commande Docker, par exemple [\"npm\", \"start\"]."
+          },
+          {
+            "type": "json",
+            "key": "Env",
+            "label": "Variables d\u2019environnement",
+            "col": {
+              "xs": 24
+            },
+            "description": "Tableau de variables, par exemple [\"NODE_ENV=production\"]."
+          },
+          {
+            "type": "json",
+            "key": "ExposedPorts",
+            "label": "Ports expos\u00e9s",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet Docker ExposedPorts."
+          },
+          {
+            "type": "json",
+            "key": "HostConfig",
+            "label": "Configuration h\u00f4te",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet Docker HostConfig."
+          },
+          {
+            "type": "json",
+            "key": "NetworkingConfig",
+            "label": "Configuration r\u00e9seau",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet Docker NetworkingConfig."
+          },
+          {
+            "type": "json",
+            "key": "Labels",
+            "label": "Labels",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet de labels Docker."
+          },
+          {
+            "type": "text",
+            "key": "WorkingDir",
+            "label": "Dossier de travail",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
+            "key": "Entrypoint",
+            "label": "Entrypoint",
+            "col": {
+              "xs": 24
+            },
+            "description": "Cha\u00eene ou tableau Entrypoint."
+          },
+          {
+            "type": "text",
+            "key": "User",
+            "label": "Utilisateur",
             "col": {
               "xs": 24
             }
@@ -520,7 +605,7 @@
       "key": "docker_container_start",
       "name": "dockerContainerStart",
       "schemaVersion": 2,
-      "title": "Démarrer un conteneur",
+      "title": "D\u00e9marrer un conteneur",
       "subtitle": "Conteneurs",
       "icon": "fa-brands fa-docker",
       "type": "function",
@@ -550,9 +635,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Démarrer un conteneur",
+      "description": "D\u00e9marrer un conteneur",
       "args": {
-        "title": "Démarrer un conteneur",
+        "title": "D\u00e9marrer un conteneur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -581,7 +666,7 @@
       "key": "docker_container_stop",
       "name": "dockerContainerStop",
       "schemaVersion": 2,
-      "title": "Arrêter un conteneur",
+      "title": "Arr\u00eater un conteneur",
       "subtitle": "Conteneurs",
       "icon": "fa-brands fa-docker",
       "type": "function",
@@ -611,9 +696,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Arrêter un conteneur",
+      "description": "Arr\u00eater un conteneur",
       "args": {
-        "title": "Arrêter un conteneur",
+        "title": "Arr\u00eater un conteneur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -650,7 +735,7 @@
       "key": "docker_container_restart",
       "name": "dockerContainerRestart",
       "schemaVersion": 2,
-      "title": "Redémarrer un conteneur",
+      "title": "Red\u00e9marrer un conteneur",
       "subtitle": "Conteneurs",
       "icon": "fa-brands fa-docker",
       "type": "function",
@@ -680,9 +765,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Redémarrer un conteneur",
+      "description": "Red\u00e9marrer un conteneur",
       "args": {
-        "title": "Redémarrer un conteneur",
+        "title": "Red\u00e9marrer un conteneur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -877,7 +962,7 @@
       "key": "docker_container_exec",
       "name": "dockerContainerExec",
       "schemaVersion": 2,
-      "title": "Exécuter une commande",
+      "title": "Ex\u00e9cuter une commande",
       "subtitle": "Conteneurs",
       "icon": "fa-brands fa-docker",
       "type": "function",
@@ -907,9 +992,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Exécuter une commande",
+      "description": "Ex\u00e9cuter une commande",
       "args": {
-        "title": "Exécuter une commande",
+        "title": "Ex\u00e9cuter une commande",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -998,7 +1083,7 @@
       "key": "docker_image_pull",
       "name": "dockerImagePull",
       "schemaVersion": 2,
-      "title": "Télécharger une image",
+      "title": "T\u00e9l\u00e9charger une image",
       "subtitle": "Images",
       "icon": "fa-brands fa-docker",
       "type": "function",
@@ -1028,9 +1113,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Télécharger une image",
+      "description": "T\u00e9l\u00e9charger une image",
       "args": {
-        "title": "Télécharger une image",
+        "title": "T\u00e9l\u00e9charger une image",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1137,8 +1222,8 @@
       "key": "docker_networks_list",
       "name": "dockerNetworksList",
       "schemaVersion": 2,
-      "title": "Lister les réseaux",
-      "subtitle": "Réseaux",
+      "title": "Lister les r\u00e9seaux",
+      "subtitle": "R\u00e9seaux",
       "icon": "fa-brands fa-docker",
       "type": "function",
       "nodeKind": "function",
@@ -1167,9 +1252,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister les réseaux",
+      "description": "Lister les r\u00e9seaux",
       "args": {
-        "title": "Lister les réseaux",
+        "title": "Lister les r\u00e9seaux",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1178,14 +1263,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Réseaux"
+      "group": "R\u00e9seaux"
     },
     {
       "key": "docker_network_create",
       "name": "dockerNetworkCreate",
       "schemaVersion": 2,
-      "title": "Créer un réseau",
-      "subtitle": "Réseaux",
+      "title": "Cr\u00e9er un r\u00e9seau",
+      "subtitle": "R\u00e9seaux",
       "icon": "fa-brands fa-docker",
       "type": "function",
       "nodeKind": "function",
@@ -1214,9 +1299,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer un réseau",
+      "description": "Cr\u00e9er un r\u00e9seau",
       "args": {
-        "title": "Créer un réseau",
+        "title": "Cr\u00e9er un r\u00e9seau",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1236,10 +1321,59 @@
             ]
           },
           {
+            "type": "text",
+            "key": "Driver",
+            "label": "Driver",
+            "col": {
+              "xs": 24
+            },
+            "default": "bridge"
+          },
+          {
+            "type": "checkbox",
+            "key": "Internal",
+            "label": "R\u00e9seau interne",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "Attachable",
+            "label": "Attachable",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "EnableIPv6",
+            "label": "IPv6",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
+            "key": "IPAM",
+            "label": "Configuration IPAM",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "DriverOptions",
+            "label": "Options du driver",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet envoy\u00e9 comme Options \u00e0 Docker."
+          },
+          {
+            "type": "json",
+            "key": "Labels",
+            "label": "Labels",
             "col": {
               "xs": 24
             }
@@ -1248,14 +1382,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Réseaux"
+      "group": "R\u00e9seaux"
     },
     {
       "key": "docker_network_remove",
       "name": "dockerNetworkRemove",
       "schemaVersion": 2,
-      "title": "Supprimer un réseau",
-      "subtitle": "Réseaux",
+      "title": "Supprimer un r\u00e9seau",
+      "subtitle": "R\u00e9seaux",
       "icon": "fa-brands fa-docker",
       "type": "function",
       "nodeKind": "function",
@@ -1284,9 +1418,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer un réseau",
+      "description": "Supprimer un r\u00e9seau",
       "args": {
-        "title": "Supprimer un réseau",
+        "title": "Supprimer un r\u00e9seau",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1295,7 +1429,7 @@
           {
             "type": "text",
             "key": "networkId",
-            "label": "ID réseau",
+            "label": "ID r\u00e9seau",
             "col": {
               "xs": 24
             },
@@ -1309,14 +1443,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Réseaux"
+      "group": "R\u00e9seaux"
     },
     {
       "key": "docker_network_connect",
       "name": "dockerNetworkConnect",
       "schemaVersion": 2,
       "title": "Connecter un conteneur",
-      "subtitle": "Réseaux",
+      "subtitle": "R\u00e9seaux",
       "icon": "fa-brands fa-docker",
       "type": "function",
       "nodeKind": "function",
@@ -1356,7 +1490,7 @@
           {
             "type": "text",
             "key": "networkId",
-            "label": "ID réseau",
+            "label": "ID r\u00e9seau",
             "col": {
               "xs": 24
             },
@@ -1383,14 +1517,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Réseaux"
+      "group": "R\u00e9seaux"
     },
     {
       "key": "docker_network_disconnect",
       "name": "dockerNetworkDisconnect",
       "schemaVersion": 2,
-      "title": "Déconnecter un conteneur",
-      "subtitle": "Réseaux",
+      "title": "D\u00e9connecter un conteneur",
+      "subtitle": "R\u00e9seaux",
       "icon": "fa-brands fa-docker",
       "type": "function",
       "nodeKind": "function",
@@ -1419,9 +1553,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Déconnecter un conteneur",
+      "description": "D\u00e9connecter un conteneur",
       "args": {
-        "title": "Déconnecter un conteneur",
+        "title": "D\u00e9connecter un conteneur",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1430,7 +1564,7 @@
           {
             "type": "text",
             "key": "networkId",
-            "label": "ID réseau",
+            "label": "ID r\u00e9seau",
             "col": {
               "xs": 24
             },
@@ -1466,7 +1600,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Réseaux"
+      "group": "R\u00e9seaux"
     },
     {
       "key": "docker_volumes_list",
@@ -1519,7 +1653,7 @@
       "key": "docker_volume_create",
       "name": "dockerVolumeCreate",
       "schemaVersion": 2,
-      "title": "Créer un volume",
+      "title": "Cr\u00e9er un volume",
       "subtitle": "Volumes",
       "icon": "fa-brands fa-docker",
       "type": "function",
@@ -1549,9 +1683,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer un volume",
+      "description": "Cr\u00e9er un volume",
       "args": {
-        "title": "Créer un volume",
+        "title": "Cr\u00e9er un volume",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1571,10 +1705,26 @@
             ]
           },
           {
+            "type": "text",
+            "key": "Driver",
+            "label": "Driver",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
+            "key": "DriverOptions",
+            "label": "Options du driver",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet envoy\u00e9 comme DriverOpts \u00e0 Docker."
+          },
+          {
+            "type": "json",
+            "key": "Labels",
+            "label": "Labels",
             "col": {
               "xs": 24
             }
@@ -1659,8 +1809,8 @@
       "key": "docker_events_list",
       "name": "dockerEventsList",
       "schemaVersion": 2,
-      "title": "Lire les événements récents",
-      "subtitle": "Événements",
+      "title": "Lire les \u00e9v\u00e9nements r\u00e9cents",
+      "subtitle": "\u00c9v\u00e9nements",
       "icon": "fa-brands fa-docker",
       "type": "function",
       "nodeKind": "function",
@@ -1689,9 +1839,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lire les événements récents",
+      "description": "Lire les \u00e9v\u00e9nements r\u00e9cents",
       "args": {
-        "title": "Lire les événements récents",
+        "title": "Lire les \u00e9v\u00e9nements r\u00e9cents",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -1708,7 +1858,7 @@
           {
             "type": "date",
             "key": "until",
-            "label": "Jusqu'à",
+            "label": "Jusqu'\u00e0",
             "col": {
               "xs": 24
             }
@@ -1717,7 +1867,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Événements"
+      "group": "\u00c9v\u00e9nements"
     },
     {
       "key": "docker_container_pause",
@@ -2206,8 +2356,8 @@
       "key": "docker_network_inspect",
       "name": "dockerNetworkInspect",
       "schemaVersion": 2,
-      "title": "Inspecter un réseau",
-      "subtitle": "Réseaux",
+      "title": "Inspecter un r\u00e9seau",
+      "subtitle": "R\u00e9seaux",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2237,9 +2387,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Inspecter un réseau",
+      "description": "Inspecter un r\u00e9seau",
       "args": {
-        "title": "Inspecter un réseau",
+        "title": "Inspecter un r\u00e9seau",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2262,7 +2412,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Réseaux",
+      "group": "R\u00e9seaux",
       "risk": "write"
     },
     {
@@ -2332,7 +2482,7 @@
       "key": "docker_containers_prune",
       "name": "dockerContainersPrune",
       "schemaVersion": 2,
-      "title": "Purger conteneurs arrêtés",
+      "title": "Purger conteneurs arr\u00eat\u00e9s",
       "subtitle": "Maintenance",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -2363,21 +2513,22 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Purger conteneurs arrêtés",
+      "description": "Purger conteneurs arr\u00eat\u00e9s",
       "args": {
-        "title": "Purger conteneurs arrêtés",
+        "title": "Purger conteneurs arr\u00eat\u00e9s",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "payload",
-            "label": "Payload JSON optionnel",
+            "type": "json",
+            "key": "pruneFilters",
+            "label": "Filtres de nettoyage",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet Docker filters, par exemple {\"label\":[\"stage=dev\"]}."
           }
         ],
         "displayTitle": false,
@@ -2390,7 +2541,7 @@
       "key": "docker_images_prune",
       "name": "dockerImagesPrune",
       "schemaVersion": 2,
-      "title": "Purger images inutilisées",
+      "title": "Purger images inutilis\u00e9es",
       "subtitle": "Maintenance",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -2421,21 +2572,22 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Purger images inutilisées",
+      "description": "Purger images inutilis\u00e9es",
       "args": {
-        "title": "Purger images inutilisées",
+        "title": "Purger images inutilis\u00e9es",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "payload",
-            "label": "Payload JSON optionnel",
+            "type": "json",
+            "key": "pruneFilters",
+            "label": "Filtres de nettoyage",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet Docker filters, par exemple {\"label\":[\"stage=dev\"]}."
           }
         ],
         "displayTitle": false,
@@ -2448,7 +2600,7 @@
       "key": "docker_networks_prune",
       "name": "dockerNetworksPrune",
       "schemaVersion": 2,
-      "title": "Purger réseaux inutilisés",
+      "title": "Purger r\u00e9seaux inutilis\u00e9s",
       "subtitle": "Maintenance",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -2479,21 +2631,22 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Purger réseaux inutilisés",
+      "description": "Purger r\u00e9seaux inutilis\u00e9s",
       "args": {
-        "title": "Purger réseaux inutilisés",
+        "title": "Purger r\u00e9seaux inutilis\u00e9s",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "payload",
-            "label": "Payload JSON optionnel",
+            "type": "json",
+            "key": "pruneFilters",
+            "label": "Filtres de nettoyage",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet Docker filters, par exemple {\"label\":[\"stage=dev\"]}."
           }
         ],
         "displayTitle": false,
@@ -2506,7 +2659,7 @@
       "key": "docker_volumes_prune",
       "name": "dockerVolumesPrune",
       "schemaVersion": 2,
-      "title": "Purger volumes inutilisés",
+      "title": "Purger volumes inutilis\u00e9s",
       "subtitle": "Maintenance",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -2537,21 +2690,22 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Purger volumes inutilisés",
+      "description": "Purger volumes inutilis\u00e9s",
       "args": {
-        "title": "Purger volumes inutilisés",
+        "title": "Purger volumes inutilis\u00e9s",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "payload",
-            "label": "Payload JSON optionnel",
+            "type": "json",
+            "key": "pruneFilters",
+            "label": "Filtres de nettoyage",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet Docker filters, par exemple {\"label\":[\"stage=dev\"]}."
           }
         ],
         "displayTitle": false,
@@ -2565,7 +2719,7 @@
       "name": "dockerSystemDf",
       "schemaVersion": 2,
       "title": "Lire usage disque Docker",
-      "subtitle": "Système",
+      "subtitle": "Syst\u00e8me",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2606,7 +2760,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "Système",
+      "group": "Syst\u00e8me",
       "risk": "write"
     }
   ]

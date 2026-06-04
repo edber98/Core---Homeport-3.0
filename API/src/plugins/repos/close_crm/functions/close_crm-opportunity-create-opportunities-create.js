@@ -12,13 +12,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"attachments","target":"attachments","type":"object"},{"key":"confidence","target":"confidence","type":"object"},{"key":"contact_id","target":"contact_id","type":"object"},{"key":"created_by","target":"created_by","type":"object"},{"key":"custom_fields","target":"custom_fields","type":"object"},{"key":"date_created","target":"date_created","type":"object"},{"key":"date_won","target":"date_won","type":"object"},{"key":"lead_id","target":"lead_id","type":"object"},{"key":"note","target":"note","type":"object"},{"key":"pipeline_id","target":"pipeline_id","type":"object"},{"key":"status_id","target":"status_id","type":"object"},{"key":"user_id","target":"user_id","type":"object"},{"key":"value","target":"value","type":"object"},{"key":"value_period","target":"value_period","type":"object"},{"key":"customFields","target":"__customFields","type":"customFields"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

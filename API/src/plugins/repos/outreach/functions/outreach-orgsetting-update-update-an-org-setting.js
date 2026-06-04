@@ -10,16 +10,36 @@ module.exports = {
     reqPath = reqPath.replace('{id}', encodeURIComponent(id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.data_attributes_contactexclusions !== undefined && d.data_attributes_contactexclusions !== null && d.data_attributes_contactexclusions !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      if (!body["data"]["attributes"] || typeof body["data"]["attributes"] !== 'object' || Array.isArray(body["data"]["attributes"])) body["data"]["attributes"] = {};
+      body["data"]["attributes"]["contactexclusions"] = d.data_attributes_contactexclusions;
+    }
+    if (d.data_attributes_prospectemailexclusions !== undefined && d.data_attributes_prospectemailexclusions !== null && d.data_attributes_prospectemailexclusions !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      if (!body["data"]["attributes"] || typeof body["data"]["attributes"] !== 'object' || Array.isArray(body["data"]["attributes"])) body["data"]["attributes"] = {};
+      body["data"]["attributes"]["prospectemailexclusions"] = d.data_attributes_prospectemailexclusions;
+    }
+    if (d.data_attributes_sendexclusions !== undefined && d.data_attributes_sendexclusions !== null && d.data_attributes_sendexclusions !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      if (!body["data"]["attributes"] || typeof body["data"]["attributes"] !== 'object' || Array.isArray(body["data"]["attributes"])) body["data"]["attributes"] = {};
+      body["data"]["attributes"]["sendexclusions"] = d.data_attributes_sendexclusions;
+    }
+    if (d.data_id !== undefined && d.data_id !== null && d.data_id !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      body["data"]["id"] = d.data_id;
+    }
+    if (d.data_relationships !== undefined && d.data_relationships !== null && d.data_relationships !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      body["data"]["relationships"] = d.data_relationships;
+    }
+    if (d.data_type !== undefined && d.data_type !== null && d.data_type !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      body["data"]["type"] = d.data_type;
     }
 
     log('Requête en cours...');
@@ -39,3 +59,4 @@ module.exports = {
     };
   }
 };
+

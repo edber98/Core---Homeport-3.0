@@ -10,16 +10,21 @@ module.exports = {
     reqPath = reqPath.replace('{teammate_id}', encodeURIComponent(teammate_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.subject !== undefined && d.subject !== null && d.subject !== '') {
+      body["subject"] = d.subject;
+    }
     if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+      body["body"] = d.body;
+    }
+    if (d.folder_id !== undefined && d.folder_id !== null && d.folder_id !== '') {
+      body["folder_id"] = d.folder_id;
     }
 
     log('Requête en cours...');
@@ -39,3 +44,5 @@ module.exports = {
     };
   }
 };
+
+

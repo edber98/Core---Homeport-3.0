@@ -698,8 +698,8 @@
           },
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Requête",
+            "key": "monitorQuery",
+            "label": "Requête du monitor",
             "default": "avg(last_5m):avg:system.cpu.user{*} > 90",
             "col": {
               "xs": 24
@@ -737,8 +737,8 @@
           },
           {
             "type": "json",
-            "key": "options",
-            "label": "Options",
+            "key": "monitorOptions",
+            "label": "Options du monitor",
             "default": {
               "thresholds": {
                 "critical": 90
@@ -746,7 +746,8 @@
             },
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON des options Datadog du monitor."
           }
         ],
         "displayTitle": false,
@@ -831,8 +832,8 @@
           },
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Requête",
+            "key": "monitorQuery",
+            "label": "Requête du monitor",
             "default": "avg(last_5m):avg:system.cpu.user{*} > 90",
             "col": {
               "xs": 24
@@ -864,11 +865,12 @@
           },
           {
             "type": "json",
-            "key": "options",
-            "label": "Options",
+            "key": "monitorOptions",
+            "label": "Options du monitor",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON des options Datadog du monitor."
           }
         ],
         "displayTitle": false,
@@ -1143,8 +1145,8 @@
         "fields": [
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Requête",
+            "key": "logQuery",
+            "label": "Requête de logs",
             "default": "*",
             "col": {
               "xs": 24
@@ -1244,8 +1246,8 @@
         "fields": [
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Requête",
+            "key": "metricQuery",
+            "label": "Requête de métrique",
             "default": "avg:system.cpu.user{*}",
             "col": {
               "xs": 24
@@ -1639,8 +1641,8 @@
         "fields": [
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Requête monitor",
+            "key": "validationQuery",
+            "label": "Requête à valider",
             "validators": [
               {
                 "type": "required"
@@ -1716,19 +1718,21 @@
           },
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Query JSON",
+            "key": "queryParametersJson",
+            "label": "Paramètres de requête",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON des paramètres à ajouter à l’URL."
           },
           {
             "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
+            "key": "requestBodyJson",
+            "label": "Corps de requête",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON envoyé pour un appel API personnalisé."
           },
           {
             "type": "text",

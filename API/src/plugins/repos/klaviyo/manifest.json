@@ -461,15 +461,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -545,15 +536,6 @@
             "type": "json",
             "key": "properties",
             "label": "Propriétés",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
             "col": {
               "xs": 24
             }
@@ -694,15 +676,6 @@
             "type": "json",
             "key": "properties",
             "label": "Propriétés",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
             "col": {
               "xs": 24
             }
@@ -1055,8 +1028,8 @@
           },
           {
             "type": "json",
-            "key": "data",
-            "label": "Relations profils",
+            "key": "profileReferences",
+            "label": "Profils à ajouter",
             "col": {
               "xs": 24
             },
@@ -1064,16 +1037,8 @@
               {
                 "type": "required"
               }
-            ]
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
+            ],
+            "description": "Objet JSON data des relations profils."
           }
         ],
         "displayTitle": false,
@@ -1139,8 +1104,8 @@
           },
           {
             "type": "json",
-            "key": "data",
-            "label": "Relations profils",
+            "key": "profileReferences",
+            "label": "Profils à retirer",
             "col": {
               "xs": 24
             },
@@ -1148,16 +1113,8 @@
               {
                 "type": "required"
               }
-            ]
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
+            ],
+            "description": "Objet JSON data des relations profils."
           }
         ],
         "displayTitle": false,
@@ -1439,15 +1396,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1510,15 +1458,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,

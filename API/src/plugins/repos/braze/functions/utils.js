@@ -46,4 +46,27 @@ async function providerRequest(opts, path, options = {}) {
   return { ok: true, status: res.status, data };
 }
 
-module.exports = { utils: { providerRequest } };
+function buildRequestBody(inputs, fields) {
+  const body = {};
+  let hasValue = false;
+  for (const field of fields || []) {
+    const key = field.key;
+    const bodyKey = field.bodyKey || key;
+    let value = inputs ? inputs[key] : undefined;
+    if (value === undefined || value === null || value === '') continue;
+    if ((field.type === 'object' || field.type === 'array') && typeof value === 'string') {
+      try {
+        value = JSON.parse(value);
+      } catch {
+        return { ok: false, error: `JSON invalide pour ${key}.` };
+      }
+    } else if (field.type === 'boolean' && typeof value !== 'boolean') {
+      value = String(value).toLowerCase() === 'true';
+    }
+    body[bodyKey] = value;
+    hasValue = true;
+  }
+  return { ok: true, body: hasValue ? body : undefined };
+}
+
+module.exports = { utils: { providerRequest, buildRequestBody } };

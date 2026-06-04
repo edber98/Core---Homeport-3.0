@@ -8,16 +8,24 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.email !== undefined && d.email !== null && d.email !== '') {
+      body["email"] = d.email;
+    }
+    if (d.userid !== undefined && d.userid !== null && d.userid !== '') {
+      body["userid"] = d.userid;
+    }
+    if (d.datafields !== undefined && d.datafields !== null && d.datafields !== '') {
+      body["datafields"] = d.datafields;
+    }
+    if (d.preferuserid !== undefined && d.preferuserid !== null && d.preferuserid !== '') {
+      body["preferuserid"] = d.preferuserid;
+    }
+    if (d.mergenestedobjects !== undefined && d.mergenestedobjects !== null && d.mergenestedobjects !== '') {
+      body["mergenestedobjects"] = d.mergenestedobjects;
     }
 
     log('Requête en cours...');
@@ -37,3 +45,4 @@ module.exports = {
     };
   }
 };
+

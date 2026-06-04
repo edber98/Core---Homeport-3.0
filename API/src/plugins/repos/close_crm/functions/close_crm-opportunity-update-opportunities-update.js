@@ -14,13 +14,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"attachments","target":"attachments","type":"array"},{"key":"confidence","target":"confidence","type":"number"},{"key":"contact_id","target":"contact_id","type":"object"},{"key":"custom_fields","target":"custom_fields","type":"object"},{"key":"date_won","target":"date_won","type":"object"},{"key":"note","target":"note","type":"string"},{"key":"status","target":"status","type":"string"},{"key":"status_id","target":"status_id","type":"string"},{"key":"user_id","target":"user_id","type":"object"},{"key":"value","target":"value","type":"number"},{"key":"value_period","target":"value_period","type":"string"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });

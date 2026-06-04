@@ -14,16 +14,43 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.message_fromname !== undefined && d.message_fromname !== null && d.message_fromname !== "") {
+          if (!body["message"] || typeof body["message"] !== 'object' || Array.isArray(body["message"])) body["message"] = {};
+          body["message"]["fromname"] = d.message_fromname;
+        }
+    if (d.message_fromemail !== undefined && d.message_fromemail !== null && d.message_fromemail !== "") {
+          if (!body["message"] || typeof body["message"] !== 'object' || Array.isArray(body["message"])) body["message"] = {};
+          body["message"]["fromemail"] = d.message_fromemail;
+        }
+    if (d.message_reply2 !== undefined && d.message_reply2 !== null && d.message_reply2 !== "") {
+          if (!body["message"] || typeof body["message"] !== 'object' || Array.isArray(body["message"])) body["message"] = {};
+          body["message"]["reply2"] = d.message_reply2;
+        }
+    if (d.message_subject !== undefined && d.message_subject !== null && d.message_subject !== "") {
+          if (!body["message"] || typeof body["message"] !== 'object' || Array.isArray(body["message"])) body["message"] = {};
+          body["message"]["subject"] = d.message_subject;
+        }
+    if (d.message_preheader_text !== undefined && d.message_preheader_text !== null && d.message_preheader_text !== "") {
+          if (!body["message"] || typeof body["message"] !== 'object' || Array.isArray(body["message"])) body["message"] = {};
+          body["message"]["preheader_text"] = d.message_preheader_text;
+        }
+    if (d.message_name !== undefined && d.message_name !== null && d.message_name !== "") {
+          if (!body["message"] || typeof body["message"] !== 'object' || Array.isArray(body["message"])) body["message"] = {};
+          body["message"]["name"] = d.message_name;
+        }
+    if (d.message_text !== undefined && d.message_text !== null && d.message_text !== "") {
+          if (!body["message"] || typeof body["message"] !== 'object' || Array.isArray(body["message"])) body["message"] = {};
+          body["message"]["text"] = d.message_text;
+        }
+    if (d.message_html !== undefined && d.message_html !== null && d.message_html !== "") {
+          if (!body["message"] || typeof body["message"] !== 'object' || Array.isArray(body["message"])) body["message"] = {};
+          body["message"]["html"] = d.message_html;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

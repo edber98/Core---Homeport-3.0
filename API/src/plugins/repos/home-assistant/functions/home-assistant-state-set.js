@@ -10,7 +10,7 @@ module.exports = {
 
     let attributes;
     try {
-      attributes = utils.parseJsonInput(d.attributes, "attributs");
+      attributes = utils.parseJsonInput(d.stateAttributes, "attributs");
     } catch (e) {
       return { ok: false, error: e.message };
     }

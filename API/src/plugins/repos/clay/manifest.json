@@ -302,17 +302,67 @@
             ]
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Données",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps API.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -388,10 +438,64 @@
             }
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps API.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }
@@ -470,10 +574,64 @@
             }
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps API.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }
@@ -544,10 +702,64 @@
             }
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps API.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }
@@ -623,10 +835,64 @@
             }
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps API.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }
@@ -694,10 +960,64 @@
             ]
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps API.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }
@@ -937,9 +1257,64 @@
             }
           },
           {
-            "type": "textarea",
-            "key": "payload",
-            "label": "Payload JSON",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps API.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }
@@ -1077,17 +1452,127 @@
             }
           },
           {
-            "type": "textarea",
-            "key": "query",
-            "label": "Query JSON",
+            "type": "section",
+            "title": "Paramètres URL",
+            "description": "Paires clé-valeur ajoutées à la query string.",
+            "mode": "array",
+            "key": "queryFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }
           },
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps API.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }

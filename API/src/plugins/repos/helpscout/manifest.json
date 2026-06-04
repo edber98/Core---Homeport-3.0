@@ -1663,18 +1663,69 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "bodyPath": [
+              "id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Renseignez sujet.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "subject"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Renseignez statut.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "status"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Renseignez type.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "type"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "mailboxid",
+            "label": "Mailboxid",
+            "description": "Renseignez mailboxid.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "mailboxid"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1739,15 +1790,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -2523,18 +2565,56 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "bodyPath": [
+              "id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "firstname",
+            "label": "Prénom",
+            "description": "Renseignez prénom.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "firstname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "lastname",
+            "label": "Nom",
+            "description": "Renseignez nom.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "lastname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "emails",
+            "label": "Emails",
+            "description": "Renseignez emails.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "emails"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -2599,15 +2679,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -2947,15 +3018,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -3439,18 +3501,43 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "Renseignez url.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "bodyPath": [
+              "url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "events",
+            "label": "Events",
+            "description": "Renseignez events.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "events"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "secret",
+            "label": "Secret",
+            "description": "Renseignez secret.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "secret"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -3515,15 +3602,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,

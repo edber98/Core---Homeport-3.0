@@ -3001,9 +3001,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "messages",
+            "label": "Messages",
+            "description": "Conversation messages to extract memories from.",
             "col": {
               "xs": 24
             },
@@ -3011,7 +3011,119 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "messages"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "User Id",
+            "description": "Scope memories to this user.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "user_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "agent_id",
+            "label": "Agent Id",
+            "description": "Scope memories to this agent.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "agent_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "Run Id",
+            "description": "Scope memories to this session / run.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "run_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "User-supplied metadata to attach to each extracted memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metadata"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "custom_instructions",
+            "label": "Custom Instructions",
+            "description": "Project-level instructions that guide extraction for this call.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "custom_instructions"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "infer",
+            "label": "Infer",
+            "description": "When `false`, stores each message verbatim without running the extraction LLM.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "infer"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -3064,10 +3176,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "agent_id",
+            "label": "Agent Id",
+            "description": "Renseignez agent id.",
             "col": {
               "xs": 24
             },
@@ -3075,7 +3187,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "agent_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseignez nom.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "Renseignez metadata.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metadata"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -3128,10 +3280,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "app_id",
+            "label": "App Id",
+            "description": "Renseignez app id.",
             "col": {
               "xs": 24
             },
@@ -3139,7 +3291,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "app_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseignez nom.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "Renseignez metadata.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metadata"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -3193,9 +3385,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "memories",
+            "label": "Memories",
+            "description": "Renseignez memories.",
             "col": {
               "xs": 24
             },
@@ -3203,7 +3395,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "memories"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -3691,10 +3887,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "schema",
+            "label": "Schema",
+            "description": "Schema definition for the export",
             "col": {
               "xs": 24
             },
@@ -3702,7 +3898,123 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "schema"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_user_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "user_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_agent_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "agent_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_app_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "app_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_run_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "run_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "Org Id",
+            "description": "Filter exports by organization ID.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "org_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "project_id",
+            "label": "Project Id",
+            "description": "Filter exports by project ID.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "project_id"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -3755,10 +4067,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "memory_id",
+            "label": "Memory Id",
+            "description": "ID of the memory to provide feedback for",
             "col": {
               "xs": 24
             },
@@ -3766,7 +4078,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "memory_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "feedback",
+            "label": "Feedback",
+            "description": "Type of feedback",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "feedback"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "feedback_reason",
+            "label": "Feedback Reason",
+            "description": "Reason for the feedback",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "feedback_reason"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -3868,13 +4220,172 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "memory_export_id",
+            "label": "Memory Export Id",
+            "description": "The unique identifier of the memory export.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "memory_export_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_user_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "user_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_agent_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "agent_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_app_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "app_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_run_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "run_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_created_at",
+            "label": "At",
+            "description": "Renseignez at.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "created_at"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_updated_at",
+            "label": "At",
+            "description": "Renseignez at.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "updated_at"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "Org Id",
+            "description": "Filter exports by organization ID.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "org_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "project_id",
+            "label": "Project Id",
+            "description": "Filter exports by project ID.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "project_id"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -4168,9 +4679,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "messages",
+            "label": "Messages",
+            "description": "An array of message objects representing the content of the memory. Each message object typically contains 'role' and 'content' fields, where 'role' indicates the sender either 'user' or 'assistant' and 'content' contains the actual message text. This structure allows for the representation of conversations or multi-part memories.",
             "col": {
               "xs": 24
             },
@@ -4178,7 +4689,335 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "messages"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "agent_id",
+            "label": "Agent Id",
+            "description": "The unique identifier of the agent associated with this memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "agent_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "User Id",
+            "description": "The unique identifier of the user associated with this memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "user_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "app_id",
+            "label": "App Id",
+            "description": "The unique identifier of the application associated with this memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "app_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "Run Id",
+            "description": "The unique identifier of the run associated with this memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "run_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "Additional metadata associated with the memory, which can be used to store any additional information or context about the memory. Best practice for incorporating additional information is through metadata (e.g. location, time, ids, etc.). During retrieval, you can either use these metadata alongside the query to fetch relevant memories or retrieve memories based on the query first and then refine the results using metadata during post-processing.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metadata"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "includes",
+            "label": "Includes",
+            "description": "String to include the specific preferences in the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "includes"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "excludes",
+            "label": "Excludes",
+            "description": "String to exclude the specific preferences in the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "excludes"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "infer",
+            "label": "Infer",
+            "description": "Whether to infer the memories or directly store the messages.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "infer"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "output_format",
+            "label": "Output Format",
+            "description": "Controls the response format structure. `v1.0` (deprecated) returns a direct array of memory objects: `[{...}, {...}]`. `v1.1` (recommended) returns an object with a 'results' key containing the array: `{\"results\": [...]}`. The `v1.0` format will be removed in future versions.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "output_format"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "custom_categories",
+            "label": "Custom Categories",
+            "description": "A list of categories with category name and its description.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "custom_categories"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "custom_instructions",
+            "label": "Custom Instructions",
+            "description": "Defines project-specific guidelines for handling and organizing memories. When set at the project level, they apply to all new memories in that project.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "custom_instructions"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "immutable",
+            "label": "Immutable",
+            "description": "Whether the memory is immutable.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "immutable"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "async_mode",
+            "label": "Async Mode",
+            "description": "Whether to add the memory completely asynchronously.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "async_mode"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "timestamp",
+            "label": "Timestamp",
+            "description": "The timestamp of the memory. Format: Unix timestamp",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "timestamp"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "date",
+            "key": "expiration_date",
+            "label": "Expiration Date",
+            "description": "The date when the memory will expire. Format: YYYY-MM-DD",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "expiration_date"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "Org Id",
+            "description": "The unique identifier of the organization associated with this memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "org_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "project_id",
+            "label": "Project Id",
+            "description": "The unique identifier of the project associated with this memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "project_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "version",
+            "label": "Version",
+            "description": "The version of the memory to use. The default version is v1, which is deprecated. We recommend using v2 for new applications.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "version"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -4344,10 +5183,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "filters_user_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
             "col": {
               "xs": 24
             },
@@ -4355,7 +5194,274 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "filters",
+              "user_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_agent_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "agent_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_app_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "app_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_run_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "run_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "date",
+            "key": "filters_created_at",
+            "label": "At",
+            "description": "Renseignez at.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "created_at"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "date",
+            "key": "filters_updated_at",
+            "label": "At",
+            "description": "Renseignez at.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "updated_at"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_keywords_contains",
+            "label": "Contains",
+            "description": "Renseignez contains.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "keywords",
+              "contains"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_keywords_icontains",
+            "label": "Icontains",
+            "description": "Renseignez icontains.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "keywords",
+              "icontains"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filters_categories_in",
+            "label": "Filters Categories In",
+            "description": "Renseignez filters categories in.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters_categories_in"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_metadata",
+            "label": "Metadata",
+            "description": "Renseignez metadata.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "metadata"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "fields",
+            "label": "Champs",
+            "description": "A list of field names to include in the response. If not provided, all fields will be returned.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "fields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "page",
+            "label": "Page",
+            "description": "Page number for pagination. Default: 1",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "page"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "page_size",
+            "label": "Page Size",
+            "description": "Number of items per page. Default: 100",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "page_size"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "Org Id",
+            "description": "The unique identifier of the organization associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "org_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "project_id",
+            "label": "Project Id",
+            "description": "The unique identifier of the project associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "project_id"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -4408,10 +5514,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "agent_id",
+            "label": "Agent Id",
+            "description": "The agent ID associated with the memory.",
             "col": {
               "xs": 24
             },
@@ -4419,7 +5525,281 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "agent_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "User Id",
+            "description": "The user ID associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "user_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "app_id",
+            "label": "App Id",
+            "description": "The app ID associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "app_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "run_id",
+            "label": "Run Id",
+            "description": "The run ID associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "run_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "Additional metadata associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metadata"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "top_k",
+            "label": "Top K",
+            "description": "The number of top results to return.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "top_k"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "fields",
+            "label": "Champs",
+            "description": "A list of field names to include in the response. If not provided, all fields will be returned.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "fields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "rerank",
+            "label": "Rerank",
+            "description": "Whether to rerank the memories.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "rerank"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "keyword_search",
+            "label": "Keyword Search",
+            "description": "Whether to search for memories based on keywords.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "keyword_search"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "output_format",
+            "label": "Output Format",
+            "description": "The search method supports two output formats: `v1.0` (default) and `v1.1`. We recommend using `v1.1` as `v1.0` will be deprecated soon.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "output_format"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "Org Id",
+            "description": "The unique identifier of the organization associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "org_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "project_id",
+            "label": "Project Id",
+            "description": "The unique identifier of the project associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "project_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filter_memories",
+            "label": "Filter Memories",
+            "description": "Whether to properly filter the memories according to the input.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filter_memories"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "categories",
+            "label": "Categories",
+            "description": "A list of categories to filter the memories by.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "categories"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "only_metadata_based_search",
+            "label": "Only Metadata Based Search",
+            "description": "Whether to only search for memories based on metadata.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "only_metadata_based_search"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "The query to search for in the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "query"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -4472,10 +5852,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "version",
+            "label": "Version",
+            "description": "The version of the memory to use. This should always be v2.",
             "col": {
               "xs": 24
             },
@@ -4483,7 +5863,364 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "version"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_user_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "user_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_agent_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "agent_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_app_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "app_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_run_id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "run_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "date",
+            "key": "filters_created_at",
+            "label": "At",
+            "description": "Renseignez at.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "created_at"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "date",
+            "key": "filters_updated_at",
+            "label": "At",
+            "description": "Renseignez at.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "updated_at"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_keywords_contains",
+            "label": "Contains",
+            "description": "Renseignez contains.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "keywords",
+              "contains"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_keywords_icontains",
+            "label": "Icontains",
+            "description": "Renseignez icontains.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "keywords",
+              "icontains"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filters_categories_in",
+            "label": "Filters Categories In",
+            "description": "Renseignez filters categories in.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters_categories_in"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filters_metadata",
+            "label": "Metadata",
+            "description": "Renseignez metadata.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters",
+              "metadata"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "top_k",
+            "label": "Top K",
+            "description": "The number of top results to return.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "top_k"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "fields",
+            "label": "Champs",
+            "description": "A list of field names to include in the response. If not provided, all fields will be returned.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "fields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "rerank",
+            "label": "Rerank",
+            "description": "Whether to rerank the memories.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "rerank"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "keyword_search",
+            "label": "Keyword Search",
+            "description": "Whether to search for memories based on keywords.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "keyword_search"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filter_memories",
+            "label": "Filter Memories",
+            "description": "Whether to filter the memories.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filter_memories"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "threshold",
+            "label": "Threshold",
+            "description": "The minimum similarity threshold for returned results.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "threshold"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "org_id",
+            "label": "Org Id",
+            "description": "The unique identifier of the organization associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "org_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "project_id",
+            "label": "Project Id",
+            "description": "The unique identifier of the project associated with the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "project_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "The query to search for in the memory.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "query"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -4554,10 +6291,10 @@
             }
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "filters",
+            "label": "Filters",
+            "description": "Entity and metadata filters. Must include at least one entity ID (`user_id`, `agent_id`, `app_id`, or `run_id`).",
             "col": {
               "xs": 24
             },
@@ -4565,7 +6302,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "filters"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -4618,10 +6359,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "filters",
+            "label": "Filters",
+            "description": "Entity and metadata filters. Must include at least one entity ID (`user_id`, `agent_id`, `app_id`, or `run_id`). Supports `AND`, `OR`, `NOT`, and comparison operators (`in`, `gte`, `lte`, `gt`, `lt`, `contains`, `icontains`, `ne`).",
             "col": {
               "xs": 24
             },
@@ -4629,7 +6370,101 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "filters"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "top_k",
+            "label": "Top K",
+            "description": "Number of results to return.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "top_k"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "threshold",
+            "label": "Threshold",
+            "description": "Minimum semantic relevance score. Pass `0.0` to disable filtering.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "threshold"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "rerank",
+            "label": "Rerank",
+            "description": "Apply the managed reranker for better ordering (adds latency).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "rerank"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "reference_date",
+            "label": "Reference Date",
+            "description": "Optional query anchor time for relative temporal interpretation. Accepts Unix epoch, YYYY-MM-DD, or ISO datetime.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "reference_date"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "Natural-language search query.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "query"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -4838,13 +6673,40 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "description": "The updated text content of the memory",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "text"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "Additional metadata associated with the memory",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metadata"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -4961,10 +6823,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "run_id",
+            "label": "Run Id",
+            "description": "Renseignez run id.",
             "col": {
               "xs": 24
             },
@@ -4972,7 +6834,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "run_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseignez nom.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "Renseignez metadata.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metadata"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -5074,10 +6976,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "user_id",
+            "label": "User Id",
+            "description": "Renseignez user id.",
             "col": {
               "xs": 24
             },
@@ -5085,7 +6987,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "user_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "Renseignez metadata.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metadata"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -5152,10 +7076,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "New name for the webhook",
             "col": {
               "xs": 24
             },
@@ -5163,7 +7087,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "New URL endpoint for the webhook",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "event_types",
+            "label": "Event Types",
+            "description": "New list of event types to subscribe to",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "event_types"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,

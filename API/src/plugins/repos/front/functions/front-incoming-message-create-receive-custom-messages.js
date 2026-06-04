@@ -10,16 +10,47 @@ module.exports = {
     reqPath = reqPath.replace('{channel_id}', encodeURIComponent(channel_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
+    const headers = {};
+
+    const body = {};
+    if (d.sender !== undefined && d.sender !== null && d.sender !== '') {
+      body["sender"] = d.sender;
+    }
+    if (d.sender_contact_id !== undefined && d.sender_contact_id !== null && d.sender_contact_id !== '') {
+      if (!body["sender"] || typeof body["sender"] !== 'object' || Array.isArray(body["sender"])) body["sender"] = {};
+      body["sender"]["contact_id"] = d.sender_contact_id;
+    }
+    if (d.sender_name !== undefined && d.sender_name !== null && d.sender_name !== '') {
+      if (!body["sender"] || typeof body["sender"] !== 'object' || Array.isArray(body["sender"])) body["sender"] = {};
+      body["sender"]["name"] = d.sender_name;
+    }
+    if (d.sender_handle !== undefined && d.sender_handle !== null && d.sender_handle !== '') {
+      if (!body["sender"] || typeof body["sender"] !== 'object' || Array.isArray(body["sender"])) body["sender"] = {};
+      body["sender"]["handle"] = d.sender_handle;
+    }
+    if (d.subject !== undefined && d.subject !== null && d.subject !== '') {
+      body["subject"] = d.subject;
+    }
     if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+      body["body"] = d.body;
+    }
+    if (d.body_format !== undefined && d.body_format !== null && d.body_format !== '') {
+      body["body_format"] = d.body_format;
+    }
+    if (d.metadata !== undefined && d.metadata !== null && d.metadata !== '') {
+      body["metadata"] = d.metadata;
+    }
+    if (d.metadata_thread_ref !== undefined && d.metadata_thread_ref !== null && d.metadata_thread_ref !== '') {
+      if (!body["metadata"] || typeof body["metadata"] !== 'object' || Array.isArray(body["metadata"])) body["metadata"] = {};
+      body["metadata"]["thread_ref"] = d.metadata_thread_ref;
+    }
+    if (d.metadata_headers !== undefined && d.metadata_headers !== null && d.metadata_headers !== '') {
+      if (!body["metadata"] || typeof body["metadata"] !== 'object' || Array.isArray(body["metadata"])) body["metadata"] = {};
+      body["metadata"]["headers"] = d.metadata_headers;
+    }
+    if (d.attachments !== undefined && d.attachments !== null && d.attachments !== '') {
+      body["attachments"] = d.attachments;
     }
 
     log('Requête en cours...');
@@ -39,3 +70,5 @@ module.exports = {
     };
   }
 };
+
+

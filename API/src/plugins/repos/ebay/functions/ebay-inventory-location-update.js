@@ -12,13 +12,8 @@ module.exports = {
     const query = {};
     
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = utils.buildBodyFromInputs(d, [{"source":"location","target":"location","type":"json"},{"source":"locationAdditionalInformation","target":"locationAdditionalInformation","type":"text"},{"source":"locationInstructions","target":"locationInstructions","type":"text"},{"source":"locationTypes","target":"locationTypes","type":"json"},{"source":"locationWebUrl","target":"locationWebUrl","type":"text"},{"source":"name","target":"name","type":"text"},{"source":"operatingHours","target":"operatingHours","type":"json"},{"source":"phone","target":"phone","type":"text"},{"source":"specialHours","target":"specialHours","type":"json"},{"source":"timeZoneId","target":"timeZoneId","type":"text"},{"source":"fulfillmentCenterSpecifications","target":"fulfillmentCenterSpecifications","type":"json"}]);
+    if (body && body.__invalid) return { ok: false, error: body.__invalid };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

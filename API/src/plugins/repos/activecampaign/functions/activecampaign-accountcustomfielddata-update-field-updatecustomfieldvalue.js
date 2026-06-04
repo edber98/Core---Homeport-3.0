@@ -14,16 +14,19 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.accountcustomfielddatum_fieldvalue !== undefined && d.accountcustomfielddatum_fieldvalue !== null && d.accountcustomfielddatum_fieldvalue !== "") {
+          if (!body["accountcustomfielddatum"] || typeof body["accountcustomfielddatum"] !== 'object' || Array.isArray(body["accountcustomfielddatum"])) body["accountcustomfielddatum"] = {};
+          body["accountcustomfielddatum"]["fieldvalue"] = d.accountcustomfielddatum_fieldvalue;
+        }
+    if (d.accountcustomfielddatum_fieldcurrency !== undefined && d.accountcustomfielddatum_fieldcurrency !== null && d.accountcustomfielddatum_fieldcurrency !== "") {
+          if (!body["accountcustomfielddatum"] || typeof body["accountcustomfielddatum"] !== 'object' || Array.isArray(body["accountcustomfielddatum"])) body["accountcustomfielddatum"] = {};
+          body["accountcustomfielddatum"]["fieldcurrency"] = d.accountcustomfielddatum_fieldcurrency;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

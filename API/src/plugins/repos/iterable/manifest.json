@@ -15874,12 +15874,21 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "users",
+            "label": "Utilisateurs",
+            "description": "Array of user objects to update",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "users"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -17105,13 +17114,97 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Campaign name",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "listids",
+            "label": "Listids",
+            "description": "List IDs to target",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "listids"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "templateid",
+            "label": "Templateid",
+            "description": "Template ID to use",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "templateid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "suppressionlistids",
+            "label": "Suppressionlistids",
+            "description": "List IDs for suppression",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "suppressionlistids"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "date",
+            "key": "sendat",
+            "label": "Sendat",
+            "description": "Scheduled send time in ISO 8601 format",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "sendat"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "datafields",
+            "label": "Datafields",
+            "description": "Additional data fields for personalization",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "datafields"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -20087,13 +20180,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "The name of the new list",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -21514,13 +21616,82 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "email",
+            "label": "E-mail",
+            "description": "Email address of the user",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "email"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "device",
+            "label": "Device",
+            "description": "Device token information",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "device"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "device_token",
+            "label": "Token",
+            "description": "The device token",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "device",
+              "token"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "device_platform",
+            "label": "Platform",
+            "description": "The push platform",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "device",
+              "platform"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "device_applicationname",
+            "label": "Applicationname",
+            "description": "The application name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "device",
+              "applicationname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22178,13 +22349,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "listid",
+            "label": "Identifiant de la liste",
+            "description": "The ID of the list to subscribe users to",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "listid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "subscribers",
+            "label": "Subscribers",
+            "description": "Array of subscriber objects",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "subscribers"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22237,13 +22435,66 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "campaignid",
+            "label": "Campaignid",
+            "description": "The campaign ID to send",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "campaignid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "recipientemail",
+            "label": "Recipientemail",
+            "description": "The recipient email address",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "recipientemail"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "datafields",
+            "label": "Datafields",
+            "description": "Personalization data fields",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "datafields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "attachments",
+            "label": "Attachments",
+            "description": "File attachments",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "attachments"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22409,13 +22660,105 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "email",
+            "key": "email",
+            "label": "E-mail",
+            "description": "Email address of the user",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "email"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "userid",
+            "label": "Identifiant utilisateur",
+            "description": "UserId of the user",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "userid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "eventname",
+            "label": "Nom de l’événement",
+            "description": "Name of the event to track",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "eventname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "createdat",
+            "label": "Createdat",
+            "description": "Unix timestamp of when the event occurred",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "createdat"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "datafields",
+            "label": "Datafields",
+            "description": "Additional data associated with the event",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "datafields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "campaignid",
+            "label": "Campaignid",
+            "description": "Campaign ID to attribute the event to",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "campaignid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "templateid",
+            "label": "Templateid",
+            "description": "Template ID to attribute the event to",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "templateid"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22469,12 +22812,21 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "events",
+            "label": "Events",
+            "description": "Array of events to track",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "events"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22764,12 +23116,151 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "user",
+            "label": "Utilisateur",
+            "description": "The user who made the purchase",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "user"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "email",
+            "key": "user_email",
+            "label": "E-mail",
+            "description": "Email address of the user",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "user",
+              "email"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "user_userid",
+            "label": "Identifiant utilisateur",
+            "description": "UserId of the user",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "user",
+              "userid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "user_datafields",
+            "label": "Datafields",
+            "description": "Additional user data fields to update",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "user",
+              "datafields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "items",
+            "label": "Items",
+            "description": "Array of items purchased",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "items"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "total",
+            "label": "Total",
+            "description": "Total value of the purchase",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "total"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "createdat",
+            "label": "Createdat",
+            "description": "Unix timestamp of the purchase",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "createdat"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "datafields",
+            "label": "Datafields",
+            "description": "Additional purchase data fields",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "datafields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "campaignid",
+            "label": "Campaignid",
+            "description": "Campaign ID to attribute the purchase to",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "campaignid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "templateid",
+            "label": "Templateid",
+            "description": "Template ID to attribute the purchase to",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "templateid"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22940,13 +23431,61 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "workflowid",
+            "label": "Workflowid",
+            "description": "The ID of the workflow to trigger",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "workflowid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "email",
+            "label": "E-mail",
+            "description": "Email address of the user to enroll",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "email"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "datafields",
+            "label": "Datafields",
+            "description": "Data fields to pass to the workflow",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "datafields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "listid",
+            "label": "Identifiant de la liste",
+            "description": "List ID to enroll all members of a list",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "listid"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23058,13 +23597,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "listid",
+            "label": "Identifiant de la liste",
+            "description": "The ID of the list to unsubscribe users from",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "listid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "subscribers",
+            "label": "Subscribers",
+            "description": "Array of subscriber objects",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "subscribers"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23117,13 +23683,113 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "templateid",
+            "label": "Templateid",
+            "description": "Template ID to update",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "templateid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Updated template name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Updated email subject line",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "subject"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "preheadertext",
+            "label": "Preheadertext",
+            "description": "Updated preheader text",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "preheadertext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "html",
+            "label": "HTML",
+            "description": "Updated HTML content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "html"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "plaintext",
+            "label": "Plaintext",
+            "description": "Updated plain text content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "plaintext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "fromname",
+            "label": "Nom de l’expéditeur",
+            "description": "Updated from name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "email",
+            "key": "fromemail",
+            "label": "E-mail de l’expéditeur",
+            "description": "Updated from email address",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromemail"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23176,13 +23842,113 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "templateid",
+            "label": "Templateid",
+            "description": "Template ID to update",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "templateid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Updated template name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Updated email subject line",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "subject"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "preheadertext",
+            "label": "Preheadertext",
+            "description": "Updated preheader text",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "preheadertext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "html",
+            "label": "HTML",
+            "description": "Updated HTML content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "html"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "plaintext",
+            "label": "Plaintext",
+            "description": "Updated plain text content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "plaintext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "fromname",
+            "label": "Nom de l’expéditeur",
+            "description": "Updated from name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "email",
+            "key": "fromemail",
+            "label": "E-mail de l’expéditeur",
+            "description": "Updated from email address",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromemail"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23235,13 +24001,113 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "templateid",
+            "label": "Templateid",
+            "description": "Template ID to update",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "templateid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Updated template name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Updated email subject line",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "subject"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "preheadertext",
+            "label": "Preheadertext",
+            "description": "Updated preheader text",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "preheadertext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "html",
+            "label": "HTML",
+            "description": "Updated HTML content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "html"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "plaintext",
+            "label": "Plaintext",
+            "description": "Updated plain text content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "plaintext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "fromname",
+            "label": "Nom de l’expéditeur",
+            "description": "Updated from name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "email",
+            "key": "fromemail",
+            "label": "E-mail de l’expéditeur",
+            "description": "Updated from email address",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromemail"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23294,13 +24160,113 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "templateid",
+            "label": "Templateid",
+            "description": "Template ID to update",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "templateid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Updated template name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Updated email subject line",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "subject"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "preheadertext",
+            "label": "Preheadertext",
+            "description": "Updated preheader text",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "preheadertext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "html",
+            "label": "HTML",
+            "description": "Updated HTML content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "html"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "plaintext",
+            "label": "Plaintext",
+            "description": "Updated plain text content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "plaintext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "fromname",
+            "label": "Nom de l’expéditeur",
+            "description": "Updated from name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "email",
+            "key": "fromemail",
+            "label": "E-mail de l’expéditeur",
+            "description": "Updated from email address",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromemail"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23353,13 +24319,113 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "templateid",
+            "label": "Templateid",
+            "description": "Template ID to update",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "templateid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Updated template name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Updated email subject line",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "subject"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "preheadertext",
+            "label": "Preheadertext",
+            "description": "Updated preheader text",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "preheadertext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "html",
+            "label": "HTML",
+            "description": "Updated HTML content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "html"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "plaintext",
+            "label": "Plaintext",
+            "description": "Updated plain text content",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "plaintext"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "fromname",
+            "label": "Nom de l’expéditeur",
+            "description": "Updated from name",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "email",
+            "key": "fromemail",
+            "label": "E-mail de l’expéditeur",
+            "description": "Updated from email address",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "fromemail"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23412,13 +24478,69 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "email",
+            "key": "email",
+            "label": "E-mail",
+            "description": "Email address of the user",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "email"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "userid",
+            "label": "Identifiant utilisateur",
+            "description": "Unique user identifier",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "userid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "datafields",
+            "label": "Datafields",
+            "description": "Custom data fields to set on the user profile",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "datafields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "checkbox",
+            "key": "preferuserid",
+            "label": "Preferuserid",
+            "description": "Whether to prefer userId over email for identity resolution",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "preferuserid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "checkbox",
+            "key": "mergenestedobjects",
+            "label": "Mergenestedobjects",
+            "description": "Whether to merge nested objects or overwrite them",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "mergenestedobjects"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23472,12 +24594,57 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "user",
+            "label": "Utilisateur",
+            "description": "Renseignez utilisateur.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "user"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "user_email",
+            "label": "E-mail",
+            "description": "Email address of the user",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "user",
+              "email"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "user_userid",
+            "label": "Identifiant utilisateur",
+            "description": "UserId of the user",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "user",
+              "userid"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "items",
+            "label": "Items",
+            "description": "Array of cart items",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "items"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,

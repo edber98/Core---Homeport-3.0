@@ -14,7 +14,7 @@ module.exports = {
       return { ok: false, error: e.message };
     }
     const path = `/boards`;
-    const query = ({ query: d.query, limit: d.pageSize, cursor: d.cursor });
+    const query = ({ query: d.searchQuery, limit: d.pageSize, cursor: d.cursor });
     const body = {};
     log("Appel API en cours...");
     const options = { method: "GET", query };

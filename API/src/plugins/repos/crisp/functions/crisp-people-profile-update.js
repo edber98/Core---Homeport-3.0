@@ -9,13 +9,13 @@ module.exports = {
     }
     const json = {};
     try {
-      for (const key of ["data"]) json[key] = utils.parseJsonInput(d[key], key, undefined);
+      for (const key of ["profileData"]) json[key] = utils.parseJsonInput(d[key], key, undefined);
     } catch (e) {
       return { ok: false, error: e.message };
     }
     const path = `/website/${encodeURIComponent(String(d.websiteId))}/people/profile/${encodeURIComponent(String(d.peopleId))}`;
     const query = {};
-    const body = ({ email: d.email, nickname: d.nickname, data: json.data });
+    const body = ({ email: d.email, nickname: d.nickname, data: json.profileData });
     log("Appel API en cours...");
     const options = { method: "PATCH", query, body };
     const res = await utils.crispRequest(opts, path, options);

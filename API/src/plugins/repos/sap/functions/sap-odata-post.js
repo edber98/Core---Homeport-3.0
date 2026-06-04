@@ -7,15 +7,15 @@ module.exports = {
       if (!d.path) return { ok: false, error: "Missing path." };
   
       let body = null;
-      if (d.body) {
-        if (typeof d.body === "string") {
+      if (d.entityData) {
+        if (typeof d.entityData === "string") {
           try {
-            body = JSON.parse(d.body);
+            body = JSON.parse(d.entityData);
           } catch (e) {
-            return { ok: false, error: "Invalid JSON in body: " + e.message };
+            return { ok: false, error: "Invalid JSON in entityData: " + e.message };
           }
         } else {
-          body = d.body;
+          body = d.entityData;
         }
       }
   

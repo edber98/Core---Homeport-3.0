@@ -13,16 +13,18 @@ module.exports = {
     reqPath = reqPath.replace('{external_call_id}', encodeURIComponent(external_call_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.occurred_at !== undefined && d.occurred_at !== null && d.occurred_at !== '') {
+      body["occurred_at"] = d.occurred_at;
+    }
+    if (d.call_status !== undefined && d.call_status !== null && d.call_status !== '') {
+      body["call_status"] = d.call_status;
+    }
+    if (d.agent_email_address !== undefined && d.agent_email_address !== null && d.agent_email_address !== '') {
+      body["agent_email_address"] = d.agent_email_address;
     }
 
     log('Requête en cours...');
@@ -42,3 +44,4 @@ module.exports = {
     };
   }
 };
+

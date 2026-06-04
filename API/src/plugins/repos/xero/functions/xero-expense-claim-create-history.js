@@ -1,5 +1,16 @@
 const { utils } = require('./utils');
 
+const BODY_FIELDS = [
+  {
+    "key": "details",
+    "type": "textarea",
+    "bodyPath": [
+      "Details"
+    ]
+  }
+];
+
+
 module.exports = {
   async xero_expense_claim_create_history(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
@@ -10,14 +21,11 @@ module.exports = {
     reqPath = reqPath.replace('{expenseclaimid}', encodeURIComponent(expenseclaimid));
 
     const query = {};
-    
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let body;
+    try {
+      body = utils.buildBodyFromFields(d, BODY_FIELDS);
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
 
     log('Requête en cours...');

@@ -541,9 +541,9 @@
           },
           {
             "type": "textarea",
-            "key": "payload",
-            "label": "Payload",
-            "description": "",
+            "key": "messagePayload",
+            "label": "Message",
+            "description": "Contenu du message à publier.",
             "col": {
               "xs": 24
             },
@@ -555,9 +555,9 @@
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers",
-            "description": "",
+            "key": "messageHeaders",
+            "label": "En-têtes du message",
+            "description": "Objet JSON des headers NATS.",
             "col": {
               "xs": 24
             }
@@ -628,9 +628,9 @@
           },
           {
             "type": "textarea",
-            "key": "payload",
-            "label": "Payload",
-            "description": "",
+            "key": "messagePayload",
+            "label": "Message",
+            "description": "Contenu du message à publier.",
             "col": {
               "xs": 24
             }
@@ -783,9 +783,9 @@
           },
           {
             "type": "textarea",
-            "key": "payload",
-            "label": "Payload",
-            "description": "",
+            "key": "messagePayload",
+            "label": "Message",
+            "description": "Contenu du message à publier.",
             "col": {
               "xs": 24
             },

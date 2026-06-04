@@ -5743,13 +5743,13 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "subscriptions",
+            "label": "Subscriptions",
+            "description": "Attribut Subscriptions du corps de requête.",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
@@ -6253,13 +6253,57 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "kind",
+            "label": "Kind",
+            "description": "The type of value being stored in the custom field.",
             "col": {
               "xs": 24
             },
+            "type": "select",
+            "options": [
+              {
+                "label": "string",
+                "value": "string"
+              },
+              {
+                "label": "integer",
+                "value": "integer"
+              },
+              {
+                "label": "boolean",
+                "value": "boolean"
+              },
+              {
+                "label": "date",
+                "value": "date"
+              },
+              {
+                "label": "datetime",
+                "value": "datetime"
+              },
+              {
+                "label": "list",
+                "value": "list"
+              },
+              {
+                "label": "double",
+                "value": "double"
+              }
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "key": "display",
+            "label": "Display",
+            "description": "Attribut Display du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
@@ -6487,18 +6531,13 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "display",
+            "label": "Display",
+            "description": "Attribut Display du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -6579,18 +6618,13 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "display",
+            "label": "Display",
+            "description": "Attribut Display du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -6735,13 +6769,13 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "email",
+            "label": "Email",
+            "description": "The email address of the subscriber to delete.",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
@@ -7561,18 +7595,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "email",
+            "label": "Email",
+            "description": "The email address associated with the subscription.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
+          },
+          {
+            "key": "subscription_id",
+            "label": "Subscription ID",
+            "description": "The prefixed ID of the subscription.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "double_opt_override",
+            "label": "Double Opt Override",
+            "description": "Override the publication's default double opt-in settings for this subscription. Possible values are:\n- \"on\" — The subscriber will receive a double opt-in confirmation email and will need to confirm their subscription prior to being marked as active.\n- \"off\" — The subscriber will be marked as active immediately and will not receive a double opt-in confirmation email.\n- \"not_set\" — The publication's default double opt-in settings will be applied to this subscription.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -8409,18 +8456,231 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "blocks",
+            "label": "Blocks",
+            "description": "The structured content blocks that make up the post. Supports block types such as paragraph, image, heading, button, html, table, list, columns, and more. You can embed raw HTML snippets within blocks using the `html` block type. Either this field OR the `body_content` field must be provided.",
             "col": {
               "xs": 24
             },
+            "type": "json"
+          },
+          {
+            "key": "body_content",
+            "label": "Body Content",
+            "description": "The content of the post as a single raw HTML string. The HTML is wrapped in an `htmlSnippet` block internally. Note that `<style>` and `<link>` tags are removed during sanitization — use inline styles for all visual styling. Either this field OR the `blocks` field must be provided.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "title",
+            "label": "Title",
+            "description": "The title of the post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "subtitle",
+            "label": "Subtitle",
+            "description": "The subtitle of the post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "post_template_id",
+            "label": "Post Template ID",
+            "description": "The ID of the template to use for the post. If not provided, the default template will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "status",
+            "label": "Status",
+            "description": "The status of the post. If not provided, the default (`confirmed`) value will be used and the post will either publish immediately (if no `scheduled_at` is provided) or at the `scheduled_at` time. **Deprecation notice:** The default will change to `draft` in a future release. Explicitly pass `confirmed` to preserve current auto-publish behavior.",
+            "col": {
+              "xs": 24
+            },
+            "type": "select",
+            "options": [
+              {
+                "label": "draft",
+                "value": "draft"
+              },
+              {
+                "label": "confirmed",
+                "value": "confirmed"
+              }
+            ]
+          },
+          {
+            "key": "scheduled_at",
+            "label": "Scheduled At",
+            "description": "The time in which the post will be published. If not provided, the post will be published immediately unless `status` is set to `draft`. A draft post cannot be scheduled.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "custom_link_tracking_enabled",
+            "label": "Custom Link Tracking Enabled",
+            "description": "If true, custom link tracking will be enabled for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
+          },
+          {
+            "key": "email_capture_type_override",
+            "label": "Email Capture Type Override",
+            "description": "The email capture type to use for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "select",
+            "options": [
+              {
+                "label": "none",
+                "value": "none"
+              },
+              {
+                "label": "gated",
+                "value": "gated"
+              },
+              {
+                "label": "popup",
+                "value": "popup"
+              }
+            ]
+          },
+          {
+            "key": "override_scheduled_at",
+            "label": "Override Scheduled At",
+            "description": "If you wish to display a date other than the scheduled_at date in the email, you can provide a date here. This will not affect the actual publish date of the post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "social_share",
+            "label": "Social Share",
+            "description": "The social share type to use for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "select",
+            "options": [
+              {
+                "label": "comments_and_likes_only",
+                "value": "comments_and_likes_only"
+              },
+              {
+                "label": "with_comments_and_likes",
+                "value": "with_comments_and_likes"
+              },
+              {
+                "label": "top",
+                "value": "top"
+              },
+              {
+                "label": "none",
+                "value": "none"
+              }
+            ]
+          },
+          {
+            "key": "thumbnail_image_url",
+            "label": "Thumbnail Image URL",
+            "description": "The URL of the thumbnail image to use for the post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "recipients",
+            "label": "Recipients",
+            "description": "The recipients to use for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "email_settings",
+            "label": "Email Settings",
+            "description": "The email settings to use for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "web_settings",
+            "label": "Web Settings",
+            "description": "The web settings to use for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "seo_settings",
+            "label": "SEO Settings",
+            "description": "The metadata to use for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "content_tags",
+            "label": "Content Tags",
+            "description": "The content tags to use for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "requestHeaders",
+            "label": "Headers",
+            "description": "The headers to use for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "custom_fields",
+            "label": "Custom Fields",
+            "description": "The custom fields to use for this post. If not provided, the default value will be used.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "newsletter_list_id",
+            "label": "Newsletter List ID",
+            "description": "The prefixed ID of the newsletter list to associate with this post. When provided, the post will only be sent to subscribers of this list. <Badge intent=\"warning\" minimal outlined>Beta</Badge>",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -8747,18 +9007,162 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "blocks",
+            "label": "Blocks",
+            "description": "The structured content blocks to replace the post's current content. Supports block types such as paragraph, image, heading, button, html, table, list, columns, and more. Cannot be provided together with `body_content`.",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "type": "json"
+          },
+          {
+            "key": "body_content",
+            "label": "Body Content",
+            "description": "Raw HTML to replace the post's current content. The HTML is wrapped in an `htmlSnippet` block internally. Note that `<style>` and `<link>` tags are removed during sanitization — use inline styles for all visual styling. Cannot be provided together with `blocks`.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "title",
+            "label": "Title",
+            "description": "The title of the post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "subtitle",
+            "label": "Subtitle",
+            "description": "The subtitle of the post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "scheduled_at",
+            "label": "Scheduled At",
+            "description": "The time at which the post will be published. Cannot be updated after the post has already been sent.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "custom_link_tracking_enabled",
+            "label": "Custom Link Tracking Enabled",
+            "description": "If true, custom link tracking will be enabled for this post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
+          },
+          {
+            "key": "email_capture_type_override",
+            "label": "Email Capture Type Override",
+            "description": "The email capture type to use for this post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "select",
+            "options": [
               {
-                "type": "required"
+                "label": "none",
+                "value": "none"
+              },
+              {
+                "label": "gated",
+                "value": "gated"
+              },
+              {
+                "label": "popup",
+                "value": "popup"
               }
             ]
+          },
+          {
+            "key": "override_scheduled_at",
+            "label": "Override Scheduled At",
+            "description": "A display date that overrides the scheduled_at date shown in the email. Does not affect the actual publish date.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "social_share",
+            "label": "Social Share",
+            "description": "The social share type to use for this post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "select",
+            "options": [
+              {
+                "label": "comments_and_likes_only",
+                "value": "comments_and_likes_only"
+              },
+              {
+                "label": "with_comments_and_likes",
+                "value": "with_comments_and_likes"
+              },
+              {
+                "label": "top",
+                "value": "top"
+              },
+              {
+                "label": "none",
+                "value": "none"
+              }
+            ]
+          },
+          {
+            "key": "thumbnail_image_url",
+            "label": "Thumbnail Image URL",
+            "description": "The URL of the thumbnail image to use for the post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "email_settings",
+            "label": "Email Settings",
+            "description": "The email settings to use for this post. Only the provided fields within this object will be updated.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "web_settings",
+            "label": "Web Settings",
+            "description": "The web settings to use for this post. Only the provided fields within this object will be updated.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "seo_settings",
+            "label": "SEO Settings",
+            "description": "The SEO metadata to use for this post. Only the provided fields within this object will be updated.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "content_tags",
+            "label": "Content Tags",
+            "description": "The content tags for this post. When provided, this replaces all existing content tags on the post.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
           }
         ],
         "displayTitle": false,
@@ -9327,18 +9731,41 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "url",
+            "label": "URL",
+            "description": "The webhook URL to send events to.",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "event_types",
+            "label": "Event Types",
+            "description": "The types of events the webhook will receive.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "description": "A description of the webhook.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -9575,18 +10002,22 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "event_types",
+            "label": "Event Types",
+            "description": "The types of events the webhook will receive.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "json"
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "description": "A description of the webhook.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -10183,13 +10614,27 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "name",
+            "label": "Name",
+            "description": "A unique name for the segment that does not already exist in the publication.",
             "col": {
               "xs": 24
             },
+            "type": "text",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "key": "segmentInput",
+            "label": "Input",
+            "description": "Attribut Input du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
@@ -10671,18 +11116,36 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut Name du corps de requête.",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "description": "Attribut Description du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "prices_attributes",
+            "label": "Prices Attributes",
+            "description": "Attribut Prices Attributes du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
           }
         ],
         "displayTitle": false,
@@ -10975,18 +11438,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut Name du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "description": "Attribut Description du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "prices_attributes",
+            "label": "Prices Attributes",
+            "description": "Attribut Prices Attributes du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
           }
         ],
         "displayTitle": false,
@@ -11067,18 +11543,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut Name du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
+          },
+          {
+            "key": "description",
+            "label": "Description",
+            "description": "Attribut Description du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "prices_attributes",
+            "label": "Prices Attributes",
+            "description": "Attribut Prices Attributes du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
           }
         ],
         "displayTitle": false,

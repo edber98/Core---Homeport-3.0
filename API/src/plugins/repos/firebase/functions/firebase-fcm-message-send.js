@@ -15,9 +15,9 @@ module.exports = {
     const message = {};
     message[targetType === "topic" ? "topic" : targetType === "condition" ? "condition" : "token"] = target;
     if (d.title || d.body) message.notification = { title: d.title || "", body: d.body || "" };
-    if (d.data) {
+    if (d.customData) {
       try {
-        const parsedData = utils.parseJsonInput(d.data, "Données");
+        const parsedData = utils.parseJsonInput(d.customData, "Données personnalisées");
         message.data = Object.fromEntries(Object.entries(parsedData || {}).map(([key, value]) => [key, String(value)]));
       } catch (e) {
         return { ok: false, error: e.message };

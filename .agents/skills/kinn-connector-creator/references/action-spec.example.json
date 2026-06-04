@@ -8,10 +8,27 @@
       "title": "contact",
       "titlePlural": "contacts",
       "basePath": "/contacts",
-      "defaultActions": ["list", "get", "create", "update", "delete", "search"],
+      "defaultActions": [
+        "list",
+        "get",
+        "create",
+        "update",
+        "delete",
+        "search"
+      ],
       "fields": [
-        { "key": "email", "type": "email", "label": "Email", "description": "Adresse email." },
-        { "key": "phone", "type": "tel", "label": "Téléphone", "description": "Numéro de téléphone." }
+        {
+          "key": "email",
+          "type": "email",
+          "label": "Email",
+          "description": "Adresse email."
+        },
+        {
+          "key": "phone",
+          "type": "tel",
+          "label": "Téléphone",
+          "description": "Numéro de téléphone."
+        }
       ],
       "actions": [
         {
@@ -23,11 +40,19 @@
           "output": "item",
           "args": [
             {
-              "key": "body",
-              "type": "json",
-              "label": "Payload",
-              "description": "JSON de upsert contact.",
+              "key": "email",
+              "type": "email",
+              "label": "Email",
+              "description": "Adresse email du contact.",
               "required": true,
+              "in": "body"
+            },
+            {
+              "key": "phone",
+              "type": "tel",
+              "label": "Téléphone",
+              "description": "Numéro de téléphone du contact.",
+              "required": false,
               "in": "body"
             }
           ]
@@ -39,7 +64,13 @@
       "title": "deal",
       "titlePlural": "deals",
       "basePath": "/deals",
-      "defaultActions": ["list", "get", "create", "update", "delete"],
+      "defaultActions": [
+        "list",
+        "get",
+        "create",
+        "update",
+        "delete"
+      ],
       "actions": [
         {
           "key": "list_live_deals",

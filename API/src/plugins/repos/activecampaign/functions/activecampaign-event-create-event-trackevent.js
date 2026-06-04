@@ -1,39 +1,56 @@
-const { utils } = require('./utils');
-
 module.exports = {
   async activecampaign_event_create_event_trackevent(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
-    let reqPath = "/event";
-    
 
-    const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+    const key = String(d.key || '').trim();
+    const event = String(d.event || '').trim();
+    const actid = String(d.actid || '').trim();
+    const visit = String(d.visit || '').trim();
+    if (!key) return { ok: false, error: 'key requis.' };
+    if (!event) return { ok: false, error: 'event requis.' };
+    if (!actid) return { ok: false, error: 'actid requis.' };
+    if (!visit) return { ok: false, error: 'visit requis.' };
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const params = new URLSearchParams();
+    params.set('key', key);
+    params.set('event', event);
+    params.set('actid', actid);
+    params.set('visit', visit);
+    if (d.eventdata !== undefined && d.eventdata !== null && d.eventdata !== '') params.set('eventdata', String(d.eventdata));
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
-    if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
+    let res;
+    try {
+      res = await fetch('https://trackcmp.net/event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: params.toString()
+      });
+    } catch (e) {
+      return { ok: false, error: e.message };
+    }
 
-    const r = res.data || {};
+    const text = await res.text();
+    let data = null;
+    if (text) {
+      try { data = JSON.parse(text); } catch { data = text; }
+    }
+
+    if (!res.ok) {
+      return {
+        ok: false,
+        error: data && (data.message || data.error) ? (data.message || data.error) : 'HTTP ' + res.status,
+        status: res.status,
+        details: data
+      };
+    }
+
     return {
       ok: true,
-      id: r.id || r.uuid || r.key || '',
-      name: r.name || r.title || '',
-      url: r.url || r.html_url || '',
-      status: r.status || r.state || '',
-      created_at: r.created_at || r.createdAt || '',
-      updated_at: r.updated_at || r.updatedAt || '',
-      raw: r
+      status: res.status,
+      message: data && data.message ? data.message : '',
+      raw: data
     };
   }
 };

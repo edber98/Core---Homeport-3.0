@@ -19,13 +19,11 @@ module.exports = {
     try { headers = utils.parseJsonInput(d.headers, 'headers', { defaultValue: {}, allowArray: false }) || {}; }
     catch (e) { return { ok: false, error: e.message }; }
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    let identification;
+    try { identification = utils.parseJsonInput(d.identification, 'identification', { defaultValue: undefined }) ; }
+    catch (e) { return { ok: false, error: e.message }; }
+    if (identification === undefined) return { ok: false, error: 'identification requis.' };
+    const body = { identification };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body, headers });

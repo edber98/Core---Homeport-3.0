@@ -16,12 +16,13 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+    if (d.falWebhook !== undefined && d.falWebhook !== null && d.falWebhook !== '') query.fal_webhook = d.falWebhook;
 
     let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
+    if (d.modelInput !== undefined && d.modelInput !== null && d.modelInput !== '') {
+      if (typeof d.modelInput === 'object') body = d.modelInput;
       else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
+        try { body = JSON.parse(String(d.modelInput)); } catch { return { ok: false, error: 'JSON invalide dans modelInput.' }; }
       }
     }
 

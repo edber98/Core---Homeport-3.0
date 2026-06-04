@@ -572,9 +572,99 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "text_prompts",
+            "label": "Text prompts",
+            "description": "Attribut text_prompts du body Stability AI.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "cfg_scale",
+            "label": "CFG scale",
+            "description": "Attribut cfg_scale du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clip_guidance_preset",
+            "label": "Clip guidance preset",
+            "description": "Attribut clip_guidance_preset du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "height",
+            "label": "Height",
+            "description": "Attribut height du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "width",
+            "label": "Width",
+            "description": "Attribut width du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "samples",
+            "label": "Samples",
+            "description": "Attribut samples du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sampler",
+            "label": "Sampler",
+            "description": "Attribut sampler du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "seed",
+            "label": "Seed",
+            "description": "Attribut seed du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "steps",
+            "label": "Steps",
+            "description": "Attribut steps du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "style_preset",
+            "label": "Style preset",
+            "description": "Attribut style_preset du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "extras",
+            "label": "Extras",
+            "description": "Attribut extras du body.",
             "col": {
               "xs": 24
             }
@@ -644,10 +734,127 @@
             ]
           },
           {
+            "type": "text",
+            "key": "init_image",
+            "label": "Init image",
+            "description": "Attribut init_image du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "init_image_mode",
+            "label": "Init image mode",
+            "description": "Attribut init_image_mode du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "text_prompts",
+            "label": "Text prompts",
+            "description": "Attribut text_prompts du body Stability AI.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "image_strength",
+            "label": "Image strength",
+            "description": "Attribut image_strength du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "cfg_scale",
+            "label": "CFG scale",
+            "description": "Attribut cfg_scale du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clip_guidance_preset",
+            "label": "Clip guidance preset",
+            "description": "Attribut clip_guidance_preset du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "samples",
+            "label": "Samples",
+            "description": "Attribut samples du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sampler",
+            "label": "Sampler",
+            "description": "Attribut sampler du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "seed",
+            "label": "Seed",
+            "description": "Attribut seed du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "steps",
+            "label": "Steps",
+            "description": "Attribut steps du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "step_schedule_start",
+            "label": "Step schedule start",
+            "description": "Attribut step_schedule_start du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "step_schedule_end",
+            "label": "Step schedule end",
+            "description": "Attribut step_schedule_end du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "style_preset",
+            "label": "Style preset",
+            "description": "Attribut style_preset du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "extras",
+            "label": "Extras",
+            "description": "Attribut extras du body.",
             "col": {
               "xs": 24
             }
@@ -717,10 +924,28 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "image",
+            "label": "Image",
+            "description": "Attribut image du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "width",
+            "label": "Width",
+            "description": "Attribut width du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "height",
+            "label": "Height",
+            "description": "Attribut height du body.",
             "col": {
               "xs": 24
             }
@@ -790,10 +1015,109 @@
             ]
           },
           {
+            "type": "text",
+            "key": "init_image",
+            "label": "Init image",
+            "description": "Attribut init_image du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "mask_image",
+            "label": "Mask image",
+            "description": "Attribut mask_image du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "mask_source",
+            "label": "Mask source",
+            "description": "Attribut mask_source du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "text_prompts",
+            "label": "Text prompts",
+            "description": "Attribut text_prompts du body Stability AI.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "cfg_scale",
+            "label": "CFG scale",
+            "description": "Attribut cfg_scale du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "clip_guidance_preset",
+            "label": "Clip guidance preset",
+            "description": "Attribut clip_guidance_preset du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "samples",
+            "label": "Samples",
+            "description": "Attribut samples du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sampler",
+            "label": "Sampler",
+            "description": "Attribut sampler du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "seed",
+            "label": "Seed",
+            "description": "Attribut seed du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "steps",
+            "label": "Steps",
+            "description": "Attribut steps du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "style_preset",
+            "label": "Style preset",
+            "description": "Attribut style_preset du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "extras",
+            "label": "Extras",
+            "description": "Attribut extras du body.",
             "col": {
               "xs": 24
             }

@@ -18,6 +18,35 @@ function fail(message, meta) { failures.push({ message, ...(meta || {}) }); }
 function warn(message, meta) { warnings.push({ message, ...(meta || {}) }); }
 function rel(file) { return path.relative(root, file); }
 
+const GENERIC_FIELD_KEYS = new Set([
+  "body",
+  "payload",
+  "payloadjson",
+  "data",
+  "attributes",
+  "input",
+  "query",
+  "headers",
+  "options",
+  "requestattributes",
+  "request_root_key",
+  "requestrootkey",
+  "request_resource_id",
+  "requestresourceid"
+]);
+const GENERIC_FIELD_TYPES = new Set(["json", "json_editor", "textarea", "text"]);
+const BAD_TITLE_PATTERNS = [
+  /[_/\\]/,
+  /\s-\s/,
+  /\(\d+\)$/,
+  /\bv\d+\s*$/i,
+  /\b(copy|copie|bis)\s*$/i,
+  /^(get|list|create|update|delete|search|post|put|patch|api|endpoint)\b/i
+];
+const BAD_DESCRIPTION_PATTERNS = [
+  /\b(endpoint|api call|execute endpoint|appel api|request payload|http request)\b/i
+];
+
 function findRepoRoot(start) {
   let dir = start;
   while (dir && dir !== path.dirname(dir)) {
@@ -44,6 +73,50 @@ function readJson(file) {
 function functionNamesFromFile(file) {
   const text = fs.readFileSync(file, "utf8");
   return [...text.matchAll(/async\s+([a-zA-Z0-9_]+)\s*\(/g)].map((m) => m[1]);
+}
+
+function looksLikeFrenchText(value) {
+  const text = String(value || "").trim();
+  if (!text) return false;
+  if (/[éèêàâîïôùûç]/i.test(text)) return true;
+  return /\b(le|la|les|un|une|des|du|de|pour|avec|sur|dans|mettre|créer|lister|récupérer|recuperer|supprimer|mettre à jour|mettre a jour)\b/i.test(text);
+}
+
+function validateEditorialText(connectorName, template) {
+  const title = String(template.title || "").trim();
+  const subtitle = String(template.subtitle || "").trim();
+  const description = String(template.description || "").trim();
+  const argsTitle = String(template.args && template.args.title || "").trim();
+
+  if (!title) fail(`${connectorName}: ${template.key} doit avoir un title`);
+  if (!subtitle) fail(`${connectorName}: ${template.key} doit avoir un subtitle`);
+  if (!description) fail(`${connectorName}: ${template.key} doit avoir une description`);
+  if (!argsTitle) fail(`${connectorName}: ${template.key} doit avoir args.title`);
+
+  for (const pattern of BAD_TITLE_PATTERNS) {
+    if (title && pattern.test(title)) fail(`${connectorName}: ${template.key} a un title invalide ou trop technique: ${title}`);
+    if (subtitle && pattern.test(subtitle)) fail(`${connectorName}: ${template.key} a un subtitle invalide ou trop technique: ${subtitle}`);
+  }
+
+  for (const pattern of BAD_DESCRIPTION_PATTERNS) {
+    if (description && pattern.test(description)) fail(`${connectorName}: ${template.key} a une description trop technique: ${description}`);
+  }
+
+  if (description && title && description.toLowerCase() === title.toLowerCase()) {
+    fail(`${connectorName}: ${template.key} a une description identique au title`);
+  }
+  if (argsTitle && title && argsTitle !== title) {
+    fail(`${connectorName}: ${template.key} a args.title incohérent avec title`);
+  }
+  if (title && !looksLikeFrenchText(title)) {
+    fail(`${connectorName}: ${template.key} a un title qui ne semble pas rédigé en français: ${title}`);
+  }
+  if (subtitle && !looksLikeFrenchText(subtitle)) {
+    fail(`${connectorName}: ${template.key} a un subtitle qui ne semble pas rédigé en français: ${subtitle}`);
+  }
+  if (description && !looksLikeFrenchText(description)) {
+    fail(`${connectorName}: ${template.key} a une description qui ne semble pas rédigée en français: ${description}`);
+  }
 }
 
 async function validateManifest(connectorName) {
@@ -114,6 +187,8 @@ async function validateManifest(connectorName) {
     if (!t.providerKey) fail(`${connectorName}: providerKey requis: ${t.key}`);
     if (t.providerKey && providerKeys.size && !providerKeys.has(t.providerKey)) fail(`${connectorName}: providerKey inconnu ${t.providerKey}: ${t.key}`);
     if (!Array.isArray(t.outputHandles) || !t.outputHandles.length) fail(`${connectorName}: outputHandles[] requis: ${t.key}`);
+    validateEditorialText(connectorName, t);
+    validateArgsFields(connectorName, t);
     for (const h of t.outputHandles || []) {
       const handleId = h && h.id ? String(h.id) : "ok";
       const isErrorHandle = handleId === "err" || handleId === "error";
@@ -187,6 +262,50 @@ function flattenFields(fields) {
   return out;
 }
 
+function validateArgsFields(connectorName, template) {
+  const argsFields = (template.args && Array.isArray(template.args.fields)) ? template.args.fields : [];
+  const flatFields = flattenFields(argsFields);
+  if (!flatFields.length) return;
+  if (String(template.key || "").includes("custom_request")) return;
+
+  const genericFields = flatFields.filter((field) => {
+    const key = String(field.key || "").toLowerCase();
+    const type = String(field.type || "").toLowerCase();
+    if (!GENERIC_FIELD_KEYS.has(key) || !GENERIC_FIELD_TYPES.has(type)) return false;
+
+    const label = String(field.label || "").toLowerCase();
+    const description = String(field.description || "").toLowerCase();
+    const text = `${label} ${description}`.trim();
+    const mentionsGenericJson = /(json|payload|query|header|option|input|corps json|body json)/.test(text);
+
+    if (key === "body" && (type === "text" || type === "textarea") && !mentionsGenericJson) {
+      return false;
+    }
+
+    if (key === "query" && (type === "text" || type === "textarea")) {
+      return false;
+    }
+
+    return type === "json" || type === "json_editor" || mentionsGenericJson;
+  });
+
+  if (genericFields.length === 1 && flatFields.length === 1) {
+    const field = genericFields[0];
+    fail(`${connectorName}: ${template.key} utilise un champ générique unique ${field.key}; exposer des champs explicites alignés sur les attributs réellement acceptés par l endpoint`);
+    return;
+  }
+
+  if (genericFields.length) {
+    fail(`${connectorName}: ${template.key} expose des champs génériques (${genericFields.map((field) => field.key).join(', ')}); modéliser des champs explicites, ou réserver cela à un noeud custom request`);
+  }
+
+  const pseudoStructuredKeys = new Set(["requestrootkey", "request_root_key", "requestresourceid", "request_resource_id", "requestattributes", "request_attributes"]);
+  const pseudoStructuredFields = flatFields.filter((field) => pseudoStructuredKeys.has(String(field.key || "").toLowerCase()));
+  if (pseudoStructuredFields.length) {
+    fail(`${connectorName}: ${template.key} utilise des champs pseudo-structurés (${pseudoStructuredFields.map((field) => field.key).join(', ')}); exposer les vrais attributs du body un par un`);
+  }
+}
+
 function sampleValue(key, field) {
   const k = String(key || "").toLowerCase();
   const type = String(field.type || "").toLowerCase();
@@ -202,7 +321,7 @@ function sampleValue(key, field) {
   if (k.includes("id")) return "test-id";
   if (k.includes("date") || k.includes("time") || k === "start" || k === "end") return "2026-01-01T00:00:00Z";
   if (k.includes("template")) return "{{ 1 + 1 }}";
-  if (k.includes("data") || k.includes("attributes")) return {};
+  if (k.includes("data") || k.includes("attributes") || k.includes("input") || k.includes("query") || k.includes("headers") || k.includes("options")) return {};
   return "test";
 }
 

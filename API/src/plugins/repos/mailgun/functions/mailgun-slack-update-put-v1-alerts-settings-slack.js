@@ -8,16 +8,21 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.token !== undefined && d.token !== null && d.token !== '') {
+      body["token"] = d.token;
+    }
+    if (d.team_id !== undefined && d.team_id !== null && d.team_id !== '') {
+      body["team_id"] = d.team_id;
+    }
+    if (d.team_name !== undefined && d.team_name !== null && d.team_name !== '') {
+      body["team_name"] = d.team_name;
+    }
+    if (d.scope !== undefined && d.scope !== null && d.scope !== '') {
+      body["scope"] = d.scope;
     }
 
     log('Requête en cours...');
@@ -37,3 +42,4 @@ module.exports = {
     };
   }
 };
+

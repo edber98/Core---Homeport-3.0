@@ -962,9 +962,9 @@
           },
           {
             "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Payload de remplacement (optionnel).",
+            "key": "pointPayload",
+            "label": "Payload du point",
+            "description": "Objet JSON payload à associer au point.",
             "col": {
               "xs": 24
             }

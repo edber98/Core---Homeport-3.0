@@ -157,7 +157,7 @@ async function run(key, inputs, opts) {
 
     if (key === "snowflake_database_create") {
       const name = requireField(d, "name");
-      const body = parseJsonInput(d.body, "body", {});
+      const body = parseJsonInput(d.cancelRequest, "body", {});
       body.name = name;
       const res = await requestSnowflake(opts, "/api/v2/databases", { method: "POST", body });
       if (!res.ok) return res;
@@ -190,7 +190,7 @@ async function run(key, inputs, opts) {
     if (key === "snowflake_schema_create") {
       const database = requireField(d, "database");
       const name = requireField(d, "name");
-      const body = parseJsonInput(d.body, "body", {});
+      const body = parseJsonInput(d.cancelRequest, "body", {});
       body.name = name;
       const res = await requestSnowflake(opts, "/api/v2/databases/" + encodeURIComponent(database) + "/schemas", { method: "POST", body });
       if (!res.ok) return res;
@@ -227,7 +227,7 @@ async function run(key, inputs, opts) {
       const database = requireField(d, "database");
       const schema = requireField(d, "schema");
       const name = requireField(d, "name");
-      const body = parseJsonInput(d.body, "body", {});
+      const body = parseJsonInput(d.cancelRequest, "body", {});
       body.name = name;
       const res = await requestSnowflake(opts, "/api/v2/databases/" + encodeURIComponent(database) + "/schemas/" + encodeURIComponent(schema) + "/tables", { method: "POST", body });
       if (!res.ok) return res;
@@ -259,7 +259,7 @@ async function run(key, inputs, opts) {
 
     if (key === "snowflake_warehouse_create") {
       const name = requireField(d, "name");
-      const body = parseJsonInput(d.body, "body", {});
+      const body = parseJsonInput(d.cancelRequest, "body", {});
       body.name = name;
       const res = await requestSnowflake(opts, "/api/v2/warehouses", { method: "POST", body });
       if (!res.ok) return res;
@@ -268,7 +268,7 @@ async function run(key, inputs, opts) {
 
     if (key === "snowflake_warehouse_update") {
       const name = requireField(d, "name");
-      const body = parseJsonInput(d.body, "body", {});
+      const body = parseJsonInput(d.cancelRequest, "body", {});
       const res = await requestSnowflake(opts, "/api/v2/warehouses/" + encodeURIComponent(name), { method: "PATCH", body });
       if (!res.ok) return res;
       return ok(res, "Warehouse mis à jour.", { id: name, name });
@@ -299,9 +299,9 @@ async function run(key, inputs, opts) {
       const method = clean(d.method || "GET").toUpperCase();
       const reqPath = clean(d.path);
       if (!reqPath) return { ok: false, error: "path requis." };
-      const query = parseJsonInput(d.query, "query", {});
-      const headers = parseJsonInput(d.headers, "headers", {});
-      const body = d.body_text ? String(d.body_text) : parseJsonInput(d.body, "body", undefined);
+      const query = parseJsonInput(d.queryParameters, "queryParameters", {});
+      const headers = parseJsonInput(d.requestHeaders, "requestHeaders", {});
+      const body = d.cancelRequestText ? String(d.cancelRequestText) : parseJsonInput(d.requestBody, "requestBody", undefined);
       const res = await requestSnowflake(opts, reqPath, { method, query, headers, body });
       if (!res.ok) return res;
       return ok(res, "Appel API exécuté.");

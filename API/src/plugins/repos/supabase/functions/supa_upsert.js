@@ -5,10 +5,10 @@ module.exports = {
     const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!d.table) return { ok: false, error: "Table requise." };
-    if (!d.data) return { ok: false, error: "Données requises." };
+    if (!d.recordData) return { ok: false, error: "Données requises." };
 
     let body;
-    try { body = typeof d.data === "string" ? JSON.parse(d.data) : d.data; } catch { return { ok: false, error: "JSON invalide." }; }
+    try { body = typeof d.recordData === "string" ? JSON.parse(d.recordData) : d.recordData; } catch { return { ok: false, error: "JSON invalide." }; }
 
     const headers = {};
     if (d.onConflict) headers["Prefer"] = `resolution=merge-duplicates`;

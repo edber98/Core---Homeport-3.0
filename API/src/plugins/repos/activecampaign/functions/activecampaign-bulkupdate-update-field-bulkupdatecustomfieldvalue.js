@@ -12,16 +12,23 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.array_id !== undefined && d.array_id !== null && d.array_id !== "") {
+          if (!body["array"] || typeof body["array"] !== 'object' || Array.isArray(body["array"])) body["array"] = {};
+          body["array"]["id"] = d.array_id;
+        }
+    if (d.array_fieldvalue !== undefined && d.array_fieldvalue !== null && d.array_fieldvalue !== "") {
+          if (!body["array"] || typeof body["array"] !== 'object' || Array.isArray(body["array"])) body["array"] = {};
+          body["array"]["fieldvalue"] = d.array_fieldvalue;
+        }
+    if (d.array_fieldcurrency !== undefined && d.array_fieldcurrency !== null && d.array_fieldcurrency !== "") {
+          if (!body["array"] || typeof body["array"] !== 'object' || Array.isArray(body["array"])) body["array"] = {};
+          body["array"]["fieldcurrency"] = d.array_fieldcurrency;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

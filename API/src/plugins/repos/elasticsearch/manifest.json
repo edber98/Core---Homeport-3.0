@@ -730,17 +730,30 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "settings",
+            "label": "Paramètres",
+            "description": "Objet settings envoyé à Elasticsearch.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "mappings",
+            "label": "Mapping",
+            "description": "Objet mappings envoyé à Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "aliases",
+            "label": "Alias",
+            "description": "Objet aliases envoyé à Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1000,9 +1013,36 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "properties",
+            "label": "Propriétés",
+            "description": "Objet properties du mapping.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "dynamic",
+            "label": "Mode dynamique",
+            "description": "Valeur dynamic du mapping, par exemple true, false, runtime ou strict.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "runtime",
+            "label": "Champs runtime",
+            "description": "Objet runtime du mapping.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "meta",
+            "label": "Métadonnées",
+            "description": "Objet _meta du mapping.",
             "col": {
               "xs": 24
             }
@@ -1073,12 +1113,17 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "document",
+            "label": "Document",
+            "description": "Document JSON à indexer.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -1160,9 +1205,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "document",
+            "label": "Document",
+            "description": "Document JSON à indexer.",
             "col": {
               "xs": 24
             },
@@ -1330,9 +1375,54 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "doc",
+            "label": "Champs à modifier",
+            "description": "Objet doc pour la mise à jour partielle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "script",
+            "label": "Script",
+            "description": "Objet script Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "upsert",
+            "label": "Document de secours",
+            "description": "Document utilisé si le document cible n’existe pas.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "docAsUpsert",
+            "label": "Utiliser doc comme upsert",
+            "description": "Envoie doc_as_upsert à true.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "scriptedUpsert",
+            "label": "Forcer scripted upsert",
+            "description": "Envoie scripted_upsert à true.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "detectNoop",
+            "label": "Détecter les no-op",
+            "description": "Envoie detect_noop à true.",
             "col": {
               "xs": 24
             }
@@ -1481,9 +1571,72 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "searchQuery",
+            "label": "Requête",
+            "description": "Objet query Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "aggregations",
+            "label": "Agrégations",
+            "description": "Objet aggs Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "sort",
+            "label": "Tri",
+            "description": "Tableau ou objet sort Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "sourceFields",
+            "label": "Champs source",
+            "description": "Valeur _source à inclure dans la recherche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "highlight",
+            "label": "Surlignage",
+            "description": "Objet highlight Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "searchAfter",
+            "label": "Recherche après",
+            "description": "Valeur search_after pour paginer.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "from",
+            "label": "Décalage",
+            "description": "Position de départ dans les résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "size",
+            "label": "Taille",
+            "description": "Nombre de résultats à retourner.",
             "col": {
               "xs": 24
             }
@@ -1618,9 +1771,23 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "searchQuery",
+            "label": "Requête",
+            "description": "Objet query Elasticsearch.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "maxDocs",
+            "label": "Nombre maximal de documents",
+            "description": "Limite max_docs envoyée dans le corps.",
             "col": {
               "xs": 24
             }
@@ -1848,36 +2015,36 @@
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query params",
-            "description": "Objet JSON des query params.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet des paramètres de requête URL.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "En-têtes",
-            "description": "Objet JSON d’en-têtes HTTP.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON.",
+            "key": "requestBody",
+            "label": "Corps JSON",
+            "description": "Objet JSON envoyé comme corps de requête.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "textarea",
-            "key": "body_text",
-            "label": "Body texte",
-            "description": "Corps brut (prioritaire sur body).",
+            "key": "bodyText",
+            "label": "Corps texte",
+            "description": "Corps brut, prioritaire sur le corps JSON.",
             "col": {
               "xs": 24
             }
@@ -1949,24 +2116,37 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Requête",
-            "description": "Corps JSON.",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
             "type": "checkbox",
             "key": "refresh",
             "label": "Refresh",
             "description": "Forcer le refresh.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "searchQuery",
+            "label": "Requête",
+            "description": "Objet query Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "script",
+            "label": "Script",
+            "description": "Objet script Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxDocs",
+            "label": "Nombre maximal de documents",
+            "description": "Limite max_docs envoyée dans le corps.",
             "col": {
               "xs": 24
             }
@@ -2023,9 +2203,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Requête",
-            "description": "Corps JSON reindex.",
+            "key": "source",
+            "label": "Source",
+            "description": "Objet source de la requête reindex.",
             "col": {
               "xs": 24
             },
@@ -2034,6 +2214,47 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "dest",
+            "label": "Destination",
+            "description": "Objet dest de la requête reindex.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "script",
+            "label": "Script",
+            "description": "Objet script Elasticsearch.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "conflicts",
+            "label": "Gestion des conflits",
+            "description": "Valeur conflicts, par exemple proceed.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxDocs",
+            "label": "Nombre maximal de documents",
+            "description": "Limite max_docs envoyée dans le corps.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2146,9 +2367,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
+            "key": "actions",
             "label": "Actions alias",
-            "description": "Corps JSON.",
+            "description": "Tableau actions de l’API _aliases.",
             "col": {
               "xs": 24
             },
@@ -2290,9 +2511,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Settings",
-            "description": "Corps JSON.",
+            "key": "settings",
+            "label": "Paramètres",
+            "description": "Objet settings envoyé à Elasticsearch.",
             "col": {
               "xs": 24
             },

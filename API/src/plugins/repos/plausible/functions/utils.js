@@ -189,7 +189,7 @@ async function run(key, inputs, opts) {
       }
 
       if (action === "create") {
-        const body = parseJsonInput(d.body, "body", undefined) || cleanObj({
+        const body = cleanObj({
           domain: maybe(d.domain),
           timezone: maybe(d.timezone),
           tracker_script_configuration: parseJsonInput(d.tracker_script_configuration, "tracker_script_configuration", undefined)
@@ -201,7 +201,7 @@ async function run(key, inputs, opts) {
 
       if (action === "update") {
         const siteId = requireField(d, "site_id");
-        const body = parseJsonInput(d.body, "body", undefined) || cleanObj({
+        const body = cleanObj({
           domain: maybe(d.domain),
           timezone: maybe(d.timezone),
           tracker_script_configuration: parseJsonInput(d.tracker_script_configuration, "tracker_script_configuration", undefined)
@@ -227,7 +227,7 @@ async function run(key, inputs, opts) {
       }
 
       if (action === "upsert_shared_link") {
-        const body = parseJsonInput(d.body, "body", undefined) || cleanObj({ site_id: maybe(d.site_id), name: maybe(d.name) });
+        const body = cleanObj({ site_id: maybe(d.site_id), name: maybe(d.name) });
         const res = await requestPlausible(opts, "/api/v1/sites/shared-links", { method: "PUT", body });
         if (!res.ok) return res;
         return ok(res, "Lien partagé créé ou récupéré.");
@@ -242,7 +242,7 @@ async function run(key, inputs, opts) {
       }
 
       if (action === "upsert_goal") {
-        const body = parseJsonInput(d.body, "body", undefined) || cleanObj({
+        const body = cleanObj({
           site_id: maybe(d.site_id),
           goal_type: maybe(d.goal_type),
           event_name: maybe(d.event_name),
@@ -272,7 +272,7 @@ async function run(key, inputs, opts) {
       }
 
       if (action === "upsert_custom_prop") {
-        const body = parseJsonInput(d.body, "body", undefined) || cleanObj({ site_id: maybe(d.site_id), property: maybe(d.property) });
+        const body = cleanObj({ site_id: maybe(d.site_id), property: maybe(d.property) });
         const res = await requestPlausible(opts, "/api/v1/sites/custom-props", { method: "PUT", body });
         if (!res.ok) return res;
         return ok(res, "Propriété custom créée.");
@@ -296,7 +296,7 @@ async function run(key, inputs, opts) {
       }
 
       if (action === "upsert_guest") {
-        const body = parseJsonInput(d.body, "body", undefined) || cleanObj({ site_id: maybe(d.site_id), email: maybe(d.email), role: maybe(d.role) });
+        const body = cleanObj({ site_id: maybe(d.site_id), email: maybe(d.email), role: maybe(d.role) });
         const res = await requestPlausible(opts, "/api/v1/sites/guests", { method: "PUT", body });
         if (!res.ok) return res;
         return ok(res, "Invité créé ou mis à jour.");
@@ -311,14 +311,14 @@ async function run(key, inputs, opts) {
       }
     }
 
-    if (key === "plausible_api_request") {
+    if (key === "plausible_api_request" || key === "plausible_custom_request") {
       const method = clean(d.method || "GET").toUpperCase();
       const reqPath = clean(d.path);
       if (!reqPath) return { ok: false, error: "path requis." };
-      const query = parseJsonInput(d.query, "query", {});
-      const headers = parseJsonInput(d.headers, "headers", {});
-      const body = d.body_text ? String(d.body_text) : parseJsonInput(d.body, "body", undefined);
-      const contentType = d.body_text ? "text/plain" : undefined;
+      const query = parseJsonInput(d.queryParameters, "queryParameters", {});
+      const headers = parseJsonInput(d.requestHeaders, "requestHeaders", {});
+      const body = d.bodyText ? String(d.bodyText) : parseJsonInput(d.requestBody, "requestBody", undefined);
+      const contentType = d.bodyText ? "text/plain" : undefined;
       const res = await requestPlausible(opts, reqPath, { method, query, headers, body, contentType });
       if (!res.ok) return res;
       return ok(res, "Appel API exécuté.");

@@ -3,7 +3,7 @@ module.exports = { async replicate_training_create(node, msg, inputs, opts) {
   const d = inputs || {};
   if (!d.owner || !d.model || !d.version) return { ok: false, error: "owner, model et version requis." };
   let input;
-  try { input = utils.parseJsonInput(d.input, "input", {}); } catch (e) { return { ok: false, error: e.message }; }
+  try { input = utils.parseJsonInput(d.modelInput, "modelInput", {}); } catch (e) { return { ok: false, error: e.message }; }
   const body = { input };
   if (d.destination) body.destination = String(d.destination);
   if (d.webhook) body.webhook = String(d.webhook);

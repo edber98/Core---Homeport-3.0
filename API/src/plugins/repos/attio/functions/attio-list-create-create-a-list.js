@@ -11,14 +11,20 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const payload = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') payload.name = d.name;
+    if (d.api_slug !== undefined && d.api_slug !== null && d.api_slug !== '') payload.api_slug = d.api_slug;
+    if (d.parent_object !== undefined && d.parent_object !== null && d.parent_object !== '') payload.parent_object = d.parent_object;
+    if (d.workspace_access !== undefined && d.workspace_access !== null && d.workspace_access !== '') payload.workspace_access = d.workspace_access;
+    if (d.workspace_member_access !== undefined && d.workspace_member_access !== null && d.workspace_member_access !== '') {
+      try { payload.workspace_member_access = utils.parseJsonInput(d.workspace_member_access, 'workspace_member_access', undefined); } catch (e) { return { ok: false, error: e.message }; }
     }
+    if (payload.name === undefined) return { ok: false, error: 'name requis.' };
+    if (payload.api_slug === undefined) return { ok: false, error: 'api_slug requis.' };
+    if (payload.parent_object === undefined) return { ok: false, error: 'parent_object requis.' };
+    if (payload.workspace_access === undefined) return { ok: false, error: 'workspace_access requis.' };
+    if (payload.workspace_member_access === undefined) return { ok: false, error: 'workspace_member_access requis.' };
+    const body = { data: payload };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

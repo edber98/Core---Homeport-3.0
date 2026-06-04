@@ -8,13 +8,10 @@ module.exports = {
     if (!path) return { ok: false, error: "Path requis." };
 
     let query = {};
-    let body;
-    try {
-      query = utils.parseJsonInput(d.query, "query", {});
-      body = utils.parseJsonInput(d.body, "body", undefined);
-    } catch (e) {
-      return { ok: false, error: e.message };
-    }
+    try { query = utils.parseJsonInput(d.query, "query", {}); } catch (e) { return { ok: false, error: e.message }; }
+    const builtBody = utils.buildObjectFromFields(d.requestFields);
+    if (!builtBody.ok) return builtBody;
+    const body = builtBody.object;
 
     const reqPath = path.startsWith("/") ? path : `/${path}`;
     const res = await utils.cohereRequest(opts, reqPath, { method, query, body });

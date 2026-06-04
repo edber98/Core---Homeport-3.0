@@ -9,7 +9,7 @@ module.exports = {
 
     let data;
     try {
-      data = utils.parseJsonInput(d.data, "données intent");
+      data = utils.parseJsonInput(d.intentData, "données intent");
     } catch (e) {
       return { ok: false, error: e.message };
     }

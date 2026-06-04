@@ -12,13 +12,8 @@ module.exports = {
     const query = {};
     
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = utils.buildBodyFromInputs(d, [{"source":"note","target":"note","type":"text"},{"source":"returnAddress","target":"returnAddress","type":"json"},{"source":"revision","target":"revision","type":"number"}]);
+    if (body && body.__invalid) return { ok: false, error: body.__invalid };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

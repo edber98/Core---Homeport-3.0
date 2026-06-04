@@ -860,9 +860,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Texte",
-            "description": "Texte ou tableau JSON de textes.",
+            "key": "embeddingInput",
+            "label": "Texte à vectoriser",
+            "description": "Texte ou tableau JSON envoyé dans input.",
             "col": {
               "xs": 24
             },
@@ -1592,8 +1592,8 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Texte",
+            "key": "moderationInput",
+            "label": "Texte à modérer",
             "col": {
               "xs": 24
             },
@@ -1601,7 +1601,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Texte envoyé dans input."
           }
         ],
         "displayTitle": false,

@@ -10,16 +10,15 @@ module.exports = {
     reqPath = reqPath.replace('{id}', encodeURIComponent(id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.is_unread !== undefined && d.is_unread !== null && d.is_unread !== '') {
+      body["is_unread"] = d.is_unread;
+    }
+    if (d.reminder_ts !== undefined && d.reminder_ts !== null && d.reminder_ts !== '') {
+      body["reminder_ts"] = d.reminder_ts;
     }
 
     log('Requête en cours...');
@@ -39,3 +38,4 @@ module.exports = {
     };
   }
 };
+

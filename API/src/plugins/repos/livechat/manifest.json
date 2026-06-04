@@ -1884,9 +1884,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "messageRequest",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -2076,9 +2076,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "customerProperties",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             },
@@ -2154,9 +2154,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "customerProperties",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -2690,9 +2690,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "tagProperties",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             },
@@ -2768,9 +2768,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "tagProperties",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -2988,9 +2988,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "tagRequest",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -3061,9 +3061,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "tagRequest",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -3253,9 +3253,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "webhookProperties",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             },
@@ -3331,9 +3331,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "webhookProperties",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }

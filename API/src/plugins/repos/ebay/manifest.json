@@ -5399,18 +5399,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de la politique personnalisée.",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseigne Description envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Renseigne Libellé envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "policyType",
+            "label": "Type de politique",
+            "description": "Renseigne Type de politique envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -5600,18 +5622,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour.",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseigne Description envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Renseigne Libellé envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -5665,17 +5700,102 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de la politique d’expédition.",
+            "key": "categoryTypes",
+            "label": "Types de catégorie",
+            "description": "Renseigne Types de catégorie envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseigne Description envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "freightShipping",
+            "label": "Livraison fret",
+            "description": "Renseigne Livraison fret envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "globalShipping",
+            "label": "Livraison internationale eBay",
+            "description": "Renseigne Livraison internationale eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "handlingTime",
+            "label": "Délai de traitement",
+            "description": "Renseigne Délai de traitement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "localPickup",
+            "label": "Retrait sur place",
+            "description": "Renseigne Retrait sur place envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "marketplaceId",
+            "label": "Marketplace eBay",
+            "description": "Renseigne Marketplace eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "pickupDropOff",
+            "label": "Retrait ou dépôt",
+            "description": "Renseigne Retrait ou dépôt envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "shippingOptions",
+            "label": "Options de livraison",
+            "description": "Renseigne Options de livraison envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "shipToLocations",
+            "label": "Destinations de livraison",
+            "description": "Renseigne Destinations de livraison envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -6021,17 +6141,102 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour de la politique d’expédition.",
+            "key": "categoryTypes",
+            "label": "Types de catégorie",
+            "description": "Renseigne Types de catégorie envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseigne Description envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "freightShipping",
+            "label": "Livraison fret",
+            "description": "Renseigne Livraison fret envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "globalShipping",
+            "label": "Livraison internationale eBay",
+            "description": "Renseigne Livraison internationale eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "handlingTime",
+            "label": "Délai de traitement",
+            "description": "Renseigne Délai de traitement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "localPickup",
+            "label": "Retrait sur place",
+            "description": "Renseigne Retrait sur place envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "marketplaceId",
+            "label": "Marketplace eBay",
+            "description": "Renseigne Marketplace eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "pickupDropOff",
+            "label": "Retrait ou dépôt",
+            "description": "Renseigne Retrait ou dépôt envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "shippingOptions",
+            "label": "Options de livraison",
+            "description": "Renseigne Options de livraison envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "shipToLocations",
+            "label": "Destinations de livraison",
+            "description": "Renseigne Destinations de livraison envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -6085,17 +6290,84 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de la politique de paiement.",
+            "key": "categoryTypes",
+            "label": "Types de catégorie",
+            "description": "Renseigne Types de catégorie envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "deposit",
+            "label": "Acompte",
+            "description": "Renseigne Acompte envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseigne Description envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "fullPaymentDueIn",
+            "label": "Paiement complet dû sous",
+            "description": "Renseigne Paiement complet dû sous envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "immediatePay",
+            "label": "Paiement immédiat",
+            "description": "Renseigne Paiement immédiat envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "marketplaceId",
+            "label": "Marketplace eBay",
+            "description": "Renseigne Marketplace eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "paymentInstructions",
+            "label": "Instructions de paiement",
+            "description": "Renseigne Instructions de paiement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "paymentMethods",
+            "label": "Méthodes de paiement",
+            "description": "Renseigne Méthodes de paiement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -6441,17 +6713,84 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour de la politique de paiement.",
+            "key": "categoryTypes",
+            "label": "Types de catégorie",
+            "description": "Renseigne Types de catégorie envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "deposit",
+            "label": "Acompte",
+            "description": "Renseigne Acompte envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseigne Description envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "fullPaymentDueIn",
+            "label": "Paiement complet dû sous",
+            "description": "Renseigne Paiement complet dû sous envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "immediatePay",
+            "label": "Paiement immédiat",
+            "description": "Renseigne Paiement immédiat envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "marketplaceId",
+            "label": "Marketplace eBay",
+            "description": "Renseigne Marketplace eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "paymentInstructions",
+            "label": "Instructions de paiement",
+            "description": "Renseigne Instructions de paiement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "paymentMethods",
+            "label": "Méthodes de paiement",
+            "description": "Renseigne Méthodes de paiement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -6505,17 +6844,120 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de la politique de retour.",
+            "key": "categoryTypes",
+            "label": "Types de catégorie",
+            "description": "Renseigne Types de catégorie envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseigne Description envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "extendedHolidayReturnsOffered",
+            "label": "Retours de vacances prolongés",
+            "description": "Renseigne Retours de vacances prolongés envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "internationalOverride",
+            "label": "Règles internationales",
+            "description": "Renseigne Règles internationales envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "marketplaceId",
+            "label": "Marketplace eBay",
+            "description": "Renseigne Marketplace eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "refundMethod",
+            "label": "Méthode de remboursement",
+            "description": "Renseigne Méthode de remboursement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "restockingFeePercentage",
+            "label": "Frais de réapprovisionnement",
+            "description": "Renseigne Frais de réapprovisionnement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "returnInstructions",
+            "label": "Instructions de retour",
+            "description": "Renseigne Instructions de retour envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "returnMethod",
+            "label": "Méthode de retour",
+            "description": "Renseigne Méthode de retour envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "returnPeriod",
+            "label": "Période de retour",
+            "description": "Renseigne Période de retour envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "returnsAccepted",
+            "label": "Retours acceptés",
+            "description": "Renseigne Retours acceptés envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "returnShippingCostPayer",
+            "label": "Payeur des frais de retour",
+            "description": "Renseigne Payeur des frais de retour envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -6861,17 +7303,120 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour de la politique de retour.",
+            "key": "categoryTypes",
+            "label": "Types de catégorie",
+            "description": "Renseigne Types de catégorie envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseigne Description envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "extendedHolidayReturnsOffered",
+            "label": "Retours de vacances prolongés",
+            "description": "Renseigne Retours de vacances prolongés envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "internationalOverride",
+            "label": "Règles internationales",
+            "description": "Renseigne Règles internationales envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "marketplaceId",
+            "label": "Marketplace eBay",
+            "description": "Renseigne Marketplace eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "refundMethod",
+            "label": "Méthode de remboursement",
+            "description": "Renseigne Méthode de remboursement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "restockingFeePercentage",
+            "label": "Frais de réapprovisionnement",
+            "description": "Renseigne Frais de réapprovisionnement envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "returnInstructions",
+            "label": "Instructions de retour",
+            "description": "Renseigne Instructions de retour envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "returnMethod",
+            "label": "Méthode de retour",
+            "description": "Renseigne Méthode de retour envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "returnPeriod",
+            "label": "Période de retour",
+            "description": "Renseigne Période de retour envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "returnsAccepted",
+            "label": "Retours acceptés",
+            "description": "Renseigne Retours acceptés envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "returnShippingCostPayer",
+            "label": "Payeur des frais de retour",
+            "description": "Renseigne Payeur des frais de retour envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -7022,18 +7567,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du programme à activer.",
+            "type": "text",
+            "key": "programType",
+            "label": "Programme",
+            "description": "Renseigne Programme envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -7086,18 +7626,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du programme à désactiver.",
+            "type": "text",
+            "key": "programType",
+            "label": "Programme",
+            "description": "Renseigne Programme envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -7199,18 +7734,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON des lignes de taxes de vente.",
+            "type": "text",
+            "key": "salesTaxInputList",
+            "label": "Entrées de taxe de vente",
+            "description": "Renseigne Entrées de taxe de vente envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -7291,18 +7821,22 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de la taxe de vente.",
+            "type": "text",
+            "key": "salesTaxPercentage",
+            "label": "Pourcentage de taxe",
+            "description": "Renseigne Pourcentage de taxe envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "shippingAndHandlingTaxed",
+            "label": "Taxer livraison et manutention",
+            "description": "Renseigne Taxer livraison et manutention envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -7674,17 +8208,12 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON des fiches stock.",
+            "key": "requests",
+            "label": "Requêtes",
+            "description": "Renseigne Requêtes envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -7738,17 +8267,12 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON des SKU à récupérer.",
+            "key": "requests",
+            "label": "Requêtes",
+            "description": "Renseigne Requêtes envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -7802,17 +8326,12 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON des quantités et prix.",
+            "key": "requests",
+            "label": "Requêtes",
+            "description": "Renseigne Requêtes envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -7880,17 +8399,57 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de la fiche stock.",
+            "key": "availability",
+            "label": "Disponibilité",
+            "description": "Renseigne Disponibilité envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "condition",
+            "label": "État",
+            "description": "Renseigne État envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "conditionDescription",
+            "label": "Description de l’état",
+            "description": "Renseigne Description de l’état envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "conditionDescriptors",
+            "label": "Descripteurs d’état",
+            "description": "Renseigne Descripteurs d’état envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "packageWeightAndSize",
+            "label": "Poids et dimensions du colis",
+            "description": "Renseigne Poids et dimensions du colis envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "product",
+            "label": "Produit",
+            "description": "Renseigne Produit envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -8154,17 +8713,21 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON des compatibilités.",
+            "key": "compatibleProducts",
+            "label": "Produits compatibles",
+            "description": "Renseigne Produits compatibles envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "sku",
+            "label": "SKU",
+            "description": "Renseigne SKU envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -8359,18 +8922,85 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du groupe de variantes.",
+            "type": "text",
+            "key": "aspects",
+            "label": "Aspects",
+            "description": "Renseigne Aspects envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseigne Description envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "imageUrls",
+            "label": "URLs des images",
+            "description": "Renseigne URLs des images envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "inventoryItemGroupKey",
+            "label": "Clé du groupe d’articles",
+            "description": "Renseigne Clé du groupe d’articles envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "subtitle",
+            "label": "Sous-titre",
+            "description": "Renseigne Sous-titre envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "description": "Renseigne Titre envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "variantSKUs",
+            "label": "SKU des variantes",
+            "description": "Renseigne SKU des variantes envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "variesBy",
+            "label": "Variation par",
+            "description": "Renseigne Variation par envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "videoIds",
+            "label": "IDs vidéo",
+            "description": "Renseigne IDs vidéo envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -8552,17 +9182,12 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON des annonces à migrer.",
+            "key": "requests",
+            "label": "Requêtes",
+            "description": "Renseigne Requêtes envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -8644,17 +9269,12 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du mapping SKU-emplacement.",
+            "key": "locations",
+            "label": "Emplacements",
+            "description": "Renseigne Emplacements envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -8864,17 +9484,12 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON des offres.",
+            "key": "requests",
+            "label": "Requêtes",
+            "description": "Renseigne Requêtes envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -8928,17 +9543,12 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON des offres à publier.",
+            "key": "requests",
+            "label": "Requêtes",
+            "description": "Renseigne Requêtes envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -8991,18 +9601,193 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de l’offre.",
+            "type": "number",
+            "key": "availableQuantity",
+            "label": "Quantité disponible",
+            "description": "Renseigne Quantité disponible envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "Catégorie",
+            "description": "Renseigne Catégorie envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "charity",
+            "label": "Association caritative",
+            "description": "Renseigne Association caritative envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "extendedProducerResponsibility",
+            "label": "Responsabilité producteur étendue",
+            "description": "Renseigne Responsabilité producteur étendue envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "format",
+            "label": "Format",
+            "description": "Renseigne Format envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "hideBuyerDetails",
+            "label": "Masquer les détails acheteur",
+            "description": "Renseigne Masquer les détails acheteur envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "includeCatalogProductDetails",
+            "label": "Inclure les détails catalogue",
+            "description": "Renseigne Inclure les détails catalogue envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "listingDescription",
+            "label": "Description de l’annonce",
+            "description": "Renseigne Description de l’annonce envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "listingDuration",
+            "label": "Durée de l’annonce",
+            "description": "Renseigne Durée de l’annonce envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "listingPolicies",
+            "label": "Politiques de l’annonce",
+            "description": "Renseigne Politiques de l’annonce envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "listingStartDate",
+            "label": "Date de début de l’annonce",
+            "description": "Renseigne Date de début de l’annonce envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "lotSize",
+            "label": "Taille du lot",
+            "description": "Renseigne Taille du lot envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "marketplaceId",
+            "label": "Marketplace eBay",
+            "description": "Renseigne Marketplace eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantLocationKey",
+            "label": "Clé du lieu marchand",
+            "description": "Renseigne Clé du lieu marchand envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "pricingSummary",
+            "label": "Résumé du prix",
+            "description": "Renseigne Résumé du prix envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "quantityLimitPerBuyer",
+            "label": "Limite par acheteur",
+            "description": "Renseigne Limite par acheteur envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "regulatory",
+            "label": "Informations réglementaires",
+            "description": "Renseigne Informations réglementaires envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "secondaryCategoryId",
+            "label": "Catégorie secondaire",
+            "description": "Renseigne Catégorie secondaire envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sku",
+            "label": "SKU",
+            "description": "Renseigne SKU envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "storeCategoryNames",
+            "label": "Catégories de boutique",
+            "description": "Renseigne Catégories de boutique envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tax",
+            "label": "Taxe",
+            "description": "Renseigne Taxe envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -9120,17 +9905,12 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON des offres à estimer.",
+            "key": "offers",
+            "label": "Offres",
+            "description": "Renseigne Offres envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -9397,18 +10177,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du groupe à publier.",
+            "type": "text",
+            "key": "inventoryItemGroupKey",
+            "label": "Clé du groupe d’articles",
+            "description": "Renseigne Clé du groupe d’articles envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "marketplaceId",
+            "label": "Marketplace eBay",
+            "description": "Renseigne Marketplace eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -9475,18 +10259,166 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour de l’offre.",
+            "type": "number",
+            "key": "availableQuantity",
+            "label": "Quantité disponible",
+            "description": "Renseigne Quantité disponible envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "categoryId",
+            "label": "Catégorie",
+            "description": "Renseigne Catégorie envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "charity",
+            "label": "Association caritative",
+            "description": "Renseigne Association caritative envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "extendedProducerResponsibility",
+            "label": "Responsabilité producteur étendue",
+            "description": "Renseigne Responsabilité producteur étendue envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "hideBuyerDetails",
+            "label": "Masquer les détails acheteur",
+            "description": "Renseigne Masquer les détails acheteur envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "includeCatalogProductDetails",
+            "label": "Inclure les détails catalogue",
+            "description": "Renseigne Inclure les détails catalogue envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "listingDescription",
+            "label": "Description de l’annonce",
+            "description": "Renseigne Description de l’annonce envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "listingDuration",
+            "label": "Durée de l’annonce",
+            "description": "Renseigne Durée de l’annonce envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "listingPolicies",
+            "label": "Politiques de l’annonce",
+            "description": "Renseigne Politiques de l’annonce envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "listingStartDate",
+            "label": "Date de début de l’annonce",
+            "description": "Renseigne Date de début de l’annonce envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "lotSize",
+            "label": "Taille du lot",
+            "description": "Renseigne Taille du lot envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantLocationKey",
+            "label": "Clé du lieu marchand",
+            "description": "Renseigne Clé du lieu marchand envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "pricingSummary",
+            "label": "Résumé du prix",
+            "description": "Renseigne Résumé du prix envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "quantityLimitPerBuyer",
+            "label": "Limite par acheteur",
+            "description": "Renseigne Limite par acheteur envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "regulatory",
+            "label": "Informations réglementaires",
+            "description": "Renseigne Informations réglementaires envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "secondaryCategoryId",
+            "label": "Catégorie secondaire",
+            "description": "Renseigne Catégorie secondaire envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "storeCategoryNames",
+            "label": "Catégories de boutique",
+            "description": "Renseigne Catégories de boutique envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tax",
+            "label": "Taxe",
+            "description": "Renseigne Taxe envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -9551,20 +10483,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de retrait optionnel.",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
           }
         ],
         "displayTitle": false,
@@ -9617,18 +10535,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du groupe à retirer.",
+            "type": "text",
+            "key": "inventoryItemGroupKey",
+            "label": "Clé du groupe d’articles",
+            "description": "Renseigne Clé du groupe d’articles envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "marketplaceId",
+            "label": "Marketplace eBay",
+            "description": "Renseigne Marketplace eBay envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -9696,17 +10618,111 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de l’emplacement de stock.",
+            "key": "location",
+            "label": "Adresse du lieu",
+            "description": "Renseigne Adresse du lieu envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "locationAdditionalInformation",
+            "label": "Informations complémentaires du lieu",
+            "description": "Renseigne Informations complémentaires du lieu envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "locationInstructions",
+            "label": "Instructions du lieu",
+            "description": "Renseigne Instructions du lieu envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "locationTypes",
+            "label": "Types de lieu",
+            "description": "Renseigne Types de lieu envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "locationWebUrl",
+            "label": "URL du lieu",
+            "description": "Renseigne URL du lieu envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "merchantLocationStatus",
+            "label": "Statut du lieu marchand",
+            "description": "Renseigne Statut du lieu marchand envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "operatingHours",
+            "label": "Horaires d’ouverture",
+            "description": "Renseigne Horaires d’ouverture envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Renseigne Téléphone envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "specialHours",
+            "label": "Horaires exceptionnels",
+            "description": "Renseigne Horaires exceptionnels envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "timeZoneId",
+            "label": "Fuseau horaire",
+            "description": "Renseigne Fuseau horaire envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "fulfillmentCenterSpecifications",
+            "label": "Spécifications du centre logistique",
+            "description": "Renseigne Spécifications du centre logistique envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -10098,17 +11114,102 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour.",
+            "key": "location",
+            "label": "Adresse du lieu",
+            "description": "Renseigne Adresse du lieu envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "locationAdditionalInformation",
+            "label": "Informations complémentaires du lieu",
+            "description": "Renseigne Informations complémentaires du lieu envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "locationInstructions",
+            "label": "Instructions du lieu",
+            "description": "Renseigne Instructions du lieu envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "locationTypes",
+            "label": "Types de lieu",
+            "description": "Renseigne Types de lieu envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "locationWebUrl",
+            "label": "URL du lieu",
+            "description": "Renseigne URL du lieu envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "operatingHours",
+            "label": "Horaires d’ouverture",
+            "description": "Renseigne Horaires d’ouverture envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "description": "Renseigne Téléphone envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "specialHours",
+            "label": "Horaires exceptionnels",
+            "description": "Renseigne Horaires exceptionnels envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "timeZoneId",
+            "label": "Fuseau horaire",
+            "description": "Renseigne Fuseau horaire envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "fulfillmentCenterSpecifications",
+            "label": "Spécifications du centre logistique",
+            "description": "Renseigne Spécifications du centre logistique envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -10210,18 +11311,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de la configuration de notification.",
+            "type": "text",
+            "key": "alertEmail",
+            "label": "Email d’alerte",
+            "description": "Renseigne Email d’alerte envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -10274,18 +11370,31 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de la destination de notification.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Renseigne Statut envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "deliveryConfig",
+            "label": "Configuration de livraison",
+            "description": "Renseigne Configuration de livraison envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -10548,18 +11657,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour de la destination.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseigne Nom envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Renseigne Statut envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "deliveryConfig",
+            "label": "Configuration de livraison",
+            "description": "Renseigne Configuration de livraison envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -10676,18 +11798,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de l’abonnement.",
+            "type": "text",
+            "key": "topicId",
+            "label": "Sujet",
+            "description": "Renseigne Sujet envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Renseigne Statut envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "subscriptionPayload",
+            "label": "Payload de notification",
+            "description": "Renseigne Payload de notification envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "destinationId",
+            "label": "Destination",
+            "description": "Renseigne Destination envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -10754,18 +11898,13 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du filtre.",
+            "type": "text",
+            "key": "filterSchema",
+            "label": "Schéma du filtre",
+            "description": "Renseigne Schéma du filtre envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -11376,18 +12515,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour de l’abonnement.",
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "Renseigne Statut envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "subscriptionPayload",
+            "label": "Payload de notification",
+            "description": "Renseigne Payload de notification envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "destinationId",
+            "label": "Destination",
+            "description": "Renseigne Destination envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -12489,18 +13641,40 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du remboursement.",
+            "type": "text",
+            "key": "reasonForRefund",
+            "label": "Motif du remboursement",
+            "description": "Renseigne Motif du remboursement envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Commentaire",
+            "description": "Renseigne Commentaire envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "refundItems",
+            "label": "Articles à rembourser",
+            "description": "Renseigne Articles à rembourser envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "orderLevelRefundAmount",
+            "label": "Montant de remboursement de commande",
+            "description": "Renseigne Montant de remboursement de commande envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -12568,17 +13742,39 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de l’expédition.",
+            "key": "lineItems",
+            "label": "Lignes de commande",
+            "description": "Renseigne Lignes de commande envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "shippedDate",
+            "label": "Date d’expédition",
+            "description": "Renseigne Date d’expédition envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "shippingCarrierCode",
+            "label": "Transporteur",
+            "description": "Renseigne Transporteur envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "trackingNumber",
+            "label": "Numéro de suivi",
+            "description": "Renseigne Numéro de suivi envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -13115,18 +14311,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de contestation.",
+            "type": "text",
+            "key": "note",
+            "label": "Note",
+            "description": "Renseigne Note envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "returnAddress",
+            "label": "Adresse de retour",
+            "description": "Renseigne Adresse de retour envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "revision",
+            "label": "Révision",
+            "description": "Renseigne Révision envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -13194,17 +14403,21 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON d’acceptation optionnel.",
+            "key": "returnAddress",
+            "label": "Adresse de retour",
+            "description": "Renseigne Adresse de retour envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "number",
+            "key": "revision",
+            "label": "Révision",
+            "description": "Renseigne Révision envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -13271,18 +14484,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du fichier de preuve. Utiliser contentBase64 pour le contenu binaire.",
+            "type": "text",
+            "key": "contentBase64",
+            "label": "Fichier en base64",
+            "description": "Renseigne Fichier en base64 envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "contentType",
+            "label": "Type MIME",
+            "description": "Renseigne Type MIME envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "fileName",
+            "label": "Nom du fichier",
+            "description": "Renseigne Nom du fichier envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -13349,18 +14575,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de la preuve.",
+            "type": "text",
+            "key": "evidenceType",
+            "label": "Type de preuve",
+            "description": "Renseigne Type de preuve envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "files",
+            "label": "Fichiers",
+            "description": "Renseigne Fichiers envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "lineItems",
+            "label": "Lignes de commande",
+            "description": "Renseigne Lignes de commande envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -13427,18 +14666,40 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour de la preuve.",
+            "type": "text",
+            "key": "evidenceId",
+            "label": "Preuve",
+            "description": "Renseigne Preuve envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "evidenceType",
+            "label": "Type de preuve",
+            "description": "Renseigne Type de preuve envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "files",
+            "label": "Fichiers",
+            "description": "Renseigne Fichiers envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "lineItems",
+            "label": "Lignes de commande",
+            "description": "Renseigne Lignes de commande envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -15656,18 +16917,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de l’offre négociée.",
+            "type": "checkbox",
+            "key": "allowCounterOffer",
+            "label": "Autoriser une contre-offre",
+            "description": "Renseigne Autoriser une contre-offre envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "message",
+            "label": "Message",
+            "description": "Renseigne Message envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "offerDuration",
+            "label": "Durée de l’offre",
+            "description": "Renseigne Durée de l’offre envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "offeredItems",
+            "label": "Articles proposés",
+            "description": "Renseigne Articles proposés envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -15721,17 +17004,12 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour en lot.",
+            "key": "conversations",
+            "label": "Conversations",
+            "description": "Renseigne Conversations envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -15934,18 +17212,58 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON du message à envoyer.",
+            "type": "text",
+            "key": "conversationId",
+            "label": "Conversation",
+            "description": "Renseigne Conversation envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "emailCopyToSender",
+            "label": "Copie email à l’expéditeur",
+            "description": "Renseigne Copie email à l’expéditeur envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "messageMedia",
+            "label": "Médias du message",
+            "description": "Renseigne Médias du message envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "messageText",
+            "label": "Texte du message",
+            "description": "Renseigne Texte du message envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "otherPartyUsername",
+            "label": "Utilisateur destinataire",
+            "description": "Renseigne Utilisateur destinataire envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "reference",
+            "label": "Référence",
+            "description": "Renseigne Référence envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -15998,18 +17316,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour de la conversation.",
+            "type": "text",
+            "key": "conversationId",
+            "label": "Conversation",
+            "description": "Renseigne Conversation envoyé dans le corps JSON.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "conversationStatus",
+            "label": "Statut de conversation",
+            "description": "Renseigne Statut de conversation envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "conversationType",
+            "label": "Type de conversation",
+            "description": "Renseigne Type de conversation envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "read",
+            "label": "Marquer comme lue",
+            "description": "Renseigne Marquer comme lue envoyé dans le corps JSON.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,

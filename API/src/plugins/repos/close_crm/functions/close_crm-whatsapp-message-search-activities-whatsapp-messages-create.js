@@ -12,13 +12,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"activity_at","target":"activity_at","type":"string"},{"key":"attachments","target":"attachments","type":"array"},{"key":"contact_id","target":"contact_id","type":"string"},{"key":"direction","target":"direction","type":"string"},{"key":"external_whatsapp_message_id","target":"external_whatsapp_message_id","type":"string"},{"key":"integration_link","target":"integration_link","type":"object"},{"key":"lead_id","target":"lead_id","type":"string"},{"key":"local_phone","target":"local_phone","type":"string"},{"key":"message_markdown","target":"message_markdown","type":"string"},{"key":"remote_phone","target":"remote_phone","type":"string"},{"key":"response_to_id","target":"response_to_id","type":"object"},{"key":"user_id","target":"user_id","type":"object"},{"key":"organization_id","target":"organization_id","type":"string"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

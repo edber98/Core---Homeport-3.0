@@ -1864,9 +1864,767 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "messages",
+            "label": "Messages",
+            "description": "Renseignez messages au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "messages"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "frequency_penalty",
+            "label": "Frequence penalite",
+            "description": "Renseignez frequence penalite.",
+            "required": false,
+            "bodyPath": [
+              "frequency_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "logit_bias",
+            "label": "Logit bias",
+            "description": "Renseignez logit bias au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "logit_bias"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "logprobs",
+            "label": "Logprobs",
+            "description": "Cochez si logprobs.",
+            "required": false,
+            "bodyPath": [
+              "logprobs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_logprobs",
+            "label": "Top logprobs",
+            "description": "Renseignez top logprobs.",
+            "required": false,
+            "bodyPath": [
+              "top_logprobs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens",
+            "label": "Maximal tokens",
+            "description": "Renseignez maximal tokens.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_completion_tokens",
+            "label": "Maximal completion tokens",
+            "description": "Renseignez maximal completion tokens.",
+            "required": false,
+            "bodyPath": [
+              "max_completion_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "n",
+            "label": "N",
+            "description": "Renseignez n.",
+            "required": false,
+            "bodyPath": [
+              "n"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "presence_penalty",
+            "label": "Presence penalite",
+            "description": "Renseignez presence penalite.",
+            "required": false,
+            "bodyPath": [
+              "presence_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "response_format",
+            "label": "Response format",
+            "description": "Renseignez response format au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "response_format"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "seed",
+            "label": "Seed",
+            "description": "Renseignez seed.",
+            "required": false,
+            "bodyPath": [
+              "seed"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "stop",
+            "label": "Stop",
+            "description": "Renseignez stop au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "stop"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream",
+            "label": "Stream",
+            "description": "Cochez si stream.",
+            "required": false,
+            "bodyPath": [
+              "stream"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "stream_options",
+            "label": "Stream options",
+            "description": "Renseignez stream options au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "stream_options"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Temperature",
+            "description": "Renseignez temperature.",
+            "required": false,
+            "bodyPath": [
+              "temperature"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_p",
+            "label": "Top p",
+            "description": "Renseignez top p.",
+            "required": false,
+            "bodyPath": [
+              "top_p"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tools",
+            "label": "Tools",
+            "description": "Renseignez tools au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "tools"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tool_choice",
+            "label": "Tool choice",
+            "description": "Renseignez tool choice au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "tool_choice"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "reasoning_effort",
+            "label": "Reasoning effort",
+            "description": "Renseignez reasoning effort.",
+            "required": false,
+            "bodyPath": [
+              "reasoning_effort"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "thinking_token_budget",
+            "label": "Thinking token budget",
+            "description": "Renseignez thinking token budget au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "thinking_token_budget"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "include_reasoning",
+            "label": "Include reasoning",
+            "description": "Cochez si include reasoning.",
+            "required": false,
+            "bodyPath": [
+              "include_reasoning"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "parallel_tool_calls",
+            "label": "Parallel tool calls",
+            "description": "Cochez si parallel tool calls.",
+            "required": false,
+            "bodyPath": [
+              "parallel_tool_calls"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_beam_search",
+            "label": "Use beam search",
+            "description": "Cochez si use beam search.",
+            "required": false,
+            "bodyPath": [
+              "use_beam_search"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_k",
+            "label": "Top k",
+            "description": "Renseignez top k.",
+            "required": false,
+            "bodyPath": [
+              "top_k"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "min_p",
+            "label": "Min p",
+            "description": "Renseignez min p.",
+            "required": false,
+            "bodyPath": [
+              "min_p"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "repetition_penalty",
+            "label": "Repetition penalite",
+            "description": "Renseignez repetition penalite.",
+            "required": false,
+            "bodyPath": [
+              "repetition_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "length_penalty",
+            "label": "Length penalite",
+            "description": "Renseignez length penalite.",
+            "required": false,
+            "bodyPath": [
+              "length_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "stop_token_ids",
+            "label": "Stop token IDs",
+            "description": "Renseignez stop token ids au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "stop_token_ids"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "include_stop_str_in_output",
+            "label": "Include stop str in output",
+            "description": "Cochez si include stop str in output.",
+            "required": false,
+            "bodyPath": [
+              "include_stop_str_in_output"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ignore_eos",
+            "label": "Ignore eos",
+            "description": "Cochez si ignore eos.",
+            "required": false,
+            "bodyPath": [
+              "ignore_eos"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "min_tokens",
+            "label": "Min tokens",
+            "description": "Renseignez min tokens.",
+            "required": false,
+            "bodyPath": [
+              "min_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "skip_special_tokens",
+            "label": "Skip special tokens",
+            "description": "Cochez si skip special tokens.",
+            "required": false,
+            "bodyPath": [
+              "skip_special_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "spaces_between_special_tokens",
+            "label": "Spaces between special tokens",
+            "description": "Cochez si spaces between special tokens.",
+            "required": false,
+            "bodyPath": [
+              "spaces_between_special_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "truncate_prompt_tokens",
+            "label": "Truncate prompt tokens",
+            "description": "Renseignez truncate prompt tokens.",
+            "required": false,
+            "bodyPath": [
+              "truncate_prompt_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "truncation_side",
+            "label": "Truncation side",
+            "description": "Renseignez truncation side.",
+            "required": false,
+            "bodyPath": [
+              "truncation_side"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "prompt_logprobs",
+            "label": "Prompt logprobs",
+            "description": "Renseignez prompt logprobs.",
+            "required": false,
+            "bodyPath": [
+              "prompt_logprobs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "allowed_token_ids",
+            "label": "Allowed token IDs",
+            "description": "Renseignez allowed token ids au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "allowed_token_ids"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "bad_words",
+            "label": "Bad words",
+            "description": "Renseignez bad words au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "bad_words"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "echo",
+            "label": "Echo",
+            "description": "Cochez si echo.",
+            "required": false,
+            "bodyPath": [
+              "echo"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "add_generation_prompt",
+            "label": "Add generation prompt",
+            "description": "Cochez si add generation prompt.",
+            "required": false,
+            "bodyPath": [
+              "add_generation_prompt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "continue_final_message",
+            "label": "Continue final message",
+            "description": "Cochez si continue final message.",
+            "required": false,
+            "bodyPath": [
+              "continue_final_message"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "add_special_tokens",
+            "label": "Add special tokens",
+            "description": "Cochez si add special tokens.",
+            "required": false,
+            "bodyPath": [
+              "add_special_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "Renseignez documents au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "documents"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "chat_template",
+            "label": "Chat template",
+            "description": "Renseignez chat template.",
+            "required": false,
+            "bodyPath": [
+              "chat_template"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "chat_template_kwargs",
+            "label": "Chat template kwargs",
+            "description": "Renseignez chat template kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "chat_template_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "media_io_kwargs",
+            "label": "Media io kwargs",
+            "description": "Renseignez media io kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "media_io_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "mm_processor_kwargs",
+            "label": "Mm processor kwargs",
+            "description": "Renseignez mm processor kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "mm_processor_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "structured_outputs",
+            "label": "Structured outputs",
+            "description": "Renseignez structured outputs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "structured_outputs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Renseignez priority.",
+            "required": false,
+            "bodyPath": [
+              "priority"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "ID de la requete",
+            "description": "Renseignez l ID de la requete.",
+            "required": false,
+            "bodyPath": [
+              "request_id"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "return_tokens_as_token_ids",
+            "label": "Return tokens as token IDs",
+            "description": "Cochez si return tokens as token ids.",
+            "required": false,
+            "bodyPath": [
+              "return_tokens_as_token_ids"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "return_token_ids",
+            "label": "Return token IDs",
+            "description": "Cochez si return token ids.",
+            "required": false,
+            "bodyPath": [
+              "return_token_ids"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "return_prompt_text",
+            "label": "Return prompt text",
+            "description": "Cochez si return prompt text.",
+            "required": false,
+            "bodyPath": [
+              "return_prompt_text"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cache_salt",
+            "label": "Cache salt",
+            "description": "Renseignez cache salt.",
+            "required": false,
+            "bodyPath": [
+              "cache_salt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "kv_transfer_params",
+            "label": "Kv transfer params",
+            "description": "Renseignez kv transfer params au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "kv_transfer_params"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "vllm_xargs",
+            "label": "Vllm xargs",
+            "description": "Renseignez vllm xargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "vllm_xargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "repetition_detection",
+            "label": "Repetition detection",
+            "description": "Renseignez repetition detection au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "repetition_detection"
+            ],
             "col": {
               "xs": 24
             }
@@ -1923,9 +2681,585 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Renseignez prompt au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "prompt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "echo",
+            "label": "Echo",
+            "description": "Cochez si echo.",
+            "required": false,
+            "bodyPath": [
+              "echo"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "frequency_penalty",
+            "label": "Frequence penalite",
+            "description": "Renseignez frequence penalite.",
+            "required": false,
+            "bodyPath": [
+              "frequency_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "logit_bias",
+            "label": "Logit bias",
+            "description": "Renseignez logit bias au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "logit_bias"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "logprobs",
+            "label": "Logprobs",
+            "description": "Renseignez logprobs.",
+            "required": false,
+            "bodyPath": [
+              "logprobs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens",
+            "label": "Maximal tokens",
+            "description": "Renseignez maximal tokens.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "n",
+            "label": "N",
+            "description": "Renseignez n.",
+            "required": false,
+            "bodyPath": [
+              "n"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "presence_penalty",
+            "label": "Presence penalite",
+            "description": "Renseignez presence penalite.",
+            "required": false,
+            "bodyPath": [
+              "presence_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "seed",
+            "label": "Seed",
+            "description": "Renseignez seed.",
+            "required": false,
+            "bodyPath": [
+              "seed"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "stop",
+            "label": "Stop",
+            "description": "Renseignez stop au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "stop"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream",
+            "label": "Stream",
+            "description": "Cochez si stream.",
+            "required": false,
+            "bodyPath": [
+              "stream"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "stream_options",
+            "label": "Stream options",
+            "description": "Renseignez stream options au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "stream_options"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "suffix",
+            "label": "Suffix",
+            "description": "Renseignez suffix.",
+            "required": false,
+            "bodyPath": [
+              "suffix"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Temperature",
+            "description": "Renseignez temperature.",
+            "required": false,
+            "bodyPath": [
+              "temperature"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_p",
+            "label": "Top p",
+            "description": "Renseignez top p.",
+            "required": false,
+            "bodyPath": [
+              "top_p"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_beam_search",
+            "label": "Use beam search",
+            "description": "Cochez si use beam search.",
+            "required": false,
+            "bodyPath": [
+              "use_beam_search"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_k",
+            "label": "Top k",
+            "description": "Renseignez top k.",
+            "required": false,
+            "bodyPath": [
+              "top_k"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "min_p",
+            "label": "Min p",
+            "description": "Renseignez min p.",
+            "required": false,
+            "bodyPath": [
+              "min_p"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "repetition_penalty",
+            "label": "Repetition penalite",
+            "description": "Renseignez repetition penalite.",
+            "required": false,
+            "bodyPath": [
+              "repetition_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "length_penalty",
+            "label": "Length penalite",
+            "description": "Renseignez length penalite.",
+            "required": false,
+            "bodyPath": [
+              "length_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "stop_token_ids",
+            "label": "Stop token IDs",
+            "description": "Renseignez stop token ids au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "stop_token_ids"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "include_stop_str_in_output",
+            "label": "Include stop str in output",
+            "description": "Cochez si include stop str in output.",
+            "required": false,
+            "bodyPath": [
+              "include_stop_str_in_output"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "ignore_eos",
+            "label": "Ignore eos",
+            "description": "Cochez si ignore eos.",
+            "required": false,
+            "bodyPath": [
+              "ignore_eos"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "min_tokens",
+            "label": "Min tokens",
+            "description": "Renseignez min tokens.",
+            "required": false,
+            "bodyPath": [
+              "min_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "skip_special_tokens",
+            "label": "Skip special tokens",
+            "description": "Cochez si skip special tokens.",
+            "required": false,
+            "bodyPath": [
+              "skip_special_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "spaces_between_special_tokens",
+            "label": "Spaces between special tokens",
+            "description": "Cochez si spaces between special tokens.",
+            "required": false,
+            "bodyPath": [
+              "spaces_between_special_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "truncate_prompt_tokens",
+            "label": "Truncate prompt tokens",
+            "description": "Renseignez truncate prompt tokens.",
+            "required": false,
+            "bodyPath": [
+              "truncate_prompt_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "truncation_side",
+            "label": "Truncation side",
+            "description": "Renseignez truncation side.",
+            "required": false,
+            "bodyPath": [
+              "truncation_side"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "allowed_token_ids",
+            "label": "Allowed token IDs",
+            "description": "Renseignez allowed token ids au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "allowed_token_ids"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "prompt_logprobs",
+            "label": "Prompt logprobs",
+            "description": "Renseignez prompt logprobs.",
+            "required": false,
+            "bodyPath": [
+              "prompt_logprobs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "prompt_embeds",
+            "label": "Prompt embeds",
+            "description": "Renseignez prompt embeds au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "prompt_embeds"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "add_special_tokens",
+            "label": "Add special tokens",
+            "description": "Cochez si add special tokens.",
+            "required": false,
+            "bodyPath": [
+              "add_special_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "response_format",
+            "label": "Response format",
+            "description": "Renseignez response format au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "response_format"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "structured_outputs",
+            "label": "Structured outputs",
+            "description": "Renseignez structured outputs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "structured_outputs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Renseignez priority.",
+            "required": false,
+            "bodyPath": [
+              "priority"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "ID de la requete",
+            "description": "Renseignez l ID de la requete.",
+            "required": false,
+            "bodyPath": [
+              "request_id"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "return_tokens_as_token_ids",
+            "label": "Return tokens as token IDs",
+            "description": "Cochez si return tokens as token ids.",
+            "required": false,
+            "bodyPath": [
+              "return_tokens_as_token_ids"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "return_token_ids",
+            "label": "Return token IDs",
+            "description": "Cochez si return token ids.",
+            "required": false,
+            "bodyPath": [
+              "return_token_ids"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cache_salt",
+            "label": "Cache salt",
+            "description": "Renseignez cache salt.",
+            "required": false,
+            "bodyPath": [
+              "cache_salt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "kv_transfer_params",
+            "label": "Kv transfer params",
+            "description": "Renseignez kv transfer params au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "kv_transfer_params"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "vllm_xargs",
+            "label": "Vllm xargs",
+            "description": "Renseignez vllm xargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "vllm_xargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "repetition_detection",
+            "label": "Repetition detection",
+            "description": "Renseignez repetition detection au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "repetition_detection"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "thinking_token_budget",
+            "label": "Thinking token budget",
+            "description": "Renseignez thinking token budget au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "thinking_token_budget"
+            ],
             "col": {
               "xs": 24
             }
@@ -1981,10 +3315,196 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "truncate_prompt_tokens",
+            "label": "Truncate prompt tokens",
+            "description": "Renseignez truncate prompt tokens.",
+            "required": false,
+            "bodyPath": [
+              "truncate_prompt_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "truncation_side",
+            "label": "Truncation side",
+            "description": "Renseignez truncation side.",
+            "required": false,
+            "bodyPath": [
+              "truncation_side"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "ID de la requete",
+            "description": "Renseignez l ID de la requete.",
+            "required": false,
+            "bodyPath": [
+              "request_id"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Renseignez priority.",
+            "required": false,
+            "bodyPath": [
+              "priority"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "mm_processor_kwargs",
+            "label": "Mm processor kwargs",
+            "description": "Renseignez mm processor kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "mm_processor_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cache_salt",
+            "label": "Cache salt",
+            "description": "Renseignez cache salt.",
+            "required": false,
+            "bodyPath": [
+              "cache_salt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "embedding_input",
+            "label": "Embedding input",
+            "description": "Renseignez embedding input au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "input"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "add_special_tokens",
+            "label": "Add special tokens",
+            "description": "Cochez si add special tokens.",
+            "required": false,
+            "bodyPath": [
+              "add_special_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "encoding_format",
+            "label": "Encoding format",
+            "description": "Renseignez encoding format.",
+            "required": false,
+            "bodyPath": [
+              "encoding_format"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "embed_dtype",
+            "label": "Embed dtype",
+            "description": "Renseignez embed dtype.",
+            "required": false,
+            "bodyPath": [
+              "embed_dtype"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "endianness",
+            "label": "Endianness",
+            "description": "Renseignez endianness.",
+            "required": false,
+            "bodyPath": [
+              "endianness"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "dimensions",
+            "label": "Dimensions",
+            "description": "Renseignez dimensions.",
+            "required": false,
+            "bodyPath": [
+              "dimensions"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_activation",
+            "label": "Use activation",
+            "description": "Cochez si use activation.",
+            "required": false,
+            "bodyPath": [
+              "use_activation"
+            ],
             "col": {
               "xs": 24
             }
@@ -2040,10 +3560,157 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Renseignez prompt.",
+            "required": false,
+            "bodyPath": [
+              "prompt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "messages",
+            "label": "Messages",
+            "description": "Renseignez messages au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "messages"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "add_special_tokens",
+            "label": "Add special tokens",
+            "description": "Cochez si add special tokens.",
+            "required": false,
+            "bodyPath": [
+              "add_special_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "return_token_strs",
+            "label": "Return token strs",
+            "description": "Cochez si return token strs.",
+            "required": false,
+            "bodyPath": [
+              "return_token_strs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "add_generation_prompt",
+            "label": "Add generation prompt",
+            "description": "Cochez si add generation prompt.",
+            "required": false,
+            "bodyPath": [
+              "add_generation_prompt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "continue_final_message",
+            "label": "Continue final message",
+            "description": "Cochez si continue final message.",
+            "required": false,
+            "bodyPath": [
+              "continue_final_message"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "chat_template",
+            "label": "Chat template",
+            "description": "Renseignez chat template.",
+            "required": false,
+            "bodyPath": [
+              "chat_template"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "chat_template_kwargs",
+            "label": "Chat template kwargs",
+            "description": "Renseignez chat template kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "chat_template_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "media_io_kwargs",
+            "label": "Media io kwargs",
+            "description": "Renseignez media io kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "media_io_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "mm_processor_kwargs",
+            "label": "Mm processor kwargs",
+            "description": "Renseignez mm processor kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "mm_processor_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tools",
+            "label": "Tools",
+            "description": "Renseignez tools au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "tools"
+            ],
             "col": {
               "xs": 24
             }
@@ -2099,10 +3766,27 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "tokens",
+            "label": "Tokens",
+            "description": "Renseignez tokens au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "tokens"
+            ],
             "col": {
               "xs": 24
             }
@@ -2158,10 +3842,209 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "truncate_prompt_tokens",
+            "label": "Truncate prompt tokens",
+            "description": "Renseignez truncate prompt tokens.",
+            "required": false,
+            "bodyPath": [
+              "truncate_prompt_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "truncation_side",
+            "label": "Truncation side",
+            "description": "Renseignez truncation side.",
+            "required": false,
+            "bodyPath": [
+              "truncation_side"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "ID de la requete",
+            "description": "Renseignez l ID de la requete.",
+            "required": false,
+            "bodyPath": [
+              "request_id"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Renseignez priority.",
+            "required": false,
+            "bodyPath": [
+              "priority"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "mm_processor_kwargs",
+            "label": "Mm processor kwargs",
+            "description": "Renseignez mm processor kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "mm_processor_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cache_salt",
+            "label": "Cache salt",
+            "description": "Renseignez cache salt.",
+            "required": false,
+            "bodyPath": [
+              "cache_salt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_activation",
+            "label": "Use activation",
+            "description": "Cochez si use activation.",
+            "required": false,
+            "bodyPath": [
+              "use_activation"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_query",
+            "label": "Maximal tokens per query",
+            "description": "Renseignez maximal tokens per query.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_query"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_doc",
+            "label": "Maximal tokens per doc",
+            "description": "Renseignez maximal tokens per doc.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_doc"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "instruction",
+            "label": "Instruction",
+            "description": "Renseignez instruction.",
+            "required": false,
+            "bodyPath": [
+              "instruction"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "chat_template_kwargs",
+            "label": "Chat template kwargs",
+            "description": "Renseignez chat template kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "chat_template_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "user_query",
+            "label": "User query",
+            "description": "Renseignez user query au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "query"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "Renseignez documents au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "documents"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_n",
+            "label": "Top n",
+            "description": "Renseignez top n.",
+            "required": false,
+            "bodyPath": [
+              "top_n"
+            ],
             "col": {
               "xs": 24
             }
@@ -2217,10 +4100,209 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "truncate_prompt_tokens",
+            "label": "Truncate prompt tokens",
+            "description": "Renseignez truncate prompt tokens.",
+            "required": false,
+            "bodyPath": [
+              "truncate_prompt_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "truncation_side",
+            "label": "Truncation side",
+            "description": "Renseignez truncation side.",
+            "required": false,
+            "bodyPath": [
+              "truncation_side"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "ID de la requete",
+            "description": "Renseignez l ID de la requete.",
+            "required": false,
+            "bodyPath": [
+              "request_id"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Renseignez priority.",
+            "required": false,
+            "bodyPath": [
+              "priority"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "mm_processor_kwargs",
+            "label": "Mm processor kwargs",
+            "description": "Renseignez mm processor kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "mm_processor_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cache_salt",
+            "label": "Cache salt",
+            "description": "Renseignez cache salt.",
+            "required": false,
+            "bodyPath": [
+              "cache_salt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_activation",
+            "label": "Use activation",
+            "description": "Cochez si use activation.",
+            "required": false,
+            "bodyPath": [
+              "use_activation"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_query",
+            "label": "Maximal tokens per query",
+            "description": "Renseignez maximal tokens per query.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_query"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_doc",
+            "label": "Maximal tokens per doc",
+            "description": "Renseignez maximal tokens per doc.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_doc"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "instruction",
+            "label": "Instruction",
+            "description": "Renseignez instruction.",
+            "required": false,
+            "bodyPath": [
+              "instruction"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "chat_template_kwargs",
+            "label": "Chat template kwargs",
+            "description": "Renseignez chat template kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "chat_template_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "user_query",
+            "label": "User query",
+            "description": "Renseignez user query au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "query"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "Renseignez documents au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "documents"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_n",
+            "label": "Top n",
+            "description": "Renseignez top n.",
+            "required": false,
+            "bodyPath": [
+              "top_n"
+            ],
             "col": {
               "xs": 24
             }
@@ -2276,10 +4358,209 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "truncate_prompt_tokens",
+            "label": "Truncate prompt tokens",
+            "description": "Renseignez truncate prompt tokens.",
+            "required": false,
+            "bodyPath": [
+              "truncate_prompt_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "truncation_side",
+            "label": "Truncation side",
+            "description": "Renseignez truncation side.",
+            "required": false,
+            "bodyPath": [
+              "truncation_side"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "ID de la requete",
+            "description": "Renseignez l ID de la requete.",
+            "required": false,
+            "bodyPath": [
+              "request_id"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Renseignez priority.",
+            "required": false,
+            "bodyPath": [
+              "priority"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "mm_processor_kwargs",
+            "label": "Mm processor kwargs",
+            "description": "Renseignez mm processor kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "mm_processor_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cache_salt",
+            "label": "Cache salt",
+            "description": "Renseignez cache salt.",
+            "required": false,
+            "bodyPath": [
+              "cache_salt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_activation",
+            "label": "Use activation",
+            "description": "Cochez si use activation.",
+            "required": false,
+            "bodyPath": [
+              "use_activation"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_query",
+            "label": "Maximal tokens per query",
+            "description": "Renseignez maximal tokens per query.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_query"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_doc",
+            "label": "Maximal tokens per doc",
+            "description": "Renseignez maximal tokens per doc.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_doc"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "instruction",
+            "label": "Instruction",
+            "description": "Renseignez instruction.",
+            "required": false,
+            "bodyPath": [
+              "instruction"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "chat_template_kwargs",
+            "label": "Chat template kwargs",
+            "description": "Renseignez chat template kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "chat_template_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "user_query",
+            "label": "User query",
+            "description": "Renseignez user query au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "query"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "Renseignez documents au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "documents"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_n",
+            "label": "Top n",
+            "description": "Renseignez top n.",
+            "required": false,
+            "bodyPath": [
+              "top_n"
+            ],
             "col": {
               "xs": 24
             }
@@ -2335,10 +4616,261 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "truncate_prompt_tokens",
+            "label": "Truncate prompt tokens",
+            "description": "Renseignez truncate prompt tokens.",
+            "required": false,
+            "bodyPath": [
+              "truncate_prompt_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "truncation_side",
+            "label": "Truncation side",
+            "description": "Renseignez truncation side.",
+            "required": false,
+            "bodyPath": [
+              "truncation_side"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "ID de la requete",
+            "description": "Renseignez l ID de la requete.",
+            "required": false,
+            "bodyPath": [
+              "request_id"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Renseignez priority.",
+            "required": false,
+            "bodyPath": [
+              "priority"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "mm_processor_kwargs",
+            "label": "Mm processor kwargs",
+            "description": "Renseignez mm processor kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "mm_processor_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cache_salt",
+            "label": "Cache salt",
+            "description": "Renseignez cache salt.",
+            "required": false,
+            "bodyPath": [
+              "cache_salt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_activation",
+            "label": "Use activation",
+            "description": "Cochez si use activation.",
+            "required": false,
+            "bodyPath": [
+              "use_activation"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_query",
+            "label": "Maximal tokens per query",
+            "description": "Renseignez maximal tokens per query.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_query"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_doc",
+            "label": "Maximal tokens per doc",
+            "description": "Renseignez maximal tokens per doc.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_doc"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "instruction",
+            "label": "Instruction",
+            "description": "Renseignez instruction.",
+            "required": false,
+            "bodyPath": [
+              "instruction"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "chat_template_kwargs",
+            "label": "Chat template kwargs",
+            "description": "Renseignez chat template kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "chat_template_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "queries",
+            "label": "Queries",
+            "description": "Renseignez queries au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "queries"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "Renseignez documents au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "documents"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "items",
+            "label": "Items",
+            "description": "Renseignez items au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "items"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "data_1",
+            "label": "Data 1",
+            "description": "Renseignez data 1 au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "data_1"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "data_2",
+            "label": "Data 2",
+            "description": "Renseignez data 2 au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "data_2"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "text_1",
+            "label": "Text 1",
+            "description": "Renseignez text 1 au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "text_1"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "text_2",
+            "label": "Text 2",
+            "description": "Renseignez text 2 au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "text_2"
+            ],
             "col": {
               "xs": 24
             }
@@ -2394,10 +4926,261 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "truncate_prompt_tokens",
+            "label": "Truncate prompt tokens",
+            "description": "Renseignez truncate prompt tokens.",
+            "required": false,
+            "bodyPath": [
+              "truncate_prompt_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "truncation_side",
+            "label": "Truncation side",
+            "description": "Renseignez truncation side.",
+            "required": false,
+            "bodyPath": [
+              "truncation_side"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "ID de la requete",
+            "description": "Renseignez l ID de la requete.",
+            "required": false,
+            "bodyPath": [
+              "request_id"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Renseignez priority.",
+            "required": false,
+            "bodyPath": [
+              "priority"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "mm_processor_kwargs",
+            "label": "Mm processor kwargs",
+            "description": "Renseignez mm processor kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "mm_processor_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cache_salt",
+            "label": "Cache salt",
+            "description": "Renseignez cache salt.",
+            "required": false,
+            "bodyPath": [
+              "cache_salt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_activation",
+            "label": "Use activation",
+            "description": "Cochez si use activation.",
+            "required": false,
+            "bodyPath": [
+              "use_activation"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_query",
+            "label": "Maximal tokens per query",
+            "description": "Renseignez maximal tokens per query.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_query"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_tokens_per_doc",
+            "label": "Maximal tokens per doc",
+            "description": "Renseignez maximal tokens per doc.",
+            "required": false,
+            "bodyPath": [
+              "max_tokens_per_doc"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "instruction",
+            "label": "Instruction",
+            "description": "Renseignez instruction.",
+            "required": false,
+            "bodyPath": [
+              "instruction"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "chat_template_kwargs",
+            "label": "Chat template kwargs",
+            "description": "Renseignez chat template kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "chat_template_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "queries",
+            "label": "Queries",
+            "description": "Renseignez queries au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "queries"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "documents",
+            "label": "Documents",
+            "description": "Renseignez documents au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "documents"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "items",
+            "label": "Items",
+            "description": "Renseignez items au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "items"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "data_1",
+            "label": "Data 1",
+            "description": "Renseignez data 1 au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "data_1"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "data_2",
+            "label": "Data 2",
+            "description": "Renseignez data 2 au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "data_2"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "text_1",
+            "label": "Text 1",
+            "description": "Renseignez text 1 au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "text_1"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "text_2",
+            "label": "Text 2",
+            "description": "Renseignez text 2 au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "text_2"
+            ],
             "col": {
               "xs": 24
             }
@@ -2453,10 +5236,300 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "truncate_prompt_tokens",
+            "label": "Truncate prompt tokens",
+            "description": "Renseignez truncate prompt tokens.",
+            "required": false,
+            "bodyPath": [
+              "truncate_prompt_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "truncation_side",
+            "label": "Truncation side",
+            "description": "Renseignez truncation side.",
+            "required": false,
+            "bodyPath": [
+              "truncation_side"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "request_id",
+            "label": "ID de la requete",
+            "description": "Renseignez l ID de la requete.",
+            "required": false,
+            "bodyPath": [
+              "request_id"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Renseignez priority.",
+            "required": false,
+            "bodyPath": [
+              "priority"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "mm_processor_kwargs",
+            "label": "Mm processor kwargs",
+            "description": "Renseignez mm processor kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "mm_processor_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cache_salt",
+            "label": "Cache salt",
+            "description": "Renseignez cache salt.",
+            "required": false,
+            "bodyPath": [
+              "cache_salt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "pooling_input",
+            "label": "Pooling input",
+            "description": "Renseignez pooling input au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "input"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "messages",
+            "label": "Messages",
+            "description": "Renseignez messages au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "messages"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "add_generation_prompt",
+            "label": "Add generation prompt",
+            "description": "Cochez si add generation prompt.",
+            "required": false,
+            "bodyPath": [
+              "add_generation_prompt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "continue_final_message",
+            "label": "Continue final message",
+            "description": "Cochez si continue final message.",
+            "required": false,
+            "bodyPath": [
+              "continue_final_message"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "add_special_tokens",
+            "label": "Add special tokens",
+            "description": "Cochez si add special tokens.",
+            "required": false,
+            "bodyPath": [
+              "add_special_tokens"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "chat_template",
+            "label": "Chat template",
+            "description": "Renseignez chat template.",
+            "required": false,
+            "bodyPath": [
+              "chat_template"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "chat_template_kwargs",
+            "label": "Chat template kwargs",
+            "description": "Renseignez chat template kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "chat_template_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "media_io_kwargs",
+            "label": "Media io kwargs",
+            "description": "Renseignez media io kwargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "media_io_kwargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "encoding_format",
+            "label": "Encoding format",
+            "description": "Renseignez encoding format.",
+            "required": false,
+            "bodyPath": [
+              "encoding_format"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "embed_dtype",
+            "label": "Embed dtype",
+            "description": "Renseignez embed dtype.",
+            "required": false,
+            "bodyPath": [
+              "embed_dtype"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "endianness",
+            "label": "Endianness",
+            "description": "Renseignez endianness.",
+            "required": false,
+            "bodyPath": [
+              "endianness"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "dimensions",
+            "label": "Dimensions",
+            "description": "Renseignez dimensions.",
+            "required": false,
+            "bodyPath": [
+              "dimensions"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_activation",
+            "label": "Use activation",
+            "description": "Cochez si use activation.",
+            "required": false,
+            "bodyPath": [
+              "use_activation"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "task",
+            "label": "Task",
+            "description": "Renseignez task.",
+            "required": false,
+            "bodyPath": [
+              "task"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "plugin_data",
+            "label": "Plugin data",
+            "description": "Renseignez plugin data au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "data"
+            ],
             "col": {
               "xs": 24
             }
@@ -2512,10 +5585,352 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "file_name",
+            "label": "Nom fichier",
+            "description": "Renseignez nom fichier.",
+            "required": true,
+            "bodyPath": [
+              "file_name"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "file_content_base64",
+            "label": "Fichier content base64",
+            "description": "Renseignez fichier content base64.",
+            "required": true,
+            "bodyPath": [
+              "file_content_base64"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "file_content_type",
+            "label": "Fichier content type",
+            "description": "Renseignez fichier content type.",
+            "required": false,
+            "bodyPath": [
+              "file_content_type"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": true,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "language",
+            "label": "Language",
+            "description": "Renseignez language.",
+            "required": false,
+            "bodyPath": [
+              "language"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hotwords",
+            "label": "Hotwords",
+            "description": "Renseignez hotwords.",
+            "required": false,
+            "bodyPath": [
+              "hotwords"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Renseignez prompt.",
+            "required": false,
+            "bodyPath": [
+              "prompt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "response_format",
+            "label": "Response format",
+            "description": "Renseignez response format.",
+            "required": false,
+            "bodyPath": [
+              "response_format"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "timestamp_granularities",
+            "label": "Timestamp granularities",
+            "description": "Renseignez timestamp granularities au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "timestamp_granularities"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream",
+            "label": "Stream",
+            "description": "Cochez si stream.",
+            "required": false,
+            "bodyPath": [
+              "stream"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream_include_usage",
+            "label": "Stream include usage",
+            "description": "Cochez si stream include usage.",
+            "required": false,
+            "bodyPath": [
+              "stream_include_usage"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream_continuous_usage_stats",
+            "label": "Stream continuous usage stats",
+            "description": "Cochez si stream continuous usage stats.",
+            "required": false,
+            "bodyPath": [
+              "stream_continuous_usage_stats"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "vllm_xargs",
+            "label": "Vllm xargs",
+            "description": "Renseignez vllm xargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "vllm_xargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "to_language",
+            "label": "Vers language",
+            "description": "Renseignez vers language.",
+            "required": false,
+            "bodyPath": [
+              "to_language"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_beam_search",
+            "label": "Use beam search",
+            "description": "Cochez si use beam search.",
+            "required": false,
+            "bodyPath": [
+              "use_beam_search"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "n",
+            "label": "N",
+            "description": "Renseignez n.",
+            "required": false,
+            "bodyPath": [
+              "n"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "length_penalty",
+            "label": "Length penalite",
+            "description": "Renseignez length penalite.",
+            "required": false,
+            "bodyPath": [
+              "length_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "include_stop_str_in_output",
+            "label": "Include stop str in output",
+            "description": "Cochez si include stop str in output.",
+            "required": false,
+            "bodyPath": [
+              "include_stop_str_in_output"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Temperature",
+            "description": "Renseignez temperature.",
+            "required": false,
+            "bodyPath": [
+              "temperature"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_p",
+            "label": "Top p",
+            "description": "Renseignez top p.",
+            "required": false,
+            "bodyPath": [
+              "top_p"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_k",
+            "label": "Top k",
+            "description": "Renseignez top k.",
+            "required": false,
+            "bodyPath": [
+              "top_k"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "min_p",
+            "label": "Min p",
+            "description": "Renseignez min p.",
+            "required": false,
+            "bodyPath": [
+              "min_p"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "seed",
+            "label": "Seed",
+            "description": "Renseignez seed.",
+            "required": false,
+            "bodyPath": [
+              "seed"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "frequency_penalty",
+            "label": "Frequence penalite",
+            "description": "Renseignez frequence penalite.",
+            "required": false,
+            "bodyPath": [
+              "frequency_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "repetition_penalty",
+            "label": "Repetition penalite",
+            "description": "Renseignez repetition penalite.",
+            "required": false,
+            "bodyPath": [
+              "repetition_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "presence_penalty",
+            "label": "Presence penalite",
+            "description": "Renseignez presence penalite.",
+            "required": false,
+            "bodyPath": [
+              "presence_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_completion_tokens",
+            "label": "Maximal completion tokens",
+            "description": "Renseignez maximal completion tokens.",
+            "required": false,
+            "bodyPath": [
+              "max_completion_tokens"
+            ],
             "col": {
               "xs": 24
             }
@@ -2571,10 +5986,352 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "file_name",
+            "label": "Nom fichier",
+            "description": "Renseignez nom fichier.",
+            "required": true,
+            "bodyPath": [
+              "file_name"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "file_content_base64",
+            "label": "Fichier content base64",
+            "description": "Renseignez fichier content base64.",
+            "required": true,
+            "bodyPath": [
+              "file_content_base64"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "file_content_type",
+            "label": "Fichier content type",
+            "description": "Renseignez fichier content type.",
+            "required": false,
+            "bodyPath": [
+              "file_content_type"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": true,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "language",
+            "label": "Language",
+            "description": "Renseignez language.",
+            "required": false,
+            "bodyPath": [
+              "language"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "hotwords",
+            "label": "Hotwords",
+            "description": "Renseignez hotwords.",
+            "required": false,
+            "bodyPath": [
+              "hotwords"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Renseignez prompt.",
+            "required": false,
+            "bodyPath": [
+              "prompt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "response_format",
+            "label": "Response format",
+            "description": "Renseignez response format.",
+            "required": false,
+            "bodyPath": [
+              "response_format"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "timestamp_granularities",
+            "label": "Timestamp granularities",
+            "description": "Renseignez timestamp granularities au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "timestamp_granularities"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream",
+            "label": "Stream",
+            "description": "Cochez si stream.",
+            "required": false,
+            "bodyPath": [
+              "stream"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream_include_usage",
+            "label": "Stream include usage",
+            "description": "Cochez si stream include usage.",
+            "required": false,
+            "bodyPath": [
+              "stream_include_usage"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "stream_continuous_usage_stats",
+            "label": "Stream continuous usage stats",
+            "description": "Cochez si stream continuous usage stats.",
+            "required": false,
+            "bodyPath": [
+              "stream_continuous_usage_stats"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "vllm_xargs",
+            "label": "Vllm xargs",
+            "description": "Renseignez vllm xargs au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "vllm_xargs"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "to_language",
+            "label": "Vers language",
+            "description": "Renseignez vers language.",
+            "required": false,
+            "bodyPath": [
+              "to_language"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "use_beam_search",
+            "label": "Use beam search",
+            "description": "Cochez si use beam search.",
+            "required": false,
+            "bodyPath": [
+              "use_beam_search"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "n",
+            "label": "N",
+            "description": "Renseignez n.",
+            "required": false,
+            "bodyPath": [
+              "n"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "length_penalty",
+            "label": "Length penalite",
+            "description": "Renseignez length penalite.",
+            "required": false,
+            "bodyPath": [
+              "length_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "include_stop_str_in_output",
+            "label": "Include stop str in output",
+            "description": "Cochez si include stop str in output.",
+            "required": false,
+            "bodyPath": [
+              "include_stop_str_in_output"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "temperature",
+            "label": "Temperature",
+            "description": "Renseignez temperature.",
+            "required": false,
+            "bodyPath": [
+              "temperature"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_p",
+            "label": "Top p",
+            "description": "Renseignez top p.",
+            "required": false,
+            "bodyPath": [
+              "top_p"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "top_k",
+            "label": "Top k",
+            "description": "Renseignez top k.",
+            "required": false,
+            "bodyPath": [
+              "top_k"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "min_p",
+            "label": "Min p",
+            "description": "Renseignez min p.",
+            "required": false,
+            "bodyPath": [
+              "min_p"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "seed",
+            "label": "Seed",
+            "description": "Renseignez seed.",
+            "required": false,
+            "bodyPath": [
+              "seed"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "frequency_penalty",
+            "label": "Frequence penalite",
+            "description": "Renseignez frequence penalite.",
+            "required": false,
+            "bodyPath": [
+              "frequency_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "repetition_penalty",
+            "label": "Repetition penalite",
+            "description": "Renseignez repetition penalite.",
+            "required": false,
+            "bodyPath": [
+              "repetition_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "presence_penalty",
+            "label": "Presence penalite",
+            "description": "Renseignez presence penalite.",
+            "required": false,
+            "bodyPath": [
+              "presence_penalty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "max_completion_tokens",
+            "label": "Maximal completion tokens",
+            "description": "Renseignez maximal completion tokens.",
+            "required": false,
+            "bodyPath": [
+              "max_completion_tokens"
+            ],
             "col": {
               "xs": 24
             }
@@ -2630,10 +6387,144 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "prompt",
+            "label": "Prompt",
+            "description": "Renseignez prompt.",
+            "required": true,
+            "bodyPath": [
+              "prompt"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "background",
+            "label": "Background",
+            "description": "Renseignez background.",
+            "required": false,
+            "bodyPath": [
+              "background"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "model",
+            "label": "Modele",
+            "description": "Renseignez modele.",
+            "required": false,
+            "bodyPath": [
+              "model"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "moderation",
+            "label": "Moderation",
+            "description": "Renseignez moderation.",
+            "required": false,
+            "bodyPath": [
+              "moderation"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "n",
+            "label": "N",
+            "description": "Renseignez n.",
+            "required": false,
+            "bodyPath": [
+              "n"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "output_compression",
+            "label": "Output compression",
+            "description": "Renseignez output compression.",
+            "required": false,
+            "bodyPath": [
+              "output_compression"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "output_format",
+            "label": "Output format",
+            "description": "Renseignez output format.",
+            "required": false,
+            "bodyPath": [
+              "output_format"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "quality",
+            "label": "Quality",
+            "description": "Renseignez quality.",
+            "required": false,
+            "bodyPath": [
+              "quality"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "response_format",
+            "label": "Response format",
+            "description": "Renseignez response format.",
+            "required": false,
+            "bodyPath": [
+              "response_format"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "size",
+            "label": "Size",
+            "description": "Renseignez size.",
+            "required": false,
+            "bodyPath": [
+              "size"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user",
+            "label": "User",
+            "description": "Renseignez user.",
+            "required": false,
+            "bodyPath": [
+              "user"
+            ],
             "col": {
               "xs": 24
             }

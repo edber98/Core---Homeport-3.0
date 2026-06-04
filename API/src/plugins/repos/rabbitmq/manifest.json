@@ -288,9 +288,9 @@
           },
           {
             "type": "textarea",
-            "key": "payload",
-            "label": "Payload",
-            "description": "Contenu du message.",
+            "key": "messagePayload",
+            "label": "Message",
+            "description": "Contenu du message à publier.",
             "col": {
               "xs": 24
             },
@@ -393,9 +393,9 @@
           },
           {
             "type": "textarea",
-            "key": "payload",
-            "label": "Payload",
-            "description": "Contenu du message.",
+            "key": "messagePayload",
+            "label": "Message",
+            "description": "Contenu du message à publier.",
             "col": {
               "xs": 24
             },
@@ -503,9 +503,9 @@
           },
           {
             "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Objet JSON à publier.",
+            "key": "messagePayload",
+            "label": "Message",
+            "description": "Contenu du message à publier.",
             "col": {
               "xs": 24
             },

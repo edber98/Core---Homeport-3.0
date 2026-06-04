@@ -10,16 +10,53 @@ module.exports = {
     reqPath = reqPath.replace('{channel_id}', encodeURIComponent(channel_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
+    const headers = {};
+
+    const body = {};
+    if (d.to !== undefined && d.to !== null && d.to !== '') {
+      body["to"] = d.to;
+    }
+    if (d.cc !== undefined && d.cc !== null && d.cc !== '') {
+      body["cc"] = d.cc;
+    }
+    if (d.bcc !== undefined && d.bcc !== null && d.bcc !== '') {
+      body["bcc"] = d.bcc;
+    }
+    if (d.sender_name !== undefined && d.sender_name !== null && d.sender_name !== '') {
+      body["sender_name"] = d.sender_name;
+    }
+    if (d.subject !== undefined && d.subject !== null && d.subject !== '') {
+      body["subject"] = d.subject;
+    }
+    if (d.author_id !== undefined && d.author_id !== null && d.author_id !== '') {
+      body["author_id"] = d.author_id;
+    }
     if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+      body["body"] = d.body;
+    }
+    if (d.text !== undefined && d.text !== null && d.text !== '') {
+      body["text"] = d.text;
+    }
+    if (d.options !== undefined && d.options !== null && d.options !== '') {
+      body["options"] = d.options;
+    }
+    if (d.options_tag_ids !== undefined && d.options_tag_ids !== null && d.options_tag_ids !== '') {
+      if (!body["options"] || typeof body["options"] !== 'object' || Array.isArray(body["options"])) body["options"] = {};
+      body["options"]["tag_ids"] = d.options_tag_ids;
+    }
+    if (d.options_archive !== undefined && d.options_archive !== null && d.options_archive !== '') {
+      if (!body["options"] || typeof body["options"] !== 'object' || Array.isArray(body["options"])) body["options"] = {};
+      body["options"]["archive"] = d.options_archive;
+    }
+    if (d.attachments !== undefined && d.attachments !== null && d.attachments !== '') {
+      body["attachments"] = d.attachments;
+    }
+    if (d.signature_id !== undefined && d.signature_id !== null && d.signature_id !== '') {
+      body["signature_id"] = d.signature_id;
+    }
+    if (d.should_add_default_signature !== undefined && d.should_add_default_signature !== null && d.should_add_default_signature !== '') {
+      body["should_add_default_signature"] = d.should_add_default_signature;
     }
 
     log('Requête en cours...');
@@ -34,3 +71,5 @@ module.exports = {
     };
   }
 };
+
+

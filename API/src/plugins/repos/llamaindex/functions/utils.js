@@ -125,7 +125,7 @@ async function run(key, inputs, opts) {
 
     if (key === 'llamaindex_pipeline_retrieve') {
       const pipelineId = str(d.pipeline_id);
-      const query = str(d.query);
+      const query = str(d.retrievalQuery);
       if (!pipelineId || !query) return { ok: false, error: 'pipeline_id et query requis.' };
       const body = {
         query,
@@ -185,8 +185,8 @@ async function run(key, inputs, opts) {
     }
 
     if (key === 'llamaindex_chat_create') {
-      const body = parseJson(d.body, 'body', null);
-      if (!body || typeof body !== 'object') return { ok: false, error: 'body JSON requis.' };
+      const body = parseJson(d.chatRequest, 'chatRequest', null);
+      if (!body || typeof body !== 'object') return { ok: false, error: 'chatRequest JSON requis.' };
       const res = await providerRequest(opts, '/api/v1/chat', { method: 'POST', body });
       if (!res.ok) return res;
       return itemResult(res.data, 'chat');
@@ -216,8 +216,8 @@ async function run(key, inputs, opts) {
 
     if (key === 'llamaindex_pipeline_document_create') {
       const pipelineId = str(d.pipeline_id);
-      const body = parseJson(d.body, 'body', null);
-      if (!pipelineId || !body || typeof body !== 'object') return { ok: false, error: 'pipeline_id et body JSON requis.' };
+      const body = parseJson(d.documentRequest, 'documentRequest', null);
+      if (!pipelineId || !body || typeof body !== 'object') return { ok: false, error: 'pipeline_id et documentRequest JSON requis.' };
       const res = await providerRequest(opts, `/api/v1/pipelines/${encodeURIComponent(pipelineId)}/documents`, { method: 'POST', body });
       if (!res.ok) return res;
       return itemResult(res.data, 'document');

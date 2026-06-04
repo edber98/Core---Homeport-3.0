@@ -13,14 +13,17 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const payload = {};
+    if (d.deadline_at !== undefined && d.deadline_at !== null && d.deadline_at !== '') payload.deadline_at = d.deadline_at;
+    if (d.is_completed !== undefined && d.is_completed !== null && d.is_completed !== '') payload.is_completed = Boolean(d.is_completed);
+    if (d.linked_records !== undefined && d.linked_records !== null && d.linked_records !== '') {
+      try { payload.linked_records = utils.parseJsonInput(d.linked_records, 'linked_records', undefined); } catch (e) { return { ok: false, error: e.message }; }
     }
+    if (d.assignees !== undefined && d.assignees !== null && d.assignees !== '') {
+      try { payload.assignees = utils.parseJsonInput(d.assignees, 'assignees', undefined); } catch (e) { return { ok: false, error: e.message }; }
+    }
+    if (!Object.keys(payload).length) return { ok: false, error: 'Aucun champ à envoyer.' };
+    const body = { data: payload };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });

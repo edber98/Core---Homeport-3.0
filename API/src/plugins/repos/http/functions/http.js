@@ -8,16 +8,16 @@ module.exports = {
     const url = String(args.url || '').trim();
     if (!url) throw new Error('http.url is required');
     let headers = {};
-    try { headers = args.headers ? JSON.parse(args.headers) : {}; } catch { headers = {}; }
+    try { headers = args.requestHeaders ? JSON.parse(args.requestHeaders) : {}; } catch { headers = {}; }
     let body;
     if (['POST','PUT','PATCH','DELETE'].includes(method)) {
-      if (args.body && typeof args.body === 'string' && args.body.trim().startsWith('{')) {
-        body = args.body;
+      if (args.requestBody && typeof args.requestBody === 'string' && args.requestBody.trim().startsWith('{')) {
+        body = args.requestBody;
         headers['content-type'] = headers['content-type'] || 'application/json';
-      } else if (args.body && typeof args.body === 'string') {
-        body = args.body;
-      } else if (args.body && typeof args.body === 'object') {
-        body = JSON.stringify(args.body);
+      } else if (args.requestBody && typeof args.requestBody === 'string') {
+        body = args.requestBody;
+      } else if (args.requestBody && typeof args.requestBody === 'object') {
+        body = JSON.stringify(args.requestBody);
         headers['content-type'] = headers['content-type'] || 'application/json';
       }
     }
@@ -29,7 +29,9 @@ module.exports = {
       if (ct.includes('application/json')) data = await res.json();
       else data = await res.text();
     } catch { data = await res.text().catch(()=>null); }
-    return { status: res.status, ok: res.ok, headers: Object.fromEntries(res.headers.entries()), data };
+    const responseHeaders = res.headers && typeof res.headers.entries === 'function'
+      ? Object.fromEntries(res.headers.entries())
+      : {};
+    return { status: res.status, ok: res.ok, headers: responseHeaders, data };
   }
 };
-

@@ -632,9 +632,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "cancelRequest",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -720,36 +720,36 @@
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query params",
-            "description": "Objet JSON des query params.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet JSON des paramètres URL.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "En-têtes",
-            "description": "Objet JSON d’en-têtes HTTP.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON.",
+            "key": "requestBody",
+            "label": "Corps JSON",
+            "description": "Objet JSON envoyé comme corps de requête.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "textarea",
-            "key": "body_text",
-            "label": "Body texte",
-            "description": "Corps brut (prioritaire sur body).",
+            "key": "bodyText",
+            "label": "Corps texte",
+            "description": "Corps brut, prioritaire sur le corps JSON.",
             "col": {
               "xs": 24
             }
@@ -943,9 +943,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Configuration",
-            "description": "Configuration JSON.",
+            "key": "databaseConfiguration",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -1245,9 +1245,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Configuration",
-            "description": "Configuration JSON.",
+            "key": "schemaConfiguration",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -1603,9 +1603,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Configuration",
-            "description": "Configuration JSON.",
+            "key": "tableConfiguration",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -1891,9 +1891,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Configuration",
-            "description": "Configuration JSON.",
+            "key": "warehouseConfiguration",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             }
@@ -1964,9 +1964,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Configuration",
-            "description": "Configuration JSON.",
+            "key": "warehouseConfiguration",
+            "label": "Requête métier",
+            "description": "Objet JSON documenté pour cette action.",
             "col": {
               "xs": 24
             },

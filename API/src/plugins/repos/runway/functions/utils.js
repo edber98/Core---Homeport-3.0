@@ -29,8 +29,7 @@ function pick(d, keys) {
 }
 
 function bodyFrom(d, keys, jsonKeys) {
-  const payload = parseJsonInput(d.payload, "payload", undefined);
-  const out = payload && typeof payload === "object" && !Array.isArray(payload) ? { ...payload } : {};
+  const out = {};
   for (const key of keys || []) if (d[key] !== undefined && d[key] !== null && d[key] !== "") out[key] = d[key];
   for (const key of jsonKeys || []) if (d[key] !== undefined && d[key] !== null && d[key] !== "") out[key] = parseJsonInput(d[key], key, undefined);
   return Object.keys(out).length ? out : undefined;

@@ -12,13 +12,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"name","target":"name","type":"string"},{"key":"recipients","target":"recipients","type":"object"},{"key":"sendNow","target":"send_now","type":"boolean"},{"key":"scheduledAt","target":"scheduled_at","type":"number"},{"key":"subscriptionTopicId","target":"subscription_topic_id","type":"number"},{"key":"rateLimitEmailRate","target":"rate_limit_email_rate","type":"number"},{"key":"rateLimitTimePeriod","target":"rate_limit_time_period","type":"number"},{"key":"rateLimitSpread","target":"rate_limit_spread","type":"boolean"},{"key":"type","target":"type","type":"string"},{"key":"subject","target":"subject","type":"string"},{"key":"preheaderText","target":"preheader_text","type":"string"},{"key":"messageBody","target":"body","type":"string"},{"key":"bodyPlain","target":"body_plain","type":"string"},{"key":"layoutId","target":"layout_id","type":"number"},{"key":"from","target":"from","type":"string"},{"key":"fromId","target":"from_id","type":"number"},{"key":"bodyJson","target":"body_json","type":"string"},{"key":"requestMethod","target":"request_method","type":"string"},{"key":"url","target":"url","type":"string"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

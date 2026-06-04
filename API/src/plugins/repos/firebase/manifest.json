@@ -805,11 +805,12 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données JSON",
+            "key": "customData",
+            "label": "Données personnalisées",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON de données string/string envoyé dans message.data."
           },
           {
             "type": "textarea",

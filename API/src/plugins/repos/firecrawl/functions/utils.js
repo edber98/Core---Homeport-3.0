@@ -54,6 +54,25 @@ function parseJsonInput(value, label, fallback) {
   try { return JSON.parse(String(value)); } catch { throw new Error(`JSON invalide dans ${label}.`); }
 }
 
+function addJson(body, target, value, label) {
+  const parsed = parseJsonInput(value, label, undefined);
+  if (parsed !== undefined) body[target] = parsed;
+}
+
+function addValue(body, target, value) {
+  if (value !== undefined && value !== null && value !== "") body[target] = value;
+}
+
+function addNumber(body, target, value) {
+  if (value === undefined || value === null || value === "") return;
+  const numberValue = Number(value);
+  if (Number.isFinite(numberValue)) body[target] = numberValue;
+}
+
+function addBoolean(body, target, value) {
+  if (typeof value === "boolean") body[target] = value;
+}
+
 function compactJson(value) {
   if (value === undefined || value === null) return "";
   try { return JSON.stringify(value); } catch { return String(value); }
@@ -64,4 +83,4 @@ function firstTextFromChoices(data) {
   return choice?.message?.content || choice?.text || "";
 }
 
-module.exports = { utils: { firecrawlRequest, parseJsonInput, compactJson, firstTextFromChoices } };
+module.exports = { utils: { firecrawlRequest, parseJsonInput, addJson, addValue, addNumber, addBoolean, compactJson, firstTextFromChoices } };

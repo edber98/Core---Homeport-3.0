@@ -10,16 +10,24 @@ module.exports = {
     reqPath = reqPath.replace('{teammate_id}', encodeURIComponent(teammate_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.sender_info !== undefined && d.sender_info !== null && d.sender_info !== '') {
+      body["sender_info"] = d.sender_info;
+    }
     if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+      body["body"] = d.body;
+    }
+    if (d.is_default !== undefined && d.is_default !== null && d.is_default !== '') {
+      body["is_default"] = d.is_default;
+    }
+    if (d.channel_ids !== undefined && d.channel_ids !== null && d.channel_ids !== '') {
+      body["channel_ids"] = d.channel_ids;
     }
 
     log('Requête en cours...');
@@ -39,3 +47,5 @@ module.exports = {
     };
   }
 };
+
+

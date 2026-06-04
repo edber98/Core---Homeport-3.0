@@ -10,16 +10,29 @@ module.exports = {
     reqPath = reqPath.replace('{id}', encodeURIComponent(id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.event_type !== undefined && d.event_type !== null && d.event_type !== '') {
+      body["event_type"] = d.event_type;
+    }
+    if (d.channel !== undefined && d.channel !== null && d.channel !== '') {
+      body["channel"] = d.channel;
+    }
+    if (d.settings_url !== undefined && d.settings_url !== null && d.settings_url !== '') {
+      if (!body["settings"] || typeof body["settings"] !== 'object' || Array.isArray(body["settings"])) body["settings"] = {};
+      body["settings"]["url"] = d.settings_url;
+    }
+    if (d.settings_emails !== undefined && d.settings_emails !== null && d.settings_emails !== '') {
+      body["settings_emails"] = d.settings_emails;
+    }
+    if (d.settings_channel_ids !== undefined && d.settings_channel_ids !== null && d.settings_channel_ids !== '') {
+      body["settings_channel_ids"] = d.settings_channel_ids;
+    }
+    if (d.settings_disabled_channel_ids !== undefined && d.settings_disabled_channel_ids !== null && d.settings_disabled_channel_ids !== '') {
+      if (!body["settings"] || typeof body["settings"] !== 'object' || Array.isArray(body["settings"])) body["settings"] = {};
+      body["settings"]["disabled_channel_ids"] = d.settings_disabled_channel_ids;
     }
 
     log('Requête en cours...');
@@ -39,3 +52,4 @@ module.exports = {
     };
   }
 };
+

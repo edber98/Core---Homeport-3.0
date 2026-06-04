@@ -16,12 +16,15 @@ module.exports = {
 
     let body;
     try {
-      body = utils.parseJsonInput(d.body, "body", { defaultValue: undefined, allowArray: false });
-      if (!body) body = utils.parseJsonInput(d.query, "query", { defaultValue: undefined, allowArray: false });
+      body = utils.bodyFromFields(d, ["posthogQuery", "client_query_id", "refresh", "async"], ["posthogQuery"]);
+      if (body.posthogQuery !== undefined) {
+        body.query = body.posthogQuery;
+        delete body.posthogQuery;
+      }
     } catch (e) {
       return { ok: false, error: e.message };
     }
-    if (!body) return { ok: false, error: "body ou query JSON requis." };
+    if (!Object.keys(body).length) return { ok: false, error: "query requis." };
 
     log("Execution de la query PostHog...");
     const res = await utils.posthogPrivateRequest(opts, path, { method: "POST", body });

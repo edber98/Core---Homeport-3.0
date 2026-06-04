@@ -8,16 +8,37 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.description !== undefined && d.description !== null && d.description !== '') {
+      body["description"] = d.description;
+    }
+    if (d.permissions !== undefined && d.permissions !== null && d.permissions !== '') {
+      body["permissions"] = d.permissions;
+    }
+    if (d.permissions_contacts !== undefined && d.permissions_contacts !== null && d.permissions_contacts !== '') {
+      if (!body["permissions"] || typeof body["permissions"] !== 'object' || Array.isArray(body["permissions"])) body["permissions"] = {};
+      body["permissions"]["contacts"] = d.permissions_contacts;
+    }
+    if (d.permissions_contacts_access !== undefined && d.permissions_contacts_access !== null && d.permissions_contacts_access !== '') {
+      if (!body["permissions"] || typeof body["permissions"] !== 'object' || Array.isArray(body["permissions"])) body["permissions"] = {};
+      if (!body["permissions"]["contacts"] || typeof body["permissions"]["contacts"] !== 'object' || Array.isArray(body["permissions"]["contacts"])) body["permissions"]["contacts"] = {};
+      body["permissions"]["contacts"]["access"] = d.permissions_contacts_access;
+    }
+    if (d.permissions_contacts_contact_group_ids !== undefined && d.permissions_contacts_contact_group_ids !== null && d.permissions_contacts_contact_group_ids !== '') {
+      if (!body["permissions"] || typeof body["permissions"] !== 'object' || Array.isArray(body["permissions"])) body["permissions"] = {};
+      if (!body["permissions"]["contacts"] || typeof body["permissions"]["contacts"] !== 'object' || Array.isArray(body["permissions"]["contacts"])) body["permissions"]["contacts"] = {};
+      body["permissions"]["contacts"]["contact_group_ids"] = d.permissions_contacts_contact_group_ids;
+    }
+    if (d.permissions_contacts_contact_list_ids !== undefined && d.permissions_contacts_contact_list_ids !== null && d.permissions_contacts_contact_list_ids !== '') {
+      if (!body["permissions"] || typeof body["permissions"] !== 'object' || Array.isArray(body["permissions"])) body["permissions"] = {};
+      if (!body["permissions"]["contacts"] || typeof body["permissions"]["contacts"] !== 'object' || Array.isArray(body["permissions"]["contacts"])) body["permissions"]["contacts"] = {};
+      body["permissions"]["contacts"]["contact_list_ids"] = d.permissions_contacts_contact_list_ids;
     }
 
     log('Requête en cours...');
@@ -37,3 +58,4 @@ module.exports = {
     };
   }
 };
+

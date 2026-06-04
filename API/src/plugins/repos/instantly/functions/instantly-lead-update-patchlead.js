@@ -10,16 +10,42 @@ module.exports = {
     reqPath = reqPath.replace('{id}', encodeURIComponent(id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.personalization !== undefined && d.personalization !== null && d.personalization !== '') {
+      body["personalization"] = d.personalization;
+    }
+    if (d.website !== undefined && d.website !== null && d.website !== '') {
+      body["website"] = d.website;
+    }
+    if (d.last_name !== undefined && d.last_name !== null && d.last_name !== '') {
+      body["last_name"] = d.last_name;
+    }
+    if (d.first_name !== undefined && d.first_name !== null && d.first_name !== '') {
+      body["first_name"] = d.first_name;
+    }
+    if (d.company_name !== undefined && d.company_name !== null && d.company_name !== '') {
+      body["company_name"] = d.company_name;
+    }
+    if (d.job_title !== undefined && d.job_title !== null && d.job_title !== '') {
+      body["job_title"] = d.job_title;
+    }
+    if (d.phone !== undefined && d.phone !== null && d.phone !== '') {
+      body["phone"] = d.phone;
+    }
+    if (d.lt_interest_status !== undefined && d.lt_interest_status !== null && d.lt_interest_status !== '') {
+      body["lt_interest_status"] = d.lt_interest_status;
+    }
+    if (d.pl_value_lead !== undefined && d.pl_value_lead !== null && d.pl_value_lead !== '') {
+      body["pl_value_lead"] = d.pl_value_lead;
+    }
+    if (d.assigned_to !== undefined && d.assigned_to !== null && d.assigned_to !== '') {
+      body["assigned_to"] = d.assigned_to;
+    }
+    if (d.custom_variables !== undefined && d.custom_variables !== null && d.custom_variables !== '') {
+      body["custom_variables"] = d.custom_variables;
     }
 
     log('Requête en cours...');
@@ -39,3 +65,4 @@ module.exports = {
     };
   }
 };
+

@@ -9,14 +9,14 @@ module.exports = {
 
     let input = null;
     try {
-      const parsed = utils.parseJsonInput(d.inputs, "inputs", null);
+      const parsed = utils.parseJsonInput(d.embeddingInputs, "inputs", null);
       if (Array.isArray(parsed) && parsed.length) input = parsed.map((x) => String(x));
       else if (typeof parsed === "string" && parsed.trim()) input = parsed.trim();
     } catch (e) {
       return { ok: false, error: e.message };
     }
 
-    const inputText = String(d.input || "").trim();
+    const inputText = String(d.embeddingInput || "").trim();
     if (input === null) input = inputText;
     if (!input || (Array.isArray(input) && input.length === 0)) return { ok: false, error: "Un texte d'entrée est requis." };
 
@@ -34,7 +34,7 @@ module.exports = {
     if (keepAlive !== undefined) body.keep_alive = keepAlive;
 
     try {
-      const options = utils.parseJsonInput(d.options, "options", undefined);
+      const options = utils.parseJsonInput(d.embeddingOptions, "options", undefined);
       if (options && typeof options === "object") body.options = options;
     } catch (e) {
       return { ok: false, error: e.message };

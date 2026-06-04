@@ -22,8 +22,8 @@ module.exports = {
     if (bcc.length) body.bcc = bcc;
     if (replyTo.length) body.reply_to = replyTo;
     if (d.scheduledAt) body.scheduled_at = d.scheduledAt;
-    if (d.headers) {
-      try { body.headers = utils.parseJsonInput(d.headers, "En-têtes"); } catch (e) { return { ok: false, error: e.message }; }
+    if (d.messageHeaders) {
+      try { body.headers = utils.parseJsonInput(d.messageHeaders, "En-têtes"); } catch (e) { return { ok: false, error: e.message }; }
     }
     if (d.tags) {
       try { body.tags = utils.parseJsonInput(d.tags, "Tags"); } catch (e) { return { ok: false, error: e.message }; }
