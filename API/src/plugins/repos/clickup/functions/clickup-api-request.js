@@ -14,15 +14,13 @@ module.exports = {
     if (!path) return { ok: false, error: "Missing path." };
 
     let query = {};
-    let headers = {};
-    let body;
-    try {
-      query = parseJson(d.query, "query", {});
-      headers = parseJson(d.headers, "headers", {});
-      body = parseJson(d.body, "body", undefined);
-    } catch (e) {
-      return { ok: false, error: e.message };
-    }
+    try { query = parseJson(d.query, "query", {}); } catch (e) { return { ok: false, error: e.message }; }
+    const builtHeaders = utils.buildObjectFromFields(d.headerFields);
+    if (!builtHeaders.ok) return builtHeaders;
+    const builtBody = utils.buildObjectFromFields(d.requestFields);
+    if (!builtBody.ok) return builtBody;
+    const headers = builtHeaders.object || {};
+    const body = builtBody.object;
 
     const apiPath = path.startsWith("/") ? path : `/${path}`;
     const res = await utils.clickupRequest(opts, apiPath, { method, query, headers, body });

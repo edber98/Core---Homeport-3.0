@@ -13,16 +13,15 @@ module.exports = {
     const path = String(d.path || '').trim();
     if (!path) return { ok: false, error: 'Path requis.' };
 
-    let query = {};
-    let headers = {};
-    let body;
-    try {
-      query = parseJson(d.query, 'query', {});
-      headers = parseJson(d.headers, 'headers', {});
-      body = d.body === undefined || d.body === null || d.body === '' ? undefined : parseJson(d.body, 'body', {});
-    } catch (e) {
-      return { ok: false, error: e.message };
-    }
+    const builtQuery = utils.buildObjectFromFields(d.queryFields);
+    if (!builtQuery.ok) return builtQuery;
+    const builtHeaders = utils.buildObjectFromFields(d.headerFields);
+    if (!builtHeaders.ok) return builtHeaders;
+    const builtBody = utils.buildObjectFromFields(d.requestFields);
+    if (!builtBody.ok) return builtBody;
+    const query = builtQuery.object || {};
+    const headers = builtHeaders.object || {};
+    const body = builtBody.object;
 
     const res = await utils.providerRequest(opts, path, { method, query, headers, body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };

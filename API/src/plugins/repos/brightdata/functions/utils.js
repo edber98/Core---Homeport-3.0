@@ -61,4 +61,45 @@ async function providerRequest(opts, path, options = {}) {
   return { ok: true, status: res.status, data };
 }
 
-module.exports = { utils: { providerRequest } };
+function buildRequestBody(inputs, fields, options = {}) {
+  const body = {};
+  let hasValue = false;
+  for (const field of fields || []) {
+    const key = field.key;
+    const bodyKey = field.bodyKey || key;
+    let value = inputs ? inputs[key] : undefined;
+    if (value === undefined || value === null || value === '') continue;
+    if ((field.type === 'object' || field.type === 'array') && typeof value === 'string') {
+      try { value = JSON.parse(value); } catch { return { ok: false, error: `JSON invalide pour ${key}.` }; }
+    } else if ((field.type === 'integer' || field.type === 'number') && typeof value !== 'number') {
+      value = Number(value);
+      if (Number.isNaN(value)) return { ok: false, error: `Nombre invalide pour ${key}.` };
+    } else if (field.type === 'boolean' && typeof value !== 'boolean') {
+      value = String(value).toLowerCase() === 'true';
+    }
+    body[bodyKey] = value;
+    hasValue = true;
+  }
+  if (options.arrayWrapper) return { ok: true, body: hasValue ? [body] : undefined };
+  return { ok: true, body: hasValue ? body : undefined };
+}
+
+function buildBodyFromFields(rows) {
+  const body = {};
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const key = String(row && row.fieldKey || '').trim();
+    if (!key) continue;
+    let value = row.fieldValue;
+    switch (row.fieldType || 'string') {
+      case 'number': value = Number(value); if (Number.isNaN(value)) return { ok: false, error: `Nombre invalide pour ${key}.` }; break;
+      case 'boolean': value = value === true || String(value).toLowerCase() === 'true'; break;
+      case 'json': try { value = JSON.parse(String(value || 'null')); } catch { return { ok: false, error: `JSON invalide pour ${key}.` }; } break;
+      case 'null': value = null; break;
+      default: value = value == null ? '' : String(value);
+    }
+    body[key] = value;
+  }
+  return { ok: true, body: Object.keys(body).length ? body : undefined };
+}
+
+module.exports = { utils: { providerRequest, buildRequestBody, buildBodyFromFields } };

@@ -7,14 +7,12 @@ module.exports = {
     const path = String(d.path || "").trim();
     if (!path) return { ok: false, error: "Path requis." };
 
-    let query = {};
-    let body;
-    try {
-      query = utils.parseJsonInput(d.query, "query") || {};
-      body = utils.parseJsonInput(d.body, "body");
-    } catch (e) {
-      return { ok: false, error: e.message };
-    }
+    const builtQuery = utils.buildObjectFromFields(d.queryFields);
+    if (!builtQuery.ok) return builtQuery;
+    const builtBody = utils.buildObjectFromFields(d.requestFields);
+    if (!builtBody.ok) return builtBody;
+    const query = builtQuery.object || {};
+    const body = builtBody.object;
 
     const res = await utils.clerkRequest(opts, path.startsWith("/") ? path : `/${path}`, { method, query, body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };

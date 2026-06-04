@@ -31,21 +31,21 @@ Total: `107` providers.
 | BILL ✓ | `bill` | 3 | `body` |
 | Braze ✓ | `braze` | 7 | `body` |
 | Brevo ✓ | `brevo` | 2 | `attributes` |
-| BrightData | `brightdata` | 10 | `body` |
-| Browserbase | `browserbase` | 1 | `body` |
-| Calendly | `calendly` | 1 | `body` |
-| Cassandra | `cassandra` | 2 | `data` |
-| Checkout.com | `checkout-com` | 1 | `body` |
-| ChromaDB | `chromadb` | 1 | `payload` |
-| Clay | `clay` | 8 | `body`, `payload` |
-| Clearbit | `clearbit` | 1 | `body`, `headers` |
-| Clerk | `clerk` | 1 | `body` |
-| Clickhouse | `clickhouse` | 1 | `body`, `headers`, `query` |
-| ClickUp | `clickup` | 1 | `body`, `headers` |
-| Close CRM | `close_crm` | 97 | `body` |
-| Cloudflare | `cloudflare` | 3 | `body`, `data` |
-| Cohere | `cohere` | 1 | `body` |
-| ConvertKit | `convertkit` | 30 | `body` |
+| BrightData ✓ | `brightdata` | 10 | `body` |
+| Browserbase ✓ | `browserbase` | 1 | `body` |
+| Calendly ✓ | `calendly` | 1 | `body` |
+| Cassandra ✓ | `cassandra` | 2 | `data` |
+| Checkout.com ✓ | `checkout-com` | 1 | `body` |
+| ChromaDB ✓ | `chromadb` | 1 | `payload` |
+| Clay ✓ | `clay` | 8 | `body`, `payload` |
+| Clearbit ✓ | `clearbit` | 1 | `body`, `headers` |
+| Clerk ✓ | `clerk` | 1 | `body` |
+| Clickhouse ✓ | `clickhouse` | 1 | `body`, `headers`, `query` |
+| ClickUp ✓ | `clickup` | 1 | `body`, `headers` |
+| Close CRM ✓ | `close_crm` | 97 | `body` |
+| Cloudflare ✓ | `cloudflare` | 3 | `body`, `data` |
+| Cohere ✓ | `cohere` | 1 | `body` |
+| ConvertKit ✓ | `convertkit` | 30 | `body` |
 | CrewAI | `crewai` | 3 | `body` |
 | Crisp | `crisp` | 3 | `body`, `data` |
 | Customer.io | `customer_io` | 69 | `body` |

@@ -14,13 +14,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"activity_at","target":"activity_at","type":["null","string"]},{"key":"attachments","target":"attachments","type":["array","null"]},{"key":"bcc","target":"bcc","type":["array","null"]},{"key":"body_html","target":"body_html","type":["null","string"]},{"key":"body_text","target":"body_text","type":["null","string"]},{"key":"cc","target":"cc","type":["array","null"]},{"key":"contact_id","target":"contact_id","type":["null","string"]},{"key":"email_account_id","target":"email_account_id","type":["null","string"]},{"key":"followup_date","target":"followup_date","type":["null","string"]},{"key":"followup_sequence_add_cc_bcc","target":"followup_sequence_add_cc_bcc","type":["boolean","null"]},{"key":"followup_sequence_delay","target":"followup_sequence_delay","type":["integer","null"]},{"key":"followup_sequence_id","target":"followup_sequence_id","type":["null","string"]},{"key":"in_reply_to_id","target":"in_reply_to_id","type":["null","string"]},{"key":"opens","target":"opens","type":["array","null"]},{"key":"sender","target":"sender","type":["null","string"]},{"key":"status","target":"status","type":"string"},{"key":"subject","target":"subject","type":["null","string"]},{"key":"template_id","target":"template_id","type":["null","string"]},{"key":"to","target":"to","type":["array","null"]},{"key":"user_id","target":"user_id","type":["null","string"]}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });
