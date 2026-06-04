@@ -17,13 +17,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"id","target":"id","type":"number"},{"key":"broadcastId","target":"broadcast_id","type":"number"},{"key":"deduplicateId","target":"deduplicate_id","type":"string"},{"key":"name","target":"name","type":"string"},{"key":"layout","target":"layout","type":"string"},{"key":"created","target":"created","type":"number"},{"key":"updated","target":"updated","type":"number"},{"key":"messageBody","target":"body","type":"string"},{"key":"type","target":"type","type":"string"},{"key":"sendingState","target":"sending_state","type":"string"},{"key":"language","target":"language","type":"string"},{"key":"from","target":"from","type":"string"},{"key":"fromId","target":"from_id","type":"number"},{"key":"replyTo","target":"reply_to","type":"string"},{"key":"replyToId","target":"reply_to_id","type":["integer","null"]},{"key":"preprocessor","target":"preprocessor","type":"string"},{"key":"recipient","target":"recipient","type":"string"},{"key":"subject","target":"subject","type":"string"},{"key":"bcc","target":"bcc","type":"string"},{"key":"fakeBcc","target":"fake_bcc","type":"boolean"},{"key":"preheaderText","target":"preheader_text","type":"string"},{"key":"bodyAmp","target":"body_amp","type":"string"},{"key":"requestHeaders","target":"headers","type":"string"},{"key":"imageUrl","target":"image_url","type":"string"},{"key":"bodyJson","target":"body_json","type":"string"},{"key":"senderIdentityId","target":"sender_identity_id","type":"number"},{"key":"sendToUnsubscribed","target":"send_to_unsubscribed","type":"boolean"},{"key":"tracked","target":"tracked","type":"boolean"},{"key":"url","target":"url","type":"string"},{"key":"method","target":"method","type":"string"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });

@@ -6,7 +6,7 @@
   },
   "variables": {
     "dropcontact_action_result": {
-      "title": "Résultat action",
+      "title": "R\u00e9sultat action",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -15,8 +15,8 @@
         {
           "type": "checkbox",
           "key": "ok",
-          "label": "Succès",
-          "description": "Indique si l’action est réussie.",
+          "label": "Succ\u00e8s",
+          "description": "Indique si l\u2019action est r\u00e9ussie.",
           "col": {
             "xs": 24
           }
@@ -25,7 +25,7 @@
           "type": "number",
           "key": "status",
           "label": "Code HTTP",
-          "description": "Code HTTP retourné.",
+          "description": "Code HTTP retourn\u00e9.",
           "col": {
             "xs": 24
           }
@@ -42,8 +42,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -96,8 +96,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -114,8 +114,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -131,8 +131,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -179,8 +179,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -197,8 +197,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -212,7 +212,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -242,7 +242,7 @@
         "automation"
       ],
       "categories": [
-        "Productivité"
+        "Productivit\u00e9"
       ],
       "hasCredentials": true,
       "credentialsForm": {
@@ -255,8 +255,8 @@
           {
             "type": "text",
             "key": "apiKey",
-            "label": "Clé API Dropcontact",
-            "description": "Clé API Dropcontact (X-Access-Token).",
+            "label": "Cl\u00e9 API Dropcontact",
+            "description": "Cl\u00e9 API Dropcontact (X-Access-Token).",
             "col": {
               "xs": 24
             },
@@ -288,7 +288,7 @@
       "key": "dropcontact_enrichment_create_enrichment_batch",
       "name": "dropcontactEnrichmentCreateEnrichmentBatch",
       "schemaVersion": 2,
-      "title": "Créer un enrichissement batch",
+      "title": "Cr\u00e9er un enrichissement batch",
       "subtitle": "enrichissements",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -322,7 +322,7 @@
       "authorize_catch_error": true,
       "description": "Action create_enrichment_batch sur enrichissement.",
       "args": {
-        "title": "Créer un enrichissement batch",
+        "title": "Cr\u00e9er un enrichissement batch",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -330,17 +330,53 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Contacts/organisations à enrichir.",
+            "key": "contacts",
+            "label": "Contacts \u00e0 enrichir",
             "col": {
               "xs": 24
             },
+            "description": "Tableau data accept\u00e9 par Dropcontact: email, first_name, last_name, company, website, phone, country, job...",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "checkbox",
+            "key": "siren",
+            "label": "Inclure le SIREN",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "language",
+            "label": "Langue",
+            "col": {
+              "xs": 24
+            },
+            "description": "Langue des r\u00e9sultats.",
+            "default": "en",
+            "options": [
+              {
+                "label": "Anglais",
+                "value": "en"
+              },
+              {
+                "label": "Fran\u00e7ais",
+                "value": "fr"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "customCallbackUrl",
+            "label": "URL de callback",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -352,7 +388,7 @@
       "key": "dropcontact_enrichment_get_enrichment_result",
       "name": "dropcontactEnrichmentGetEnrichmentResult",
       "schemaVersion": 2,
-      "title": "Récupérer un résultat d'enrichissement",
+      "title": "R\u00e9cup\u00e9rer un r\u00e9sultat d'enrichissement",
       "subtitle": "enrichissements",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -386,7 +422,7 @@
       "authorize_catch_error": true,
       "description": "Action get_enrichment_result sur enrichissement.",
       "args": {
-        "title": "Récupérer un résultat d'enrichissement",
+        "title": "R\u00e9cup\u00e9rer un r\u00e9sultat d'enrichissement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true

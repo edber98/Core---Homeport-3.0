@@ -12,13 +12,8 @@ module.exports = {
     const query = {};
     
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = utils.buildBodyFromInputs(d, [{"source":"categoryTypes","target":"categoryTypes","type":"json"},{"source":"deposit","target":"deposit","type":"json"},{"source":"description","target":"description","type":"text"},{"source":"fullPaymentDueIn","target":"fullPaymentDueIn","type":"json"},{"source":"immediatePay","target":"immediatePay","type":"checkbox"},{"source":"marketplaceId","target":"marketplaceId","type":"text"},{"source":"name","target":"name","type":"text"},{"source":"paymentInstructions","target":"paymentInstructions","type":"text"},{"source":"paymentMethods","target":"paymentMethods","type":"json"}]);
+    if (body && body.__invalid) return { ok: false, error: body.__invalid };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });

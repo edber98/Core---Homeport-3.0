@@ -6,7 +6,7 @@
   },
   "variables": {
     "e2b_action_result": {
-      "title": "Résultat action",
+      "title": "R\u00e9sultat action",
       "ui": {
         "layout": "vertical",
         "labelsOnTop": true
@@ -15,8 +15,8 @@
         {
           "type": "checkbox",
           "key": "ok",
-          "label": "Succès",
-          "description": "Indique si l’action est réussie.",
+          "label": "Succ\u00e8s",
+          "description": "Indique si l\u2019action est r\u00e9ussie.",
           "col": {
             "xs": 24
           }
@@ -25,7 +25,7 @@
           "type": "number",
           "key": "status",
           "label": "Code HTTP",
-          "description": "Code HTTP retourné.",
+          "description": "Code HTTP retourn\u00e9.",
           "col": {
             "xs": 24
           }
@@ -42,8 +42,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -96,8 +96,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -114,8 +114,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -131,8 +131,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -179,8 +179,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -197,8 +197,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -212,7 +212,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -274,8 +274,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -292,8 +292,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -309,8 +309,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -357,8 +357,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -375,8 +375,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -390,7 +390,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -452,8 +452,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -470,8 +470,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -487,8 +487,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -535,8 +535,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -553,8 +553,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -568,7 +568,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -630,8 +630,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -648,8 +648,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -665,8 +665,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -713,8 +713,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -731,8 +731,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -746,7 +746,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -808,8 +808,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -826,8 +826,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -843,8 +843,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -891,8 +891,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -909,8 +909,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -924,7 +924,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -986,8 +986,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -1004,8 +1004,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -1021,8 +1021,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -1069,8 +1069,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -1087,8 +1087,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -1102,7 +1102,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -1164,8 +1164,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -1182,8 +1182,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -1199,8 +1199,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -1247,8 +1247,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -1265,8 +1265,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -1280,7 +1280,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -1342,8 +1342,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -1360,8 +1360,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -1377,8 +1377,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -1425,8 +1425,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -1443,8 +1443,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -1458,7 +1458,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -1520,8 +1520,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -1538,8 +1538,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -1555,8 +1555,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -1603,8 +1603,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -1621,8 +1621,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -1636,7 +1636,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -1698,8 +1698,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -1716,8 +1716,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -1733,8 +1733,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -1781,8 +1781,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -1799,8 +1799,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -1814,7 +1814,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -1876,8 +1876,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -1894,8 +1894,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -1911,8 +1911,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -1959,8 +1959,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -1977,8 +1977,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -1992,7 +1992,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -2054,8 +2054,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -2072,8 +2072,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -2089,8 +2089,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -2137,8 +2137,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -2155,8 +2155,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -2170,7 +2170,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -2232,8 +2232,8 @@
         {
           "type": "date",
           "key": "created_at",
-          "label": "Date création",
-          "description": "Date de création.",
+          "label": "Date cr\u00e9ation",
+          "description": "Date de cr\u00e9ation.",
           "col": {
             "xs": 24
           }
@@ -2250,8 +2250,8 @@
         {
           "type": "json",
           "key": "raw",
-          "label": "Données brutes",
-          "description": "Réponse API brute.",
+          "label": "Donn\u00e9es brutes",
+          "description": "R\u00e9ponse API brute.",
           "col": {
             "xs": 24
           }
@@ -2267,8 +2267,8 @@
       "fields": [
         {
           "type": "section",
-          "title": "Éléments",
-          "description": "Liste des éléments",
+          "title": "\u00c9l\u00e9ments",
+          "description": "Liste des \u00e9l\u00e9ments",
           "mode": "array",
           "key": "items",
           "array": {
@@ -2315,8 +2315,8 @@
             {
               "type": "date",
               "key": "created_at",
-              "label": "Date création",
-              "description": "Date de création.",
+              "label": "Date cr\u00e9ation",
+              "description": "Date de cr\u00e9ation.",
               "col": {
                 "xs": 24
               }
@@ -2333,8 +2333,8 @@
             {
               "type": "json",
               "key": "raw",
-              "label": "Données brutes",
-              "description": "Réponse API brute.",
+              "label": "Donn\u00e9es brutes",
+              "description": "R\u00e9ponse API brute.",
               "col": {
                 "xs": 24
               }
@@ -2348,7 +2348,7 @@
           "type": "number",
           "key": "totalCount",
           "label": "Nombre total",
-          "description": "Nombre total d’éléments.",
+          "description": "Nombre total d\u2019\u00e9l\u00e9ments.",
           "col": {
             "xs": 24
           }
@@ -2378,7 +2378,7 @@
         "automation"
       ],
       "categories": [
-        "Productivité"
+        "Productivit\u00e9"
       ],
       "hasCredentials": true,
       "credentialsForm": {
@@ -2391,8 +2391,8 @@
           {
             "type": "text",
             "key": "apiKey",
-            "label": "Clé API E2B",
-            "description": "Clé API E2B (X-API-Key).",
+            "label": "Cl\u00e9 API E2B",
+            "description": "Cl\u00e9 API E2B (X-API-Key).",
             "col": {
               "xs": 24
             },
@@ -2417,7 +2417,7 @@
             "type": "text",
             "key": "accessToken",
             "label": "Access Token envd",
-            "description": "Token d’accès envd (X-Access-Token) pour certaines routes sandbox.",
+            "description": "Token d\u2019acc\u00e8s envd (X-Access-Token) pour certaines routes sandbox.",
             "col": {
               "xs": 24
             },
@@ -2434,8 +2434,8 @@
       "key": "e2b_access_token_create_post_access_tokens",
       "name": "e2bAccessTokenCreatePostAccessTokens",
       "schemaVersion": 2,
-      "title": "Créer jetons d accès",
-      "subtitle": "Jetons d accès",
+      "title": "Cr\u00e9er jetons d acc\u00e8s",
+      "subtitle": "Jetons d acc\u00e8s",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2449,7 +2449,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -2460,28 +2460,28 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_access_token"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer jetons d accès.",
+      "description": "Cr\u00e9er jetons d acc\u00e8s.",
       "args": {
-        "title": "Créer jetons d accès",
+        "title": "Cr\u00e9er jetons d acc\u00e8s",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
             },
+            "description": "Name of the access token",
             "validators": [
               {
                 "type": "required"
@@ -2492,14 +2492,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "jetons d accès"
+      "group": "jetons d acc\u00e8s"
     },
     {
       "key": "e2b_access_token_delete_delete_access_tokens_accesstokenid",
       "name": "e2bAccessTokenDeleteDeleteAccessTokensAccesstokenid",
       "schemaVersion": 2,
-      "title": "Supprimer accès jeton jeton d'accès ID",
-      "subtitle": "Accès jeton jeton d'accès ID",
+      "title": "Supprimer acc\u00e8s jeton jeton d'acc\u00e8s ID",
+      "subtitle": "Acc\u00e8s jeton jeton d'acc\u00e8s ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2513,7 +2513,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -2524,15 +2524,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_action_result"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Supprimer accès jeton jeton d'accès ID.",
+      "description": "Supprimer acc\u00e8s jeton jeton d'acc\u00e8s ID.",
       "args": {
-        "title": "Supprimer accès jeton jeton d'accès ID",
+        "title": "Supprimer acc\u00e8s jeton jeton d'acc\u00e8s ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2541,8 +2541,8 @@
           {
             "type": "text",
             "key": "accesstokenid",
-            "label": "Jeton d accès ID",
-            "description": "Valeur de chemin jeton d accès ID",
+            "label": "Jeton d acc\u00e8s ID",
+            "description": "Valeur de chemin jeton d acc\u00e8s ID",
             "col": {
               "xs": 24
             },
@@ -2556,13 +2556,13 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "jetons d accès"
+      "group": "jetons d acc\u00e8s"
     },
     {
       "key": "e2b_connect_create_post_sandboxes_sandboxid_connect",
       "name": "e2bConnectCreatePostSandboxesSandboxidConnect",
       "schemaVersion": 2,
-      "title": "Créer sandbox sandbox ID connexion",
+      "title": "Cr\u00e9er sandbox sandbox ID connexion",
       "subtitle": "Sandbox sandbox ID connexion",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -2577,7 +2577,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -2588,28 +2588,28 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_connect"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sandbox sandbox ID connexion.",
+      "description": "Cr\u00e9er sandbox sandbox ID connexion.",
       "args": {
-        "title": "Créer sandbox sandbox ID connexion",
+        "title": "Cr\u00e9er sandbox sandbox ID connexion",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout",
             "col": {
               "xs": 24
             },
+            "description": "Timeout in seconds from the current time after which the sandbox should expire",
             "validators": [
               {
                 "type": "required"
@@ -2626,8 +2626,8 @@
       "key": "e2b_health_list_get_health",
       "name": "e2bHealthListGetHealth",
       "schemaVersion": 2,
-      "title": "Lister santé",
-      "subtitle": "Santé",
+      "title": "Lister sant\u00e9",
+      "subtitle": "Sant\u00e9",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2641,7 +2641,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -2652,15 +2652,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_healths"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister santé.",
+      "description": "Lister sant\u00e9.",
       "args": {
-        "title": "Lister santé",
+        "title": "Lister sant\u00e9",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2669,7 +2669,7 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "santés"
+      "group": "sant\u00e9s"
     },
     {
       "key": "e2b_log_list_get_v2_sandboxes_sandboxid_logs",
@@ -2690,7 +2690,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -2701,7 +2701,7 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_logs"
         }
@@ -2728,7 +2728,7 @@
             "type": "number",
             "key": "limit",
             "label": "Limit",
-            "description": "Maximum numéro journaux should returned",
+            "description": "Maximum num\u00e9ro journaux should returned",
             "col": {
               "xs": 24
             }
@@ -2770,8 +2770,8 @@
       "key": "e2b_metric_list_get_sandboxes_metrics",
       "name": "e2bMetricListGetSandboxesMetrics",
       "schemaVersion": 2,
-      "title": "Lister sandbox métrique",
-      "subtitle": "Sandbox métrique",
+      "title": "Lister sandbox m\u00e9trique",
+      "subtitle": "Sandbox m\u00e9trique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2785,7 +2785,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -2796,15 +2796,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_metrics"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister sandbox métrique.",
+      "description": "Lister sandbox m\u00e9trique.",
       "args": {
-        "title": "Lister sandbox métrique",
+        "title": "Lister sandbox m\u00e9trique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2814,7 +2814,7 @@
             "type": "json",
             "key": "sandbox_ids",
             "label": "Sandbox Ids",
-            "description": "Comma separated liste sandbox Ids récupération métriques",
+            "description": "Comma separated liste sandbox Ids r\u00e9cup\u00e9ration m\u00e9triques",
             "col": {
               "xs": 24
             },
@@ -2828,14 +2828,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "métriques"
+      "group": "m\u00e9triques"
     },
     {
       "key": "e2b_metric_list_get_sandboxes_sandboxid_metrics",
       "name": "e2bMetricListGetSandboxesSandboxidMetrics",
       "schemaVersion": 2,
-      "title": "Lister sandbox sandbox ID métrique",
-      "subtitle": "Sandbox sandbox ID métrique",
+      "title": "Lister sandbox sandbox ID m\u00e9trique",
+      "subtitle": "Sandbox sandbox ID m\u00e9trique",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2849,7 +2849,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -2860,15 +2860,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_metrics"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister sandbox sandbox ID métrique.",
+      "description": "Lister sandbox sandbox ID m\u00e9trique.",
       "args": {
-        "title": "Lister sandbox sandbox ID métrique",
+        "title": "Lister sandbox sandbox ID m\u00e9trique",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2878,7 +2878,7 @@
             "type": "number",
             "key": "start",
             "label": "Start",
-            "description": "Unix timestamp start interval seconds which métriques",
+            "description": "Unix timestamp start interval seconds which m\u00e9triques",
             "col": {
               "xs": 24
             }
@@ -2887,7 +2887,7 @@
             "type": "number",
             "key": "end",
             "label": "End",
-            "description": "Paramètre de requête end",
+            "description": "Param\u00e8tre de requ\u00eate end",
             "col": {
               "xs": 24
             }
@@ -2896,14 +2896,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "métriques"
+      "group": "m\u00e9triques"
     },
     {
       "key": "e2b_network_update_put_sandboxes_sandboxid_network",
       "name": "e2bNetworkUpdatePutSandboxesSandboxidNetwork",
       "schemaVersion": 2,
-      "title": "Mettre à jour sandbox sandbox ID réseau",
-      "subtitle": "Sandbox sandbox ID réseau",
+      "title": "Mettre \u00e0 jour sandbox sandbox ID r\u00e9seau",
+      "subtitle": "Sandbox sandbox ID r\u00e9seau",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -2917,7 +2917,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -2928,15 +2928,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_network"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Mettre à jour sandbox sandbox ID réseau.",
+      "description": "Mettre \u00e0 jour sandbox sandbox ID r\u00e9seau.",
       "args": {
-        "title": "Mettre à jour sandbox sandbox ID réseau",
+        "title": "Mettre \u00e0 jour sandbox sandbox ID r\u00e9seau",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -2944,23 +2944,45 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "allowOut",
+            "label": "Sorties autoris\u00e9es",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "List of allowed destinations for egress traffic. Each entry can be a CIDR block (e.g. \"8.8.8.8/32\"), a bare IP address (e.g. \"8.8.8.8\"), or a domain name (e.g. \"example.com\", \"*.example.com\"). Allowed entries always take precedence over denied entries."
+          },
+          {
+            "type": "json",
+            "key": "denyOut",
+            "label": "Sorties bloqu\u00e9es",
+            "col": {
+              "xs": 24
+            },
+            "description": "List of denied CIDR blocks or IP addresses for egress traffic. Domain names are not supported for deny rules."
+          },
+          {
+            "type": "json",
+            "key": "rules",
+            "label": "R\u00e8gles r\u00e9seau",
+            "col": {
+              "xs": 24
+            },
+            "description": "Per-domain transform rules. Replaces all existing rules when provided."
+          },
+          {
+            "type": "checkbox",
+            "key": "allow_internet_access",
+            "label": "Acc\u00e8s internet",
+            "col": {
+              "xs": 24
+            },
+            "description": "Allow sandbox to access the internet. When set to false, it behaves the same as specifying denyOut to 0.0.0.0/0 in the network config."
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "réseaus"
+      "group": "r\u00e9seaus"
     },
     {
       "key": "e2b_node_list_get_nodes",
@@ -2981,7 +3003,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -2992,7 +3014,7 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_nodes"
         }
@@ -3025,7 +3047,7 @@
       "key": "e2b_node_get_get_nodes_nodeid",
       "name": "e2bNodeGetGetNodesNodeid",
       "schemaVersion": 2,
-      "title": "Récupérer noeud noeud ID",
+      "title": "R\u00e9cup\u00e9rer noeud noeud ID",
       "subtitle": "Noeud noeud ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -3040,7 +3062,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3051,15 +3073,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_node"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer noeud noeud ID.",
+      "description": "R\u00e9cup\u00e9rer noeud noeud ID.",
       "args": {
-        "title": "Récupérer noeud noeud ID",
+        "title": "R\u00e9cup\u00e9rer noeud noeud ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3084,7 +3106,7 @@
       "key": "e2b_node_create_post_nodes_nodeid",
       "name": "e2bNodeCreatePostNodesNodeid",
       "schemaVersion": 2,
-      "title": "Créer noeud noeud ID",
+      "title": "Cr\u00e9er noeud noeud ID",
       "subtitle": "Noeud noeud ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -3099,7 +3121,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3110,28 +3132,42 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_node"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer noeud noeud ID.",
+      "description": "Cr\u00e9er noeud noeud ID.",
       "args": {
-        "title": "Créer noeud noeud ID",
+        "title": "Cr\u00e9er noeud noeud ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "clusterID",
+            "label": "ID du cluster",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Identifier of the cluster"
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Status of the node.\n- draining: the node is bound to be shut down. It will not accept new sandboxes and will stop once all existing sandboxes are done.\n- standby: the node is not actively used, but it can return to ready and continue serving traffic.\n",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -3143,7 +3179,7 @@
       "key": "e2b_pause_create_post_sandboxes_sandboxid_pause",
       "name": "e2bPauseCreatePostSandboxesSandboxidPause",
       "schemaVersion": 2,
-      "title": "Créer sandbox sandbox ID",
+      "title": "Cr\u00e9er sandbox sandbox ID",
       "subtitle": "Sandbox sandbox ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -3158,7 +3194,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3169,15 +3205,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_pause"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sandbox sandbox ID.",
+      "description": "Cr\u00e9er sandbox sandbox ID.",
       "args": {
-        "title": "Créer sandbox sandbox ID",
+        "title": "Cr\u00e9er sandbox sandbox ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3196,15 +3232,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -3216,8 +3243,8 @@
       "key": "e2b_refreshe_create_post_sandboxes_sandboxid_refreshes",
       "name": "e2bRefresheCreatePostSandboxesSandboxidRefreshes",
       "schemaVersion": 2,
-      "title": "Créer sandbox sandbox ID rafraîchissement",
-      "subtitle": "Sandbox sandbox ID rafraîchissement",
+      "title": "Cr\u00e9er sandbox sandbox ID rafra\u00eechissement",
+      "subtitle": "Sandbox sandbox ID rafra\u00eechissement",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3231,7 +3258,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3242,34 +3269,34 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_refreshe"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sandbox sandbox ID rafraîchissement.",
+      "description": "Cr\u00e9er sandbox sandbox ID rafra\u00eechissement.",
       "args": {
-        "title": "Créer sandbox sandbox ID rafraîchissement",
+        "title": "Cr\u00e9er sandbox sandbox ID rafra\u00eechissement",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "duration",
+            "label": "Dur\u00e9e",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Duration for which the sandbox should be kept alive in seconds"
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "rafraîchissements"
+      "group": "rafra\u00eechissements"
     },
     {
       "key": "e2b_sandboxe_list_get_sandboxes",
@@ -3290,7 +3317,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3301,7 +3328,7 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_sandboxes"
         }
@@ -3318,8 +3345,8 @@
           {
             "type": "text",
             "key": "metadata",
-            "label": "Métadonnées",
-            "description": "Métadonnées query used filtre sandboxes e g utilisateur abc app prod Each key valeurs must URL encoded",
+            "label": "M\u00e9tadonn\u00e9es",
+            "description": "M\u00e9tadonn\u00e9es query used filtre sandboxes e g utilisateur abc app prod Each key valeurs must URL encoded",
             "col": {
               "xs": 24
             }
@@ -3334,7 +3361,7 @@
       "key": "e2b_sandboxe_create_post_sandboxes",
       "name": "e2bSandboxeCreatePostSandboxes",
       "schemaVersion": 2,
-      "title": "Créer sandbox",
+      "title": "Cr\u00e9er sandbox",
       "subtitle": "Sandbox",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -3349,7 +3376,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3360,33 +3387,119 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_sandboxe"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sandbox.",
+      "description": "Cr\u00e9er sandbox.",
       "args": {
-        "title": "Créer sandbox",
+        "title": "Cr\u00e9er sandbox",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "templateID",
+            "label": "ID du template",
             "col": {
               "xs": 24
             },
+            "description": "Identifier of the required template",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout",
+            "col": {
+              "xs": 24
+            },
+            "description": "Time to live for the sandbox in seconds."
+          },
+          {
+            "type": "checkbox",
+            "key": "autoPause",
+            "label": "Pause automatique",
+            "col": {
+              "xs": 24
+            },
+            "description": "Automatically pauses the sandbox after the timeout"
+          },
+          {
+            "type": "json",
+            "key": "autoResume",
+            "label": "Reprise automatique",
+            "col": {
+              "xs": 24
+            },
+            "description": "Auto-resume configuration for paused sandboxes."
+          },
+          {
+            "type": "checkbox",
+            "key": "secure",
+            "label": "Acc\u00e8s s\u00e9curis\u00e9",
+            "col": {
+              "xs": 24
+            },
+            "description": "Secure all system communication with sandbox"
+          },
+          {
+            "type": "checkbox",
+            "key": "allow_internet_access",
+            "label": "Acc\u00e8s internet",
+            "col": {
+              "xs": 24
+            },
+            "description": "Allow sandbox to access the internet. When set to false, it behaves the same as specifying denyOut to 0.0.0.0/0 in the network config."
+          },
+          {
+            "type": "json",
+            "key": "network",
+            "label": "R\u00e9seau",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "metadata",
+            "label": "M\u00e9tadonn\u00e9es",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "envVars",
+            "label": "Variables d\u2019environnement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "mcp",
+            "label": "Configuration MCP",
+            "col": {
+              "xs": 24
+            },
+            "description": "MCP configuration for the sandbox"
+          },
+          {
+            "type": "json",
+            "key": "volumeMounts",
+            "label": "Volumes mont\u00e9s",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -3413,7 +3526,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3424,7 +3537,7 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_sandboxes"
         }
@@ -3441,8 +3554,8 @@
           {
             "type": "text",
             "key": "metadata",
-            "label": "Métadonnées",
-            "description": "Métadonnées query used filtre sandboxes e g utilisateur abc app prod Each key valeurs must URL encoded",
+            "label": "M\u00e9tadonn\u00e9es",
+            "description": "M\u00e9tadonn\u00e9es query used filtre sandboxes e g utilisateur abc app prod Each key valeurs must URL encoded",
             "col": {
               "xs": 24
             }
@@ -3466,7 +3579,7 @@
       "key": "e2b_sandboxe_get_get_sandboxes_sandboxid",
       "name": "e2bSandboxeGetGetSandboxesSandboxid",
       "schemaVersion": 2,
-      "title": "Récupérer sandbox sandbox ID",
+      "title": "R\u00e9cup\u00e9rer sandbox sandbox ID",
       "subtitle": "Sandbox sandbox ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -3481,7 +3594,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3492,15 +3605,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_sandboxe"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer sandbox sandbox ID.",
+      "description": "R\u00e9cup\u00e9rer sandbox sandbox ID.",
       "args": {
-        "title": "Récupérer sandbox sandbox ID",
+        "title": "R\u00e9cup\u00e9rer sandbox sandbox ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3545,7 +3658,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3556,7 +3669,7 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_action_result"
         }
@@ -3594,8 +3707,8 @@
       "key": "e2b_snapshot_create_post_sandboxes_sandboxid_snapshots",
       "name": "e2bSnapshotCreatePostSandboxesSandboxidSnapshots",
       "schemaVersion": 2,
-      "title": "Créer sandbox sandbox ID instantané",
-      "subtitle": "Sandbox sandbox ID instantané",
+      "title": "Cr\u00e9er sandbox sandbox ID instantan\u00e9",
+      "subtitle": "Sandbox sandbox ID instantan\u00e9",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3609,7 +3722,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3620,46 +3733,41 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_snapshot"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sandbox sandbox ID instantané.",
+      "description": "Cr\u00e9er sandbox sandbox ID instantan\u00e9.",
       "args": {
-        "title": "Créer sandbox sandbox ID instantané",
+        "title": "Cr\u00e9er sandbox sandbox ID instantan\u00e9",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "Optional name for the snapshot template. If a snapshot template with this name already exists, a new build will be assigned to the existing template instead of creating a new one."
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "instantanés"
+      "group": "instantan\u00e9s"
     },
     {
       "key": "e2b_snapshot_list_get_snapshots",
       "name": "e2bSnapshotListGetSnapshots",
       "schemaVersion": 2,
-      "title": "Lister instantané",
-      "subtitle": "Instantané",
+      "title": "Lister instantan\u00e9",
+      "subtitle": "Instantan\u00e9",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3673,7 +3781,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3684,15 +3792,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_snapshots"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Lister instantané.",
+      "description": "Lister instantan\u00e9.",
       "args": {
-        "title": "Lister instantané",
+        "title": "Lister instantan\u00e9",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3702,7 +3810,7 @@
             "type": "text",
             "key": "sandboxid",
             "label": "Sandbox ID",
-            "description": "Paramètre de requête sandbox ID",
+            "description": "Param\u00e8tre de requ\u00eate sandbox ID",
             "col": {
               "xs": 24
             }
@@ -3711,14 +3819,14 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "instantanés"
+      "group": "instantan\u00e9s"
     },
     {
       "key": "e2b_timeout_create_post_sandboxes_sandboxid_timeout",
       "name": "e2bTimeoutCreatePostSandboxesSandboxidTimeout",
       "schemaVersion": 2,
-      "title": "Créer sandbox sandbox ID délai d'attente",
-      "subtitle": "Sandbox sandbox ID délai d'attente",
+      "title": "Cr\u00e9er sandbox sandbox ID d\u00e9lai d'attente",
+      "subtitle": "Sandbox sandbox ID d\u00e9lai d'attente",
       "icon": "fa-solid fa-bolt",
       "type": "function",
       "nodeKind": "function",
@@ -3732,7 +3840,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3743,34 +3851,39 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_timeout"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer sandbox sandbox ID délai d'attente.",
+      "description": "Cr\u00e9er sandbox sandbox ID d\u00e9lai d'attente.",
       "args": {
-        "title": "Créer sandbox sandbox ID délai d'attente",
+        "title": "Cr\u00e9er sandbox sandbox ID d\u00e9lai d'attente",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "number",
+            "key": "timeout",
+            "label": "Timeout",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Timeout in seconds from the current time after which the sandbox should expire",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
         "displayDescription": false
       },
-      "group": "délai d attentes"
+      "group": "d\u00e9lai d attentes"
     },
     {
       "key": "e2b_volume_list_get_volumes",
@@ -3791,7 +3904,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3802,7 +3915,7 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_volumes"
         }
@@ -3825,7 +3938,7 @@
       "key": "e2b_volume_create_post_volumes",
       "name": "e2bVolumeCreatePostVolumes",
       "schemaVersion": 2,
-      "title": "Créer volume",
+      "title": "Cr\u00e9er volume",
       "subtitle": "Volume",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -3840,7 +3953,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3851,28 +3964,28 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_volume"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Créer volume.",
+      "description": "Cr\u00e9er volume.",
       "args": {
-        "title": "Créer volume",
+        "title": "Cr\u00e9er volume",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
             },
+            "description": "Name of the volume",
             "validators": [
               {
                 "type": "required"
@@ -3889,7 +4002,7 @@
       "key": "e2b_volume_get_get_volumes_volumeid",
       "name": "e2bVolumeGetGetVolumesVolumeid",
       "schemaVersion": 2,
-      "title": "Récupérer volume volume ID",
+      "title": "R\u00e9cup\u00e9rer volume volume ID",
       "subtitle": "Volume volume ID",
       "icon": "fa-solid fa-bolt",
       "type": "function",
@@ -3904,7 +4017,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3915,15 +4028,15 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_volume"
         }
       ],
       "authorize_catch_error": true,
-      "description": "Récupérer volume volume ID.",
+      "description": "R\u00e9cup\u00e9rer volume volume ID.",
       "args": {
-        "title": "Récupérer volume volume ID",
+        "title": "R\u00e9cup\u00e9rer volume volume ID",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true
@@ -3968,7 +4081,7 @@
       "inputHandles": [
         {
           "id": "in",
-          "name": "Entrée",
+          "name": "Entr\u00e9e",
           "type": "any",
           "accepts": [
             "any",
@@ -3979,7 +4092,7 @@
       "outputHandles": [
         {
           "id": "ok",
-          "name": "Succès",
+          "name": "Succ\u00e8s",
           "type": "payload",
           "schema": "$var:e2b_action_result"
         }
@@ -4017,8 +4130,8 @@
       "key": "e2b_health_ping",
       "name": "e2bHealthPing",
       "schemaVersion": 2,
-      "title": "Vérifier disponibilité API",
-      "subtitle": "Santé",
+      "title": "V\u00e9rifier disponibilit\u00e9 API",
+      "subtitle": "Sant\u00e9",
       "icon": "fa-solid fa-heart-pulse",
       "type": "function",
       "nodeKind": "function",
@@ -4049,9 +4162,9 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Teste rapidement la disponibilité de l API E2B.",
+      "description": "Teste rapidement la disponibilit\u00e9 de l API E2B.",
       "args": {
-        "title": "Vérifier disponibilité API",
+        "title": "V\u00e9rifier disponibilit\u00e9 API",
         "ui": {
           "layout": "vertical",
           "labelsOnTop": true

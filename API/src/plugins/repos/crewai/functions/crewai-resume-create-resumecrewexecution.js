@@ -12,13 +12,14 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
+    let parsedInputs = undefined;
+    if (d.inputs !== undefined && d.inputs !== null && d.inputs !== '') {
+      if (typeof d.inputs === 'object') parsedInputs = d.inputs;
       else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
+        try { parsedInputs = JSON.parse(String(d.inputs)); } catch { return { ok: false, error: 'JSON invalide dans les entrées de reprise.' }; }
       }
     }
+    const body = { execution_id: String(d.executionId || '').trim(), inputs: parsedInputs };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

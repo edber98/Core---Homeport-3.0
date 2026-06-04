@@ -12,13 +12,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"transactionalMessageId","target":"transactional_message_id","type":"object"},{"key":"to","target":"to","type":"string"},{"key":"from","target":"from","type":"string"},{"key":"language","target":"language","type":"string"},{"key":"identifiers","target":"identifiers","type":"object"},{"key":"messageData","target":"message_data","type":"object"},{"key":"sendAt","target":"send_at","type":"number"},{"key":"disableMessageRetention","target":"disable_message_retention","type":"boolean"},{"key":"sendToUnsubscribed","target":"send_to_unsubscribed","type":"boolean"},{"key":"queueDraft","target":"queue_draft","type":"boolean"},{"key":"autoCreate","target":"auto_create","type":"boolean"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

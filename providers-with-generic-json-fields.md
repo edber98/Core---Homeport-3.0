@@ -46,19 +46,19 @@ Total: `107` providers.
 | Cloudflare ✓ | `cloudflare` | 3 | `body`, `data` |
 | Cohere ✓ | `cohere` | 1 | `body` |
 | ConvertKit ✓ | `convertkit` | 30 | `body` |
-| CrewAI | `crewai` | 3 | `body` |
-| Crisp | `crisp` | 3 | `body`, `data` |
-| Customer.io | `customer_io` | 69 | `body` |
-| Datadog | `datadog` | 3 | `body`, `options` |
-| DeepSeek | `deepseek` | 1 | `input` |
-| Docker | `docker` | 7 | `payload` |
-| Dropcontact | `dropcontact` | 1 | `body` |
-| E2B | `e2b` | 10 | `body` |
-| Ebay | `ebay` | 47 | `body` |
-| Elasticsearch | `elasticsearch` | 12 | `body`, `headers`, `query` |
-| fal AI | `fal_ai` | 5 | `body` |
-| Firebase | `firebase` | 1 | `data` |
-| Firecrawl | `firecrawl` | 6 | `options` |
+| CrewAI ✓ | `crewai` | 3 | `body` |
+| Crisp ✓ | `crisp` | 3 | `body`, `data` |
+| Customer.io ✓ | `customer_io` | 69 | `body` |
+| Datadog ✓ | `datadog` | 3 | `body`, `options` |
+| DeepSeek ✓ | `deepseek` | 1 | `input` |
+| Docker ✓ | `docker` | 7 | `payload` |
+| Dropcontact ✓ | `dropcontact` | 1 | `body` |
+| E2B ✓ | `e2b` | 10 | `body` |
+| Ebay ✓ | `ebay` | 47 | `body` |
+| Elasticsearch ✓ | `elasticsearch` | 12 | `body`, `headers`, `query` |
+| fal AI ✓ | `fal_ai` | 5 | `body` |
+| Firebase ✓ | `firebase` | 1 | `data` |
+| Firecrawl ✓ | `firecrawl` | 6 | `options` |
 | Front | `front` | 95 | `body` |
 | Fullstory | `fullstory` | 5 | `body`, `headers`, `query` |
 | Groq | `groq` | 2 | `input` |

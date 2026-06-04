@@ -6,7 +6,7 @@ module.exports = {
     const d = inputs || {};
     const body = {
       filter: utils.compact({
-        query: d.query || "*",
+        query: d.logQuery || "*",
         from: d.from || "now-15m",
         to: d.to || "now",
         indexes: utils.splitCsv(d.indexes)

@@ -10,8 +10,8 @@ module.exports = {
     let query = {};
     let body;
     try {
-      query = d.query ? (typeof d.query === 'object' ? d.query : JSON.parse(String(d.query))) : {};
-      body = d.body === undefined || d.body === null || d.body === '' ? undefined : (typeof d.body === 'object' ? d.body : JSON.parse(String(d.body)));
+      query = d.queryParametersJson ? (typeof d.queryParametersJson === 'object' ? d.queryParametersJson : JSON.parse(String(d.queryParametersJson))) : {};
+      body = d.requestBodyJson === undefined || d.requestBodyJson === null || d.requestBodyJson === '' ? undefined : (typeof d.requestBodyJson === 'object' ? d.requestBodyJson : JSON.parse(String(d.requestBodyJson)));
     } catch {
       return { ok: false, error: 'JSON invalide dans query ou body.' };
     }

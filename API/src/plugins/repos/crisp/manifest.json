@@ -856,9 +856,9 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données JSON",
-            "description": "Données profil optionnelles.",
+            "key": "profileData",
+            "label": "Données du profil",
+            "description": "Objet JSON des attributs personnalisés du profil Crisp.",
             "col": {
               "xs": 24
             }
@@ -960,9 +960,9 @@
           },
           {
             "type": "textarea",
-            "key": "data",
-            "label": "Données JSON",
-            "description": "Données profil.",
+            "key": "profileData",
+            "label": "Données du profil",
+            "description": "Objet JSON des attributs personnalisés du profil Crisp.",
             "col": {
               "xs": 24
             }
@@ -1166,19 +1166,21 @@
           },
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Query JSON",
+            "key": "queryParametersJson",
+            "label": "Paramètres de requête",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON des paramètres à ajouter à l’URL."
           },
           {
             "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
+            "key": "requestBodyJson",
+            "label": "Corps de requête",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON envoyé pour un appel API personnalisé."
           }
         ]
       },

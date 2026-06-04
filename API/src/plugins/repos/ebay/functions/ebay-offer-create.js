@@ -10,13 +10,8 @@ module.exports = {
     const query = {};
     
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = utils.buildBodyFromInputs(d, [{"source":"availableQuantity","target":"availableQuantity","type":"number"},{"source":"categoryId","target":"categoryId","type":"text"},{"source":"charity","target":"charity","type":"json"},{"source":"extendedProducerResponsibility","target":"extendedProducerResponsibility","type":"json"},{"source":"format","target":"format","type":"text"},{"source":"hideBuyerDetails","target":"hideBuyerDetails","type":"checkbox"},{"source":"includeCatalogProductDetails","target":"includeCatalogProductDetails","type":"checkbox"},{"source":"listingDescription","target":"listingDescription","type":"text"},{"source":"listingDuration","target":"listingDuration","type":"text"},{"source":"listingPolicies","target":"listingPolicies","type":"json"},{"source":"listingStartDate","target":"listingStartDate","type":"text"},{"source":"lotSize","target":"lotSize","type":"number"},{"source":"marketplaceId","target":"marketplaceId","type":"text"},{"source":"merchantLocationKey","target":"merchantLocationKey","type":"text"},{"source":"pricingSummary","target":"pricingSummary","type":"json"},{"source":"quantityLimitPerBuyer","target":"quantityLimitPerBuyer","type":"number"},{"source":"regulatory","target":"regulatory","type":"json"},{"source":"secondaryCategoryId","target":"secondaryCategoryId","type":"text"},{"source":"sku","target":"sku","type":"text"},{"source":"storeCategoryNames","target":"storeCategoryNames","type":"json"},{"source":"tax","target":"tax","type":"json"}]);
+    if (body && body.__invalid) return { ok: false, error: body.__invalid };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
