@@ -17,13 +17,13 @@
 | assemblyai | Oui |
 | atera | Oui |
 | attio | Oui |
-| aws | Oui |
+| aws | Non |
 | baseten | Non |
 | beehiiv | Non |
-| bill | Oui |
+| bill | Non |
 | box | Oui |
 | braze | Non |
-| brevo | Oui |
+| brevo | Non |
 | brightdata | Non |
 | browserbase | Oui |
 | calendars | Oui |

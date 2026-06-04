@@ -7,12 +7,26 @@ module.exports = {
     const functionName = String(d.functionName || "").trim();
     if (!functionName) return { ok: false, error: "Nom de fonction requis." };
 
-    let payload = {};
-    if (d.payload) {
-      try {
-        payload = typeof d.payload === "object" ? d.payload : JSON.parse(String(d.payload));
-      } catch {
-        return { ok: false, error: "JSON invalide dans payload." };
+    const payload = {};
+    for (const field of Array.isArray(d.eventFields) ? d.eventFields : []) {
+      const key = String(field && field.eventKey || "").trim();
+      if (!key) continue;
+      const rawValue = field && field.eventValue;
+      switch (field && field.eventValueType || "string") {
+        case "number": {
+          const numberValue = Number(rawValue);
+          if (Number.isNaN(numberValue)) return { ok: false, error: `Nombre invalide pour ${key}.` };
+          payload[key] = numberValue;
+          break;
+        }
+        case "boolean":
+          payload[key] = rawValue === true || String(rawValue).toLowerCase() === "true";
+          break;
+        case "null":
+          payload[key] = null;
+          break;
+        default:
+          payload[key] = rawValue == null ? "" : String(rawValue);
       }
     }
 

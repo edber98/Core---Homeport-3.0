@@ -82,4 +82,27 @@ function pickId(obj) {
   return (obj && (obj.id || obj.vendorId || obj.billId || obj.paymentId)) || "";
 }
 
-module.exports = { utils: { billRequest, parseJson, items, pickId, BASE_URLS } };
+function buildRequestBody(inputs, fields) {
+  const body = {};
+  let hasValue = false;
+  for (const field of fields || []) {
+    const key = field.key;
+    let value = inputs ? inputs[key] : undefined;
+    if (value === undefined || value === null || value === "") continue;
+    if ((field.type === "object" || field.type === "array") && typeof value === "string") {
+      try {
+        value = JSON.parse(value);
+      } catch {
+        return { ok: false, error: `JSON invalide pour ${key}.` };
+      }
+    } else if ((field.type === "integer" || field.type === "number") && typeof value !== "number") {
+      value = Number(value);
+      if (Number.isNaN(value)) return { ok: false, error: `Nombre invalide pour ${key}.` };
+    }
+    body[key] = value;
+    hasValue = true;
+  }
+  return { ok: true, body: hasValue ? body : undefined };
+}
+
+module.exports = { utils: { billRequest, parseJson, items, pickId, BASE_URLS, buildRequestBody } };

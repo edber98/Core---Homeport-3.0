@@ -25,12 +25,12 @@ Total: `107` providers.
 
 | Provider | Dossier | Noeuds concernés | Champs génériques détectés |
 |---|---|---:|---|
-| AWS | `aws` | 1 | `payload` |
-| Baseten | `baseten` | 59 | `body` |
-| Beehiiv | `beehiiv` | 14 | `body` |
-| BILL | `bill` | 3 | `body` |
-| Braze | `braze` | 7 | `body` |
-| Brevo | `brevo` | 2 | `attributes` |
+| AWS ✓ | `aws` | 1 | `payload` |
+| Baseten ✓ | `baseten` | 59 | `body` |
+| Beehiiv ✓ | `beehiiv` | 14 | `body` |
+| BILL ✓ | `bill` | 3 | `body` |
+| Braze ✓ | `braze` | 7 | `body` |
+| Brevo ✓ | `brevo` | 2 | `attributes` |
 | BrightData | `brightdata` | 10 | `body` |
 | Browserbase | `browserbase` | 1 | `body` |
 | Calendly | `calendly` | 1 | `body` |
