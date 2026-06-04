@@ -12,16 +12,27 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.ecomcustomer_connectionid !== undefined && d.ecomcustomer_connectionid !== null && d.ecomcustomer_connectionid !== "") {
+          if (!body["ecomcustomer"] || typeof body["ecomcustomer"] !== 'object' || Array.isArray(body["ecomcustomer"])) body["ecomcustomer"] = {};
+          body["ecomcustomer"]["connectionid"] = d.ecomcustomer_connectionid;
+        }
+    if (d.ecomcustomer_externalid !== undefined && d.ecomcustomer_externalid !== null && d.ecomcustomer_externalid !== "") {
+          if (!body["ecomcustomer"] || typeof body["ecomcustomer"] !== 'object' || Array.isArray(body["ecomcustomer"])) body["ecomcustomer"] = {};
+          body["ecomcustomer"]["externalid"] = d.ecomcustomer_externalid;
+        }
+    if (d.ecomcustomer_email !== undefined && d.ecomcustomer_email !== null && d.ecomcustomer_email !== "") {
+          if (!body["ecomcustomer"] || typeof body["ecomcustomer"] !== 'object' || Array.isArray(body["ecomcustomer"])) body["ecomcustomer"] = {};
+          body["ecomcustomer"]["email"] = d.ecomcustomer_email;
+        }
+    if (d.ecomcustomer_acceptsmarketing !== undefined && d.ecomcustomer_acceptsmarketing !== null && d.ecomcustomer_acceptsmarketing !== "") {
+          if (!body["ecomcustomer"] || typeof body["ecomcustomer"] !== 'object' || Array.isArray(body["ecomcustomer"])) body["ecomcustomer"] = {};
+          body["ecomcustomer"]["acceptsmarketing"] = d.ecomcustomer_acceptsmarketing;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

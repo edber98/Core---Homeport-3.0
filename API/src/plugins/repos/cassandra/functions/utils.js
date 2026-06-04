@@ -180,8 +180,9 @@ async function run(key, inputs, opts) {
       const keyspace = cleanString(d.keyspace || (opts && opts.credentials && opts.credentials.keyspace) || "");
       const table = cleanString(d.table);
       if (!table) return { ok: false, error: "table requise." };
-      const data = parseJson(d.data, "data", null);
-      if (!data || typeof data !== "object" || Array.isArray(data)) return { ok: false, error: "data doit être un objet JSON." };
+      let data;
+      try { data = buildColumnObject(d.rowFields); } catch (e) { return { ok: false, error: e.message }; }
+      if (!data || typeof data !== "object" || Array.isArray(data)) return { ok: false, error: "colonnes invalides." };
       const keys = Object.keys(data);
       if (!keys.length) return { ok: false, error: "data ne peut pas être vide." };
       const query = `INSERT INTO ${tableName(keyspace, table)} (${keys.map(quoteIdentifier).join(", ")}) VALUES (${keys.map(() => "?").join(", ")})`;
@@ -197,9 +198,10 @@ async function run(key, inputs, opts) {
       const table = cleanString(d.table);
       const where = cleanString(d.where);
       if (!table || !where) return { ok: false, error: "table et where requis." };
-      const data = parseJson(d.data, "data", null);
+      let data;
+      try { data = buildColumnObject(d.updateFields); } catch (e) { return { ok: false, error: e.message }; }
       const params = parseJson(d.params, "params", []);
-      if (!data || typeof data !== "object" || Array.isArray(data)) return { ok: false, error: "data doit être un objet JSON." };
+      if (!data || typeof data !== "object" || Array.isArray(data)) return { ok: false, error: "colonnes invalides." };
       const keys = Object.keys(data);
       if (!keys.length) return { ok: false, error: "data ne peut pas être vide." };
       const setClause = keys.map((k) => `${quoteIdentifier(k)} = ?`).join(", ");

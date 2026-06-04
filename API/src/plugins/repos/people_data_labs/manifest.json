@@ -1219,10 +1219,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Paramètres d'enrichissement.",
+            "type": "text",
+            "key": "job_title",
+            "label": "Job Title",
+            "description": "Job title that will be enriched",
             "col": {
               "xs": 24
             },
@@ -1230,7 +1230,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "job_title"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "titlecase",
+            "label": "Titlecase",
+            "description": "Setting titlecase to true will titlecase any records returned",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "titlecase"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1283,10 +1323,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Filtres de recherche.",
+            "type": "text",
+            "key": "sql",
+            "label": "Sql",
+            "description": "A SQL query of the format: SELECT * FROM person WHERE XXX, where XXX is a standard SQL boolean query involving our person fields",
             "col": {
               "xs": 24
             },
@@ -1294,7 +1334,155 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "sql"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "size",
+            "label": "Size",
+            "description": "The number of matched records to return for this query if they exist*. Must be between 1 and 100",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "size"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "from",
+            "label": "From",
+            "description": "An offset value for pagination. Can be a number between 0 and 9999. Pagination can be executed up to a maximum of 10,000 records per query. Be sure to use the \"total\" response field to help discover how many total records exist in the dataset for your query",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "from"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "scroll_token",
+            "label": "Scroll Token",
+            "description": "Each search API response returns a scroll_token. Include it in the next request to fetch the next size matching records",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "scroll_token"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dataset",
+            "label": "Dataset",
+            "description": "Specifies which dataset(s) the API should search against",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dataset"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "titlecase",
+            "label": "Titlecase",
+            "description": "Setting titlecase to true will titlecase any records returned",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "titlecase"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "data_include",
+            "label": "Data Include",
+            "description": "A comma-separated string of fields that you would like the response to include. Begin the string with a - if you would instead like to exclude the specified fields. If you would like to exclude all data from being returned, use data_include=\"\"",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "data_include"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "An Elasticsearch (v7.7) query. See our underlying Elasticsearch mapping for reference.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "query"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1475,10 +1663,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Paramètres d'enrichissement.",
+            "type": "text",
+            "key": "job_title",
+            "label": "Job Title",
+            "description": "Job title that will be enriched",
             "col": {
               "xs": 24
             },
@@ -1486,7 +1674,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "job_title"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "titlecase",
+            "label": "Titlecase",
+            "description": "Setting titlecase to true will titlecase any records returned",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "titlecase"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1539,10 +1767,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Filtres de recherche.",
+            "type": "text",
+            "key": "sql",
+            "label": "Sql",
+            "description": "A SQL query of the format: SELECT * FROM company WHERE XXX, where XXX is a standard SQL boolean query involving our company fields",
             "col": {
               "xs": 24
             },
@@ -1550,7 +1778,119 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "sql"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "size",
+            "label": "Size",
+            "description": "The number of matched records to return for this query if they exist*. Must be between 1 and 100",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "size"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "from",
+            "label": "From",
+            "description": "An offset value for pagination. Can be a number between 0 and 9999. Pagination can be executed up to a maximum of 10,000 records per query. Be sure to use the \"total\" response field to help discover how many total records exist in the dataset for your query",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "from"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "scroll_token",
+            "label": "Scroll Token",
+            "description": "Each search API response returns a scroll_token. Include it in the next request to fetch the next size matching records",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "scroll_token"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "titlecase",
+            "label": "Titlecase",
+            "description": "Setting titlecase to true will titlecase any records returned",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "titlecase"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "An Elasticsearch (v7.7) query. See our underlying Elasticsearch mapping for reference",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "query"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1603,10 +1943,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Adresse IP à enrichir.",
+            "type": "text",
+            "key": "job_title",
+            "label": "Job Title",
+            "description": "Job title that will be enriched",
             "col": {
               "xs": 24
             },
@@ -1614,7 +1954,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "job_title"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "titlecase",
+            "label": "Titlecase",
+            "description": "Setting titlecase to true will titlecase any records returned",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "titlecase"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1667,10 +2047,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Filtres de recherche d'offres.",
+            "type": "text",
+            "key": "sql",
+            "label": "Sql",
+            "description": "A SQL query of the format: SELECT * FROM person WHERE XXX, where XXX is a standard SQL boolean query involving our person fields",
             "col": {
               "xs": 24
             },
@@ -1678,7 +2058,155 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "sql"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "size",
+            "label": "Size",
+            "description": "The number of matched records to return for this query if they exist*. Must be between 1 and 100",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "size"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "from",
+            "label": "From",
+            "description": "An offset value for pagination. Can be a number between 0 and 9999. Pagination can be executed up to a maximum of 10,000 records per query. Be sure to use the \"total\" response field to help discover how many total records exist in the dataset for your query",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "from"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "scroll_token",
+            "label": "Scroll Token",
+            "description": "Each search API response returns a scroll_token. Include it in the next request to fetch the next size matching records",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "scroll_token"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dataset",
+            "label": "Dataset",
+            "description": "Specifies which dataset(s) the API should search against",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dataset"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "titlecase",
+            "label": "Titlecase",
+            "description": "Setting titlecase to true will titlecase any records returned",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "titlecase"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "data_include",
+            "label": "Data Include",
+            "description": "A comma-separated string of fields that you would like the response to include. Begin the string with a - if you would instead like to exclude the specified fields. If you would like to exclude all data from being returned, use data_include=\"\"",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "data_include"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "An Elasticsearch (v7.7) query. See our underlying Elasticsearch mapping for reference.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "query"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1818,10 +2346,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Liste à nettoyer.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "The name of the company",
             "col": {
               "xs": 24
             },
@@ -1829,7 +2357,65 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "website",
+            "label": "Website",
+            "description": "A website the company uses",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "website"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "profile",
+            "label": "Profile",
+            "description": "A social profile used by the company (e.g. LinkedIn/Facebook/Twitter)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "profile"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1882,10 +2468,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Liste à nettoyer.",
+            "type": "text",
+            "key": "location",
+            "label": "Location",
+            "description": "The raw location to process",
             "col": {
               "xs": 24
             },
@@ -1893,7 +2479,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "location"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1946,10 +2554,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Liste à nettoyer.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "The name of the school",
             "col": {
               "xs": 24
             },
@@ -1957,7 +2565,65 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "website",
+            "label": "Website",
+            "description": "A website the school uses",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "website"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "profile",
+            "label": "Profile",
+            "description": "A social profile used by the school (e.g. LinkedIn/Facebook/Twitter)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "profile"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -2010,10 +2676,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Intitulés à enrichir.",
+            "type": "text",
+            "key": "job_title",
+            "label": "Job Title",
+            "description": "Job title that will be enriched",
             "col": {
               "xs": 24
             },
@@ -2021,7 +2687,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "job_title"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "titlecase",
+            "label": "Titlecase",
+            "description": "Setting titlecase to true will titlecase any records returned",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "titlecase"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pretty",
+            "label": "Pretty",
+            "description": "Whether the output should have human-readable indentation",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pretty"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,

@@ -365,9 +365,9 @@
         "fields": [
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Requête",
-            "description": "Requête de recherche.",
+            "key": "searchQuery",
+            "label": "Requête de recherche",
+            "description": "Requête envoyée à Perplexity.",
             "col": {
               "xs": 24
             },
@@ -388,9 +388,9 @@
           },
           {
             "type": "textarea",
-            "key": "options",
-            "label": "Options JSON",
-            "description": "Options de recherche supplémentaires.",
+            "key": "searchOptions",
+            "label": "Options de recherche",
+            "description": "Objet JSON des options Perplexity documentées.",
             "col": {
               "xs": 24
             }

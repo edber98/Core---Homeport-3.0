@@ -28,9 +28,26 @@ function pick(d, keys) {
   return out;
 }
 
+function buildObjectFromFields(rows) {
+  const object = {};
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const key = String(row && row.fieldKey || '').trim();
+    if (!key) continue;
+    let value = row.fieldValue;
+    switch (row.fieldType || 'string') {
+      case 'number': value = Number(value); if (Number.isNaN(value)) throw new Error(`Nombre invalide pour ${key}.`); break;
+      case 'boolean': value = value === true || String(value).toLowerCase() === 'true'; break;
+      case 'json': value = parseJsonInput(value, key, null); break;
+      case 'null': value = null; break;
+      default: value = value == null ? '' : String(value);
+    }
+    object[key] = value;
+  }
+  return object;
+}
+
 function bodyFrom(d, keys, jsonKeys) {
-  const payload = parseJsonInput(d.payload, "payload", undefined);
-  const out = payload && typeof payload === "object" && !Array.isArray(payload) ? { ...payload } : {};
+  const out = buildObjectFromFields(d.requestFields);
   for (const key of keys || []) if (d[key] !== undefined && d[key] !== null && d[key] !== "") out[key] = d[key];
   for (const key of jsonKeys || []) if (d[key] !== undefined && d[key] !== null && d[key] !== "") out[key] = parseJsonInput(d[key], key, undefined);
   return Object.keys(out).length ? out : undefined;
@@ -221,8 +238,8 @@ async function run(key, inputs, opts) {
       const method = String((inputs || {}).method || "GET").toUpperCase();
       const path = String((inputs || {}).path || "").trim();
       if (!path) return { ok: false, error: "Champ requis manquant: path." };
-      const query = parseJsonInput((inputs || {}).query, "query", {});
-      const body = method === "GET" || method === "DELETE" ? undefined : parseJsonInput((inputs || {}).body, "body", undefined);
+      const query = buildObjectFromFields((inputs || {}).queryFields);
+      const body = method === "GET" || method === "DELETE" ? undefined : buildObjectFromFields((inputs || {}).requestFields);
       const res = await apiRequest(opts, path, { method, query, body });
       if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
       return responseResult(res.data);
@@ -239,4 +256,4 @@ async function run(key, inputs, opts) {
   }
 }
 
-module.exports = { utils: { run, apiRequest, parseJsonInput, compactJson, responseResult, listResult } };
+module.exports = { utils: { run, apiRequest, parseJsonInput, compactJson, responseResult, listResult, buildObjectFromFields } };

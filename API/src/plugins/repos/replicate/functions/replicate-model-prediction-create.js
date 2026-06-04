@@ -3,7 +3,7 @@ module.exports = { async replicate_model_prediction_create(node, msg, inputs, op
   const d = inputs || {};
   if (!d.owner || !d.model) return { ok: false, error: "Propriétaire et modèle requis." };
   let input;
-  try { input = utils.parseJsonInput(d.input, "entrée", {}); } catch (e) { return { ok: false, error: e.message }; }
+  try { input = utils.parseJsonInput(d.modelInput, "modelInput", {}); } catch (e) { return { ok: false, error: e.message }; }
   const body = { input };
   if (d.webhook) body.webhook = String(d.webhook);
   const res = await utils.replicateRequest(opts, `/models/${encodeURIComponent(String(d.owner))}/${encodeURIComponent(String(d.model))}/predictions`, { method: "POST", body });

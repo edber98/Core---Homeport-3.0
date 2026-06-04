@@ -12,16 +12,27 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.contactlist_list !== undefined && d.contactlist_list !== null && d.contactlist_list !== "") {
+          if (!body["contactlist"] || typeof body["contactlist"] !== 'object' || Array.isArray(body["contactlist"])) body["contactlist"] = {};
+          body["contactlist"]["list"] = d.contactlist_list;
+        }
+    if (d.contactlist_contact !== undefined && d.contactlist_contact !== null && d.contactlist_contact !== "") {
+          if (!body["contactlist"] || typeof body["contactlist"] !== 'object' || Array.isArray(body["contactlist"])) body["contactlist"] = {};
+          body["contactlist"]["contact"] = d.contactlist_contact;
+        }
+    if (d.contactlist_status !== undefined && d.contactlist_status !== null && d.contactlist_status !== "") {
+          if (!body["contactlist"] || typeof body["contactlist"] !== 'object' || Array.isArray(body["contactlist"])) body["contactlist"] = {};
+          body["contactlist"]["status"] = d.contactlist_status;
+        }
+    if (d.contactlist_sourceid !== undefined && d.contactlist_sourceid !== null && d.contactlist_sourceid !== "") {
+          if (!body["contactlist"] || typeof body["contactlist"] !== 'object' || Array.isArray(body["contactlist"])) body["contactlist"] = {};
+          body["contactlist"]["sourceid"] = d.contactlist_sourceid;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

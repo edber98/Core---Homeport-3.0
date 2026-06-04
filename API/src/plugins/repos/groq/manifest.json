@@ -1147,9 +1147,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Input",
-            "description": "Texte ou JSON tableau de textes.",
+            "key": "embeddingInput",
+            "label": "Entrée embedding",
+            "description": "Texte ou tableau JSON envoyé dans input.",
             "col": {
               "xs": 24
             },
@@ -1218,9 +1218,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Input",
-            "description": "Instruction utilisateur.",
+            "key": "responseInput",
+            "label": "Entrée réponse",
+            "description": "Instruction envoyée dans input.",
             "col": {
               "xs": 24
             },

@@ -1,0 +1,4 @@
+interface:
+  display_name: "OpenAPI Extractor"
+  short_description: "Extrait un inventaire JSON exhaustif d endpoints OpenAPI avec params et body."
+  default_prompt: "Extrait tous les endpoints de cette API en JSON avec path, query, header, cookie et tous les attributs documentes du body."

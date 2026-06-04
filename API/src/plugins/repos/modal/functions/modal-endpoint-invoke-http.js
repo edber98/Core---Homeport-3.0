@@ -18,9 +18,9 @@ module.exports = {
     let query;
     let body;
     try {
-      headers = utils.parseJsonInput(d.headers, "headers", {});
-      query = utils.parseJsonInput(d.query, "query", {});
-      body = utils.parseJsonInput(d.body, "body", undefined);
+      headers = utils.parseJsonInput(d.requestHeaders, "requestHeaders", {});
+      query = utils.parseJsonInput(d.queryParameters, "queryParameters", {});
+      body = utils.parseJsonInput(d.requestBody, "requestBody", undefined);
     } catch (e) {
       return { ok: false, error: e.message };
     }

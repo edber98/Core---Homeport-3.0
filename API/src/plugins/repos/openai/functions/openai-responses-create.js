@@ -4,8 +4,8 @@ module.exports = {
   async openai_responses_create(node, msg, inputs, opts) {
     const d = inputs || {};
     const model = String(d.model || "gpt-4o-mini");
-    const input = String(d.input || "").trim();
-    if (!input) return { ok: false, error: "Le champ input est requis." };
+    const input = String(d.responseInput || "").trim();
+    if (!input) return { ok: false, error: "Le champ responseInput est requis." };
 
     const body = { model, input };
     if (d.instructions) body.instructions = String(d.instructions);

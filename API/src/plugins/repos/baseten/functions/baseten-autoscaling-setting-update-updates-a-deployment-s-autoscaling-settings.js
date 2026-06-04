@@ -18,20 +18,16 @@ module.exports = {
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
     // Propager automatiquement les autres entrées en query params.
-    const reserved = new Set(['body', 'pageSize', 'page', 'search']);
+    const reserved = new Set(['pageSize', 'page', 'search', 'min_replica', 'max_replica', 'autoscaling_window', 'scale_down_delay', 'concurrency_target', 'target_utilization_percentage', 'target_in_flight_tokens', 'max_scale_down_rate']);
     for (const [k, v] of Object.entries(d)) {
       if (reserved.has(k)) continue;
       if (v === undefined || v === null || v === '') continue;
       query[k] = v;
     }
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const builtBody = utils.buildRequestBody(d, [{"key": "min_replica", "type": "integer"}, {"key": "max_replica", "type": "integer"}, {"key": "autoscaling_window", "type": "integer"}, {"key": "scale_down_delay", "type": "integer"}, {"key": "concurrency_target", "type": "integer"}, {"key": "target_utilization_percentage", "type": "integer"}, {"key": "target_in_flight_tokens", "type": "integer"}, {"key": "max_scale_down_rate", "type": "number"}]);
+    if (!builtBody.ok) return builtBody;
+    const body = builtBody.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });

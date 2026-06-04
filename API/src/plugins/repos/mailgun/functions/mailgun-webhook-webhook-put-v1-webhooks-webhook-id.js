@@ -10,16 +10,18 @@ module.exports = {
     reqPath = reqPath.replace('{webhook_id}', encodeURIComponent(webhook_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.description !== undefined && d.description !== null && d.description !== '') {
+      body["description"] = d.description;
+    }
+    if (d.event_types !== undefined && d.event_types !== null && d.event_types !== '') {
+      body["event_types"] = d.event_types;
+    }
+    if (d.url !== undefined && d.url !== null && d.url !== '') {
+      body["url"] = d.url;
     }
 
     log('Requête en cours...');
@@ -34,3 +36,4 @@ module.exports = {
     };
   }
 };
+

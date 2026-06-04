@@ -95,10 +95,6 @@ function requireField(d, key, label) {
   return value;
 }
 
-function getBody(d, keyLabel) {
-  return parseJsonInput(d.body, keyLabel || "body", undefined);
-}
-
 async function run(key, inputs, opts) {
   const d = asObject(inputs);
 
@@ -126,7 +122,7 @@ async function run(key, inputs, opts) {
     }
 
     if (key === "fullstory_user_create") {
-      const body = getBody(d, "body") || cleanObj({
+      const body = cleanObj({
         uid: maybe(d.uid),
         email: maybe(d.email),
         display_name: maybe(d.display_name),
@@ -140,7 +136,7 @@ async function run(key, inputs, opts) {
 
     if (key === "fullstory_user_update") {
       const id = requireField(d, "id", "id");
-      const body = getBody(d, "body") || cleanObj({
+      const body = cleanObj({
         email: maybe(d.email),
         display_name: maybe(d.display_name),
         properties: parseJsonInput(d.properties, "properties", undefined),
@@ -211,8 +207,8 @@ async function run(key, inputs, opts) {
 
     if (key === "fullstory_event_create") {
       const event = parseJsonInput(d.event, "event", undefined);
-      const body = event || getBody(d, "body");
-      if (!body || typeof body !== "object") return { ok: false, error: "event ou body JSON requis." };
+      const body = event;
+      if (!body || typeof body !== "object") return { ok: false, error: "event requis." };
       const res = await requestFullstory(opts, "/v2/events", { method: "POST", body });
       if (!res.ok) return res;
       return ok(res, "Événement créé.");
@@ -267,7 +263,7 @@ async function run(key, inputs, opts) {
 
     if (key === "fullstory_session_generate_context") {
       const sessionId = requireField(d, "session_id", "session_id");
-      const body = getBody(d, "body") || cleanObj({
+      const body = cleanObj({
         slice: parseJsonInput(d.slice, "slice", undefined),
         event_limit: maybe(d.event_limit),
         duration_limit_ms: maybe(d.duration_limit_ms),
@@ -280,7 +276,7 @@ async function run(key, inputs, opts) {
 
     if (key === "fullstory_session_generate_summary") {
       const sessionId = requireField(d, "session_id", "session_id");
-      const body = getBody(d, "body") || cleanObj({
+      const body = cleanObj({
         profile_id: maybe(d.profile_id),
         profile: parseJsonInput(d.profile, "profile", undefined),
         override: parseJsonInput(d.override, "override", undefined)
@@ -304,14 +300,14 @@ async function run(key, inputs, opts) {
       return ok(res, "Export user pages récupéré.");
     }
 
-    if (key === "fullstory_api_request") {
+    if (key === "fullstory_api_request" || key === "fullstory_custom_request") {
       const method = clean(d.method || "GET").toUpperCase();
       const reqPath = clean(d.path);
       if (!reqPath) return { ok: false, error: "path requis." };
-      const query = parseJsonInput(d.query, "query", {});
-      const headers = parseJsonInput(d.headers, "headers", {});
-      const body = d.body_text ? String(d.body_text) : parseJsonInput(d.body, "body", undefined);
-      const contentType = d.body_text ? "text/plain" : undefined;
+      const query = parseJsonInput(d.queryParameters, "queryParameters", {});
+      const headers = parseJsonInput(d.requestHeaders, "requestHeaders", {});
+      const body = d.userPropertiesText ? String(d.userPropertiesText) : parseJsonInput(d.requestBody, "requestBody", undefined);
+      const contentType = d.userProperties_text ? "text/plain" : undefined;
       const res = await requestFullstory(opts, reqPath, { method, query, headers, body, contentType });
       if (!res.ok) return res;
       return ok(res, "Appel API exécuté.");

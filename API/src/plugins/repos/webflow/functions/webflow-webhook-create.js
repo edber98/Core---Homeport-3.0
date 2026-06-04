@@ -1,5 +1,66 @@
 const { utils } = require('./utils');
 
+const BODY_FIELDS = [
+  {
+    "key": "id",
+    "type": "text",
+    "bodyPath": [
+      "id"
+    ]
+  },
+  {
+    "key": "trigger_type",
+    "type": "text",
+    "bodyPath": [
+      "triggerType"
+    ]
+  },
+  {
+    "key": "url",
+    "type": "text",
+    "bodyPath": [
+      "url"
+    ]
+  },
+  {
+    "key": "workspace_id",
+    "type": "text",
+    "bodyPath": [
+      "workspaceId"
+    ]
+  },
+  {
+    "key": "site_id",
+    "type": "text",
+    "bodyPath": [
+      "siteId"
+    ]
+  },
+  {
+    "key": "filter_name",
+    "type": "text",
+    "bodyPath": [
+      "filter",
+      "name"
+    ]
+  },
+  {
+    "key": "last_triggered",
+    "type": "text",
+    "bodyPath": [
+      "lastTriggered"
+    ]
+  },
+  {
+    "key": "created_on",
+    "type": "text",
+    "bodyPath": [
+      "createdOn"
+    ]
+  }
+];
+
+
 module.exports = {
   async webflow_webhook_create(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
@@ -13,13 +74,11 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let body;
+    try {
+      body = utils.buildBodyFromFields(d, BODY_FIELDS);
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
 
     log('Requête en cours...');

@@ -12,16 +12,19 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.fieldrel_field !== undefined && d.fieldrel_field !== null && d.fieldrel_field !== "") {
+          if (!body["fieldrel"] || typeof body["fieldrel"] !== 'object' || Array.isArray(body["fieldrel"])) body["fieldrel"] = {};
+          body["fieldrel"]["field"] = d.fieldrel_field;
+        }
+    if (d.fieldrel_relid !== undefined && d.fieldrel_relid !== null && d.fieldrel_relid !== "") {
+          if (!body["fieldrel"] || typeof body["fieldrel"] !== 'object' || Array.isArray(body["fieldrel"])) body["fieldrel"] = {};
+          body["fieldrel"]["relid"] = d.fieldrel_relid;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

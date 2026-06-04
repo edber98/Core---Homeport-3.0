@@ -328,15 +328,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -434,15 +425,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -530,15 +512,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -614,15 +587,6 @@
             "type": "text",
             "key": "avatarId",
             "label": "ID avatar",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
             "col": {
               "xs": 24
             }

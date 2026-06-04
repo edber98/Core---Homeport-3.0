@@ -863,10 +863,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload Web Unlocker/SERP.",
+            "type": "text",
+            "key": "zone",
+            "label": "Zone",
+            "description": "Nom de la zone Bright Data.",
             "col": {
               "xs": 24
             },
@@ -875,6 +875,100 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL cible à récupérer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "format",
+            "label": "Format",
+            "description": "Format de réponse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "raw",
+            "options": [
+              {
+                "label": "raw",
+                "value": "raw"
+              },
+              {
+                "label": "json",
+                "value": "json"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode cible",
+            "description": "Méthode utilisée vers le site cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "description": "Code pays proxy, par exemple us.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "data_format",
+            "label": "Format données",
+            "description": "Format de données demandé.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "json",
+                "value": "json"
+              },
+              {
+                "label": "markdown",
+                "value": "markdown"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "requestHeaders",
+            "label": "En-têtes cible",
+            "description": "En-têtes envoyés au site cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "requestContent",
+            "label": "Contenu envoyé",
+            "description": "Corps envoyé au site cible quand nécessaire.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -927,10 +1021,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload Unlocker async.",
+            "type": "text",
+            "key": "zone",
+            "label": "Zone",
+            "description": "Nom de la zone Bright Data.",
             "col": {
               "xs": 24
             },
@@ -939,6 +1033,109 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL cible à récupérer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "format",
+            "label": "Format",
+            "description": "Format de réponse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "raw",
+            "options": [
+              {
+                "label": "raw",
+                "value": "raw"
+              },
+              {
+                "label": "json",
+                "value": "json"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "method",
+            "label": "Méthode cible",
+            "description": "Méthode utilisée vers le site cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "description": "Code pays proxy, par exemple us.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "data_format",
+            "label": "Format données",
+            "description": "Format de données demandé.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "json",
+                "value": "json"
+              },
+              {
+                "label": "markdown",
+                "value": "markdown"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "requestHeaders",
+            "label": "En-têtes cible",
+            "description": "En-têtes envoyés au site cible.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "requestContent",
+            "label": "Contenu envoyé",
+            "description": "Corps envoyé au site cible quand nécessaire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "webhook_url",
+            "label": "URL webhook",
+            "description": "URL appelée quand le résultat async est prêt.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1055,10 +1252,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload SERP async.",
+            "type": "text",
+            "key": "zone",
+            "label": "Zone SERP",
+            "description": "Nom de la zone SERP.",
             "col": {
               "xs": 24
             },
@@ -1067,6 +1264,91 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL de recherche",
+            "description": "URL du moteur de recherche.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "format",
+            "label": "Format",
+            "description": "Format de réponse.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "raw",
+            "options": [
+              {
+                "label": "raw",
+                "value": "raw"
+              },
+              {
+                "label": "json",
+                "value": "json"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "description": "Code pays, par exemple US.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "data_format",
+            "label": "Format données",
+            "description": "Format SERP structuré.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "json",
+                "value": "json"
+              },
+              {
+                "label": "markdown",
+                "value": "markdown"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "multiRequests",
+            "label": "Requêtes multiples",
+            "description": "Liste multi pour les requêtes parallèles.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "searchQuery",
+            "label": "Paramètres de recherche",
+            "description": "Objet query pour les recherches avancées.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1183,10 +1465,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Query + intent.",
+            "type": "text",
+            "key": "searchQuery",
+            "label": "Recherche",
+            "description": "Requête de découverte.",
             "col": {
               "xs": 24
             },
@@ -1195,6 +1477,33 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "intent",
+            "label": "Intention",
+            "description": "Objectif métier de la recherche.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limite",
+            "description": "Nombre maximal de résultats.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "country",
+            "label": "Pays",
+            "description": "Code pays.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1311,16 +1620,57 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload Web Scraper API.",
+            "type": "text",
+            "key": "dataset_id",
+            "label": "ID dataset",
+            "description": "Identifiant du dataset.",
             "col": {
               "xs": 24
             },
             "validators": [
               {
                 "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "urls",
+            "label": "URLs",
+            "description": "Liste des URLs à scraper.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "sourceRecords",
+            "label": "Entrées",
+            "description": "Enregistrements input attendus par le dataset.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "format",
+            "label": "Format",
+            "description": "Format de sortie.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "json",
+                "value": "json"
+              },
+              {
+                "label": "csv",
+                "value": "csv"
+              },
+              {
+                "label": "ndjson",
+                "value": "ndjson"
               }
             ]
           }
@@ -1375,10 +1725,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Spécification de preview.",
+            "type": "text",
+            "key": "searchQuery",
+            "label": "Recherche",
+            "description": "Question de recherche Deep Lookup.",
             "col": {
               "xs": 24
             },
@@ -1387,6 +1737,24 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "columns",
+            "label": "Colonnes",
+            "description": "Colonnes ou champs à extraire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "result_limit",
+            "label": "Limite résultats",
+            "description": "Nombre de résultats de prévisualisation.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1503,10 +1871,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload d'amélioration.",
+            "type": "text",
+            "key": "searchQuery",
+            "label": "Recherche",
+            "description": "Question à améliorer.",
             "col": {
               "xs": 24
             },
@@ -1515,6 +1883,24 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "columns",
+            "label": "Colonnes",
+            "description": "Colonnes attendues.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "preview_id",
+            "label": "ID prévisualisation",
+            "description": "ID de prévisualisation existant.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1567,10 +1953,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Payload trigger.",
+            "type": "text",
+            "key": "preview_id",
+            "label": "ID prévisualisation",
+            "description": "ID de la prévisualisation à exécuter.",
             "col": {
               "xs": 24
             },
@@ -1579,6 +1965,15 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "number",
+            "key": "result_limit",
+            "label": "Limite résultats",
+            "description": "Nombre maximal de résultats.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1902,8 +2297,8 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
+            "key": "columns",
+            "label": "Colonnes",
             "description": "Colonnes à enrichir.",
             "col": {
               "xs": 24
@@ -1913,6 +2308,15 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "records",
+            "label": "Enregistrements",
+            "description": "Lignes ou enregistrements à enrichir.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2060,10 +2464,67 @@
             ]
           },
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Optionnel selon endpoint.",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps JSON.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "description": "Nom de propriété API.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "description": "Valeur à envoyer.",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "description": "Conversion.",
+                "col": {
+                  "xs": 24
+                },
+                "default": "string",
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ]
+              }
+            ],
             "col": {
               "xs": 24
             }

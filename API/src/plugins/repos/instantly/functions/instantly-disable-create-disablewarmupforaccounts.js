@@ -8,16 +8,32 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.emails !== undefined && d.emails !== null && d.emails !== '') {
+      body["emails"] = d.emails;
+    }
+    if (d.include_all_emails !== undefined && d.include_all_emails !== null && d.include_all_emails !== '') {
+      body["include_all_emails"] = d.include_all_emails;
+    }
+    if (d.excluded_emails !== undefined && d.excluded_emails !== null && d.excluded_emails !== '') {
+      body["excluded_emails"] = d.excluded_emails;
+    }
+    if (d.filter !== undefined && d.filter !== null && d.filter !== '') {
+      body["filter"] = d.filter;
+    }
+    if (d.filter_tag_id !== undefined && d.filter_tag_id !== null && d.filter_tag_id !== '') {
+      if (!body["filter"] || typeof body["filter"] !== 'object' || Array.isArray(body["filter"])) body["filter"] = {};
+      body["filter"]["tag_id"] = d.filter_tag_id;
+    }
+    if (d.filter_filter !== undefined && d.filter_filter !== null && d.filter_filter !== '') {
+      if (!body["filter"] || typeof body["filter"] !== 'object' || Array.isArray(body["filter"])) body["filter"] = {};
+      body["filter"]["filter"] = d.filter_filter;
+    }
+    if (d.search !== undefined && d.search !== null && d.search !== '') {
+      body["search"] = d.search;
     }
 
     log('Requête en cours...');
@@ -37,3 +53,4 @@ module.exports = {
     };
   }
 };
+

@@ -19,7 +19,7 @@ module.exports = {
     const schema = d.schema || "public";
 
     let data;
-    try { data = parseJson(d.data, "data", {}); }
+    try { data = parseJson(d.recordData, "recordData", {}); }
     catch (e) { return { ok: false, error: e.message }; }
 
     const cols = Object.keys(data || {});

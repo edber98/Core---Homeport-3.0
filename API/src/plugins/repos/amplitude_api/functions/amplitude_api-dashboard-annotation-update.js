@@ -8,15 +8,15 @@ module.exports = {
     let headers = {};
     try { headers = utils.parseJsonInput(d.headers, 'headers', { defaultValue: {}, allowArray: false }) || {}; }
     catch (e) { return { ok: false, error: e.message }; }
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
-    if (!body || typeof body !== 'object') return { ok: false, error: 'body requis.' };
-    const res = await utils.providerRequest(opts, `/api/3/annotations/${encodeURIComponent(annotationId)}`, { method: 'PATCH', headers, body });
+    const body = {};
+    if (d.label !== undefined && d.label !== null && d.label !== '') body.label = d.label;
+    if (d.start !== undefined && d.start !== null && d.start !== '') body.start = d.start;
+    if (d.category !== undefined && d.category !== null && d.category !== '') body.category = d.category;
+    if (d.chart_id !== undefined && d.chart_id !== null && d.chart_id !== '') body.chart_id = d.chart_id;
+    if (d.details !== undefined && d.details !== null && d.details !== '') body.details = d.details;
+    if (d.end !== undefined && d.end !== null && d.end !== '') body.end = d.end;
+    if (!Object.keys(body).length) return { ok: false, error: 'Au moins un champ de mise à jour est requis.' };
+    const res = await utils.providerRequest(opts, `/api/3/annotations/${encodeURIComponent(annotationId)}`, { method: 'PUT', headers, body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
     return { ok: true, status: res.status, message: 'Annotation mise à jour.', raw: res.data || null };
   }

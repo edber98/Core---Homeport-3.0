@@ -16,14 +16,12 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const payload = {};
+    if (d.entry_values !== undefined && d.entry_values !== null && d.entry_values !== '') {
+      try { payload.entry_values = utils.parseJsonInput(d.entry_values, 'entry_values', undefined); } catch (e) { return { ok: false, error: e.message }; }
     }
+    if (payload.entry_values === undefined) return { ok: false, error: 'entry_values requis.' };
+    const body = { data: payload };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });

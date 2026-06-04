@@ -61,4 +61,31 @@ async function providerRequest(opts, path, options = {}) {
   return { ok: true, status: res.status, data };
 }
 
-module.exports = { utils: { providerRequest } };
+function parseValue(value, key, type) {
+  if (value === undefined || value === null || value === '') return { skip: true };
+  if (type === 'number') {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return { ok: false, error: `Nombre invalide pour ${key}.` };
+    return { ok: true, value: number };
+  }
+  if (type === 'boolean') return { ok: true, value: value === true || String(value).toLowerCase() === 'true' };
+  if (type === 'array' || type === 'object') {
+    if (typeof value === 'object') return { ok: true, value };
+    try { return { ok: true, value: JSON.parse(String(value)) }; }
+    catch { return { ok: false, error: `JSON invalide pour ${key}.` }; }
+  }
+  return { ok: true, value: String(value) };
+}
+
+function buildRequestBody(inputs, fields) {
+  const body = {};
+  for (const field of Array.isArray(fields) ? fields : []) {
+    const parsed = parseValue(inputs ? inputs[field.key] : undefined, field.key, field.type || 'string');
+    if (parsed && parsed.skip) continue;
+    if (!parsed.ok) return { ok: false, error: parsed.error };
+    body[field.target || field.key] = parsed.value;
+  }
+  return { ok: true, body: Object.keys(body).length ? body : undefined };
+}
+
+module.exports = { utils: { providerRequest, buildRequestBody } };

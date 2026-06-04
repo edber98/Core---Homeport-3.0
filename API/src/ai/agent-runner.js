@@ -1,6 +1,10 @@
 // Unified agent runner — core loop with tool_use support + mode-specific tools
 const { createLlmClient } = require('./llm');
 const { isDebug } = require('./util/debug');
+// Panel credits — débit automatique par turn. En mode DEV STANDALONE
+// (KINN_PANEL_CREDITS_ENABLED != 'true'), tous les appels sont des mocks
+// no-op sans dépendance Panel. Voir docs/credits-integration-kinn-app.md.
+const panelCredits = require('../services/panel-credits/cjs-wrapper');
 const { META_TOOL_DEFINITIONS, executeMetaTool } = require('./tools/meta-tools');
 const { createWorkflowExecutor } = require('./tools/workflow-tools');
 const { createNodeArgsExecutor } = require('./tools/node-args-tools');
@@ -144,6 +148,13 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
   const sideEvents = [];
   const emit = (ev) => sideEvents.push(ev);
 
+  // Panel credits — extract user + conversation context for billing events.
+  // userId = req.user.sub propagated through context/metadata. conversationId
+  // est utilisé comme idempotencyKey base + dans le ledger context.
+  const _billingUserId = context?.userId || context?.user?.sub || metadata?.userId || null;
+  const _billingConvId = context?.conversationId || metadata?.conversationId || null;
+  let _billingIter = 0;
+
   // 1. Create mode-specific executors
   const modeMetadata = {
     ...(metadata || {}),
@@ -236,6 +247,36 @@ async function* runAgent({ mode, messages, context, metadata, agentOverrides }) 
           if (event.usage) {
             totalUsage.input += event.usage.input || 0;
             totalUsage.output += event.usage.output || 0;
+            // ─── Débit Panel par turn (fire-and-forget si dev mode, awaited si prod) ──
+            // En cas d'erreur insufficient_credits (402), on yield un event 'error'
+            // mais on continue le stream (l'utilisateur voit le solde insuffisant).
+            try {
+              _billingIter++;
+              const provider = String(llmConfig.providerKey || llmConfig.provider || env.AI_PROVIDER || 'anthropic').toLowerCase();
+              const billing = await panelCredits.debitAnthropicTurn({
+                userId: _billingUserId,
+                conversationId: _billingConvId,
+                iter: _billingIter,
+                model: llmConfig.model || event.model || 'unknown',
+                usage: { input_tokens: event.usage.input || 0, output_tokens: event.usage.output || 0, cache_read_input_tokens: event.usage.cached || 0 }
+              });
+              if (billing && !billing.mocked && billing.credits != null) {
+                yield {
+                  type: 'billing',
+                  credits: billing.credits,
+                  costEur: billing.costEur,
+                  balance: billing.balance,
+                  iter: _billingIter
+                };
+              }
+            } catch (e) {
+              if (e?.code === 'insufficient_credits' || e?.code === 'user_quota_exceeded' || e?.code === 'hard_cap_exceeded') {
+                yield { type: 'error', code: e.code, balance: e.balance, message: e.message };
+                return;  // stop l'agent
+              }
+              // autre erreur → log silencieux pour pas bloquer
+              if (isDebug()) console.warn('[agent] billing error (ignored):', e?.message || e);
+            }
           }
           break;
       }

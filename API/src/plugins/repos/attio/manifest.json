@@ -4200,10 +4200,143 @@
             ]
           },
           {
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "description": "The name of the attribute. The title will be visible across Attio's UI.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "A text description for the attribute.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "api_slug",
+            "label": "Api Slug",
+            "description": "A unique, human-readable slug to access the attribute through URLs and API calls. Formatted in snake case.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "description": "The type of the attribute. This value affects the possible `config` values.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              "text",
+              "number",
+              "checkbox",
+              "currency",
+              "date",
+              "timestamp",
+              "rating",
+              "status",
+              "select",
+              "record-reference",
+              "actor-reference",
+              "location",
+              "domain",
+              "email-address",
+              "phone-number"
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "is_required",
+            "label": "Is Required",
+            "description": "When `is_required` is `true`, new records/entries must have a value for this attribute. If `false`, values may be `null`. This value does not affect existing data and you do not need to backfill `null` values if changing `is_required` from `false` to `true`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "is_unique",
+            "label": "Is Unique",
+            "description": "Whether or not new values for this attribute must be unique. Uniqueness restrictions are only applied to new data and do not apply retroactively to previously created data.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "is_multiselect",
+            "label": "Is Multiselect",
+            "description": "Whether or not this attribute can have multiple values. Multiselect is only available on some value types.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "default_value",
+            "label": "Default Value",
+            "description": "The default value for this attribute. Static values are used to directly populate values using their contents. Dynamic values are used to lookup data at the point of creation. For example, you could use a dynamic value to insert a value for the currently logged in user. Which default values are available is dependent on the type of the attribute. Default values are not currently supported on people or company objects.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "relationship",
+            "label": "Relationship",
+            "description": "Optional relationship configuration. When provided, creates a bidirectional relationship between two objects. Can only be used with attributes of type \"record-reference\". If `config.record_reference.allowed_objects` is also provided, it must contain only the relationship object.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "config",
+            "label": "Config",
+            "description": "",
             "col": {
               "xs": 24
             },
@@ -4398,18 +4531,76 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "description": "The name of the attribute. The title will be visible across Attio's UI.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "A text description for the attribute.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "api_slug",
+            "label": "Api Slug",
+            "description": "A unique, human-readable slug to access the attribute through URLs and API calls. Formatted in snake case.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_required",
+            "label": "Is Required",
+            "description": "When `is_required` is `true`, new records/entries must have a value for this attribute. If `false`, values may be `null`. This value does not affect existing data and you do not need to backfill `null` values if changing `is_required` from `false` to `true`.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_unique",
+            "label": "Is Unique",
+            "description": "Whether or not new values for this attribute must be unique. Uniqueness restrictions are only applied to new data and do not apply retroactively to previously created data.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "default_value",
+            "label": "Default Value",
+            "description": "The default value for this attribute. Static values are used to directly populate values using their contents. Dynamic values are used to lookup data at the point of creation. For example, you could use a dynamic value to insert a value for the currently logged in user. Which default values are available is dependent on the type of the attribute. Default values are not currently supported on people or company objects.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "config",
+            "label": "Config",
+            "description": "Additional, type-dependent configuration for the attribute.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_archived",
+            "label": "Is Archived",
+            "description": "Whether the attribute has been archived or not. See our [archiving guide](/docs/archiving-vs-deleting) for more information on archiving.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -4558,10 +4749,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "video_url",
+            "label": "Video Url",
+            "description": "A publicly accessible URL to a video file of the call recording. Attio will download the video from this URL asynchronously.\n\n**Requirements:**\n- **Protocol:** The URL must use the `https` protocol.\n- **File type:** The file must be a `.mp4` file.\n- **File size:** The file must not exceed 500MB in size.\n- **Accessibility:** For the request to be accepted, the URL must be publicly accessible. Attio will make a `HEAD` request to the URL to verify its accessibility and retrieve file metadata. The response to this request must include a `Content-Length` header.",
             "col": {
               "xs": 24
             },
@@ -4778,10 +4969,27 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "select",
+            "key": "format",
+            "label": "Format",
+            "description": "Format du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              "plaintext"
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Contenu",
+            "description": "Contenu du commentaire.",
             "col": {
               "xs": 24
             },
@@ -4790,6 +4998,56 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "author",
+            "label": "Auteur",
+            "description": "Auteur du commentaire.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "created_at",
+            "label": "Date de création",
+            "description": "Date ISO 8601 optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "thread_id",
+            "label": "Thread ID",
+            "description": "ID d un thread existant.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "record",
+            "label": "Record",
+            "description": "Record cible pour un commentaire top-level.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "entry",
+            "label": "Entry",
+            "description": "Entry cible pour un commentaire top-level.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -5145,17 +5403,48 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "filter",
+            "label": "Filter",
+            "description": "An object used to filter results to a subset of results. Cannot be used together with `filter_view_id`. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "filter_view_id",
+            "label": "Filter View Id",
+            "description": "UUID of a saved view on this object or list. When set, results are filtered using that view's filter configuration. Cannot be used together with `filter`. Note: sorts, limits, and offsets are applied independently and are not taken from the view. All attributes are returned regardless of which attributes are visible in the view.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "sorts",
+            "label": "Sorts",
+            "description": "An object used to sort results. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limit",
+            "description": "The maximum number of results to return. Defaults to 500. See the [full guide to pagination here](/rest-api/guides/pagination).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "The number of results to skip over before returning. Defaults to 0. See the [full guide to pagination here](/rest-api/guides/pagination).",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -5222,10 +5511,38 @@
             ]
           },
           {
+            "type": "text",
+            "key": "parent_record_id",
+            "label": "Parent Record Id",
+            "description": "A UUID identifying the record you want to add to the list. The record will become the 'parent' of the created list entry.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "parent_object",
+            "label": "Parent Object",
+            "description": "A UUID or slug identifying the object that the added parent record belongs to.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "entry_values",
+            "label": "Entry Values",
+            "description": "An object with an attribute `api_slug` or `attribute_id` as the key, and a single value (for single-select attributes), or an array of values (for single or multi-select attributes) as the values. For complete documentation on values for all attribute types, please see our [attribute type docs](/docs/attribute-types).",
             "col": {
               "xs": 24
             },
@@ -5300,10 +5617,38 @@
             ]
           },
           {
+            "type": "text",
+            "key": "parent_record_id",
+            "label": "Parent Record Id",
+            "description": "A UUID identifying the record you want to add to the list. The record will become the 'parent' of the created list entry.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "parent_object",
+            "label": "Parent Object",
+            "description": "A UUID or slug identifying the object that the added parent record belongs to.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "entry_values",
+            "label": "Entry Values",
+            "description": "An object with an attribute `api_slug` or `attribute_id` as the key, and a single value (for single-select attributes), or an array of values (for single or multi-select attributes) as the values. For complete documentation on values for all attribute types, please see our [attribute type docs](/docs/attribute-types).",
             "col": {
               "xs": 24
             },
@@ -5471,9 +5816,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "entry_values",
+            "label": "Entry Values",
+            "description": "An object with an attribute `api_slug` or `attribute_id` as the key, and a single value (for single-select attributes), or an array of values (for single or multi-select attributes) as the values. For complete documentation on values for all attribute types, please see our [attribute type docs](/docs/attribute-types).",
             "col": {
               "xs": 24
             },
@@ -5563,9 +5908,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "entry_values",
+            "label": "Entry Values",
+            "description": "An object with an attribute `api_slug` or `attribute_id` as the key, and a single value (for single-select attributes), or an array of values (for single or multi-select attributes) as the values. For complete documentation on values for all attribute types, please see our [attribute type docs](/docs/attribute-types).",
             "col": {
               "xs": 24
             },
@@ -5818,10 +6163,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "object",
+            "label": "Objet",
+            "description": "Slug ou ID de l objet cible.",
             "col": {
               "xs": 24
             },
@@ -5830,6 +6175,90 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "record_id",
+            "label": "Record ID",
+            "description": "ID du record cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "file_type",
+            "label": "Type de fichier",
+            "description": "Type d entrée fichier.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              "folder",
+              "connected-folder",
+              "connected-file"
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom du dossier natif.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "parent_folder_id",
+            "label": "Parent folder ID",
+            "description": "ID du dossier parent.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "storage_provider",
+            "label": "Provider",
+            "description": "Provider de stockage externe.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              "dropbox",
+              "box",
+              "google-drive",
+              "microsoft-onedrive"
+            ]
+          },
+          {
+            "type": "text",
+            "key": "external_provider_file_id",
+            "label": "External file ID",
+            "description": "ID du fichier ou dossier externe.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "microsoft_drive_id",
+            "label": "Microsoft drive ID",
+            "description": "ID du drive Microsoft si applicable.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -6059,10 +6488,71 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "name",
+            "label": "Name",
+            "description": "The human-readable name of the list.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "api_slug",
+            "label": "Api Slug",
+            "description": "A unique, human-readable slug to access the list through API calls. Should be formatted in snake case.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "parent_object",
+            "label": "Parent Object",
+            "description": "A UUID or slug to identify the allowed object type for records added to this list.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "workspace_access",
+            "label": "Workspace Access",
+            "description": "The level of access granted to all members of the workspace for this list. Pass `null` to keep the list private and only grant access to specific workspace members.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              "full-access",
+              "read-and-write",
+              "read-only"
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "workspace_member_access",
+            "label": "Workspace Member Access",
+            "description": "The level of access granted to specific workspace members for this list. Pass an empty array to grant access to no workspace members.",
             "col": {
               "xs": 24
             },
@@ -6201,18 +6691,45 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Name",
+            "description": "The human-readable name of the list.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "api_slug",
+            "label": "Api Slug",
+            "description": "A unique, human-readable slug to access the list through API calls. Should be formatted in snake case.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "workspace_access",
+            "label": "Workspace Access",
+            "description": "The level of access granted to all members of the workspace for this list. Pass `null` to keep the list private and only grant access to specific workspace members.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
+            "options": [
+              "full-access",
+              "read-and-write",
+              "read-only"
             ]
+          },
+          {
+            "type": "json",
+            "key": "workspace_member_access",
+            "label": "Workspace Member Access",
+            "description": "The level of access granted to specific workspace members for this list. Pass an empty array to grant access to no workspace members.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -6396,10 +6913,103 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "description": "The title of the meeting.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "The description of the meeting.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "start",
+            "label": "Start",
+            "description": "When the meeting starts. Use a datetime and optional timezone for non-all day meetings, or a date for all day meetings.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "end",
+            "label": "End",
+            "description": "When the meeting ends. Use a datetime and optional timezone for non-all day meetings, or a date for all day meetings.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "is_all_day",
+            "label": "Is All Day",
+            "description": "Whether or not the meeting is an all day event. All day events may span multiple days. When true, start and end must use date format. When false, start and end must use datetime with timezone format.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "participants",
+            "label": "Participants",
+            "description": "",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "linked_records",
+            "label": "Linked Records",
+            "description": "A list of records to link to the meeting. Each record is specified by its object (slug or UUID) and record ID (UUID). Attio will automatically link the meeting participants' companies to the meeting; this behavior is asynchronous.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "external_ref",
+            "label": "External Ref",
+            "description": "A consistent external reference used to match and de-duplicate meetings. Can be either a plain string (for external system IDs) or an object with `ical_uid` and `provider`. If you are writing data into Attio which is based upon calendar events that you have synced from a Google or Microsoft calendar, you must use the iCal format to avoid creating duplicate meetings inside Attio.",
             "col": {
               "xs": 24
             },
@@ -6610,10 +7220,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "parent_object",
+            "label": "Parent Object",
+            "description": "The ID or slug of the parent object the note belongs to.",
             "col": {
               "xs": 24
             },
@@ -6622,6 +7232,84 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "parent_record_id",
+            "label": "Parent Record Id",
+            "description": "The ID of the parent record the note belongs to.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "description": "The note title. The title is plaintext only and has no formatting.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "format",
+            "label": "Format",
+            "description": "Specify the format for the note's content. Choose from:\n- `plaintext`: Standard text format where `\\n` signifies a new line.\n- `markdown`: Enables rich text formatting using a subset of Markdown syntax:\n  - **Headings**: Levels 1-3 (`#`, `##`, `###`).\n  - **Lists**: Unordered (`-`, `*`, `+`) and ordered (`1.`, `2.`).\n  - **Text styles**: Bold (`**bold**` or `__bold__`), italic (`*italic*` or `_italic_`), strikethrough (`~~strikethrough~~`), and highlight (`==highlighted==`).\n  - **Links**: Standard Markdown links (`[link text](https://example.com)`).\n\n  *Note: While the Attio interface supports image embeds, they cannot currently be added or retrieved via the API's markdown format.*",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              "plaintext",
+              "markdown"
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "content",
+            "label": "Content",
+            "description": "The main content of the note, formatted according to the value provided in the `format` field. Use `\\n` for line breaks in `plaintext`. For `markdown`, utilize the supported syntax elements to structure and style your note.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "created_at",
+            "label": "Created At",
+            "description": "`created_at` will default to the current time. However, if you wish to backdate a note for migration or other purposes, you can override with a custom `created_at` value. Note that dates before 1970 or in the future are not allowed.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "meeting_id",
+            "label": "Meeting Id",
+            "description": "An optional ID to associate this note with a meeting. If provided, the meeting must exist. Use `null` to explicitly set no meeting association.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -6851,10 +7539,38 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "api_slug",
+            "label": "Api Slug",
+            "description": "A unique, human-readable slug to access the object through URLs and API calls. Should be formatted in snake case.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "singular_noun",
+            "label": "Singular Noun",
+            "description": "The singular form of the object's name.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "plural_noun",
+            "label": "Plural Noun",
+            "description": "The plural form of the object's name.",
             "col": {
               "xs": 24
             },
@@ -6993,18 +7709,31 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "api_slug",
+            "label": "Api Slug",
+            "description": "A unique, human-readable slug to access the object through URLs and API calls. Should be formatted in snake case.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "singular_noun",
+            "label": "Singular Noun",
+            "description": "The singular form of the object's name.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "plural_noun",
+            "label": "Plural Noun",
+            "description": "The plural form of the object's name.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -7200,10 +7929,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "description": "The Title of the select option",
             "col": {
               "xs": 24
             },
@@ -7320,18 +8049,22 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "description": "The Title of the select option",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_archived",
+            "label": "Is Archived",
+            "description": "Whether or not to archive the select option. See our [archiving guide](/docs/archiving-vs-deleting) for more information on archiving.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -7399,17 +8132,48 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "filter",
+            "label": "Filter",
+            "description": "An object used to filter results to a subset of results. Cannot be used together with `filter_view_id`. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "filter_view_id",
+            "label": "Filter View Id",
+            "description": "UUID of a saved view on this object or list. When set, results are filtered using that view's filter configuration. Cannot be used together with `filter`. Note: sorts, limits, and offsets are applied independently and are not taken from the view. All attributes are returned regardless of which attributes are visible in the view.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "sorts",
+            "label": "Sorts",
+            "description": "An object used to sort results. See the [full guide to filtering and sorting here](/rest-api/guides/filtering-and-sorting).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limit",
+            "description": "The maximum number of results to return. Defaults to 500. See the [full guide to pagination here](/rest-api/guides/pagination).",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "The number of results to skip over before returning. Defaults to 0. See the [full guide to pagination here](/rest-api/guides/pagination).",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -7477,9 +8241,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "values",
+            "label": "Values",
+            "description": "An object with an attribute `api_slug` or `attribute_id` as the key, and a single value (for single-select attributes), or an array of values (for single or multi-select attributes) as the values. For complete documentation on values for all attribute types, please see our [attribute type docs](/docs/attribute-types).",
             "col": {
               "xs": 24
             },
@@ -7569,9 +8333,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "values",
+            "label": "Values",
+            "description": "An object with an attribute `api_slug` or `attribute_id` as the key, and a single value (for single-select attributes), or an array of values (for single or multi-select attributes) as the values. For complete documentation on values for all attribute types, please see our [attribute type docs](/docs/attribute-types).",
             "col": {
               "xs": 24
             },
@@ -7739,9 +8503,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "values",
+            "label": "Values",
+            "description": "An object with an attribute `api_slug` or `attribute_id` as the key, and a single value (for single-select attributes), or an array of values (for single or multi-select attributes) as the values. For complete documentation on values for all attribute types, please see our [attribute type docs](/docs/attribute-types).",
             "col": {
               "xs": 24
             },
@@ -7831,9 +8595,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "values",
+            "label": "Values",
+            "description": "An object with an attribute `api_slug` or `attribute_id` as the key, and a single value (for single-select attributes), or an array of values (for single or multi-select attributes) as the values. For complete documentation on values for all attribute types, please see our [attribute type docs](/docs/attribute-types).",
             "col": {
               "xs": 24
             },
@@ -7972,10 +8736,47 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "query",
+            "label": "Query",
+            "description": "Query string to search for. An empty string returns a default set of results.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limit",
+            "description": "The maximum number of results to return. Defaults to 25.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "objects",
+            "label": "Objects",
+            "description": "Specifies which objects to filter results by. At least one object must be specified. Accepts object slugs or IDs.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "request_as",
+            "label": "Request As",
+            "description": "Specifies the context in which to perform the search. Use 'workspace' to return all search results or specify a workspace member to limit results to what one specific person in your workspace can see.",
             "col": {
               "xs": 24
             },
@@ -8228,10 +9029,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "description": "The Title of the status",
             "col": {
               "xs": 24
             },
@@ -8240,6 +9041,24 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "checkbox",
+            "key": "celebration_enabled",
+            "label": "Celebration Enabled",
+            "description": "Whether arriving at this status triggers a celebration effect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "target_time_in_status",
+            "label": "Target Time In Status",
+            "description": "Target time for a record to spend in given status expressed as a ISO-8601 duration string",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -8348,18 +9167,40 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "description": "The Title of the status",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "celebration_enabled",
+            "label": "Celebration Enabled",
+            "description": "Whether arriving at this status triggers a celebration effect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "target_time_in_status",
+            "label": "Target Time In Status",
+            "description": "Target time for a record to spend in given status expressed as a ISO-8601 duration string",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_archived",
+            "label": "Is Archived",
+            "description": "Whether or not to archive the status. See our [archiving guide](/docs/archiving-vs-deleting) for more information on archiving.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -8525,10 +9366,83 @@
         },
         "fields": [
           {
+            "type": "textarea",
+            "key": "content",
+            "label": "Content",
+            "description": "The text content of the task, in the format specified by the `format` property. A max length of 2000 characters is enforced.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "format",
+            "label": "Format",
+            "description": "The format of the task content to be created. Rich text formatting, links and @references are not supported.",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              "plaintext"
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "deadline_at",
+            "label": "Deadline At",
+            "description": "The deadline of the task, in ISO 8601 format.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "is_completed",
+            "label": "Is Completed",
+            "description": "Whether the task has been completed.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "linked_records",
+            "label": "Linked Records",
+            "description": "Records linked to the task. Records can be linked by domain (for companies), email address (for people), record ID (for all objects) or by a unique matching attribute (for all objects). Creating record links within task content text is not possible via the API at present.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "json",
+            "key": "assignees",
+            "label": "Assignees",
+            "description": "Workspace members assigned to this task.",
             "col": {
               "xs": 24
             },
@@ -8667,18 +9581,40 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "deadline_at",
+            "label": "Deadline At",
+            "description": "The deadline of the task, in ISO 8601 format.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_completed",
+            "label": "Is Completed",
+            "description": "Whether the task has been completed.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "linked_records",
+            "label": "Linked Records",
+            "description": "Records linked to the task. Records can be linked by domain (for companies), email address (for people), record ID (for all objects) or by a unique matching attribute (for all objects). Creating record links within task content text is not possible via the API at present.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "assignees",
+            "label": "Assignees",
+            "description": "Workspace members assigned to this task.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -9050,10 +9986,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "file_path",
+            "label": "Chemin fichier",
+            "description": "Chemin local absolu ou relatif du fichier à envoyer.",
             "col": {
               "xs": 24
             },
@@ -9062,6 +9998,43 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "object",
+            "label": "Objet",
+            "description": "Slug ou ID de l objet cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "record_id",
+            "label": "Record ID",
+            "description": "ID du record cible.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "parent_folder_id",
+            "label": "Parent folder ID",
+            "description": "ID du dossier parent.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -9602,10 +10575,24 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "target_url",
+            "label": "Target Url",
+            "description": "URL where the webhook events will be delivered to.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "subscriptions",
+            "label": "Subscriptions",
+            "description": "One or more events the webhook is subscribed to.",
             "col": {
               "xs": 24
             },
@@ -9744,18 +10731,22 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "target_url",
+            "label": "Target Url",
+            "description": "URL where the webhook events will be delivered to.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "subscriptions",
+            "label": "Subscriptions",
+            "description": "One or more events the webhook is subscribed to.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,

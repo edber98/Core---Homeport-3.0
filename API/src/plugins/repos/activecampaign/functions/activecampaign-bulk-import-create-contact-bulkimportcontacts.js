@@ -12,16 +12,34 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.contacts !== undefined && d.contacts !== null && d.contacts !== "") {
+          body["contacts"] = d.contacts;
+        }
+    if (d.callback_url !== undefined && d.callback_url !== null && d.callback_url !== "") {
+          if (!body["callback"] || typeof body["callback"] !== 'object' || Array.isArray(body["callback"])) body["callback"] = {};
+          body["callback"]["url"] = d.callback_url;
+        }
+    if (d.callback_requesttype !== undefined && d.callback_requesttype !== null && d.callback_requesttype !== "") {
+          if (!body["callback"] || typeof body["callback"] !== 'object' || Array.isArray(body["callback"])) body["callback"] = {};
+          body["callback"]["requesttype"] = d.callback_requesttype;
+        }
+    if (d.callback_detailed_results !== undefined && d.callback_detailed_results !== null && d.callback_detailed_results !== "") {
+          if (!body["callback"] || typeof body["callback"] !== 'object' || Array.isArray(body["callback"])) body["callback"] = {};
+          body["callback"]["detailed_results"] = d.callback_detailed_results;
+        }
+    if (d.callback_params !== undefined && d.callback_params !== null && d.callback_params !== "") {
+          if (!body["callback"] || typeof body["callback"] !== 'object' || Array.isArray(body["callback"])) body["callback"] = {};
+          body["callback"]["params"] = d.callback_params;
+        }
+    if (d.callback_headers !== undefined && d.callback_headers !== null && d.callback_headers !== "") {
+          if (!body["callback"] || typeof body["callback"] !== 'object' || Array.isArray(body["callback"])) body["callback"] = {};
+          body["callback"]["headers"] = d.callback_headers;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

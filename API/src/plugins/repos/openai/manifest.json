@@ -694,9 +694,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Texte (ou JSON array)",
-            "description": "Texte unique ou tableau JSON de textes.",
+            "key": "embeddingInput",
+            "label": "Texte à vectoriser",
+            "description": "Texte ou tableau JSON envoyé dans input.",
             "col": {
               "xs": 24
             },
@@ -1584,8 +1584,8 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Input",
+            "key": "responseInput",
+            "label": "Entrée de réponse",
             "col": {
               "xs": 24
             },
@@ -1593,7 +1593,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Texte envoyé dans input."
           },
           {
             "type": "number",
@@ -1672,7 +1673,7 @@
           },
           {
             "type": "textarea",
-            "key": "input",
+            "key": "moderationInput",
             "label": "Texte à modérer",
             "col": {
               "xs": 24
@@ -1681,7 +1682,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Texte envoyé dans input."
           }
         ]
       }
@@ -1848,7 +1850,7 @@
           },
           {
             "type": "textarea",
-            "key": "input",
+            "key": "speechText",
             "label": "Texte à lire",
             "col": {
               "xs": 24
@@ -1857,7 +1859,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Texte envoyé dans input pour générer la voix."
           },
           {
             "type": "select",

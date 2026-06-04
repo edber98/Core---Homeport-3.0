@@ -2,7 +2,7 @@
   "connector": "apify",
   "generatedAt": "2026-06-01T08:43:49.379Z",
   "summary": {
-    "covered": 23,
+    "covered": 22,
     "missing": 0,
     "excluded": 0
   },
@@ -138,14 +138,6 @@
     {
       "nodeKey": "apify_task_input_get",
       "title": "Lire l'input d'une task",
-      "group": "Tasks",
-      "status": "COVERED",
-      "endpoint": "",
-      "note": ""
-    },
-    {
-      "nodeKey": "apify_task_input_update",
-      "title": "Modifier l'input d'une task",
       "group": "Tasks",
       "status": "COVERED",
       "endpoint": "",

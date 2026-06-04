@@ -14,13 +14,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"forward_to","target":"forward_to","type":"string"},{"key":"forward_to_enabled","target":"forward_to_enabled","type":"boolean"},{"key":"label","target":"label","type":"string"},{"key":"participants","target":"participants","type":"array"},{"key":"phone_numbers","target":"phone_numbers","type":"array"},{"key":"press_1_to_accept","target":"press_1_to_accept","type":"boolean"},{"key":"voicemail_greeting_url","target":"voicemail_greeting_url","type":"object"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });

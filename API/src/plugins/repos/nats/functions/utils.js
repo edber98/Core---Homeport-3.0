@@ -42,8 +42,8 @@ function decodePayload(msg) {
 
 function decodeHeaders(msg) {
   const out = {};
-  if (!msg || !msg.headers) return out;
-  for (const [k, vals] of msg.headers) {
+  if (!msg || !msg.messageHeaders) return out;
+  for (const [k, vals] of msg.messageHeaders) {
     out[k] = Array.isArray(vals) ? vals.join(', ') : String(vals);
   }
   return out;
@@ -88,18 +88,18 @@ async function run(key, inputs, opts) {
   try {
     if (key === 'nats_message_publish') {
       const subject = str(d.subject);
-      const payload = str(d.payload);
+      const messagePayload = str(d.messagePayload);
       if (!subject) return { ok: false, error: 'subject requis.' };
 
       return withConn(opts, async (nc) => {
-        const headersObj = parseJson(d.headers, 'headers', {});
-        let headers;
+        const headersObj = parseJson(d.messageHeaders, 'messageHeaders', {});
+        let messageHeaders;
         if (headersObj && typeof headersObj === 'object' && Object.keys(headersObj).length) {
           const n = require('nats');
-          headers = n.headers();
-          Object.entries(headersObj).forEach(([k, v]) => headers.set(String(k), String(v)));
+          messageHeaders = n.messageHeaders();
+          Object.entries(headersObj).forEach(([k, v]) => messageHeaders.set(String(k), String(v)));
         }
-        nc.publish(subject, payload, headers ? { headers } : undefined);
+        nc.publish(subject, messagePayload, messageHeaders ? { messageHeaders } : undefined);
         await nc.flush();
         return actionResult('Message publié.', { subject });
       });
@@ -111,14 +111,14 @@ async function run(key, inputs, opts) {
       const timeout = Math.max(100, Math.min(120000, toNum(d.timeout_ms, 5000)));
 
       return withConn(opts, async (nc) => {
-        const msg = await nc.request(subject, str(d.payload), { timeout });
+        const msg = await nc.request(subject, str(d.messagePayload), { timeout });
         const text = decodePayload(msg);
         return itemResult({
           id: msg.sid || '',
           name: subject,
           status: 'replied',
-          payload: text,
-          headers: decodeHeaders(msg)
+          messagePayload: text,
+          messageHeaders: decodeHeaders(msg)
         }, subject);
       });
     }
@@ -140,19 +140,19 @@ async function run(key, inputs, opts) {
             id: `${subject}:${msg.seq || ''}`,
             name: subject,
             status: 'received',
-            payload: decodePayload(msg),
-            headers: decodeHeaders(msg)
+            messagePayload: decodePayload(msg),
+            messageHeaders: decodeHeaders(msg)
           }, subject);
         }
 
         clearTimeout(timer);
-        return itemResult({ id: '', name: subject, status: 'timeout', payload: '' }, subject);
+        return itemResult({ id: '', name: subject, status: 'timeout', messagePayload: '' }, subject);
       });
     }
 
     if (key === 'nats_jetstream_js_publish') {
       const subject = str(d.subject);
-      const payload = str(d.payload);
+      const messagePayload = str(d.messagePayload);
       if (!subject) return { ok: false, error: 'subject requis.' };
 
       return withConn(opts, async (nc) => {
@@ -160,7 +160,7 @@ async function run(key, inputs, opts) {
         const optsPub = {};
         const msgId = str(d.msg_id || d.msgId);
         if (msgId) optsPub.msgID = msgId;
-        const ack = await js.publish(subject, payload, optsPub);
+        const ack = await js.publish(subject, messagePayload, optsPub);
         return actionResult('Message JetStream publié.', ack);
       });
     }
@@ -179,7 +179,7 @@ async function run(key, inputs, opts) {
 
         const items = [];
         for await (const m of iter) {
-          const payload = decodePayload(m);
+          const messagePayload = decodePayload(m);
           items.push({
             id: `${m.subject}:${m.info?.streamSequence || ''}`,
             name: m.subject,
@@ -192,8 +192,8 @@ async function run(key, inputs, opts) {
               stream: m.info?.stream,
               streamSequence: m.info?.streamSequence,
               deliverySequence: m.info?.deliverySequence,
-              payload,
-              headers: decodeHeaders(m)
+              messagePayload,
+              messageHeaders: decodeHeaders(m)
             }
           });
           try { m.ack(); } catch {}

@@ -10,16 +10,24 @@ module.exports = {
     reqPath = reqPath.replace('{teammate_id}', encodeURIComponent(teammate_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.username !== undefined && d.username !== null && d.username !== '') {
+      body["username"] = d.username;
+    }
+    if (d.first_name !== undefined && d.first_name !== null && d.first_name !== '') {
+      body["first_name"] = d.first_name;
+    }
+    if (d.last_name !== undefined && d.last_name !== null && d.last_name !== '') {
+      body["last_name"] = d.last_name;
+    }
+    if (d.is_available !== undefined && d.is_available !== null && d.is_available !== '') {
+      body["is_available"] = d.is_available;
+    }
+    if (d.custom_fields !== undefined && d.custom_fields !== null && d.custom_fields !== '') {
+      body["custom_fields"] = d.custom_fields;
     }
 
     log('Requête en cours...');
@@ -39,3 +47,4 @@ module.exports = {
     };
   }
 };
+

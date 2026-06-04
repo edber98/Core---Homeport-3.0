@@ -8,16 +8,42 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.search !== undefined && d.search !== null && d.search !== '') {
+      body["search"] = d.search;
+    }
+    if (d.filter !== undefined && d.filter !== null && d.filter !== '') {
+      body["filter"] = d.filter;
+    }
+    if (d.campaign !== undefined && d.campaign !== null && d.campaign !== '') {
+      body["campaign"] = d.campaign;
+    }
+    if (d.list_id !== undefined && d.list_id !== null && d.list_id !== '') {
+      body["list_id"] = d.list_id;
+    }
+    if (d.in_campaign !== undefined && d.in_campaign !== null && d.in_campaign !== '') {
+      body["in_campaign"] = d.in_campaign;
+    }
+    if (d.in_list !== undefined && d.in_list !== null && d.in_list !== '') {
+      body["in_list"] = d.in_list;
+    }
+    if (d.organization_user_ids !== undefined && d.organization_user_ids !== null && d.organization_user_ids !== '') {
+      body["organization_user_ids"] = d.organization_user_ids;
+    }
+    if (d.smart_view_id !== undefined && d.smart_view_id !== null && d.smart_view_id !== '') {
+      body["smart_view_id"] = d.smart_view_id;
+    }
+    if (d.ids !== undefined && d.ids !== null && d.ids !== '') {
+      body["ids"] = d.ids;
+    }
+    if (d.limit !== undefined && d.limit !== null && d.limit !== '') {
+      body["limit"] = d.limit;
+    }
+    if (d.queries !== undefined && d.queries !== null && d.queries !== '') {
+      body["queries"] = d.queries;
     }
 
     log('Requête en cours...');
@@ -32,3 +58,4 @@ module.exports = {
     };
   }
 };
+

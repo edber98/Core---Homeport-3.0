@@ -8,24 +8,17 @@ module.exports = {
     
 
     let query = {};
-    try { query = utils.parseJsonInput(d.query, 'query', { defaultValue: {}, allowArray: false }) || {}; }
-    catch (e) { return { ok: false, error: e.message }; }
 
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
     let headers = {};
-    try { headers = utils.parseJsonInput(d.headers, 'headers', { defaultValue: {}, allowArray: false }) || {}; }
-    catch (e) { return { ok: false, error: e.message }; }
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.grant_type !== undefined && d.grant_type !== null && d.grant_type !== '') body.grant_type = d.grant_type;
+    if (d.client_id !== undefined && d.client_id !== null && d.client_id !== '') body.client_id = d.client_id;
+    if (d.client_secret !== undefined && d.client_secret !== null && d.client_secret !== '') body.client_secret = d.client_secret;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body, headers });

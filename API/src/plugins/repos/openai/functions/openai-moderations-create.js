@@ -3,8 +3,8 @@ const { utils } = require("./utils");
 module.exports = {
   async openai_moderations_create(node, msg, inputs, opts) {
     const d = inputs || {};
-    const input = String(d.input || "").trim();
-    if (!input) return { ok: false, error: "Le champ input est requis." };
+    const input = String(d.moderationInput || "").trim();
+    if (!input) return { ok: false, error: "Le champ moderationInput est requis." };
 
     const body = { input, model: String(d.model || "omni-moderation-latest") };
     const res = await utils.openaiRequest(opts, "/moderations", body);

@@ -1,6 +1,6 @@
 ---
 name: kinn-connector-tester
-description: 'Test and validate Kinn/Homeport workflow-builder connectors under API/src/plugins/repos. Use when asked in French or English to test, verify, validate, smoke-test, audit, or check a connector such as "teste le connecteur notion", "vérifie le connecteur Home Assistant", "run connector tests", or "test all connector functions".'
+description: 'Test and validate Kinn/Homeport workflow-builder connectors under API/src/plugins/repos. Use when asked in French or English to test, verify, validate, smoke-test, audit, or check whether a connector respects all structural and UX constraints such as explicit request fields, French titles, clear subtitles, and non-technical descriptions.'
 ---
 
 # Kinn Connector Tester
@@ -47,6 +47,8 @@ node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector
 - `nodeTemplate.name` is `camelCase`.
 - `providerKey` references an existing provider.
 - Payload output handles reference declared `$var:` schemas.
+- Les noeuds métier ne doivent pas exposer de champs génériques comme `body`, `payload`, `payloadJson`, `data`, `attributes`, `input`, `query`, `headers` ou `options`; seuls les noeuds `custom request` peuvent rester génériques.
+- Les champs UX exposés dans les noeuds doivent être corrects: `title`, `subtitle`, `description` et `args.title` doivent être renseignés, en français clair, sans suffixe artificiel, sans symbole structurel parasite, et sans copier la clé technique.
 - Every non-event node has a matching handler export.
 - Handler files can be loaded with `require()`.
 - Handlers do not use `node.args`.
@@ -81,6 +83,10 @@ When live testing:
 ## Reporting
 
 Lead with failures. Include:
+
+Quand une erreur de champ générique est détectée, le rapport doit citer le noeud fautif et indiquer que la requête doit être découpée en champs explicites alignés sur les attributs réellement documentés par l endpoint.
+Le rapport doit aussi préciser qu un renommage cosmétique du champ générique vers `payloadJson`, `inputJson`, `queryJson`, `headersJson` ou équivalent n est pas une correction valide.
+Quand un problème éditorial est détecté, le rapport doit citer le noeud fautif et préciser si l erreur concerne un titre non français, un suffixe artificiel, un symbole parasite, une description trop technique, ou un `args.title` incohérent.
 
 - connector name;
 - command(s) run;

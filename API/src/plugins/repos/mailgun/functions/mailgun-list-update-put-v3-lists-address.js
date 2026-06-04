@@ -10,16 +10,27 @@ module.exports = {
     reqPath = reqPath.replace('{list_address}', encodeURIComponent(list_address));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.address !== undefined && d.address !== null && d.address !== '') {
+      body["address"] = d.address;
+    }
+    if (d.description !== undefined && d.description !== null && d.description !== '') {
+      body["description"] = d.description;
+    }
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.access_level !== undefined && d.access_level !== null && d.access_level !== '') {
+      body["access_level"] = d.access_level;
+    }
+    if (d.reply_reference !== undefined && d.reply_reference !== null && d.reply_reference !== '') {
+      body["reply_reference"] = d.reply_reference;
+    }
+    if (d.list_id !== undefined && d.list_id !== null && d.list_id !== '') {
+      body["list_id"] = d.list_id;
     }
 
     log('Requête en cours...');
@@ -39,3 +50,4 @@ module.exports = {
     };
   }
 };
+

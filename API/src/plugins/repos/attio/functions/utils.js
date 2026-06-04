@@ -13,16 +13,19 @@ async function providerRequest(opts, path, options = {}) {
 
   const headers = {
     'Authorization': `Bearer ${apiKey}`,
-    'Content-Type': 'application/json',
+    ...(options.rawBody !== undefined ? {} : { 'Content-Type': 'application/json' }),
     ...(options.headers || {})
   };
 
+  let body;
   let res;
   try {
+    if (options.rawBody !== undefined) body = options.rawBody;
+    else if (options.body !== undefined) body = JSON.stringify(options.body);
     res = await fetch(url, {
       method: options.method || 'GET',
       headers,
-      body: options.body ? JSON.stringify(options.body) : undefined
+      body
     });
   } catch (e) {
     return { ok: false, error: e.message };
@@ -46,4 +49,10 @@ async function providerRequest(opts, path, options = {}) {
   return { ok: true, status: res.status, data };
 }
 
-module.exports = { utils: { providerRequest } };
+function parseJsonInput(value, label, fallback) {
+  if (value === undefined || value === null || value === '') return fallback;
+  if (typeof value === 'object') return value;
+  try { return JSON.parse(String(value)); } catch { throw new Error(`JSON invalide dans ${label}.`); }
+}
+
+module.exports = { utils: { providerRequest, parseJsonInput } };

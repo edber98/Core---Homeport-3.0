@@ -11457,18 +11457,54 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "checkbox",
+            "key": "accepts_multiple_values",
+            "label": "Accepts Multiple Values",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "custom_activity_type_id",
+            "label": "Custom Activity Type Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "editable_with_roles",
+            "label": "Editable With Roles",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "required",
+            "label": "Required",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -11599,18 +11635,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -11727,18 +11757,42 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "datetime_range",
+            "label": "Datetime Range",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "metrics",
+            "label": "Metrics",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "users",
+            "label": "Users",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -11805,18 +11859,30 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "editable_with_roles",
+            "label": "Editable With Roles",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "object_type",
+            "label": "Type d'objet",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "required",
+            "label": "Required",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -11975,18 +12041,14 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "editable_with_roles",
+            "label": "Editable With Roles",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -12225,13 +12287,27 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
             "col": {
               "xs": 24
             },
+            "description": "The phone number (in E.164 format) that you wish to block.",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "reason",
+            "label": "Reason",
+            "col": {
+              "xs": 24
+            },
+            "description": "The reason why you wish to block a given phone number.",
             "validators": [
               {
                 "type": "required"
@@ -12367,13 +12443,13 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "reason",
+            "label": "Reason",
             "col": {
               "xs": 24
             },
+            "description": "The updated reason for blocking the given phone number.",
             "validators": [
               {
                 "type": "required"
@@ -12495,18 +12571,24 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "allowed_user_ids",
+            "label": "Allowed User Ids",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "textarea",
+            "key": "disallowed_user_ids",
+            "label": "Disallowed User Ids",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -12735,18 +12817,227 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "conversation_type_id",
+            "label": "Conversation Type Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "created_by",
+            "label": "Created By",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "custom_fields",
+            "label": "Custom Fields",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "date_created",
+            "label": "Date Created",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "direction",
+            "label": "Direction",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "options": [
               {
-                "type": "required"
+                "label": "inbound",
+                "value": "inbound"
+              },
+              {
+                "label": "outbound",
+                "value": "outbound"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "duration",
+            "label": "Durée",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "note",
+            "label": "Note",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "note_html",
+            "label": "Note HTML",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "outcome_id",
+            "label": "Outcome Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
+            "col": {
+              "xs": 24
+            },
+            "description": "Phone number in E.164 format"
+          },
+          {
+            "type": "text",
+            "key": "playbook_id",
+            "label": "Playbook Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "quality_info",
+            "label": "Quality Info",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "recording_url",
+            "label": "URL de l'enregistrement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "source",
+            "label": "Source",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Close.io",
+                "value": "Close.io"
+              },
+              {
+                "label": "External",
+                "value": "External"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "created",
+                "value": "created"
+              },
+              {
+                "label": "in-progress",
+                "value": "in-progress"
+              },
+              {
+                "label": "completed",
+                "value": "completed"
+              },
+              {
+                "label": "cancel",
+                "value": "cancel"
+              },
+              {
+                "label": "no-answer",
+                "value": "no-answer"
+              },
+              {
+                "label": "busy",
+                "value": "busy"
+              },
+              {
+                "label": "failed",
+                "value": "failed"
+              },
+              {
+                "label": "timeout",
+                "value": "timeout"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "voicemail_url",
+            "label": "URL du message vocal",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -12877,18 +13168,167 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "conversation_type_id",
+            "label": "Conversation Type Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "custom_fields",
+            "label": "Custom Fields",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "duration",
+            "label": "Durée",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "note",
+            "label": "Note",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "note_html",
+            "label": "Note HTML",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "outcome_id",
+            "label": "Outcome Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phone",
+            "label": "Téléphone",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "description": "Phone number in E.164 format"
+          },
+          {
+            "type": "text",
+            "key": "playbook_id",
+            "label": "Playbook Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "quality_info",
+            "label": "Quality Info",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "recording_url",
+            "label": "URL de l'enregistrement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "options": [
               {
-                "type": "required"
+                "label": "created",
+                "value": "created"
+              },
+              {
+                "label": "in-progress",
+                "value": "in-progress"
+              },
+              {
+                "label": "completed",
+                "value": "completed"
+              },
+              {
+                "label": "cancel",
+                "value": "cancel"
+              },
+              {
+                "label": "no-answer",
+                "value": "no-answer"
+              },
+              {
+                "label": "busy",
+                "value": "busy"
+              },
+              {
+                "label": "failed",
+                "value": "failed"
+              },
+              {
+                "label": "timeout",
+                "value": "timeout"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "voicemail_url",
+            "label": "URL du message vocal",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -13073,10 +13513,9 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "object_id",
+            "label": "ID de l'objet",
             "col": {
               "xs": 24
             },
@@ -13215,18 +13654,13 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "requestNote",
+            "label": "RequestNote",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "Valeur textuelle à envoyer si la documentation ne détaille pas mieux ce body."
           }
         ],
         "displayTitle": false,
@@ -13534,18 +13968,68 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "emails",
+            "label": "E-mails",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "phones",
+            "label": "Téléphones",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "urls",
+            "label": "Urls",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "textarea",
+            "key": "customFields",
+            "label": "Champs personnalisés",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet JSON des champs personnalisés Close, avec les clés custom.FIELD_ID.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -13676,18 +14160,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -13853,18 +14331,38 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "choices",
+            "label": "Choices",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -13995,18 +14493,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -14557,10 +15049,33 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "created_by",
+            "label": "Created By",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "custom_activity_type_id",
+            "label": "Custom Activity Type Id",
             "col": {
               "xs": 24
             },
@@ -14569,6 +15084,87 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "custom_fields",
+            "label": "Custom Fields",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "date_created",
+            "label": "Date Created",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pinned",
+            "label": "Pinned",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "draft",
+                "value": "draft"
+              },
+              {
+                "label": "published",
+                "value": "published"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "customFields",
+            "label": "Champs personnalisés",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet JSON des champs personnalisés Close, avec les clés custom.FIELD_ID.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -14699,18 +15295,64 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "custom_fields",
+            "label": "Custom Fields",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pinned",
+            "label": "Pinned",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "options": [
               {
-                "type": "required"
+                "label": "draft",
+                "value": "draft"
+              },
+              {
+                "label": "published",
+                "value": "published"
               }
             ]
+          },
+          {
+            "type": "textarea",
+            "key": "customFields",
+            "label": "Champs personnalisés",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet JSON des champs personnalisés Close, avec les clés custom.FIELD_ID.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -14842,9 +15484,9 @@
           },
           {
             "type": "text",
-            "key": "query",
-            "label": "Interroger",
-            "description": "Paramètre de requête query",
+            "key": "searchQuery",
+            "label": "Requête de recherche",
+            "description": "Paramètre de requête searchQuery",
             "col": {
               "xs": 24
             }
@@ -15012,18 +15654,38 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "checkbox",
+            "key": "api_create_only",
+            "label": "Api Create Only",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "editable_with_roles",
+            "label": "Editable With Roles",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -15154,18 +15816,30 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "fields",
+            "label": "Fields",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "checkbox",
+            "key": "is_archived",
+            "label": "Is Archived",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -15360,18 +16034,14 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "fields",
+            "label": "Fields",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -15497,18 +16167,38 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "custom_object_type_id",
+            "label": "Custom Object Type Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "customFields",
+            "label": "Champs personnalisés",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "Objet JSON des champs personnalisés Close, avec les clés custom.FIELD_ID.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -15639,18 +16329,22 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "customFields",
+            "label": "Champs personnalisés",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "Objet JSON des champs personnalisés Close, avec les clés custom.FIELD_ID.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -15816,18 +16510,44 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "custom_object_type_id",
+            "label": "Custom Object Type Id",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "required",
+            "label": "Required",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -15958,18 +16678,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -16135,18 +16849,46 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "checkbox",
+            "key": "api_create_only",
+            "label": "Api Create Only",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "editable_with_roles",
+            "label": "Editable With Roles",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name_plural",
+            "label": "Name Plural",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -16277,18 +17019,20 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "name_plural",
+            "label": "Name Plural",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -16454,18 +17198,32 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "results_limit",
+            "label": "Results Limit",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "s_query",
+            "label": "S Query",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "sort",
+            "label": "Sort",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -16808,18 +17566,48 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "lead_status_id",
+            "label": "Lead Status Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "results_limit",
+            "label": "Results Limit",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "s_query",
+            "label": "S Query",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "sort",
+            "label": "Sort",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -17112,10 +17900,129 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "attachments",
+            "label": "Pièces jointes",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "bcc",
+            "label": "CCI",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "body_html",
+            "label": "HTML du message",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "body_text",
+            "label": "Texte du message",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cc",
+            "label": "CC",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "created_by",
+            "label": "Created By",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "date_created",
+            "label": "Date Created",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email_account_id",
+            "label": "Email Account Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "followup_date",
+            "label": "Followup Date",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "followup_sequence_add_cc_bcc",
+            "label": "Followup Sequence Add Cc Bcc",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "followup_sequence_delay",
+            "label": "Followup Sequence Delay",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "followup_sequence_id",
+            "label": "Followup Sequence Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "in_reply_to_id",
+            "label": "In Reply To Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
             "col": {
               "xs": 24
             },
@@ -17124,6 +18031,117 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "opens",
+            "label": "Opens",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sender",
+            "label": "Expéditeur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "inbox",
+                "value": "inbox"
+              },
+              {
+                "label": "draft",
+                "value": "draft"
+              },
+              {
+                "label": "scheduled",
+                "value": "scheduled"
+              },
+              {
+                "label": "outbox",
+                "value": "outbox"
+              },
+              {
+                "label": "sent",
+                "value": "sent"
+              },
+              {
+                "label": "error",
+                "value": "error"
+              }
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Objet",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "template_id",
+            "label": "ID du modèle",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataires",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "created_by_name",
+            "label": "Created By Name",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "direction",
+            "label": "Direction",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -17254,18 +18272,190 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "attachments",
+            "label": "Pièces jointes",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "bcc",
+            "label": "CCI",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "body_html",
+            "label": "HTML du message",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "body_text",
+            "label": "Texte du message",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cc",
+            "label": "CC",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "email_account_id",
+            "label": "Email Account Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "followup_date",
+            "label": "Followup Date",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "followup_sequence_add_cc_bcc",
+            "label": "Followup Sequence Add Cc Bcc",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "followup_sequence_delay",
+            "label": "Followup Sequence Delay",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "followup_sequence_id",
+            "label": "Followup Sequence Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "in_reply_to_id",
+            "label": "In Reply To Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "opens",
+            "label": "Opens",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sender",
+            "label": "Expéditeur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "options": [
               {
-                "type": "required"
+                "label": "inbox",
+                "value": "inbox"
+              },
+              {
+                "label": "draft",
+                "value": "draft"
+              },
+              {
+                "label": "scheduled",
+                "value": "scheduled"
+              },
+              {
+                "label": "outbox",
+                "value": "outbox"
+              },
+              {
+                "label": "sent",
+                "value": "sent"
+              },
+              {
+                "label": "error",
+                "value": "error"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Objet",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "template_id",
+            "label": "ID du modèle",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "to",
+            "label": "Destinataires",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -17441,18 +18631,56 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "contact_preference",
+            "label": "Contact Preference",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "results_limit",
+            "label": "Results Limit",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "s_query",
+            "label": "S Query",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "checkbox",
+            "key": "send_done_email",
+            "label": "Send Done Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "sort",
+            "label": "Sort",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "template_id",
+            "label": "ID du modèle",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -17618,10 +18846,9 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "email",
+            "label": "E-mail",
             "col": {
               "xs": 24
             },
@@ -17814,18 +19041,38 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "attachments",
+            "label": "Pièces jointes",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "checkbox",
+            "key": "is_shared",
+            "label": "Is Shared",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Objet",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -17965,18 +19212,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "checkbox",
+            "key": "is_shared",
+            "label": "Is Shared",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -18397,10 +19638,9 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "field_id",
+            "label": "Field Id",
             "col": {
               "xs": 24
             },
@@ -18409,6 +19649,71 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "object_id",
+            "label": "ID de l'objet",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "object_type",
+            "label": "Type d'objet",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "lead",
+                "value": "lead"
+              },
+              {
+                "label": "contact",
+                "value": "contact"
+              }
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "overwrite_existing_value",
+            "label": "Overwrite Existing Value",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "set_new_value",
+            "label": "Set New Value",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -19264,18 +20569,14 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "integration_data",
+            "label": "Integration Data",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -19328,18 +20629,52 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "number",
+            "key": "duration_in_minutes",
+            "label": "Duration In Minutes",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "source_id",
+            "label": "Source Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "source_type",
+            "label": "Source Type",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -19505,10 +20840,49 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "lead",
+                "value": "lead"
+              },
+              {
+                "label": "contact",
+                "value": "contact"
+              },
+              {
+                "label": "opportunity",
+                "value": "opportunity"
+              }
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
             "col": {
               "xs": 24
             },
@@ -19647,18 +21021,34 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -19951,18 +21341,36 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "date_created",
+            "label": "Date Created",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "new_status_id",
+            "label": "New Status Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "old_status_id",
+            "label": "Old Status Id",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -20192,18 +21600,20 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -20334,18 +21744,20 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -20462,18 +21874,64 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "date_format",
+            "label": "Date Format",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "format",
+            "label": "Format",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "results_limit",
+            "label": "Results Limit",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "s_query",
+            "label": "S Query",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "checkbox",
+            "key": "send_done_email",
+            "label": "Send Done Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "sort",
+            "label": "Sort",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -20575,18 +22033,66 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "addresses",
+            "label": "Adresses",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "textarea",
+            "key": "contacts",
+            "label": "Contacts",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status_id",
+            "label": "ID du statut",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "customFields",
+            "label": "Champs personnalisés",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet JSON des champs personnalisés Close, avec les clés custom.FIELD_ID.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -20717,18 +22223,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -20878,9 +22378,9 @@
           },
           {
             "type": "text",
-            "key": "query",
-            "label": "Interroger",
-            "description": "Paramètre de requête query",
+            "key": "searchQuery",
+            "label": "Requête de recherche",
+            "description": "Paramètre de requête searchQuery",
             "col": {
               "xs": 24
             }
@@ -20994,18 +22494,12 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "label",
+            "label": "Label",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -21072,18 +22566,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "label",
+            "label": "Label",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -21743,18 +23231,20 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "outcome_id",
+            "label": "Outcome Id",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_note_html",
+            "label": "User Note Html",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -21871,18 +23361,20 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "destination",
+            "label": "Destination",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "source",
+            "label": "Source",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -22160,10 +23652,49 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "attachments",
+            "label": "Pièces jointes",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "created_by",
+            "label": "Created By",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "date_created",
+            "label": "Date Created",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
             "col": {
               "xs": 24
             },
@@ -22172,6 +23703,54 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "note",
+            "label": "Note",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "note_html",
+            "label": "Note HTML",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pinned",
+            "label": "Pinned",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -22302,18 +23881,60 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "attachments",
+            "label": "Pièces jointes",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "note",
+            "label": "Note",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "note_html",
+            "label": "Note HTML",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "pinned",
+            "label": "Pinned",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "title",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -22615,18 +24236,44 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "date_created",
+            "label": "Date Created",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "new_status_id",
+            "label": "New Status Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "old_status_id",
+            "label": "Old Status Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "opportunity_id",
+            "label": "ID de l'opportunité",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -22856,18 +24503,28 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -22998,18 +24655,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -23126,18 +24777,38 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "date_format",
+            "label": "Date Format",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "format",
+            "label": "Format",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "params",
+            "label": "Params",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "checkbox",
+            "key": "send_done_email",
+            "label": "Send Done Email",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -23452,9 +25123,9 @@
           },
           {
             "type": "text",
-            "key": "query",
-            "label": "Interroger",
-            "description": "Paramètre de requête query",
+            "key": "searchQuery",
+            "label": "Requête de recherche",
+            "description": "Paramètre de requête searchQuery",
             "col": {
               "xs": 24
             }
@@ -23555,18 +25226,154 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "attachments",
+            "label": "Pièces jointes",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "confidence",
+            "label": "Confidence",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "created_by",
+            "label": "Created By",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "custom_fields",
+            "label": "Custom Fields",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "date_created",
+            "label": "Date Created",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "date_won",
+            "label": "Date Won",
+            "col": {
+              "xs": 24
+            },
+            "description": "If not set on the resource or in the request, `date_won` will be set automatically to today's date when setting `status_id` to a status with type `won`. The `x-tz-offset` header, used to pass your timezone's UTC offset, ",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            },
+            "description": "Opportunities belong to exactly one Lead. If not provided, a new lead will be created (appearing as \"Untitled\" in the UI).",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "note",
+            "label": "Note",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "pipeline_id",
+            "label": "Pipeline Id",
+            "col": {
+              "xs": 24
+            },
+            "description": "Specify which pipeline this opportunity should belong to. When supplied without `status_id`, the opportunity will be created with the first available status of that pipeline. When supplied with `status_id`, the status mu",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "status_id",
+            "label": "ID du statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Post a `status_id` to create an opportunity with a specific status. If omitted, the organization's default (first) status will be used (or the first status of the `pipeline_id` if provided). See the [Opportunity Status A",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "value",
+            "label": "Value",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "value_period",
+            "label": "Value Period",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "customFields",
+            "label": "Champs personnalisés",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet JSON des champs personnalisés Close, avec les clés custom.FIELD_ID.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -23697,16 +25504,115 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "attachments",
+            "label": "Pièces jointes",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "number",
+            "key": "confidence",
+            "label": "Confidence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "custom_fields",
+            "label": "Custom Fields",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "date_won",
+            "label": "Date Won",
+            "col": {
+              "xs": 24
+            },
+            "description": "If not set on the resource or in the request, `date_won` will be set automatically to today's date when setting `status_id` to a status with type `won`. The `x-tz-offset` header, used to pass your timezone's UTC offset, ",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "note",
+            "label": "Note",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status_id",
+            "label": "ID du statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "Setting the `status_id` to a status with a type of `won` will automatically set the `date_won` field if it is not already set or provided in the request. Reverting it from a `won` status to an `active` or `lost` will not"
+          },
+          {
+            "type": "textarea",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "number",
+            "key": "value",
+            "label": "Value",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "value_period",
+            "label": "Value Period",
+            "col": {
+              "xs": 24
+            },
+            "options": [
               {
-                "type": "required"
+                "label": "one_time",
+                "value": "one_time"
+              },
+              {
+                "label": "monthly",
+                "value": "monthly"
+              },
+              {
+                "label": "annual",
+                "value": "annual"
               }
             ]
           }
@@ -23858,9 +25764,9 @@
           },
           {
             "type": "text",
-            "key": "query",
-            "label": "Interroger",
-            "description": "Paramètre de requête query",
+            "key": "searchQuery",
+            "label": "Requête de recherche",
+            "description": "Paramètre de requête searchQuery",
             "col": {
               "xs": 24
             }
@@ -23983,18 +25889,28 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "label",
+            "label": "Label",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "pipeline_id",
+            "label": "Pipeline Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -24061,18 +25977,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "label",
+            "label": "Label",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -24238,16 +26148,54 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "applies_to",
+            "label": "Applies To",
             "col": {
               "xs": 24
             },
+            "description": "Deprecated. This field will be derived from `type` in a future update: `custom` applies to calls and meetings, `vm-dropped` applies to calls only.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Explain what the outcome means and when it should be used.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Displayed to users wherever outcomes can be selected.",
             "validators": [
               {
                 "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "vm-dropped",
+                "value": "vm-dropped"
+              },
+              {
+                "label": "custom",
+                "value": "custom"
               }
             ]
           }
@@ -24380,18 +26328,44 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "applies_to",
+            "label": "Applies To",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "Deprecated. This field will be derived from `type` in a future update: `custom` applies to calls and meetings, `vm-dropped` applies to calls only.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Explain what the outcome means and when it should be used.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "description": "Displayed to users wherever outcomes can be selected.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            },
+            "description": "Set to `vm-dropped` if this outcome should be automatically set on calls whenever a team member performs a Voicemail Drop. Otherwise, leave empty or explicitly set to `custom` (default).",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -24663,18 +26637,66 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "forward_to",
+            "label": "Forward To",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "forward_to_enabled",
+            "label": "Forward To Enabled",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Label",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "participants",
+            "label": "Participants",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "textarea",
+            "key": "phone_numbers",
+            "label": "Phone Numbers",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "checkbox",
+            "key": "press_1_to_accept",
+            "label": "Press 1 To Accept",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "voicemail_greeting_url",
+            "label": "Voicemail Greeting Url",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -24840,18 +26862,12 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -24918,18 +26934,22 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "statuses",
+            "label": "Statuses",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -25123,10 +27143,29 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "custom_field_ids",
+            "label": "Custom Field Ids",
+            "col": {
+              "xs": 24
+            },
+            "description": "IDs of [Shared Custom Fields](/api/resources/custom-fields/custom-fields-shared) to associate with this Playbook.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description of the playbook.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
             },
@@ -25135,6 +27174,26 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "textarea",
+            "key": "outcome_ids",
+            "label": "Outcome Ids",
+            "col": {
+              "xs": 24
+            },
+            "description": "IDs of [Outcomes](/api/resources/outcomes/) that should be associated with this Playbook.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "textarea",
+            "key": "summary_guidance",
+            "label": "Summary Guidance",
+            "col": {
+              "xs": 24
+            },
+            "description": "Guidance for AI summaries of calls and meetings associated with this Playbook.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -25265,18 +27324,52 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "custom_field_ids",
+            "label": "Custom Field Ids",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "IDs of [Shared Custom Fields](/api/resources/custom-fields/custom-fields-shared) to associate with this Playbook.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            },
+            "description": "Description of the playbook.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "outcome_ids",
+            "label": "Outcome Ids",
+            "col": {
+              "xs": 24
+            },
+            "description": "IDs of [Outcomes](/api/resources/outcomes/) that should be associated with this Playbook.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "textarea",
+            "key": "summary_guidance",
+            "label": "Summary Guidance",
+            "col": {
+              "xs": 24
+            },
+            "description": "Guidance for AI summaries of calls and meetings associated with this Playbook.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -25535,9 +27628,9 @@
           },
           {
             "type": "text",
-            "key": "query",
-            "label": "Interroger",
-            "description": "Paramètre de requête query",
+            "key": "searchQuery",
+            "label": "Requête de recherche",
+            "description": "Paramètre de requête searchQuery",
             "col": {
               "xs": 24
             }
@@ -25706,18 +27799,30 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "s_query",
+            "label": "S Query",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -25848,18 +27953,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -26025,18 +28124,28 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -26167,18 +28276,28 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -26363,18 +28482,20 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "allowed_user_id",
+            "label": "Allowed User Id",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "allowing_user_id",
+            "label": "Allowing User Id",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -26763,18 +28884,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "schedule",
+            "label": "Schedule",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "steps",
+            "label": "Steps",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "timezone",
+            "label": "Timezone",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -26905,18 +29048,22 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "steps",
+            "label": "Steps",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -27082,18 +29229,80 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "action_type",
+            "label": "Action Type",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_preference",
+            "label": "Contact Preference",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "results_limit",
+            "label": "Results Limit",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "s_query",
+            "label": "S Query",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "sender_account_id",
+            "label": "Sender Account Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sender_email",
+            "label": "Sender Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sender_name",
+            "label": "Sender Name",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sequence_id",
+            "label": "ID de la séquence",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "sort",
+            "label": "Sort",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -27287,18 +29496,62 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "calls_assigned_to",
+            "label": "Calls Assigned To",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "contact_email",
+            "label": "Contact Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sender_account_id",
+            "label": "Sender Account Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sender_email",
+            "label": "Sender Email",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sender_name",
+            "label": "Sender Name",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "sequence_id",
+            "label": "ID de la séquence",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -27429,18 +29682,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -27542,18 +29789,28 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -27684,18 +29941,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -27861,18 +30112,20 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -28003,18 +30256,12 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -28131,18 +30378,36 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "shared_scheduling_link_id",
+            "label": "Shared Scheduling Link Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_scheduling_link_id",
+            "label": "User Scheduling Link Id",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -28380,18 +30645,177 @@
             }
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "attachments",
+            "label": "Pièces jointes",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "created_by",
+            "label": "Created By",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "date_created",
+            "label": "Date Created",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "direction",
+            "label": "Direction",
             "col": {
               "xs": 24
             },
+            "options": [
+              {
+                "label": "inbound",
+                "value": "inbound"
+              },
+              {
+                "label": "outbound",
+                "value": "outbound"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "local_phone",
+            "label": "Local Phone",
+            "col": {
+              "xs": 24
+            },
+            "description": "Phone number in E.164 format"
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "remote_phone",
+            "label": "Remote Phone",
+            "col": {
+              "xs": 24
+            },
+            "description": "Phone number in E.164 format"
+          },
+          {
+            "type": "select",
+            "key": "source",
+            "label": "Source",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Close.io",
+                "value": "Close.io"
+              },
+              {
+                "label": "External",
+                "value": "External"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "inbox",
+                "value": "inbox"
+              },
+              {
+                "label": "draft",
+                "value": "draft"
+              },
+              {
+                "label": "scheduled",
+                "value": "scheduled"
+              },
+              {
+                "label": "outbox",
+                "value": "outbox"
+              },
+              {
+                "label": "sent",
+                "value": "sent"
+              },
+              {
+                "label": "error",
+                "value": "error"
+              }
+            ],
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "template_id",
+            "label": "ID du modèle",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -28522,18 +30946,112 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "attachments",
+            "label": "Pièces jointes",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "local_phone",
+            "label": "Local Phone",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "description": "Phone number in E.164 format"
+          },
+          {
+            "type": "text",
+            "key": "remote_phone",
+            "label": "Remote Phone",
+            "col": {
+              "xs": 24
+            },
+            "description": "Phone number in E.164 format"
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "options": [
               {
-                "type": "required"
+                "label": "inbox",
+                "value": "inbox"
+              },
+              {
+                "label": "draft",
+                "value": "draft"
+              },
+              {
+                "label": "scheduled",
+                "value": "scheduled"
+              },
+              {
+                "label": "outbox",
+                "value": "outbox"
+              },
+              {
+                "label": "sent",
+                "value": "sent"
+              },
+              {
+                "label": "error",
+                "value": "error"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "template_id",
+            "label": "ID du modèle",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -28699,10 +31217,27 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "attachments",
+            "label": "Pièces jointes",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "checkbox",
+            "key": "is_shared",
+            "label": "Is Shared",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
             "col": {
               "xs": 24
             },
@@ -28711,6 +31246,14 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -28859,18 +31402,56 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "attachments",
+            "label": "Pièces jointes",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "checkbox",
+            "key": "is_shared",
+            "label": "Is Shared",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "options": [
               {
-                "type": "required"
+                "label": "active",
+                "value": "active"
+              },
+              {
+                "label": "archived",
+                "value": "archived"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -28987,18 +31568,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "pipeline",
+            "label": "Pipeline",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "report_datetime_range",
+            "label": "Report Datetime Range",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "users",
+            "label": "Users",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -29362,10 +31965,27 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "_type",
+            "label": " Type",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "assigned_to",
+            "label": "Assigné à",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
             "col": {
               "xs": 24
             },
@@ -29374,6 +31994,132 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "created_by",
+            "label": "Created By",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "date",
+            "label": "Date",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "date_created",
+            "label": "Date Created",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "checkbox",
+            "key": "disable_notification",
+            "label": "Disable Notification",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "due_date",
+            "label": "Date d’échéance",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "checkbox",
+            "key": "is_complete",
+            "label": "Is Complete",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_dateless",
+            "label": "Is Dateless",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "priority",
+            "label": "Priority",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "high",
+                "value": "high"
+              },
+              {
+                "label": "medium",
+                "value": "medium"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "agent_config_id",
+            "label": "Agent Config Id",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -29687,18 +32433,84 @@
             }
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "assigned_to",
+            "label": "Assigné à",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "date",
+            "label": "Date",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "checkbox",
+            "key": "is_complete",
+            "label": "Is Complete",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "priority",
+            "label": "Priority",
+            "col": {
+              "xs": 24
+            },
+            "options": [
               {
-                "type": "required"
+                "label": "high",
+                "value": "high"
+              },
+              {
+                "label": "medium",
+                "value": "medium"
               }
             ]
+          },
+          {
+            "type": "textarea",
+            "key": "resolution",
+            "label": "Resolution",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "_params",
+            "label": " Params",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -29829,18 +32641,128 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "agent_config_id",
+            "label": "Agent Config Id",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "assigned_to",
+            "label": "Assigné à",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "created_by",
+            "label": "Created By",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "date",
+            "label": "Date",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "due_date",
+            "label": "Date d’échéance",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "checkbox",
+            "key": "is_complete",
+            "label": "Is Complete",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_dateless",
+            "label": "Is Dateless",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "priority",
+            "label": "Priority",
+            "col": {
+              "xs": 24
+            },
+            "options": [
               {
-                "type": "required"
+                "label": "high",
+                "value": "high"
+              },
+              {
+                "label": "medium",
+                "value": "medium"
               }
             ]
+          },
+          {
+            "type": "textarea",
+            "key": "resolution",
+            "label": "Resolution",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -30261,18 +33183,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "pipeline",
+            "label": "Pipeline",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "report_datetime_range",
+            "label": "Report Datetime Range",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "users",
+            "label": "Users",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
           }
         ],
         "displayTitle": false,
@@ -30389,18 +33333,28 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "shared_scheduling_link_id",
+            "label": "Shared Scheduling Link Id",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -30453,10 +33407,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "content_type",
+            "label": "Content Type",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "filename",
+            "label": "Filename",
             "col": {
               "xs": 24
             },
@@ -30698,18 +33664,42 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "events",
+            "label": "Événements",
             "col": {
               "xs": 24
             },
+            "description": "A list of events to subscribe to. Each event has an `object_type` and an `action` from values in the [event log](https://developer.close.com/api/resources/events/list-of-event-types). You can also use [Webhook Filters](h",
+            "placeholder": "[]",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "description": "Destination URL for the webhook subscription",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "verify_ssl",
+            "label": "Verify Ssl",
+            "col": {
+              "xs": 24
+            },
+            "description": "Verify SSL certificate of destination webhook URL. Set to `false` to disable SSL certificate validation. We recommend using https to protect your data during delivery."
           }
         ],
         "displayTitle": false,
@@ -30840,18 +33830,44 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "textarea",
+            "key": "events",
+            "label": "Événements",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "description": "A list of events to subscribe to. Each event has an `object_type` and an `action` from values in the [event log](https://developer.close.com/api/resources/events/list-of-event-types). You can also use [Webhook Filters](h",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "status",
+            "label": "Statut",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "url",
+            "label": "URL",
+            "col": {
+              "xs": 24
+            },
+            "description": "Destination URL for the webhook subscription",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "verify_ssl",
+            "label": "Verify Ssl",
+            "col": {
+              "xs": 24
+            },
+            "description": "Verify SSL certificate of destination webhook URL. Set to `false` to disable SSL certificate validation. We recommend using https to protect your data during delivery.",
+            "placeholder": "{}"
           }
         ],
         "displayTitle": false,
@@ -31162,10 +34178,9 @@
             }
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
             "col": {
               "xs": 24
             },
@@ -31174,6 +34189,156 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "textarea",
+            "key": "attachments",
+            "label": "Pièces jointes",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "direction",
+            "label": "Direction",
+            "col": {
+              "xs": 24
+            },
+            "description": "Direction of communication. Outgoing means the communication flowing from the user to the lead/contact. Inbound means the opposite.",
+            "options": [
+              {
+                "label": "incoming",
+                "value": "incoming"
+              },
+              {
+                "label": "outgoing",
+                "value": "outgoing"
+              }
+            ],
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "external_whatsapp_message_id",
+            "label": "External Whatsapp Message Id",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "integration_link",
+            "label": "Integration Link",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "lead_id",
+            "label": "ID du prospect",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "local_phone",
+            "label": "Local Phone",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "message_markdown",
+            "label": "Message Markdown",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "remote_phone",
+            "label": "Remote Phone",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "response_to_id",
+            "label": "Response To Id",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "textarea",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "organization_id",
+            "label": "Organization Id",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -31304,18 +34469,101 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "activity_at",
+            "label": "Activity At",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "attachments",
+            "label": "Pièces jointes",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "[]"
+          },
+          {
+            "type": "text",
+            "key": "contact_id",
+            "label": "ID du contact",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "direction",
+            "label": "Direction",
+            "col": {
+              "xs": 24
+            },
+            "description": "Direction of communication. Outgoing means the communication flowing from the user to the lead/contact. Inbound means the opposite.",
+            "options": [
               {
-                "type": "required"
+                "label": "incoming",
+                "value": "incoming"
+              },
+              {
+                "label": "outgoing",
+                "value": "outgoing"
               }
             ]
+          },
+          {
+            "type": "textarea",
+            "key": "integration_link",
+            "label": "Integration Link",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "local_phone",
+            "label": "Local Phone",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "message_markdown",
+            "label": "Message Markdown",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "remote_phone",
+            "label": "Remote Phone",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "response_to_id",
+            "label": "Response To Id",
+            "col": {
+              "xs": 24
+            },
+            "description": "JSON structuré accepté par Close pour ce champ.",
+            "placeholder": "{}"
+          },
+          {
+            "type": "text",
+            "key": "user_id",
+            "label": "ID de l'utilisateur",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,

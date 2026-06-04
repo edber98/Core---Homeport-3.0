@@ -3,7 +3,7 @@ const { utils } = require("./utils");
 module.exports = {
   async deepseek_embeddings_create(node, msg, inputs, opts) {
     const d = inputs || {};
-    const input = d.input;
+    const input = d.embeddingInput;
     if (input === undefined || input === null || input === "") return { ok: false, error: "Input requis." };
     const body = {
       model: String(d.model || "deepseek-embedding").trim(),

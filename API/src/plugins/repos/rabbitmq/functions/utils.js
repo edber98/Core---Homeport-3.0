@@ -36,8 +36,8 @@ function decodeMessage(msg) {
       redelivered: !!msg.fields.redelivered,
       contentType: props.contentType || "",
       timestamp: props.timestamp || null,
-      headers: props.headers || {},
-      payload: parsed !== null ? parsed : content
+      messageHeaders: props.messageHeaders || {},
+      messagePayload: parsed !== null ? parsed : content
     },
     raw: {
       fields: msg.fields,
@@ -105,44 +105,44 @@ async function run(key, inputs, opts) {
 
   try {
     if (key === "rabbitmq_publish_queue") {
-      const payload = String(d.payload || "");
+      const messagePayload = String(d.messagePayload || "");
       const queue = cleanString(d.queue);
-      if (!payload) return { ok: false, error: "payload requis." };
+      if (!messagePayload) return { ok: false, error: "messagePayload requis." };
       return withChannel(opts, async ({ channel, defaultQueue }) => {
         const q = queue || defaultQueue;
         if (!q) return { ok: false, error: "queue requise (input ou credentials.defaultQueue)." };
-        const ok = channel.sendToQueue(q, Buffer.from(payload, "utf8"), {
+        const ok = channel.sendToQueue(q, Buffer.from(messagePayload, "utf8"), {
           persistent: d.persistent === false ? false : true,
           contentType: cleanString(d.contentType || "text/plain")
         });
-        return actionResult(ok ? "Message publié dans la queue." : "Message publié (buffer saturé).", { queue: q, size: payload.length });
+        return actionResult(ok ? "Message publié dans la queue." : "Message publié (buffer saturé).", { queue: q, size: messagePayload.length });
       });
     }
 
     if (key === "rabbitmq_publish_exchange") {
-      const payload = String(d.payload || "");
+      const messagePayload = String(d.messagePayload || "");
       const routingKey = cleanString(d.routingKey);
       const exchange = cleanString(d.exchange);
-      if (!payload || !routingKey) return { ok: false, error: "payload et routingKey requis." };
+      if (!messagePayload || !routingKey) return { ok: false, error: "messagePayload et routingKey requis." };
       return withChannel(opts, async ({ channel, defaultExchange }) => {
         const ex = exchange || defaultExchange;
         if (ex === undefined || ex === null) return { ok: false, error: "exchange requis (input ou credentials.defaultExchange)." };
-        const ok = channel.publish(ex, routingKey, Buffer.from(payload, "utf8"), {
+        const ok = channel.publish(ex, routingKey, Buffer.from(messagePayload, "utf8"), {
           persistent: d.persistent === false ? false : true,
           contentType: cleanString(d.contentType || "text/plain")
         });
-        return actionResult(ok ? "Message publié dans l'exchange." : "Message publié (buffer saturé).", { exchange: ex, routingKey, size: payload.length });
+        return actionResult(ok ? "Message publié dans l'exchange." : "Message publié (buffer saturé).", { exchange: ex, routingKey, size: messagePayload.length });
       });
     }
 
     if (key === "rabbitmq_publish_json") {
-      const payload = parseJson(d.payload, "payload", null);
-      if (!payload || typeof payload !== "object") return { ok: false, error: "payload JSON objet requis." };
+      const messagePayload = parseJson(d.messagePayload, "messagePayload", null);
+      if (!messagePayload || typeof messagePayload !== "object") return { ok: false, error: "messagePayload JSON objet requis." };
       const queue = cleanString(d.queue);
       const exchange = cleanString(d.exchange);
       const routingKey = cleanString(d.routingKey);
       return withChannel(opts, async ({ channel, defaultQueue, defaultExchange }) => {
-        const data = JSON.stringify(payload);
+        const data = JSON.stringify(messagePayload);
         const options = { persistent: d.persistent === false ? false : true, contentType: "application/json" };
 
         if (exchange || defaultExchange) {

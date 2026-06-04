@@ -15,10 +15,10 @@ module.exports = {
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
     let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
+    if (d.messageRequest !== undefined && d.messageRequest !== null && d.messageRequest !== '') {
+      if (typeof d.messageRequest === 'object') body = d.messageRequest;
       else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
+        try { body = JSON.parse(String(d.messageRequest)); } catch { return { ok: false, error: 'JSON invalide dans messageRequest.' }; }
       }
     }
 

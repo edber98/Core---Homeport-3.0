@@ -1741,10 +1741,46 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "description": "Prénom du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "description": "Nom du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "company_name",
+            "label": "Société",
+            "description": "Nom de la société.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "information",
+            "label": "Informations",
+            "description": "Informations complémentaires.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "phone_numbers",
+            "label": "Numéros de téléphone",
+            "description": "Tableau JSON des numéros, requis par Aircall. Exemple: [{\"label\":\"Mobile\",\"value\":\"+33123456789\"}].",
             "col": {
               "xs": 24
             },
@@ -1753,6 +1789,15 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "emails",
+            "label": "Emails",
+            "description": "Tableau JSON des emails. Exemple: [{\"label\":\"Work\",\"value\":\"contact@example.com\"}].",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1819,10 +1864,37 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "first_name",
+            "label": "Prénom",
+            "description": "Prénom du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_name",
+            "label": "Nom",
+            "description": "Nom du contact.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "company_name",
+            "label": "Société",
+            "description": "Nom de la société.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "information",
+            "label": "Informations",
+            "description": "Informations complémentaires.",
             "col": {
               "xs": 24
             }
@@ -2566,10 +2638,28 @@
             ]
           },
           {
-            "type": "json",
+            "type": "text",
+            "key": "to",
+            "label": "Destinataire",
+            "description": "Numéro destinataire.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
             "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "label": "Message",
+            "description": "Texte du message.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "mediaUrl",
+            "label": "Médias",
+            "description": "Tableau JSON d'URLs médias.",
             "col": {
               "xs": 24
             }
@@ -2758,10 +2848,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL cible du webhook.",
             "col": {
               "xs": 24
             },
@@ -2770,6 +2860,24 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "custom_name",
+            "label": "Nom personnalisé",
+            "description": "Nom lisible du webhook.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "events",
+            "label": "Événements",
+            "description": "Tableau JSON des événements. Laisser vide pour tous les événements.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2836,10 +2944,50 @@
             ]
           },
           {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL cible du webhook.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "custom_name",
+            "label": "Nom personnalisé",
+            "description": "Nom lisible du webhook.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "active",
+            "label": "Actif",
+            "description": "Active ou réactive le webhook.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "select",
+            "key": "events_action",
+            "label": "Action sur événements",
+            "description": "Mode de traitement de la liste d'événements.",
+            "options": [
+              "replace",
+              "add"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "events",
+            "label": "Événements",
+            "description": "Tableau JSON des événements.",
             "col": {
               "xs": 24
             }

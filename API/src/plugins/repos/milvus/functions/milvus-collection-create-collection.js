@@ -8,16 +8,30 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.dbname !== undefined && d.dbname !== null && d.dbname !== '') {
+      body["dbname"] = d.dbname;
+    }
+    if (d.collectionname !== undefined && d.collectionname !== null && d.collectionname !== '') {
+      body["collectionname"] = d.collectionname;
+    }
+    if (d.dimension !== undefined && d.dimension !== null && d.dimension !== '') {
+      body["dimension"] = d.dimension;
+    }
+    if (d.metrictype !== undefined && d.metrictype !== null && d.metrictype !== '') {
+      body["metrictype"] = d.metrictype;
+    }
+    if (d.primaryfield !== undefined && d.primaryfield !== null && d.primaryfield !== '') {
+      body["primaryfield"] = d.primaryfield;
+    }
+    if (d.vectorfield !== undefined && d.vectorfield !== null && d.vectorfield !== '') {
+      body["vectorfield"] = d.vectorfield;
+    }
+    if (d.description !== undefined && d.description !== null && d.description !== '') {
+      body["description"] = d.description;
     }
 
     log('Requête en cours...');
@@ -32,3 +46,4 @@ module.exports = {
     };
   }
 };
+

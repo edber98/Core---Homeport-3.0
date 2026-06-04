@@ -264,3 +264,18 @@ spec:
               value: {{ .Values.kinn.kinnApi.tiktok_oauth_client_key | default "" | quote }}
             - name: TIKTOK_OAUTH_CLIENT_SECRET
               value: {{ .Values.kinn.kinnApi.tiktok_oauth_client_secret | default "" | quote }}
+            # ── Système de crédits (Panel ↔ Kinn-app) ───────────────────────────
+            # Injecté par le worker Kinn-panel selon Application.creditsEnabled.
+            # Si "false" → helper kinn-app passe en mode standalone (mocks no-op).
+            - name: KINN_PANEL_INTERNAL_URL
+              value: {{ .Values.kinn.kinnApi.kinn_panel_internal_url | default "https://panel.kinn.fr" | quote }}
+            - name: KINN_PANEL_CREDITS_ENABLED
+              value: {{ .Values.kinn.kinnApi.kinn_panel_credits_enabled | default "false" | quote }}
+            - name: KINN_PANEL_APP_ID
+              value: {{ .Values.kinn.kinnApi.kinn_panel_app_id | default "" | quote }}
+            - name: KINN_PANEL_CLIENT_ID
+              value: {{ .Values.kinn.kinnApi.kinn_panel_client_id | default "" | quote }}
+            - name: KINN_PANEL_CREDITS_FAIL_OPEN
+              value: {{ .Values.kinn.kinnApi.kinn_panel_credits_fail_open | default "false" | quote }}
+            - name: KINN_PANEL_CREDITS_TIMEOUT_MS
+              value: {{ .Values.kinn.kinnApi.kinn_panel_credits_timeout_ms | default "3000" | quote }}

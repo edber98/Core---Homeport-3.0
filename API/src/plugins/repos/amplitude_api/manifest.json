@@ -717,27 +717,23 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "events",
+            "label": "Événements",
+            "description": "Tableau JSON des événements à envoyer.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "type": "number",
+            "key": "min_id_length",
+            "label": "Longueur min ID",
+            "description": "Surcharge la longueur minimale des user_id et device_id.",
             "col": {
               "xs": 24
             }
@@ -794,30 +790,17 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "identification",
+            "label": "Identification",
+            "description": "Objet JSON ou tableau JSON d'identifications.",
             "col": {
               "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -871,30 +854,17 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "identification",
+            "label": "Identification",
+            "description": "Objet JSON ou tableau JSON d'identifications de groupe.",
             "col": {
               "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -948,30 +918,17 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "mapping",
+            "label": "Mapping",
+            "description": "Objet JSON ou tableau JSON de mappings utilisateur.",
             "col": {
               "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -1041,24 +998,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1123,24 +1062,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1205,24 +1126,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1287,24 +1190,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1355,26 +1240,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -1425,28 +1291,119 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Nom de la cohorte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "number",
+            "key": "app_id",
+            "label": "App ID",
+            "description": "Identifiant du projet Amplitude.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "key": "id_type",
+            "label": "Type d'identifiant",
+            "options": [
+              "BY_AMP_ID",
+              "BY_USER_ID"
+            ],
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "cg",
+            "label": "Count group",
+            "description": "Nom du groupe existant, si applicable.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
+            "key": "ids",
+            "label": "IDs",
+            "description": "Tableau JSON d'identifiants.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "owner",
+            "label": "Owner",
+            "description": "Email du propriétaire de la cohorte.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "published",
+            "label": "Publiée",
+            "description": "Rend la cohorte découvrable.",
             "col": {
               "xs": 24
             }
           },
           {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "type": "checkbox",
+            "key": "skip_save",
+            "label": "Valider sans sauver",
+            "description": "Valide l'upload sans enregistrer la cohorte.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "skip_invalid_ids",
+            "label": "Ignorer IDs invalides",
+            "description": "Ignore les IDs invalides au lieu d'échouer.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "existing_cohort_id",
+            "label": "Cohorte existante",
+            "description": "ID d'une cohorte à remplacer.",
             "col": {
               "xs": 24
             }
@@ -1502,28 +1459,47 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "cohort_id",
+            "label": "Cohort ID",
+            "description": "ID de la cohorte à mettre à jour.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "count_group",
+            "label": "Count group",
+            "description": "Groupe de comptage, par défaut User.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
+            "key": "memberships",
+            "label": "Memberships",
+            "description": "Tableau JSON des opérations d'ajout/retrait.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           },
           {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "type": "checkbox",
+            "key": "skip_invalid_ids",
+            "label": "Ignorer IDs invalides",
+            "description": "Ignore les IDs invalides au lieu d'échouer.",
             "col": {
               "xs": 24
             }
@@ -1591,24 +1567,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1659,26 +1617,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -1727,26 +1666,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -1795,26 +1715,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -1863,26 +1764,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -1931,26 +1813,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -1999,26 +1862,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -2067,26 +1911,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -2135,26 +1960,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -2203,26 +2009,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -2271,26 +2058,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -2339,26 +2107,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -2407,26 +2156,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -2475,26 +2205,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -2542,24 +2253,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query JSON",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -2609,9 +2303,9 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Body JSON",
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
             "col": {
               "xs": 24
             },
@@ -2622,9 +2316,48 @@
             ]
           },
           {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
+            "type": "text",
+            "key": "start",
+            "label": "Début",
+            "description": "Date ISO 8601 de début.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "category",
+            "label": "Catégorie",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "chart_id",
+            "label": "Chart ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "details",
+            "label": "Détails",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "end",
+            "label": "Fin",
+            "description": "Date ISO 8601 de fin.",
             "col": {
               "xs": 24
             }
@@ -2690,14 +2423,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -2862,14 +2587,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -2934,22 +2651,51 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Body JSON",
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           },
           {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
+            "type": "text",
+            "key": "start",
+            "label": "Début",
+            "description": "Date ISO 8601 de début.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "category",
+            "label": "Catégorie",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "chart_id",
+            "label": "Chart ID",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "details",
+            "label": "Détails",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "end",
+            "label": "Fin",
+            "description": "Date ISO 8601 de fin.",
             "col": {
               "xs": 24
             }
@@ -3002,16 +2748,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -3061,9 +2798,9 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Body JSON",
+            "type": "text",
+            "key": "category",
+            "label": "Catégorie",
             "col": {
               "xs": 24
             },
@@ -3072,14 +2809,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -3144,9 +2873,9 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Body JSON",
+            "type": "text",
+            "key": "category",
+            "label": "Catégorie",
             "col": {
               "xs": 24
             },
@@ -3155,14 +2884,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -3225,14 +2946,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers JSON",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,

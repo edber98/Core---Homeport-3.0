@@ -8,16 +8,18 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.good_reputation !== undefined && d.good_reputation !== null && d.good_reputation !== '') {
+      body["good_reputation"] = d.good_reputation;
+    }
+    if (d.poor_reputation !== undefined && d.poor_reputation !== null && d.poor_reputation !== '') {
+      body["poor_reputation"] = d.poor_reputation;
+    }
+    if (d.new_senders !== undefined && d.new_senders !== null && d.new_senders !== '') {
+      body["new_senders"] = d.new_senders;
     }
 
     log('Requête en cours...');
@@ -37,3 +39,4 @@ module.exports = {
     };
   }
 };
+

@@ -12,13 +12,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"assigned_to","target":"assigned_to","type":"string"},{"key":"date","target":"date","type":"object"},{"key":"is_complete","target":"is_complete","type":"boolean"},{"key":"organization_id","target":"organization_id","type":"string"},{"key":"priority","target":"priority","type":"string"},{"key":"resolution","target":"resolution","type":"object"},{"key":"text","target":"text","type":"string"},{"key":"_params","target":"_params","type":"object"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });

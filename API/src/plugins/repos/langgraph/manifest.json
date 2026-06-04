@@ -1344,22 +1344,64 @@
             ]
           },
           {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
+            "type": "text",
+            "key": "code",
+            "label": "Code",
+            "description": "Authorization code from OAuth provider",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "query"
           },
           {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "type": "text",
+            "key": "state",
+            "label": "État ou région",
+            "description": "State parameter containing auth_id",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "setup_action",
+            "label": "Action",
+            "description": "Setup action from GitHub App",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "number",
+            "key": "installation_id",
+            "label": "Identifiant",
+            "description": "GitHub App installation ID",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "error",
+            "label": "Error",
+            "description": "Error code from OAuth provider",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "error_description",
+            "label": "Description",
+            "description": "Error description from OAuth provider",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
           }
         ],
         "displayTitle": false,
@@ -1427,30 +1469,879 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "revision_source",
+            "label": "Revision Source",
+            "description": "Override the source for this revision. If omitted, falls back to deployment's default source.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "revision_source"
+            ],
+            "in": "body"
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
+            "key": "source_config",
+            "label": "Source Config",
+            "description": "Renseignez source config.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "source_config"
+            ],
+            "in": "body"
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "key": "source_config_integration_id",
+            "label": "Identifiant",
+            "description": "The ID of the integration used for the deployment.<br><br>Retrieve this value from the `GET /v1/integrations/github/install` endpoint. This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `github` source.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "source_config",
+              "integration_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_repo_url",
+            "label": "URL",
+            "description": "The URL of the git repository used for the deployment.<br><br>This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "repo_url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_deployment_type",
+            "label": "Type",
+            "description": "The type of deployment to create.<br><br>See [Deployment Types](https://langchain-ai.github.io/langgraph/concepts/langgraph_control_plane/#deployment-types) for more details. This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "deployment_type"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_build_on_push",
+            "label": "Push",
+            "description": "Whether to build a new revision for the deployment on push to the `source_revision_config.repo_ref` (e.g. git branch).<br><br>Cannot be enabled when `source_revision_config.repo_ref` specifies a tag (starts with `refs/tags/`). Tags are immutable and cannot trigger automatic builds on push.<br><br>Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "build_on_push"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_custom_url",
+            "label": "URL",
+            "description": "The custom URL of the deployment.<br><br>This field can only be set for `external_docker` source deployments. However, it will be set automatically for `github` source deployments (read only).",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "custom_url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec",
+            "label": "Spec",
+            "description": "Renseignez spec.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_min_scale",
+            "label": "Scale",
+            "description": "The minimum scale (number of replicas) of the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "min_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_max_scale",
+            "label": "Scale",
+            "description": "The maximum scale (number of replicas) of the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "max_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_cpu",
+            "label": "Cpu",
+            "description": "CPU request in cores for a single replica of the deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit in cores for a single replica of the deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not set, defaults to 2x cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of a single replica of the deployment. If memory_limit_mb is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of a single replica of the deployment. If not set, defaults to 2x memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_min_scale",
+            "label": "Scale",
+            "description": "The minimum scale (number of replicas) of the queue deployment. If not provided, defaults to the same value as `min_scale`.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_min_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_max_scale",
+            "label": "Scale",
+            "description": "The maximum scale (number of replicas) of the queue deployment. If not provided, defaults to the same value as `max_scale`.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_max_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_cpu",
+            "label": "Cpu",
+            "description": "CPU request in cores for a single replica of the queue deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not provided, defaults to the same value as `cpu`. If queue_cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit in cores for a single replica of the queue deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not set, defaults to 2x queue_cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of a single replica of the queue deployment. If not provided, defaults to the same value as `memory_mb`. If queue_memory_limit_mb is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of a single replica of the queue deployment. If not set, defaults to 2x queue_memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_cpu",
+            "label": "Cpu",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_cpu_limit",
+            "label": "Limit",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_memory_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_memory_limit_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_min_scale",
+            "label": "Scale",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_min_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_max_scale",
+            "label": "Scale",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_max_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_cpu",
+            "label": "Cpu",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_cpu_limit",
+            "label": "Limit",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_memory_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_memory_limit_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_cpu",
+            "label": "Cpu",
+            "description": "CPU request in cores for the Redis deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If redis_cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit in cores for the Redis deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not set, defaults to 2x redis_cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of the Redis deployment. If redis_memory_limit_mb is not set, limit defaults to this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of the Redis deployment. If not set, defaults to redis_memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_labels",
+            "label": "Libellés",
+            "description": "Additional labels to apply to resources created for the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "labels"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_annotations",
+            "label": "Annotations",
+            "description": "Additional annotations to apply to resources created for the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "annotations"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_service_account_name",
+            "label": "Nom",
+            "description": "The name of the service account to use for the deployment.<br><br>This must already exist in the Kubernetes namespace where the deployment will be deployed to.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "service_account_name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_image_pull_secrets",
+            "label": "Secrets",
+            "description": "List of references to secrets in the same namespace to use for pulling container images. Each entry is a LocalObjectReference to a Secret of type kubernetes.io/dockerconfigjson.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "image_pull_secrets"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_volumes",
+            "label": "Volumes",
+            "description": "List of volumes that can be mounted by containers belonging to the pod. Reference the kubernetes documentation for more details on how to configure volumes.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "volumes"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_volume_mounts",
+            "label": "Mounts",
+            "description": "Pod volumes to mount into the container's filesystem. Reference the kubernetes documentation for more details on how to configure volume mounts.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "volume_mounts"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_init_containers",
+            "label": "Containers",
+            "description": "List of initialization containers belonging to the pod. Init containers are set as initContainers in the pod spec and run to completion before the main application container starts.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "init_containers"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_sidecars",
+            "label": "Sidecars",
+            "description": "List of sidecar containers that run alongside the main application container. These will be added to the pod spec as additional containers.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "sidecars"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_cpu",
+            "label": "Cpu",
+            "description": "CPU request of the Postgres database deployment. If db_cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit of the Postgres database deployment. If not set, defaults to 2x db_cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of the Postgres database deployment. If db_memory_limit_mb is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of the Postgres database deployment. If not set, defaults to 2x db_memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_storage_gi",
+            "label": "Gi",
+            "description": "Storage (GiB) of the Postgres database deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_storage_gi"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_max_connections",
+            "label": "Connections",
+            "description": "Maximum number of connections allowed to the Postgres database.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_max_connections"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_listener_id",
+            "label": "Identifiant",
+            "description": "The ID of the listener used for the deployment.<br><br>Retrieve this value from the `GET /v2/listeners` endpoint. This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `external_docker` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "listener_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_listener_config",
+            "label": "Config",
+            "description": "Renseignez config.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "listener_config"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_listener_config_k8s_namespace",
+            "label": "Espace de nommage",
+            "description": "Kubernetes namespace where the deployment will be deployed to.<br><br>This cannot be changed (`PATCH`) once the deployment is created. Only applicable for deployments of listeners with `k8s` compute type.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "listener_config",
+              "k8s_namespace"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_install_command",
+            "label": "Command",
+            "description": "The custom install command to run for your deployment. This only applies to JS deployments. This command will be run from the root of your repository - NOT where your langgraph.json file lives (unless these are the same place). If not provided, we will autodetect the command based on the presence of yarn/npm/etc. files.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "install_command"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_build_command",
+            "label": "Command",
+            "description": "The custom build command to run for your deployment. This only applies to JS deployments. This command will be run from where your langgraph.json file lives. This is helpful for using shared workspaces in your deployments, without having to provide a postinstall command or something similar in your package.json.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "build_command"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config",
+            "label": "Source Revision Config",
+            "description": "Renseignez source revision config.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_repo_ref",
+            "label": "Ref",
+            "description": "The git ref of the repository used for the deployment.<br><br>Supports:<br>- **Branches**: Specify just the branch name (e.g., `main`, `develop`)<br>- **Tags**: Specify the full ref path (e.g., `refs/tags/v1.0.0`)<br><br>When using a tag, `source_config.build_on_push` must be set to `false` since tags are immutable.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision. Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "repo_ref"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_langgraph_config_path",
+            "label": "Path",
+            "description": "The path to the LangGraph configuration file (`langgraph.json`) used for the deployment.<br><br>Required on create for buildable sources (`github`, `internal_source`). Must be `null` for all other sources.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "langgraph_config_path"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_image_uri",
+            "label": "Uri",
+            "description": "The URI of the Docker image used for the deployment.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision. Applicable for `external_docker` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "image_uri"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_source_tarball_path",
+            "label": "Path",
+            "description": "The object path of the uploaded source tarball.<br><br>Must be an object path obtained from the `POST /deployments/{deployment_id}/upload-url` endpoint. Arbitrary paths are not accepted.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision. Only applicable for `internal_source` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "source_tarball_path"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "secrets",
+            "label": "Secrets",
+            "description": "Renseignez secrets.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "secrets"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "secret_references",
+            "label": "Secret References",
+            "description": "List of Kubernetes Secret references.<br><br>Only applicable for `external_docker` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "secret_references"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1515,24 +2406,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -2059,22 +2932,64 @@
             ]
           },
           {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
+            "type": "text",
+            "key": "code",
+            "label": "Code",
+            "description": "Authorization code from OAuth provider",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "query"
           },
           {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "type": "text",
+            "key": "state",
+            "label": "État ou région",
+            "description": "State parameter containing auth_id",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "setup_action",
+            "label": "Action",
+            "description": "Setup action from GitHub App",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "number",
+            "key": "installation_id",
+            "label": "Identifiant",
+            "description": "GitHub App installation ID",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "error",
+            "label": "Error",
+            "description": "Error code from OAuth provider",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "error_description",
+            "label": "Description",
+            "description": "Error description from OAuth provider",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
           }
         ],
         "displayTitle": false,
@@ -2142,30 +3057,879 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "revision_source",
+            "label": "Revision Source",
+            "description": "Override the source for this revision. If omitted, falls back to deployment's default source.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "revision_source"
+            ],
+            "in": "body"
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
+            "key": "source_config",
+            "label": "Source Config",
+            "description": "Renseignez source config.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "source_config"
+            ],
+            "in": "body"
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "key": "source_config_integration_id",
+            "label": "Identifiant",
+            "description": "The ID of the integration used for the deployment.<br><br>Retrieve this value from the `GET /v1/integrations/github/install` endpoint. This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `github` source.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "source_config",
+              "integration_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_repo_url",
+            "label": "URL",
+            "description": "The URL of the git repository used for the deployment.<br><br>This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "repo_url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_deployment_type",
+            "label": "Type",
+            "description": "The type of deployment to create.<br><br>See [Deployment Types](https://langchain-ai.github.io/langgraph/concepts/langgraph_control_plane/#deployment-types) for more details. This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "deployment_type"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_build_on_push",
+            "label": "Push",
+            "description": "Whether to build a new revision for the deployment on push to the `source_revision_config.repo_ref` (e.g. git branch).<br><br>Cannot be enabled when `source_revision_config.repo_ref` specifies a tag (starts with `refs/tags/`). Tags are immutable and cannot trigger automatic builds on push.<br><br>Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "build_on_push"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_custom_url",
+            "label": "URL",
+            "description": "The custom URL of the deployment.<br><br>This field can only be set for `external_docker` source deployments. However, it will be set automatically for `github` source deployments (read only).",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "custom_url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec",
+            "label": "Spec",
+            "description": "Renseignez spec.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_min_scale",
+            "label": "Scale",
+            "description": "The minimum scale (number of replicas) of the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "min_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_max_scale",
+            "label": "Scale",
+            "description": "The maximum scale (number of replicas) of the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "max_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_cpu",
+            "label": "Cpu",
+            "description": "CPU request in cores for a single replica of the deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit in cores for a single replica of the deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not set, defaults to 2x cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of a single replica of the deployment. If memory_limit_mb is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of a single replica of the deployment. If not set, defaults to 2x memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_min_scale",
+            "label": "Scale",
+            "description": "The minimum scale (number of replicas) of the queue deployment. If not provided, defaults to the same value as `min_scale`.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_min_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_max_scale",
+            "label": "Scale",
+            "description": "The maximum scale (number of replicas) of the queue deployment. If not provided, defaults to the same value as `max_scale`.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_max_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_cpu",
+            "label": "Cpu",
+            "description": "CPU request in cores for a single replica of the queue deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not provided, defaults to the same value as `cpu`. If queue_cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit in cores for a single replica of the queue deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not set, defaults to 2x queue_cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of a single replica of the queue deployment. If not provided, defaults to the same value as `memory_mb`. If queue_memory_limit_mb is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of a single replica of the queue deployment. If not set, defaults to 2x queue_memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_cpu",
+            "label": "Cpu",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_cpu_limit",
+            "label": "Limit",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_memory_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_memory_limit_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_min_scale",
+            "label": "Scale",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_min_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_max_scale",
+            "label": "Scale",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_max_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_cpu",
+            "label": "Cpu",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_cpu_limit",
+            "label": "Limit",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_memory_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_memory_limit_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_cpu",
+            "label": "Cpu",
+            "description": "CPU request in cores for the Redis deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If redis_cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit in cores for the Redis deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not set, defaults to 2x redis_cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of the Redis deployment. If redis_memory_limit_mb is not set, limit defaults to this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of the Redis deployment. If not set, defaults to redis_memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_labels",
+            "label": "Libellés",
+            "description": "Additional labels to apply to resources created for the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "labels"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_annotations",
+            "label": "Annotations",
+            "description": "Additional annotations to apply to resources created for the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "annotations"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_service_account_name",
+            "label": "Nom",
+            "description": "The name of the service account to use for the deployment.<br><br>This must already exist in the Kubernetes namespace where the deployment will be deployed to.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "service_account_name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_image_pull_secrets",
+            "label": "Secrets",
+            "description": "List of references to secrets in the same namespace to use for pulling container images. Each entry is a LocalObjectReference to a Secret of type kubernetes.io/dockerconfigjson.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "image_pull_secrets"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_volumes",
+            "label": "Volumes",
+            "description": "List of volumes that can be mounted by containers belonging to the pod. Reference the kubernetes documentation for more details on how to configure volumes.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "volumes"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_volume_mounts",
+            "label": "Mounts",
+            "description": "Pod volumes to mount into the container's filesystem. Reference the kubernetes documentation for more details on how to configure volume mounts.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "volume_mounts"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_init_containers",
+            "label": "Containers",
+            "description": "List of initialization containers belonging to the pod. Init containers are set as initContainers in the pod spec and run to completion before the main application container starts.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "init_containers"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_sidecars",
+            "label": "Sidecars",
+            "description": "List of sidecar containers that run alongside the main application container. These will be added to the pod spec as additional containers.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "sidecars"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_cpu",
+            "label": "Cpu",
+            "description": "CPU request of the Postgres database deployment. If db_cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit of the Postgres database deployment. If not set, defaults to 2x db_cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of the Postgres database deployment. If db_memory_limit_mb is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of the Postgres database deployment. If not set, defaults to 2x db_memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_storage_gi",
+            "label": "Gi",
+            "description": "Storage (GiB) of the Postgres database deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_storage_gi"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_max_connections",
+            "label": "Connections",
+            "description": "Maximum number of connections allowed to the Postgres database.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_max_connections"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_listener_id",
+            "label": "Identifiant",
+            "description": "The ID of the listener used for the deployment.<br><br>Retrieve this value from the `GET /v2/listeners` endpoint. This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `external_docker` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "listener_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_listener_config",
+            "label": "Config",
+            "description": "Renseignez config.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "listener_config"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_listener_config_k8s_namespace",
+            "label": "Espace de nommage",
+            "description": "Kubernetes namespace where the deployment will be deployed to.<br><br>This cannot be changed (`PATCH`) once the deployment is created. Only applicable for deployments of listeners with `k8s` compute type.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "listener_config",
+              "k8s_namespace"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_install_command",
+            "label": "Command",
+            "description": "The custom install command to run for your deployment. This only applies to JS deployments. This command will be run from the root of your repository - NOT where your langgraph.json file lives (unless these are the same place). If not provided, we will autodetect the command based on the presence of yarn/npm/etc. files.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "install_command"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_build_command",
+            "label": "Command",
+            "description": "The custom build command to run for your deployment. This only applies to JS deployments. This command will be run from where your langgraph.json file lives. This is helpful for using shared workspaces in your deployments, without having to provide a postinstall command or something similar in your package.json.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "build_command"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config",
+            "label": "Source Revision Config",
+            "description": "Renseignez source revision config.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_repo_ref",
+            "label": "Ref",
+            "description": "The git ref of the repository used for the deployment.<br><br>Supports:<br>- **Branches**: Specify just the branch name (e.g., `main`, `develop`)<br>- **Tags**: Specify the full ref path (e.g., `refs/tags/v1.0.0`)<br><br>When using a tag, `source_config.build_on_push` must be set to `false` since tags are immutable.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision. Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "repo_ref"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_langgraph_config_path",
+            "label": "Path",
+            "description": "The path to the LangGraph configuration file (`langgraph.json`) used for the deployment.<br><br>Required on create for buildable sources (`github`, `internal_source`). Must be `null` for all other sources.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "langgraph_config_path"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_image_uri",
+            "label": "Uri",
+            "description": "The URI of the Docker image used for the deployment.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision. Applicable for `external_docker` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "image_uri"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_source_tarball_path",
+            "label": "Path",
+            "description": "The object path of the uploaded source tarball.<br><br>Must be an object path obtained from the `POST /deployments/{deployment_id}/upload-url` endpoint. Arbitrary paths are not accepted.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision. Only applicable for `internal_source` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "source_tarball_path"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "secrets",
+            "label": "Secrets",
+            "description": "Renseignez secrets.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "secrets"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "secret_references",
+            "label": "Secret References",
+            "description": "List of Kubernetes Secret references.<br><br>Only applicable for `external_docker` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "secret_references"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -2230,24 +3994,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -2971,22 +4717,64 @@
             ]
           },
           {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
+            "type": "text",
+            "key": "code",
+            "label": "Code",
+            "description": "Authorization code from OAuth provider",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "query"
           },
           {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "type": "text",
+            "key": "state",
+            "label": "État ou région",
+            "description": "State parameter containing auth_id",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "setup_action",
+            "label": "Action",
+            "description": "Setup action from GitHub App",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "number",
+            "key": "installation_id",
+            "label": "Identifiant",
+            "description": "GitHub App installation ID",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "error",
+            "label": "Error",
+            "description": "Error code from OAuth provider",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "error_description",
+            "label": "Description",
+            "description": "Error description from OAuth provider",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
           }
         ],
         "displayTitle": false,
@@ -3170,24 +4958,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -3623,22 +5393,64 @@
             ]
           },
           {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
+            "type": "text",
+            "key": "code",
+            "label": "Code",
+            "description": "Authorization code from OAuth provider",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "query"
           },
           {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "type": "text",
+            "key": "state",
+            "label": "État ou région",
+            "description": "State parameter containing auth_id",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "setup_action",
+            "label": "Action",
+            "description": "Setup action from GitHub App",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "number",
+            "key": "installation_id",
+            "label": "Identifiant",
+            "description": "GitHub App installation ID",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "error",
+            "label": "Error",
+            "description": "Error code from OAuth provider",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
+          },
+          {
+            "type": "text",
+            "key": "error_description",
+            "label": "Description",
+            "description": "Error description from OAuth provider",
+            "col": {
+              "xs": 24
+            },
+            "in": "query"
           }
         ],
         "displayTitle": false,
@@ -3706,30 +5518,879 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "revision_source",
+            "label": "Revision Source",
+            "description": "Override the source for this revision. If omitted, falls back to deployment's default source.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "revision_source"
+            ],
+            "in": "body"
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
+            "key": "source_config",
+            "label": "Source Config",
+            "description": "Renseignez source config.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "source_config"
+            ],
+            "in": "body"
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
+            "key": "source_config_integration_id",
+            "label": "Identifiant",
+            "description": "The ID of the integration used for the deployment.<br><br>Retrieve this value from the `GET /v1/integrations/github/install` endpoint. This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `github` source.",
             "col": {
               "xs": 24
-            }
+            },
+            "bodyPath": [
+              "source_config",
+              "integration_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_repo_url",
+            "label": "URL",
+            "description": "The URL of the git repository used for the deployment.<br><br>This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "repo_url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_deployment_type",
+            "label": "Type",
+            "description": "The type of deployment to create.<br><br>See [Deployment Types](https://langchain-ai.github.io/langgraph/concepts/langgraph_control_plane/#deployment-types) for more details. This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "deployment_type"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_build_on_push",
+            "label": "Push",
+            "description": "Whether to build a new revision for the deployment on push to the `source_revision_config.repo_ref` (e.g. git branch).<br><br>Cannot be enabled when `source_revision_config.repo_ref` specifies a tag (starts with `refs/tags/`). Tags are immutable and cannot trigger automatic builds on push.<br><br>Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "build_on_push"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_custom_url",
+            "label": "URL",
+            "description": "The custom URL of the deployment.<br><br>This field can only be set for `external_docker` source deployments. However, it will be set automatically for `github` source deployments (read only).",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "custom_url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec",
+            "label": "Spec",
+            "description": "Renseignez spec.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_min_scale",
+            "label": "Scale",
+            "description": "The minimum scale (number of replicas) of the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "min_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_max_scale",
+            "label": "Scale",
+            "description": "The maximum scale (number of replicas) of the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "max_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_cpu",
+            "label": "Cpu",
+            "description": "CPU request in cores for a single replica of the deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit in cores for a single replica of the deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not set, defaults to 2x cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of a single replica of the deployment. If memory_limit_mb is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of a single replica of the deployment. If not set, defaults to 2x memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_min_scale",
+            "label": "Scale",
+            "description": "The minimum scale (number of replicas) of the queue deployment. If not provided, defaults to the same value as `min_scale`.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_min_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_max_scale",
+            "label": "Scale",
+            "description": "The maximum scale (number of replicas) of the queue deployment. If not provided, defaults to the same value as `max_scale`.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_max_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_cpu",
+            "label": "Cpu",
+            "description": "CPU request in cores for a single replica of the queue deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not provided, defaults to the same value as `cpu`. If queue_cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit in cores for a single replica of the queue deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not set, defaults to 2x queue_cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of a single replica of the queue deployment. If not provided, defaults to the same value as `memory_mb`. If queue_memory_limit_mb is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_queue_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of a single replica of the queue deployment. If not set, defaults to 2x queue_memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "queue_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_cpu",
+            "label": "Cpu",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_cpu_limit",
+            "label": "Limit",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_memory_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_memory_limit_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_min_scale",
+            "label": "Scale",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_min_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_orchestrator_max_scale",
+            "label": "Scale",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "orchestrator_max_scale"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_cpu",
+            "label": "Cpu",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_cpu_limit",
+            "label": "Limit",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_memory_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_executor_memory_limit_mb",
+            "label": "Mb",
+            "description": "do not use",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "executor_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_cpu",
+            "label": "Cpu",
+            "description": "CPU request in cores for the Redis deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If redis_cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit in cores for the Redis deployment. Supports fractional values (e.g. 0.5 for 500m). Values are rounded to 1 decimal place. If not set, defaults to 2x redis_cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of the Redis deployment. If redis_memory_limit_mb is not set, limit defaults to this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_redis_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of the Redis deployment. If not set, defaults to redis_memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "redis_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_labels",
+            "label": "Libellés",
+            "description": "Additional labels to apply to resources created for the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "labels"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_annotations",
+            "label": "Annotations",
+            "description": "Additional annotations to apply to resources created for the deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "annotations"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_service_account_name",
+            "label": "Nom",
+            "description": "The name of the service account to use for the deployment.<br><br>This must already exist in the Kubernetes namespace where the deployment will be deployed to.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "service_account_name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_image_pull_secrets",
+            "label": "Secrets",
+            "description": "List of references to secrets in the same namespace to use for pulling container images. Each entry is a LocalObjectReference to a Secret of type kubernetes.io/dockerconfigjson.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "image_pull_secrets"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_volumes",
+            "label": "Volumes",
+            "description": "List of volumes that can be mounted by containers belonging to the pod. Reference the kubernetes documentation for more details on how to configure volumes.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "volumes"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_volume_mounts",
+            "label": "Mounts",
+            "description": "Pod volumes to mount into the container's filesystem. Reference the kubernetes documentation for more details on how to configure volume mounts.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "volume_mounts"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_init_containers",
+            "label": "Containers",
+            "description": "List of initialization containers belonging to the pod. Init containers are set as initContainers in the pod spec and run to completion before the main application container starts.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "init_containers"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_sidecars",
+            "label": "Sidecars",
+            "description": "List of sidecar containers that run alongside the main application container. These will be added to the pod spec as additional containers.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "sidecars"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_cpu",
+            "label": "Cpu",
+            "description": "CPU request of the Postgres database deployment. If db_cpu_limit is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_cpu"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_cpu_limit",
+            "label": "Limit",
+            "description": "CPU limit of the Postgres database deployment. If not set, defaults to 2x db_cpu.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_cpu_limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_memory_mb",
+            "label": "Mb",
+            "description": "Memory request (MB) of the Postgres database deployment. If db_memory_limit_mb is not set, limit defaults to 2x this value.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_memory_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_memory_limit_mb",
+            "label": "Mb",
+            "description": "Memory limit (MB) of the Postgres database deployment. If not set, defaults to 2x db_memory_mb.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_memory_limit_mb"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_storage_gi",
+            "label": "Gi",
+            "description": "Storage (GiB) of the Postgres database deployment.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_storage_gi"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_resource_spec_db_max_connections",
+            "label": "Connections",
+            "description": "Maximum number of connections allowed to the Postgres database.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "resource_spec",
+              "db_max_connections"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_listener_id",
+            "label": "Identifiant",
+            "description": "The ID of the listener used for the deployment.<br><br>Retrieve this value from the `GET /v2/listeners` endpoint. This cannot be changed (`PATCH`) once the deployment is created. Only applicable for `external_docker` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "listener_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_listener_config",
+            "label": "Config",
+            "description": "Renseignez config.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "listener_config"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_listener_config_k8s_namespace",
+            "label": "Espace de nommage",
+            "description": "Kubernetes namespace where the deployment will be deployed to.<br><br>This cannot be changed (`PATCH`) once the deployment is created. Only applicable for deployments of listeners with `k8s` compute type.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "listener_config",
+              "k8s_namespace"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_install_command",
+            "label": "Command",
+            "description": "The custom install command to run for your deployment. This only applies to JS deployments. This command will be run from the root of your repository - NOT where your langgraph.json file lives (unless these are the same place). If not provided, we will autodetect the command based on the presence of yarn/npm/etc. files.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "install_command"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_config_build_command",
+            "label": "Command",
+            "description": "The custom build command to run for your deployment. This only applies to JS deployments. This command will be run from where your langgraph.json file lives. This is helpful for using shared workspaces in your deployments, without having to provide a postinstall command or something similar in your package.json.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_config",
+              "build_command"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config",
+            "label": "Source Revision Config",
+            "description": "Renseignez source revision config.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_repo_ref",
+            "label": "Ref",
+            "description": "The git ref of the repository used for the deployment.<br><br>Supports:<br>- **Branches**: Specify just the branch name (e.g., `main`, `develop`)<br>- **Tags**: Specify the full ref path (e.g., `refs/tags/v1.0.0`)<br><br>When using a tag, `source_config.build_on_push` must be set to `false` since tags are immutable.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision. Only applicable for `github` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "repo_ref"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_langgraph_config_path",
+            "label": "Path",
+            "description": "The path to the LangGraph configuration file (`langgraph.json`) used for the deployment.<br><br>Required on create for buildable sources (`github`, `internal_source`). Must be `null` for all other sources.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "langgraph_config_path"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_image_uri",
+            "label": "Uri",
+            "description": "The URI of the Docker image used for the deployment.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision. Applicable for `external_docker` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "image_uri"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_revision_config_source_tarball_path",
+            "label": "Path",
+            "description": "The object path of the uploaded source tarball.<br><br>Must be an object path obtained from the `POST /deployments/{deployment_id}/upload-url` endpoint. Arbitrary paths are not accepted.<br><br>When updating a deployment (`PATCH`), setting this field to a non-null value will trigger creation of a new revision. Only applicable for `internal_source` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "source_revision_config",
+              "source_tarball_path"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "secrets",
+            "label": "Secrets",
+            "description": "Renseignez secrets.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "secrets"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "secret_references",
+            "label": "Secret References",
+            "description": "List of Kubernetes Secret references.<br><br>Only applicable for `external_docker` source.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "secret_references"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -3794,24 +6455,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "query",
-            "label": "Query (JSON)",
-            "description": "Paramètres de query supplémentaires au format JSON.",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "headers",
-            "label": "Headers (JSON)",
-            "description": "Headers HTTP additionnels au format JSON.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,

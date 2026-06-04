@@ -813,8 +813,8 @@
           },
           {
             "type": "json",
-            "key": "data",
-            "label": "Champs",
+            "key": "hashFields",
+            "label": "Champs du hash",
             "col": {
               "xs": 24
             },
@@ -822,7 +822,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Objet JSON champ/valeur à écrire dans le hash."
           }
         ],
         "displayTitle": false,
@@ -1258,8 +1259,8 @@
           },
           {
             "type": "json",
-            "key": "data",
-            "label": "Champs",
+            "key": "streamFields",
+            "label": "Champs du stream",
             "col": {
               "xs": 24
             },
@@ -1267,7 +1268,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Objet JSON champ/valeur à ajouter au stream."
           }
         ],
         "displayTitle": false,

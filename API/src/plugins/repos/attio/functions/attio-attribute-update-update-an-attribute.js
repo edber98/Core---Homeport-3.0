@@ -19,14 +19,21 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const payload = {};
+    if (d.title !== undefined && d.title !== null && d.title !== '') payload.title = d.title;
+    if (d.description !== undefined && d.description !== null && d.description !== '') payload.description = d.description;
+    if (d.api_slug !== undefined && d.api_slug !== null && d.api_slug !== '') payload.api_slug = d.api_slug;
+    if (d.is_required !== undefined && d.is_required !== null && d.is_required !== '') payload.is_required = Boolean(d.is_required);
+    if (d.is_unique !== undefined && d.is_unique !== null && d.is_unique !== '') payload.is_unique = Boolean(d.is_unique);
+    if (d.default_value !== undefined && d.default_value !== null && d.default_value !== '') {
+      try { payload.default_value = utils.parseJsonInput(d.default_value, 'default_value', undefined); } catch (e) { return { ok: false, error: e.message }; }
     }
+    if (d.config !== undefined && d.config !== null && d.config !== '') {
+      try { payload.config = utils.parseJsonInput(d.config, 'config', undefined); } catch (e) { return { ok: false, error: e.message }; }
+    }
+    if (d.is_archived !== undefined && d.is_archived !== null && d.is_archived !== '') payload.is_archived = Boolean(d.is_archived);
+    if (!Object.keys(payload).length) return { ok: false, error: 'Aucun champ à envoyer.' };
+    const body = { data: payload };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });

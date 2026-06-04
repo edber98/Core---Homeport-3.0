@@ -1753,13 +1753,70 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "type": "text",
+            "key": "canvas_id",
+            "label": "ID canvas",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "send_id",
+            "label": "ID envoi",
             "col": {
               "xs": 24
             }
+          },
+          {
+            "type": "json",
+            "key": "recipients",
+            "label": "Destinataires",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "audience",
+            "label": "Audience",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "broadcast",
+            "label": "Diffusion globale",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "trigger_properties",
+            "label": "Propriétés de déclenchement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "schedule",
+            "label": "Planification",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -4039,18 +4096,36 @@
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON users/track.",
+            "type": "json",
+            "key": "userAttributes",
+            "label": "Attributs utilisateur",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "events",
+            "label": "Événements",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "purchases",
+            "label": "Achats",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "partner",
+            "label": "Partenaire",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -4103,10 +4178,57 @@
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON messages/send.",
+            "type": "checkbox",
+            "key": "broadcast",
+            "label": "Diffusion globale",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "external_user_ids",
+            "label": "IDs utilisateur externes",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "user_aliases",
+            "label": "Alias utilisateur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "segment_id",
+            "label": "ID segment",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "audience",
+            "label": "Audience",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "campaign_id",
+            "label": "ID campagne",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "messages",
+            "label": "Messages",
             "col": {
               "xs": 24
             },
@@ -4167,18 +4289,44 @@
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON users/export/ids.",
+            "type": "json",
+            "key": "external_ids",
+            "label": "IDs externes",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "user_aliases",
+            "label": "Alias utilisateur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "device_id",
+            "label": "ID appareil",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "braze_id",
+            "label": "ID Braze",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "fields_to_export",
+            "label": "Champs à exporter",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -4231,9 +4379,9 @@
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
+            "type": "text",
+            "key": "campaign_id",
+            "label": "ID campagne",
             "col": {
               "xs": 24
             },
@@ -4242,6 +4390,46 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "send_id",
+            "label": "ID envoi",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "trigger_properties",
+            "label": "Propriétés de déclenchement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "broadcast",
+            "label": "Diffusion globale",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "audience",
+            "label": "Audience",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "recipients",
+            "label": "Destinataires",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -4294,9 +4482,9 @@
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
+            "type": "text",
+            "key": "canvas_id",
+            "label": "ID canvas",
             "col": {
               "xs": 24
             },
@@ -4305,6 +4493,46 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "send_id",
+            "label": "ID envoi",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "trigger_properties",
+            "label": "Propriétés de déclenchement",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "broadcast",
+            "label": "Diffusion globale",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "audience",
+            "label": "Audience",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "recipients",
+            "label": "Destinataires",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -4357,17 +4585,28 @@
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
+            "type": "json",
+            "key": "external_ids",
+            "label": "IDs externes",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "json",
+            "key": "user_aliases",
+            "label": "Alias utilisateur",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "braze_ids",
+            "label": "IDs Braze",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,

@@ -1478,9 +1478,64 @@
             }
           },
           {
-            "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps JSON.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }

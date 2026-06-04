@@ -8,8 +8,8 @@ module.exports = {
 
     let headers; let query;
     try {
-      headers = utils.parseJsonInput(d.headers, "headers", {});
-      query = utils.parseJsonInput(d.query, "query", {});
+      headers = utils.parseJsonInput(d.requestHeaders, "requestHeaders", {});
+      query = utils.parseJsonInput(d.queryParameters, "queryParameters", {});
     } catch (e) { return { ok: false, error: e.message }; }
 
     const res = await utils.providerRequest(opts, url, { method: "DELETE", headers, query });

@@ -17,9 +17,9 @@ module.exports = {
     if (d.proxied !== undefined && d.proxied !== "") body.proxied = utils.parseBoolean(d.proxied);
     if (d.comment !== undefined) body.comment = String(d.comment || "");
     if (d.priority !== undefined && d.priority !== "") body.priority = parseInt(d.priority, 10);
-    if (d.data) {
-      try { body.data = utils.parseJsonInput(d.data, "Données avancées"); } catch (e) { return { ok: false, error: e.message }; }
-    }
+    const builtRecordData = utils.buildObjectFromFields(d.recordData);
+    if (!builtRecordData.ok) return builtRecordData;
+    if (builtRecordData.object) body.data = builtRecordData.object;
     if (!Object.keys(body).length) return { ok: false, error: "Aucun champ DNS à modifier." };
 
     log("Mise à jour de l'enregistrement DNS...");

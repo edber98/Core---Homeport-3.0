@@ -10,16 +10,24 @@ module.exports = {
     reqPath = reqPath.replace('{knowledge_base_id}', encodeURIComponent(knowledge_base_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.category_id !== undefined && d.category_id !== null && d.category_id !== '') {
+      body["category_id"] = d.category_id;
+    }
+    if (d.author_id !== undefined && d.author_id !== null && d.author_id !== '') {
+      body["author_id"] = d.author_id;
+    }
+    if (d.subject !== undefined && d.subject !== null && d.subject !== '') {
+      body["subject"] = d.subject;
+    }
+    if (d.content !== undefined && d.content !== null && d.content !== '') {
+      body["content"] = d.content;
+    }
+    if (d.status !== undefined && d.status !== null && d.status !== '') {
+      body["status"] = d.status;
     }
 
     log('Requête en cours...');
@@ -39,3 +47,4 @@ module.exports = {
     };
   }
 };
+

@@ -5,9 +5,9 @@ module.exports = {
     const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     if (!(d.from || "").trim()) return { ok: false, error: "Missing from." };
-    if (!(d.body || "").trim()) return { ok: false, error: "Missing body." };
+    if (!(d.messageText ?? d.noteBody || "").trim()) return { ok: false, error: "Missing body." };
 
-    const body = { from: { type: "contact", id: d.from }, body: d.body };
+    const body = { from: { type: "contact", id: d.from }, body: d.messageText ?? d.noteBody };
     log('Création en cours...');
     const res = await utils.intercomRequest(opts, "/conversations", { method: "POST", body });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };

@@ -14,13 +14,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"activity_at","target":"activity_at","type":["null","string"]},{"key":"contact_id","target":"contact_id","type":["null","string"]},{"key":"conversation_type_id","target":"conversation_type_id","type":["null","string"]},{"key":"custom_fields","target":"custom_fields","type":["null","object"]},{"key":"duration","target":"duration","type":["integer","null"]},{"key":"lead_id","target":"lead_id","type":["null","string"]},{"key":"note","target":"note","type":["null","string"]},{"key":"note_html","target":"note_html","type":["null","string"]},{"key":"outcome_id","target":"outcome_id","type":["null","string"]},{"key":"phone","target":"phone","type":["null","string"]},{"key":"playbook_id","target":"playbook_id","type":["null","string"]},{"key":"quality_info","target":"quality_info","type":["null","string"]},{"key":"recording_url","target":"recording_url","type":["null","string"]},{"key":"status","target":"status","type":["null","string"]},{"key":"user_id","target":"user_id","type":["null","string"]},{"key":"voicemail_url","target":"voicemail_url","type":["null","string"]}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });

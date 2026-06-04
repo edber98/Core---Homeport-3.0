@@ -19,12 +19,13 @@ module.exports = {
     try { headers = utils.parseJsonInput(d.headers, 'headers', { defaultValue: {}, allowArray: false }) || {}; }
     catch (e) { return { ok: false, error: e.message }; }
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let events = [];
+    try { events = utils.parseJsonInput(d.events, 'events', { defaultValue: [], allowArray: true, allowObject: false }) || []; }
+    catch (e) { return { ok: false, error: e.message }; }
+    if (!Array.isArray(events) || !events.length) return { ok: false, error: 'events requis et doit être un tableau JSON non vide.' };
+    const body = { events };
+    if (d.min_id_length !== undefined && d.min_id_length !== null && d.min_id_length !== '') {
+      body.options = { min_id_length: Number(d.min_id_length) };
     }
 
     log('Requête en cours...');

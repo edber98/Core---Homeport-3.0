@@ -12,16 +12,39 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = {};
+    if (d.dealcustomfieldmetum_fieldlabel !== undefined && d.dealcustomfieldmetum_fieldlabel !== null && d.dealcustomfieldmetum_fieldlabel !== "") {
+          if (!body["dealcustomfieldmetum"] || typeof body["dealcustomfieldmetum"] !== 'object' || Array.isArray(body["dealcustomfieldmetum"])) body["dealcustomfieldmetum"] = {};
+          body["dealcustomfieldmetum"]["fieldlabel"] = d.dealcustomfieldmetum_fieldlabel;
+        }
+    if (d.dealcustomfieldmetum_fieldtype !== undefined && d.dealcustomfieldmetum_fieldtype !== null && d.dealcustomfieldmetum_fieldtype !== "") {
+          if (!body["dealcustomfieldmetum"] || typeof body["dealcustomfieldmetum"] !== 'object' || Array.isArray(body["dealcustomfieldmetum"])) body["dealcustomfieldmetum"] = {};
+          body["dealcustomfieldmetum"]["fieldtype"] = d.dealcustomfieldmetum_fieldtype;
+        }
+    if (d.dealcustomfieldmetum_fieldoptions !== undefined && d.dealcustomfieldmetum_fieldoptions !== null && d.dealcustomfieldmetum_fieldoptions !== "") {
+          if (!body["dealcustomfieldmetum"] || typeof body["dealcustomfieldmetum"] !== 'object' || Array.isArray(body["dealcustomfieldmetum"])) body["dealcustomfieldmetum"] = {};
+          body["dealcustomfieldmetum"]["fieldoptions"] = d.dealcustomfieldmetum_fieldoptions;
+        }
+    if (d.dealcustomfieldmetum_fielddefault !== undefined && d.dealcustomfieldmetum_fielddefault !== null && d.dealcustomfieldmetum_fielddefault !== "") {
+          if (!body["dealcustomfieldmetum"] || typeof body["dealcustomfieldmetum"] !== 'object' || Array.isArray(body["dealcustomfieldmetum"])) body["dealcustomfieldmetum"] = {};
+          body["dealcustomfieldmetum"]["fielddefault"] = d.dealcustomfieldmetum_fielddefault;
+        }
+    if (d.dealcustomfieldmetum_fielddefaultcurrency !== undefined && d.dealcustomfieldmetum_fielddefaultcurrency !== null && d.dealcustomfieldmetum_fielddefaultcurrency !== "") {
+          if (!body["dealcustomfieldmetum"] || typeof body["dealcustomfieldmetum"] !== 'object' || Array.isArray(body["dealcustomfieldmetum"])) body["dealcustomfieldmetum"] = {};
+          body["dealcustomfieldmetum"]["fielddefaultcurrency"] = d.dealcustomfieldmetum_fielddefaultcurrency;
+        }
+    if (d.dealcustomfieldmetum_isformvisible !== undefined && d.dealcustomfieldmetum_isformvisible !== null && d.dealcustomfieldmetum_isformvisible !== "") {
+          if (!body["dealcustomfieldmetum"] || typeof body["dealcustomfieldmetum"] !== 'object' || Array.isArray(body["dealcustomfieldmetum"])) body["dealcustomfieldmetum"] = {};
+          body["dealcustomfieldmetum"]["isformvisible"] = d.dealcustomfieldmetum_isformvisible;
+        }
+    if (d.dealcustomfieldmetum_displayorder !== undefined && d.dealcustomfieldmetum_displayorder !== null && d.dealcustomfieldmetum_displayorder !== "") {
+          if (!body["dealcustomfieldmetum"] || typeof body["dealcustomfieldmetum"] !== 'object' || Array.isArray(body["dealcustomfieldmetum"])) body["dealcustomfieldmetum"] = {};
+          body["dealcustomfieldmetum"]["displayorder"] = d.dealcustomfieldmetum_displayorder;
+        }
+    const requestBody = Object.keys(body).length ? body : undefined;
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });
+    const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     const r = res.data || {};

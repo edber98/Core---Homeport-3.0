@@ -521,9 +521,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Input",
-            "description": "Texte à encoder",
+            "key": "embeddingInput",
+            "label": "Texte à encoder",
+            "description": "Texte ou tableau de textes à transformer en embeddings.",
             "col": {
               "xs": 24
             },

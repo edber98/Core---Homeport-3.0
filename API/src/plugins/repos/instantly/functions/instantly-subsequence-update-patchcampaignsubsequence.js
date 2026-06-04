@@ -10,16 +10,21 @@ module.exports = {
     reqPath = reqPath.replace('{id}', encodeURIComponent(id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.daily_limit_mode !== undefined && d.daily_limit_mode !== null && d.daily_limit_mode !== '') {
+      body["daily_limit_mode"] = d.daily_limit_mode;
+    }
+    if (d.daily_limit !== undefined && d.daily_limit !== null && d.daily_limit !== '') {
+      body["daily_limit"] = d.daily_limit;
+    }
+    if (d.ignore_account_daily_limit !== undefined && d.ignore_account_daily_limit !== null && d.ignore_account_daily_limit !== '') {
+      body["ignore_account_daily_limit"] = d.ignore_account_daily_limit;
     }
 
     log('Requête en cours...');
@@ -39,3 +44,4 @@ module.exports = {
     };
   }
 };
+

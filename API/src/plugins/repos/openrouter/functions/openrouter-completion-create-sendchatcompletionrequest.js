@@ -12,13 +12,8 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = utils.buildBodyFromInputs(d, [{"source":"model","target":"model","type":"text"},{"source":"messages","target":"messages","type":"json"},{"source":"models","target":"models","type":"json"},{"source":"provider","target":"provider","type":"json"},{"source":"transforms","target":"transforms","type":"json"},{"source":"route","target":"route","type":"text"},{"source":"temperature","target":"temperature","type":"number"},{"source":"topP","target":"top_p","type":"number"},{"source":"topK","target":"top_k","type":"number"},{"source":"frequencyPenalty","target":"frequency_penalty","type":"number"},{"source":"presencePenalty","target":"presence_penalty","type":"number"},{"source":"repetitionPenalty","target":"repetition_penalty","type":"number"},{"source":"maxTokens","target":"max_tokens","type":"number"},{"source":"responseFormat","target":"response_format","type":"json"},{"source":"stop","target":"stop","type":"json"},{"source":"stream","target":"stream","type":"checkbox"},{"source":"tools","target":"tools","type":"json"},{"source":"toolChoice","target":"tool_choice","type":"json"},{"source":"seed","target":"seed","type":"number"},{"source":"logprobs","target":"logprobs","type":"checkbox"},{"source":"topLogprobs","target":"top_logprobs","type":"number"},{"source":"metadata","target":"metadata","type":"json"}]);
+    if (body && body.__invalid) return { ok: false, error: body.__invalid };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

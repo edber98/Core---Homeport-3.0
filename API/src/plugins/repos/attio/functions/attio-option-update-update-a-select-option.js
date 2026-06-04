@@ -22,14 +22,11 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const payload = {};
+    if (d.title !== undefined && d.title !== null && d.title !== '') payload.title = d.title;
+    if (d.is_archived !== undefined && d.is_archived !== null && d.is_archived !== '') payload.is_archived = Boolean(d.is_archived);
+    if (!Object.keys(payload).length) return { ok: false, error: 'Aucun champ à envoyer.' };
+    const body = { data: payload };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });

@@ -2990,14 +2990,66 @@
             ]
           },
           {
-            "type": "textarea",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Payload JSON envoyé.",
+            "type": "section",
+            "title": "Champs de l'événement",
+            "description": "Paires clé-valeur envoyées dans le corps de l'événement Lambda.",
+            "mode": "array",
+            "key": "eventFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "eventKey",
+                "label": "Clé",
+                "description": "Nom de l'attribut envoyé à la fonction.",
+                "col": {
+                  "xs": 12
+                }
+              },
+              {
+                "type": "text",
+                "key": "eventValue",
+                "label": "Valeur",
+                "description": "Valeur de l'attribut.",
+                "col": {
+                  "xs": 12
+                }
+              },
+              {
+                "type": "select",
+                "key": "eventValueType",
+                "label": "Type de valeur",
+                "description": "Conversion appliquée avant l'envoi.",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "Texte",
+                    "value": "string"
+                  },
+                  {
+                    "label": "Nombre",
+                    "value": "number"
+                  },
+                  {
+                    "label": "Booléen",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "Vide",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
-            },
-            "default": "{}"
+            }
           },
           {
             "type": "select",

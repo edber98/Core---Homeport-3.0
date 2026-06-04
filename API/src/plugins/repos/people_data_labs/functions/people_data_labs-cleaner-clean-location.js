@@ -8,24 +8,15 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    // Propager automatiquement les autres entrées en query params.
-    const reserved = new Set(['body', 'pageSize', 'page', 'search']);
-    for (const [k, v] of Object.entries(d)) {
-      if (reserved.has(k)) continue;
-      if (v === undefined || v === null || v === '') continue;
-      query[k] = v;
+    const headers = {};
+
+    const body = {};
+    if (d.location !== undefined && d.location !== null && d.location !== '') {
+      body["location"] = d.location;
     }
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    if (d.pretty !== undefined && d.pretty !== null && d.pretty !== '') {
+      body["pretty"] = d.pretty;
     }
 
     log('Requête en cours...');
@@ -52,3 +43,4 @@ module.exports = {
     };
   }
 };
+

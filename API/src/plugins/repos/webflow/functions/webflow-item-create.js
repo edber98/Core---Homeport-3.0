@@ -1,5 +1,14 @@
 const { utils } = require('./utils');
 
+const BODY_FIELDS = [
+  {
+    "key": "value",
+    "type": "json",
+    "bodyPath": []
+  }
+];
+
+
 module.exports = {
   async webflow_item_create(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
@@ -13,13 +22,11 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let body;
+    try {
+      body = utils.buildBodyFromFields(d, BODY_FIELDS);
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
 
     log('Requête en cours...');

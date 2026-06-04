@@ -29,15 +29,13 @@ function pick(d, keys) {
 }
 
 function bodyFrom(d, keys, jsonKeys) {
-  const payload = parseJsonInput(d.payload, "payload", undefined);
-  const out = payload && typeof payload === "object" && !Array.isArray(payload) ? { ...payload } : {};
+  const out = {};
   for (const key of keys || []) if (d[key] !== undefined && d[key] !== null && d[key] !== "") out[key] = d[key];
   for (const key of jsonKeys || []) if (d[key] !== undefined && d[key] !== null && d[key] !== "") out[key] = parseJsonInput(d[key], key, undefined);
   return Object.keys(out).length ? out : undefined;
 }
 
 function klaviyoBody(key, d, fallback) {
-  if (d.payload) return fallback;
   if (key === "klaviyo_profile_create" || key === "klaviyo_profile_update") {
     const attributes = {};
     if (d.email) attributes.email = d.email;
@@ -64,8 +62,8 @@ function klaviyoBody(key, d, fallback) {
       }
     };
   }
-  if ((key === "klaviyo_list_profiles_add" || key === "klaviyo_list_profiles_remove") && d.data) {
-    return { data: parseJsonInput(d.data, "data", []) };
+  if ((key === "klaviyo_list_profiles_add" || key === "klaviyo_list_profiles_remove") && d.profileReferences) {
+    return { data: parseJsonInput(d.profileReferences, "data", []) };
   }
   return fallback;
 }

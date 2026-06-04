@@ -149,9 +149,9 @@ async function run(key, inputs, opts) {
       const method = clean(d.method || "GET").toUpperCase();
       const reqPath = clean(d.path);
       if (!reqPath) return { ok: false, error: "path requis." };
-      const query = parseJsonInput(d.query, "query", {});
-      const headers = parseJsonInput(d.headers, "headers", {});
-      const body = d.body_text ? String(d.body_text) : parseJsonInput(d.body, "body", undefined);
+      const query = parseJsonInput(d.queryParameters, "queryParameters", {});
+      const headers = parseJsonInput(d.requestHeaders, "requestHeaders", {});
+      const body = d.bodyText ? String(d.bodyText) : parseJsonInput(d.requestBody, "requestBody", undefined);
       const res = await requestHeap(opts, reqPath, { method, query, headers, body });
       if (!res.ok) return res;
       return result(res, "Appel API exécuté.");

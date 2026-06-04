@@ -17,13 +17,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const builtBody = utils.buildRequestBody(d, [{"key": "blocks", "bodyKey": "blocks", "type": "array"}, {"key": "body_content", "bodyKey": "body_content", "type": "string"}, {"key": "title", "bodyKey": "title", "type": "string"}, {"key": "subtitle", "bodyKey": "subtitle", "type": "string"}, {"key": "scheduled_at", "bodyKey": "scheduled_at", "type": "string"}, {"key": "custom_link_tracking_enabled", "bodyKey": "custom_link_tracking_enabled", "type": "boolean"}, {"key": "email_capture_type_override", "bodyKey": "email_capture_type_override", "type": "string"}, {"key": "override_scheduled_at", "bodyKey": "override_scheduled_at", "type": "string"}, {"key": "social_share", "bodyKey": "social_share", "type": "string"}, {"key": "thumbnail_image_url", "bodyKey": "thumbnail_image_url", "type": "string"}, {"key": "email_settings", "bodyKey": "email_settings", "type": "object"}, {"key": "web_settings", "bodyKey": "web_settings", "type": "object"}, {"key": "seo_settings", "bodyKey": "seo_settings", "type": "object"}, {"key": "content_tags", "bodyKey": "content_tags", "type": "array"}]);
+    if (!builtBody.ok) return builtBody;
+    const body = builtBody.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PATCH', query, body });

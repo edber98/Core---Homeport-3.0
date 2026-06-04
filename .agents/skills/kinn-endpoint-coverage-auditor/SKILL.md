@@ -1,107 +1,93 @@
 ---
 name: kinn-endpoint-coverage-auditor
-description: Auditer un connecteur Kinn endpoint par endpoint et atteindre une couverture maximale des noeuds utiles a l automation (lecture, creation, mise a jour, execution metier) en excluant explicitement le parametrage, l administration, la configuration globale et les operations purement techniques. Utiliser quand un utilisateur demande "tout couvrir", "100%", "endpoint par endpoint" ou "ajoute tous les noeuds utiles" pour un connecteur dans API/src/plugins/repos.
+description: Auditer un connecteur Kinn existant a partir d un JSON d endpoints deja filtre pour l automation, et produire un rapport covered missing excluded sans overlap avec l extraction, le filtrage ou la creation du connecteur. Utiliser quand un utilisateur demande un audit de couverture, un gap analysis, un "qu est ce qu il manque", ou une verification 100% metier sur un connecteur dans API/src/plugins/repos.
 ---
 
 # Kinn Endpoint Coverage Auditor
 
 ## Objectif
 
-Atteindre une couverture operationnelle maximale d un connecteur, sans ajouter de noeuds de parametrage/admin.
-Produire un verdict de couverture honnete avec liste des endpoints couverts, manquants, exclus et justification.
-Par defaut, le skill doit viser `100% metier` et poursuivre les ajouts tant qu il reste des endpoints metier `MISSING`.
+Auditer un connecteur existant contre un JSON d endpoints deja filtre pour l automation.
+Le skill ne doit ni extraire la doc, ni re-filtrer les endpoints, ni creer directement les noeuds manquants.
 
-## Declenchement direct (one-shot)
+Entree attendue:
 
-Appliquer ce skill immediatement, sans demander un second prompt, quand la demande utilisateur ressemble a:
-- "Ajoute tous les noeuds utiles (endpoint) a l automation ... fais un audit ..."
-- "endpoint par endpoint", "tout ajouter", "il ne doit rien manquer"
-- demande multi-connecteurs (liste de plusieurs connecteurs dans le meme message)
+- un connecteur existant sous `API/src/plugins/repos/{connector}`;
+- un JSON produit par `automation-endpoint-pruner`.
 
-Dans ce cas:
-1. Traiter tous les connecteurs cites dans le meme tour.
-2. Ajouter directement tous les noeuds dedies `MISSING` (non custom).
-3. Refaire un audit apres ajout et continuer jusqu a `MISSING = 0`.
-4. Ne poser aucune question intermediaire sauf blocage technique reel.
+Sortie attendue:
 
-## Regle de priorite
+- un rapport `covered / missing / excluded`;
+- une liste des gaps reels;
+- un verdict de couverture metier.
 
-Prioriser toujours:
-1. Endpoints metier utilises en workflow (create/read/update/delete, search/list, run/execute, import/export utile).
-2. Endpoints relationnels entre objets metier (associer, dissocier, transitions d etat).
-3. Endpoints d action unitaire frequente (approve, cancel, archive, retry, send, match, enrich, push/pull).
+## Position dans le pipeline
 
-## Exclusions obligatoires (ne pas ajouter)
+Ce skill intervient apres:
 
-- Parametrage global, configuration de compte/projet/workspace.
-- Gestion d identifiants, tokens, OAuth, API keys, webhooks d administration.
-- Parametres d infrastructure et maintenance technique sans valeur workflow immediate.
-- Endpoints internes, beta instables, ou non documentes de facon fiable.
+1. `openapi-extractor`
+2. `automation-endpoint-pruner`
+3. `kinn-connector-creator`
+
+Il sert a mesurer l ecart entre:
+
+- le JSON filtre cible;
+- le connecteur reellement present dans le repo.
 
 ## Workflow standard
 
-1. Inventorier le connecteur:
-   - Lire `manifest.json`.
-   - Lister `functions/*.js`.
-   - Extraire les `nodeTemplates` existants.
-2. Construire la liste endpoint cible:
-   - Source principale: doc API officielle.
-   - Garder seulement endpoints metier (selon regles d exclusion).
-3. Mapper endpoint -> noeud existant:
-   - `COVERED`: endpoint deja represente.
-   - `MISSING`: endpoint utile absent.
-   - `EXCLUDED`: endpoint hors scope (parametrage/admin) avec raison.
-4. Ajouter les noeuds `MISSING`:
-   - 1 handler par action.
-   - Nommage et structure alignes connecteur existant.
-   - Champs args clairs, schemas sortie coherents.
-5. Valider:
-   - JSON manifest parse.
-   - `require()` de tous les handlers sans erreur.
-6. Reporter:
-   - Totaux `covered / missing / excluded`.
-   - Liste des ajouts.
-   - Risques restants.
+1. Lire le JSON filtre de reference.
+2. Lire `manifest.json` du connecteur cible.
+3. Rejouer la meme logique de mapping que le generateur `endpoints JSON -> spec`.
+4. Comparer chaque endpoint attendu avec les `nodeTemplates` existants:
+   - `COVERED`: le noeud attendu existe;
+   - `MISSING`: le noeud attendu n existe pas;
+   - `EXCLUDED`: endpoint deja exclu dans le JSON source.
+5. Pour les endpoints couverts avec body, verifier aussi les champs body attendus vs exposes.
+6. Produire un rapport JSON et un resume lisible.
 
-## Mode Couverture Maximale (obligatoire si l utilisateur demande "max", "tout", "100%")
+Commande de base:
 
-1. Construire une matrice exhaustive endpoint par endpoint depuis la doc officielle.
-2. Classer chaque endpoint en `COVERED`, `MISSING` ou `EXCLUDED`.
-3. Ajouter tous les `MISSING` metier dans le meme tour, sans attendre validation intermediaire.
-4. Reboucler une seconde passe de verification; si un endpoint metier reste `MISSING`, continuer les ajouts.
-5. Ne terminer que lorsque `MISSING = 0` sur le perimetre metier retenu.
-6. Si plusieurs connecteurs sont demandes, boucler connecteur par connecteur puis publier un recap global unique.
+```bash
+node .agents/skills/kinn-endpoint-coverage-auditor/scripts/audit-coverage.js \
+  <connector> \
+  <api-name>-automation-endpoints.json
+```
 
-Definition perimetre metier:
-- Inclure CRUD, list/search, transitions d etat, actions unitaires frequentes, import/export utile aux workflows.
-- Exclure strictement parametrage/admin/credentials/permissions/billing technique/global settings.
+## Regles
 
-## Regles d implementation
+- Ne pas reclasser arbitrairement un endpoint metier en admin si le JSON filtre l a garde.
+- Ne pas ajouter de noeud directement depuis ce skill.
+- Si des gaps sont detectes, les reporter puis deleguer la correction au `kinn-connector-creator`.
+- Le skill peut auditer plusieurs connecteurs dans un meme tour, mais reste en lecture seule.
 
-- Reutiliser les helpers `utils.js` du connecteur avant de creer de nouvelles abstractions.
-- Ajouter des noeuds dedies pour les endpoints metier frequents.
-- Ajouter aussi les endpoints metier moins frequents mais utiles en automation (pas seulement le top frequents).
-- Marquer les risques (`write`, `destructive`) dans manifest quand applicable.
-- Ne pas casser les noeuds existants ni renommer sans necessite.
+## Quand utiliser ce skill
+
+Utiliser ce skill quand la demande ressemble a:
+
+- "qu est ce qu il manque dans ce connecteur"
+- "fais un audit de couverture"
+- "est ce qu on est a 100% metier"
+- "compare le connecteur au JSON filtre"
+- "donne moi les endpoints manquants"
 
 ## Format du rapport final
 
 Toujours fournir:
 - `Coverage metier`: X/Y (%)
-- `Endpoints ajoutes`: liste simple
+- `Endpoints couverts`: liste simple ou total
+- `Endpoints manquants`: liste simple
 - `Endpoints exclus`: liste + motif court
-- `Validation`: manifest parse + handlers load
+- `Body attributes couverts`: pour chaque endpoint couvert avec body, attributs attendus, trouves, manquants
+- `Validation`: manifest parse
 - `Gap residuel`: ce qui manque encore pour atteindre 100% metier
 
 ## References
 
-Lire `references/exclusion-rules.md` avant de classer les endpoints limites.
-Utiliser `scripts/build_coverage_template.js` pour generer un template de matrice couverture.
+Lire `references/exclusion-rules.md` seulement pour comprendre les exclusions deja presentes dans le JSON source.
+Utiliser `scripts/audit-coverage.js` pour generer le rapport d audit.
 
+## Limite volontaire
 
-## Interdiction custom_request (obligatoire)
-
-- Si l utilisateur demande une couverture complete endpoint par endpoint, ne pas ajouter de noeud `custom_request` (ou equivalent generique).
-- La couverture doit etre composee exclusivement de noeuds dedies, un endpoint metier = un noeud explicite.
-- `custom_request` est interdit meme en mode secours, sauf demande explicite de l utilisateur.
-- En mode one-shot multi-connecteurs, l usage de `custom_request` est interdit sans exception.
+Ce skill n a plus pour mission de combler les gaps.
+Sa mission est uniquement de les detecter proprement.

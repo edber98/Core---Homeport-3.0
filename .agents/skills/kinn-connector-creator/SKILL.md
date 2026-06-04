@@ -1,6 +1,6 @@
 ---
 name: kinn-connector-creator
-description: 'Create or extend Kinn/Homeport workflow builder connectors in API/src/plugins/repos. Use when asked in French or English to add a connector, integration, provider, plugin, API app, actions, triggers, or endpoints in Kinn. Enforces the Notion-style connector structure, complete coverage of automation-useful API surfaces, one handler file per action, shared utils.js, complete output schemas, and validation.'
+description: 'Create or extend Kinn/Homeport workflow builder connectors in API/src/plugins/repos. Use when asked in French or English to create a connector from an extracted or filtered endpoints JSON, or to add a provider, integration, actions, triggers, or endpoints in Kinn. Enforces the Notion-style connector structure, one handler file per action, explicit body fields, preserved path/query/header inputs, complete output schemas, and validation.'
 ---
 
 # Kinn Connector Creator
@@ -61,7 +61,29 @@ node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector
 
 ### Fast path (preferred)
 
-When an OpenAPI JSON is available, use script-first generation to create a connector in seconds:
+Quand un JSON d endpoints filtre est disponible, utiliser ce pipeline en priorite:
+
+```bash
+# 1) Convertir l inventaire JSON filtre en spec exploitable par le generateur
+node .agents/skills/kinn-connector-creator/scripts/generate-spec-from-endpoints-json.js \
+  <api-name>-automation-endpoints.json \
+  --connector <connector> \
+  --provider-name "Provider Name"
+
+# 2) Generer les actions du connecteur a partir de cette spec
+node .agents/skills/kinn-connector-creator/scripts/generate-actions-from-spec.js \
+  <connector> \
+  --spec .agents/skills/kinn-connector-creator/tmp/<connector>.from-endpoints.spec.json \
+  --force
+```
+
+Puis:
+
+```bash
+node .agents/skills/kinn-connector-creator/scripts/check-connector.js <connector>
+```
+
+Quand seule la spec OpenAPI brute est disponible, utiliser le pipeline OpenAPI direct existant:
 
 ```bash
 # 1) Build exhaustive automation spec from OpenAPI
@@ -75,6 +97,17 @@ node .agents/skills/kinn-connector-creator/scripts/mass-create-connectors.js <in
 ```
 
 Use `strictAutomation` (default true) to block thin connectors.
+
+## JSON d entree attendu
+
+Le JSON d entree venant du skill precedent doit contenir:
+
+- `api`
+- `endpoint_count`
+- `endpoints[]`
+- pour chaque endpoint: `method`, `path`, `parameters`, et `request_body` si l endpoint a un body documente
+
+Le creator doit repartir de ce JSON filtre, pas refaire une selection arbitraire d endpoints.
 
 ## Coverage Gate (Mandatory)
 
@@ -211,6 +244,15 @@ Read [references/endpoint-selection.md](references/endpoint-selection.md) for th
 - Keep handler returns stable and small; map API responses into predictable fields instead of returning huge raw objects by default.
 - Include pagination inputs on list/search nodes: usually `pageSize`/`per_page`, cursor/page when supported.
 - For JSON-heavy provider features, use `json` or `textarea` args and validate JSON in the handler with clear errors.
+- Ne jamais exposer un unique champ générique `body`, `payload`, `payloadJson`, `data`, `attributes`, `requestAttributes`, `requestRootKey` ou `requestResourceId` pour un endpoint `POST`/`PATCH`/`PUT`.
+- Pour chaque endpoint avec request body, créer un champ par attribut accepté par l endpoint, y compris pour les objets imbriqués: chaque feuille doit devenir un champ dédié avec une clé stable en `snake_case` dérivée de son chemin dans le body.
+- Les paramètres `header` documentés dans le JSON source doivent rester exposés comme champs explicites et être transmis comme headers HTTP dans le handler généré.
+- Les objets imbriqués doivent être reconstruits automatiquement dans le handler via leur chemin `bodyPath`. Les tableaux ou objets réellement libres peuvent rester un champ `json`, mais seulement pour cet attribut précis, jamais pour tout le body.
+- Les labels de champs générés doivent être en français compréhensible pour un utilisateur métier. Interdiction d’exposer des libellés techniques bruts du type `Accountcustomfielddatum Customeraccountid`, `Dealstage Cardregion1` ou `Ecomorder Externalid`.
+- Les descriptions de champs générés doivent elles aussi être en français. Ne jamais laisser une description brute issue de la doc en anglais si le champ est exposé dans l’UI.
+- Quand un champ est généré automatiquement depuis une spec, relire et corriger manuellement les labels/descriptions avant de considérer le connecteur terminé. Un champ comme `customDomains`, `frequency_penalty`, `MergedToContactID` ou `commitAuthorEmail` doit devenir un libellé français naturel, pas une translittération technique.
+- Pour les champs d’un objet racine déjà implicite dans le noeud (par exemple une adresse dans un noeud "Créer une adresse"), ne pas répéter inutilement le contexte dans chaque label: préférer `Nom de l’entreprise`, `Adresse ligne 1`, `Ville`, et non `Nom de l’entreprise de l’adresse`, `Adresse ligne 1 de l’adresse`, `Ville de l’adresse`.
+- Si le schéma du body n est pas suffisamment connu pour faire ce mapping attribut par attribut correctement, arrêter la génération et compléter le mapping avant de produire le connecteur.
 - Never access `node.args`; use `inputs`.
 - Credentials live in `opts.credentials`.
 - Progress logs use `opts.log`, with short French messages.
@@ -224,3 +266,4 @@ Load only what you need:
 - [references/manifest-patterns.md](references/manifest-patterns.md): manifest, provider, variable, and node template patterns.
 - [references/handler-patterns.md](references/handler-patterns.md): `utils.js` and per-action handler patterns.
 - [references/validation.md](references/validation.md): checks before handing off the connector.
+- `scripts/generate-spec-from-endpoints-json.js`: conversion inventaire endpoints filtre -> spec du generateur.
