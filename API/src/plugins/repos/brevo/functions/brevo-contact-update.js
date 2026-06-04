@@ -11,8 +11,8 @@ module.exports = {
     if (d.firstName) body.attributes.FIRSTNAME = d.firstName;
     if (d.lastName) body.attributes.LASTNAME = d.lastName;
     if (d.phone) body.attributes.SMS = d.phone;
-    if (d.attributes) {
-      try { Object.assign(body.attributes, JSON.parse(d.attributes)); } catch {}
+    if (d.customAttributes) {
+      try { Object.assign(body.attributes, JSON.parse(d.customAttributes)); } catch {}
     }
 
     log('Mise à jour en cours...');

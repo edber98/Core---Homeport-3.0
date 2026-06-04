@@ -10,16 +10,18 @@ module.exports = {
     reqPath = reqPath.replace('{resource_id}', encodeURIComponent(resource_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.auto_update !== undefined && d.auto_update !== null && d.auto_update !== '') {
+      body["auto_update"] = d.auto_update;
+    }
+    if (d.skip_rows_without_email !== undefined && d.skip_rows_without_email !== null && d.skip_rows_without_email !== '') {
+      body["skip_rows_without_email"] = d.skip_rows_without_email;
+    }
+    if (d.is_evergreen !== undefined && d.is_evergreen !== null && d.is_evergreen !== '') {
+      body["is_evergreen"] = d.is_evergreen;
     }
 
     log('Requête en cours...');
@@ -39,3 +41,4 @@ module.exports = {
     };
   }
 };
+

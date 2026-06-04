@@ -10,8 +10,8 @@ module.exports = {
     let query = {};
     let body;
     try {
-      query = utils.parseJson(d.query, "query", {});
-      body = utils.parseJson(d.body, "body", undefined);
+      query = utils.parseJson(d.queryParametersJson, "query", {});
+      body = utils.parseJson(d.requestBodyJson, "body", undefined);
     } catch (e) {
       return { ok: false, error: e.message };
     }

@@ -42,4 +42,22 @@ async function getMyUserUri(opts) {
   return res.data?.resource?.uri || null;
 }
 
-module.exports = { utils: { calendlyRequest, getMyUserUri } };
+function buildBodyFromFields(rows) {
+  const body = {};
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const key = String(row && row.fieldKey || '').trim();
+    if (!key) continue;
+    let value = row.fieldValue;
+    switch (row.fieldType || 'string') {
+      case 'number': value = Number(value); if (Number.isNaN(value)) return { ok: false, error: `Nombre invalide pour ${key}.` }; break;
+      case 'boolean': value = value === true || String(value).toLowerCase() === 'true'; break;
+      case 'json': try { value = JSON.parse(String(value || 'null')); } catch { return { ok: false, error: `JSON invalide pour ${key}.` }; } break;
+      case 'null': value = null; break;
+      default: value = value == null ? '' : String(value);
+    }
+    body[key] = value;
+  }
+  return { ok: true, body: Object.keys(body).length ? body : undefined };
+}
+
+module.exports = { utils: { calendlyRequest, getMyUserUri, buildBodyFromFields } };

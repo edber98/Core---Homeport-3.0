@@ -12,17 +12,9 @@ module.exports = {
     if (!run_id) return { ok: false, error: 'run_id requis.' };
     reqPath = reqPath.replace('{run_id}', encodeURIComponent(run_id));
 
-    let query = {};
-    try { query = utils.parseJsonInput(d.query, 'query', { defaultValue: {}, allowArray: false }) || {}; }
-    catch (e) { return { ok: false, error: e.message }; }
+    const query = {};
 
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let headers = {};
-    try { headers = utils.parseJsonInput(d.headers, 'headers', { defaultValue: {}, allowArray: false }) || {}; }
-    catch (e) { return { ok: false, error: e.message }; }
+    const headers = {};
 
     const body = undefined;
 
@@ -38,3 +30,4 @@ module.exports = {
     };
   }
 };
+

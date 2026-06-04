@@ -12,13 +12,8 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = utils.buildBodyFromInputs(d, [{"source":"model","target":"model","type":"text"},{"source":"rerankQuery","target":"query","type":"text"},{"source":"documents","target":"documents","type":"json"},{"source":"topN","target":"top_n","type":"number"},{"source":"returnDocuments","target":"return_documents","type":"checkbox"},{"source":"maxChunksPerDoc","target":"max_chunks_per_doc","type":"number"}]);
+    if (body && body.__invalid) return { ok: false, error: body.__invalid };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

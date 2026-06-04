@@ -1079,9 +1079,9 @@
           },
           {
             "type": "textarea",
-            "key": "attributes",
-            "label": "Attributs (JSON)",
-            "description": "Attributs supplémentaires en JSON.",
+            "key": "customAttributes",
+            "label": "Attributs personnalisés",
+            "description": "Objet JSON contenant les attributs personnalisés Brevo à ajouter au contact.",
             "col": {
               "xs": 24
             }
@@ -1241,9 +1241,9 @@
           },
           {
             "type": "textarea",
-            "key": "attributes",
-            "label": "Attributs (JSON)",
-            "description": "Attributs à mettre à jour (JSON).",
+            "key": "customAttributes",
+            "label": "Attributs personnalisés",
+            "description": "Objet JSON contenant les attributs personnalisés Brevo à ajouter au contact.",
             "col": {
               "xs": 24
             }

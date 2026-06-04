@@ -344,6 +344,13 @@ function renderHandler(fnName, method, pathTemplate, outputMode, args = []) {
     })
     .join('\n    ');
 
+  const headerArgs = flattenArgDefs(args)
+    .filter((arg) => arg && arg.in === 'header' && arg.key)
+    .map((arg) => {
+      return `if (d.${arg.key} !== undefined && d.${arg.key} !== null && d.${arg.key} !== '') headers[${JSON.stringify(arg.key)}] = String(d.${arg.key});`;
+    })
+    .join('\n    ');
+
   let returnBlock;
   if (outputMode === 'list') {
     returnBlock = `const payload = res.data || {};
@@ -399,10 +406,13 @@ module.exports = {
     const query = {};
     ${queryArgs}
 
+    const headers = {};
+    ${headerArgs}
+
     ${bodyBlock}
 
     log('Requête en cours...');
-    const res = await utils.providerRequest(opts, reqPath, { method: '${method}', query, body: requestBody });
+    const res = await utils.providerRequest(opts, reqPath, { method: '${method}', query, headers, body: requestBody });
     if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };
 
     ${returnBlock}

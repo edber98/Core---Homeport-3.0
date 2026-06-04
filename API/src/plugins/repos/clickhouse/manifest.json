@@ -783,28 +783,190 @@
             ]
           },
           {
-            "type": "json",
-            "key": "query",
-            "label": "Query params",
-            "description": "Objet JSON des query params.",
+            "type": "section",
+            "title": "Paramètres URL",
+            "description": "Paires clé-valeur ajoutées à la query string.",
+            "mode": "array",
+            "key": "queryFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }
           },
           {
-            "type": "json",
-            "key": "headers",
-            "label": "En-têtes",
-            "description": "Objet JSON d’en-têtes HTTP.",
+            "type": "section",
+            "title": "En-têtes",
+            "description": "Paires clé-valeur envoyées comme en-têtes HTTP.",
+            "mode": "array",
+            "key": "headerFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON.",
+            "type": "section",
+            "title": "Champs du corps",
+            "description": "Paires clé-valeur envoyées dans le corps JSON.",
+            "mode": "array",
+            "key": "requestFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "fieldKey",
+                "label": "Clé",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "fieldValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "fieldType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             }

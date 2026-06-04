@@ -8,16 +8,39 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.type !== undefined && d.type !== null && d.type !== '') {
+      body["type"] = d.type;
+    }
+    if (d.inbox_id !== undefined && d.inbox_id !== null && d.inbox_id !== '') {
+      body["inbox_id"] = d.inbox_id;
+    }
+    if (d.teammate_ids !== undefined && d.teammate_ids !== null && d.teammate_ids !== '') {
+      body["teammate_ids"] = d.teammate_ids;
+    }
+    if (d.subject !== undefined && d.subject !== null && d.subject !== '') {
+      body["subject"] = d.subject;
+    }
+    if (d.comment !== undefined && d.comment !== null && d.comment !== '') {
+      body["comment"] = d.comment;
+    }
+    if (d.comment_author_id !== undefined && d.comment_author_id !== null && d.comment_author_id !== '') {
+      if (!body["comment"] || typeof body["comment"] !== 'object' || Array.isArray(body["comment"])) body["comment"] = {};
+      body["comment"]["author_id"] = d.comment_author_id;
+    }
+    if (d.comment_body !== undefined && d.comment_body !== null && d.comment_body !== '') {
+      if (!body["comment"] || typeof body["comment"] !== 'object' || Array.isArray(body["comment"])) body["comment"] = {};
+      body["comment"]["body"] = d.comment_body;
+    }
+    if (d.comment_attachments !== undefined && d.comment_attachments !== null && d.comment_attachments !== '') {
+      if (!body["comment"] || typeof body["comment"] !== 'object' || Array.isArray(body["comment"])) body["comment"] = {};
+      body["comment"]["attachments"] = d.comment_attachments;
+    }
+    if (d.custom_fields !== undefined && d.custom_fields !== null && d.custom_fields !== '') {
+      body["custom_fields"] = d.custom_fields;
     }
 
     log('Requête en cours...');
@@ -32,3 +55,4 @@ module.exports = {
     };
   }
 };
+

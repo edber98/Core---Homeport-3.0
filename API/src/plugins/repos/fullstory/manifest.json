@@ -891,10 +891,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "uid",
+            "label": "UID",
+            "description": "Identifiant utilisateur Fullstory.",
             "col": {
               "xs": 24
             },
@@ -903,6 +903,42 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse email de l'utilisateur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "display_name",
+            "label": "Nom affiché",
+            "description": "Nom affiché dans Fullstory.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "properties",
+            "label": "Properties",
+            "description": "Attribut properties du body Fullstory.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "schema",
+            "label": "Schema",
+            "description": "Attribut schema du body Fullstory.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -969,10 +1005,37 @@
             ]
           },
           {
+            "type": "email",
+            "key": "email",
+            "label": "Email",
+            "description": "Adresse email de l'utilisateur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "display_name",
+            "label": "Nom affiché",
+            "description": "Nom affiché dans Fullstory.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "properties",
+            "label": "Properties",
+            "description": "Attribut properties du body Fullstory.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "schema",
+            "label": "Schema",
+            "description": "Attribut schema du body Fullstory.",
             "col": {
               "xs": 24
             }
@@ -1983,9 +2046,36 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "slice",
+            "label": "Slice",
+            "description": "Attribut slice du body de génération de contexte.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "event_limit",
+            "label": "Event limit",
+            "description": "Attribut event_limit du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "duration_limit_ms",
+            "label": "Duration limit ms",
+            "description": "Attribut duration_limit_ms du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "start_timestamp",
+            "label": "Start timestamp",
+            "description": "Attribut start_timestamp du body.",
             "col": {
               "xs": 24
             }
@@ -2055,10 +2145,28 @@
             ]
           },
           {
+            "type": "text",
+            "key": "profile_id",
+            "label": "Profile ID",
+            "description": "Attribut profile_id du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "profile",
+            "label": "Profile",
+            "description": "Attribut profile du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "override",
+            "label": "Override",
+            "description": "Attribut override du body.",
             "col": {
               "xs": 24
             }
@@ -2070,8 +2178,8 @@
       "group": "sessions"
     },
     {
-      "key": "fullstory_api_request",
-      "name": "fullstoryApiRequest",
+      "key": "fullstory_custom_request",
+      "name": "fullstoryCustomRequest",
       "schemaVersion": 2,
       "title": "Appeler un endpoint API",
       "subtitle": "API",
@@ -2144,36 +2252,36 @@
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query params",
-            "description": "Objet JSON des query params.",
+            "key": "queryParameters",
+            "label": "Paramètres URL",
+            "description": "Objet JSON des paramètres URL.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "En-têtes",
-            "description": "Objet JSON d’en-têtes HTTP.",
+            "key": "requestHeaders",
+            "label": "En-têtes HTTP",
+            "description": "Objet JSON des en-têtes HTTP additionnels.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Body JSON",
-            "description": "Payload JSON.",
+            "key": "requestBody",
+            "label": "Corps JSON",
+            "description": "Objet JSON envoyé comme corps de requête.",
             "col": {
               "xs": 24
             }
           },
           {
             "type": "textarea",
-            "key": "body_text",
-            "label": "Body texte",
-            "description": "Corps brut (prioritaire sur body).",
+            "key": "bodyText",
+            "label": "Corps texte",
+            "description": "Corps brut, prioritaire sur le corps JSON.",
             "col": {
               "xs": 24
             }

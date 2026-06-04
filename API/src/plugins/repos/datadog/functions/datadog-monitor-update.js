@@ -9,7 +9,7 @@ module.exports = {
 
     let options;
     try {
-      options = utils.parseJson(d.options, "options", undefined);
+      options = utils.parseJson(d.monitorOptions, "options", undefined);
     } catch (e) {
       return { ok: false, error: e.message };
     }
@@ -17,7 +17,7 @@ module.exports = {
     const body = utils.compact({
       name: d.name,
       type: d.type,
-      query: d.query,
+      query: d.monitorQuery,
       message: d.message,
       tags: utils.splitCsv(d.tags),
       priority: utils.toNumber(d.priority),

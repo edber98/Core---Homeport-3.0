@@ -1511,9 +1511,9 @@
         "fields": [
           {
             "type": "text",
-            "key": "query",
-            "label": "Requête",
-            "description": "Filtres Discover.",
+            "key": "searchQuery",
+            "label": "Recherche",
+            "description": "Requête de recherche d’entreprise.",
             "col": {
               "xs": 24
             }
@@ -1931,10 +1931,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Données lead.",
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Attribut email envoyé dans le corps Hunter.",
             "col": {
               "xs": 24
             },
@@ -1943,6 +1943,150 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "firstName",
+            "label": "Prénom",
+            "description": "Attribut firstName envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastName",
+            "label": "Nom",
+            "description": "Attribut lastName envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "position",
+            "label": "Poste",
+            "description": "Attribut position envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "company",
+            "label": "Entreprise",
+            "description": "Attribut company envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "companyIndustry",
+            "label": "Secteur entreprise",
+            "description": "Attribut companyIndustry envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "companySize",
+            "label": "Taille entreprise",
+            "description": "Attribut companySize envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "confidenceScore",
+            "label": "Score de confiance",
+            "description": "Attribut confidenceScore envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "website",
+            "label": "Site web",
+            "description": "Attribut website envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "countryCode",
+            "label": "Code pays",
+            "description": "Attribut countryCode envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "linkedinUrl",
+            "label": "LinkedIn",
+            "description": "Attribut linkedinUrl envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phoneNumber",
+            "label": "Téléphone",
+            "description": "Attribut phoneNumber envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "twitter",
+            "label": "Twitter",
+            "description": "Attribut twitter envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "notes",
+            "label": "Notes",
+            "description": "Attribut notes envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "source",
+            "label": "Source",
+            "description": "Attribut source envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "leadsListId",
+            "label": "Liste de leads",
+            "description": "Attribut leadsListId envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "customAttributes",
+            "label": "Attributs personnalisés",
+            "description": "Attribut customAttributes envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -1995,10 +2139,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Données lead/upsert.",
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Attribut email envoyé dans le corps Hunter.",
             "col": {
               "xs": 24
             },
@@ -2007,6 +2151,150 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "firstName",
+            "label": "Prénom",
+            "description": "Attribut firstName envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastName",
+            "label": "Nom",
+            "description": "Attribut lastName envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "position",
+            "label": "Poste",
+            "description": "Attribut position envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "company",
+            "label": "Entreprise",
+            "description": "Attribut company envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "companyIndustry",
+            "label": "Secteur entreprise",
+            "description": "Attribut companyIndustry envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "companySize",
+            "label": "Taille entreprise",
+            "description": "Attribut companySize envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "confidenceScore",
+            "label": "Score de confiance",
+            "description": "Attribut confidenceScore envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "website",
+            "label": "Site web",
+            "description": "Attribut website envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "countryCode",
+            "label": "Code pays",
+            "description": "Attribut countryCode envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "linkedinUrl",
+            "label": "LinkedIn",
+            "description": "Attribut linkedinUrl envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phoneNumber",
+            "label": "Téléphone",
+            "description": "Attribut phoneNumber envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "twitter",
+            "label": "Twitter",
+            "description": "Attribut twitter envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "notes",
+            "label": "Notes",
+            "description": "Attribut notes envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "source",
+            "label": "Source",
+            "description": "Attribut source envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "leadsListId",
+            "label": "Liste de leads",
+            "description": "Attribut leadsListId envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "customAttributes",
+            "label": "Attributs personnalisés",
+            "description": "Attribut customAttributes envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2073,10 +2361,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Données lead.",
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Attribut email envoyé dans le corps Hunter.",
             "col": {
               "xs": 24
             },
@@ -2085,6 +2373,150 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "firstName",
+            "label": "Prénom",
+            "description": "Attribut firstName envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastName",
+            "label": "Nom",
+            "description": "Attribut lastName envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "position",
+            "label": "Poste",
+            "description": "Attribut position envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "company",
+            "label": "Entreprise",
+            "description": "Attribut company envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "companyIndustry",
+            "label": "Secteur entreprise",
+            "description": "Attribut companyIndustry envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "companySize",
+            "label": "Taille entreprise",
+            "description": "Attribut companySize envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "confidenceScore",
+            "label": "Score de confiance",
+            "description": "Attribut confidenceScore envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "website",
+            "label": "Site web",
+            "description": "Attribut website envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "countryCode",
+            "label": "Code pays",
+            "description": "Attribut countryCode envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "linkedinUrl",
+            "label": "LinkedIn",
+            "description": "Attribut linkedinUrl envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "phoneNumber",
+            "label": "Téléphone",
+            "description": "Attribut phoneNumber envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "twitter",
+            "label": "Twitter",
+            "description": "Attribut twitter envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "notes",
+            "label": "Notes",
+            "description": "Attribut notes envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "source",
+            "label": "Source",
+            "description": "Attribut source envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "leadsListId",
+            "label": "Liste de leads",
+            "description": "Attribut leadsListId envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "customAttributes",
+            "label": "Attributs personnalisés",
+            "description": "Attribut customAttributes envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2334,10 +2766,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Attribut name envoyé dans le corps Hunter.",
             "col": {
               "xs": 24
             },
@@ -2412,13 +2844,18 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Attribut name envoyé dans le corps Hunter.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -2668,10 +3105,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Attribut label envoyé dans le corps Hunter.",
             "col": {
               "xs": 24
             },
@@ -2680,6 +3117,15 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Attribut type envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2746,10 +3192,24 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "description": "Attribut label envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "type",
+            "label": "Type",
+            "description": "Attribut type envoyé dans le corps Hunter.",
             "col": {
               "xs": 24
             }
@@ -2996,10 +3456,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Données destinataire.",
+            "type": "text",
+            "key": "email",
+            "label": "Email",
+            "description": "Attribut email envoyé dans le corps Hunter.",
             "col": {
               "xs": 24
             },
@@ -3008,6 +3468,60 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "text",
+            "key": "firstName",
+            "label": "Prénom",
+            "description": "Attribut firstName envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "lastName",
+            "label": "Nom",
+            "description": "Attribut lastName envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "company",
+            "label": "Entreprise",
+            "description": "Attribut company envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "position",
+            "label": "Poste",
+            "description": "Attribut position envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "customAttributes",
+            "label": "Attributs personnalisés",
+            "description": "Attribut customAttributes envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "variables",
+            "label": "Variables de séquence",
+            "description": "Attribut variables envoyé dans le corps Hunter.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,

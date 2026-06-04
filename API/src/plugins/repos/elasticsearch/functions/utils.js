@@ -96,9 +96,96 @@ function requireField(d, key) {
   return v;
 }
 
-function bodyFromInputs(d) {
-  const raw = parseJsonInput(d.body, "body", undefined);
-  return raw !== undefined ? raw : undefined;
+function assignJson(body, target, value, label) {
+  const parsed = parseJsonInput(value, label, undefined);
+  if (parsed !== undefined) body[target] = parsed;
+}
+
+function assignValue(body, target, value) {
+  if (value !== undefined && value !== null && value !== "") body[target] = value;
+}
+
+function assignNumber(body, target, value) {
+  if (value === undefined || value === null || value === "") return;
+  const numberValue = Number(value);
+  if (Number.isFinite(numberValue)) body[target] = numberValue;
+}
+
+function bodyFromInputs(d, key) {
+  if (key === "elasticsearch_index_create") {
+    const body = {};
+    assignJson(body, "settings", d.settings, "settings");
+    assignJson(body, "mappings", d.mappings, "mappings");
+    assignJson(body, "aliases", d.aliases, "aliases");
+    return Object.keys(body).length ? body : undefined;
+  }
+
+  if (key === "elasticsearch_index_update_mapping") {
+    const body = {};
+    assignJson(body, "properties", d.properties, "properties");
+    assignValue(body, "dynamic", maybe(d.dynamic));
+    assignJson(body, "runtime", d.runtime, "runtime");
+    assignJson(body, "_meta", d.meta, "meta");
+    return Object.keys(body).length ? body : undefined;
+  }
+
+  if (key === "elasticsearch_index_update_settings") {
+    const body = {};
+    assignJson(body, "settings", d.settings, "settings");
+    return Object.keys(body).length ? body : undefined;
+  }
+
+  if (key === "elasticsearch_document_index" || key === "elasticsearch_document_upsert") {
+    return parseJsonInput(d.document, "document", undefined);
+  }
+
+  if (key === "elasticsearch_document_update") {
+    const body = {};
+    assignJson(body, "doc", d.doc, "doc");
+    assignJson(body, "script", d.script, "script");
+    assignJson(body, "upsert", d.upsert, "upsert");
+    assignValue(body, "doc_as_upsert", d.docAsUpsert === true ? true : undefined);
+    assignValue(body, "scripted_upsert", d.scriptedUpsert === true ? true : undefined);
+    assignValue(body, "detect_noop", d.detectNoop === true ? true : undefined);
+    return Object.keys(body).length ? body : undefined;
+  }
+
+  if (
+    key === "elasticsearch_search_query"
+    || key === "elasticsearch_search_delete_by_query"
+    || key === "elasticsearch_search_update_by_query"
+  ) {
+    const body = {};
+    assignJson(body, "query", d.searchQuery, "searchQuery");
+    assignJson(body, "aggs", d.aggregations, "aggregations");
+    assignJson(body, "sort", d.sort, "sort");
+    assignJson(body, "_source", d.sourceFields, "sourceFields");
+    assignJson(body, "highlight", d.highlight, "highlight");
+    assignJson(body, "search_after", d.searchAfter, "searchAfter");
+    assignJson(body, "script", d.script, "script");
+    assignNumber(body, "from", d.from);
+    assignNumber(body, "size", d.size);
+    assignNumber(body, "max_docs", d.maxDocs);
+    return Object.keys(body).length ? body : undefined;
+  }
+
+  if (key === "elasticsearch_search_reindex") {
+    const body = {};
+    assignJson(body, "source", d.source, "source");
+    assignJson(body, "dest", d.dest, "dest");
+    assignJson(body, "script", d.script, "script");
+    assignValue(body, "conflicts", maybe(d.conflicts));
+    assignNumber(body, "max_docs", d.maxDocs);
+    return Object.keys(body).length ? body : undefined;
+  }
+
+  if (key === "elasticsearch_alias_update") {
+    const body = {};
+    assignJson(body, "actions", d.actions, "actions");
+    return Object.keys(body).length ? body : undefined;
+  }
+
+  return undefined;
 }
 
 async function run(key, inputs, opts) {
@@ -109,7 +196,7 @@ async function run(key, inputs, opts) {
       const index = requireField(d, "index");
 
       if (key === "elasticsearch_index_create") {
-        const body = bodyFromInputs(d) || {};
+        const body = bodyFromInputs(d, key) || {};
         const res = await requestElastic(opts, `/${encodeURIComponent(index)}`, { method: "PUT", body });
         if (!res.ok) return res;
         return ok(res, "Index créé.", { id: index, name: index });
@@ -134,7 +221,7 @@ async function run(key, inputs, opts) {
       }
 
       if (key === "elasticsearch_index_update_mapping") {
-        const body = bodyFromInputs(d) || {};
+        const body = bodyFromInputs(d, key) || {};
         const res = await requestElastic(opts, `/${encodeURIComponent(index)}/_mapping`, { method: "PUT", body });
         if (!res.ok) return res;
         return ok(res, "Mapping mis à jour.", { id: index, name: index });
@@ -145,7 +232,7 @@ async function run(key, inputs, opts) {
       const index = requireField(d, "index");
 
       if (key === "elasticsearch_document_index") {
-        const body = bodyFromInputs(d);
+        const body = bodyFromInputs(d, key);
         if (!body || typeof body !== "object") return { ok: false, error: "body JSON requis." };
         const query = { refresh: maybe(d.refresh), routing: maybe(d.routing), pipeline: maybe(d.pipeline) };
         const res = await requestElastic(opts, `/${encodeURIComponent(index)}/_doc`, { method: "POST", query, body });
@@ -155,7 +242,7 @@ async function run(key, inputs, opts) {
 
       if (key === "elasticsearch_document_upsert") {
         const id = requireField(d, "id");
-        const body = bodyFromInputs(d);
+        const body = bodyFromInputs(d, key);
         if (!body || typeof body !== "object") return { ok: false, error: "body JSON requis." };
         const query = { refresh: maybe(d.refresh), routing: maybe(d.routing), pipeline: maybe(d.pipeline) };
         const res = await requestElastic(opts, `/${encodeURIComponent(index)}/_doc/${encodeURIComponent(id)}`, { method: "PUT", query, body });
@@ -173,7 +260,7 @@ async function run(key, inputs, opts) {
 
       if (key === "elasticsearch_document_update") {
         const id = requireField(d, "id");
-        const body = bodyFromInputs(d);
+        const body = bodyFromInputs(d, key);
         if (!body || typeof body !== "object") return { ok: false, error: "body JSON requis." };
         const query = { refresh: maybe(d.refresh), routing: maybe(d.routing) };
         const res = await requestElastic(opts, `/${encodeURIComponent(index)}/_update/${encodeURIComponent(id)}`, { method: "POST", query, body });
@@ -194,7 +281,7 @@ async function run(key, inputs, opts) {
       const index = key === "elasticsearch_search_bulk" ? clean(d.index) : requireField(d, "index");
 
       if (key === "elasticsearch_search_query") {
-        const body = bodyFromInputs(d) || {};
+        const body = bodyFromInputs(d, key) || {};
         const query = { size: maybe(d.pageSize), from: maybe(d.from), q: maybe(d.search) };
         const res = await requestElastic(opts, `/${encodeURIComponent(index)}/_search`, { method: "POST", query, body });
         if (!res.ok) return res;
@@ -204,7 +291,7 @@ async function run(key, inputs, opts) {
       }
 
       if (key === "elasticsearch_search_count") {
-        const body = bodyFromInputs(d);
+        const body = bodyFromInputs(d, key);
         const query = { q: maybe(d.search) };
         const res = await requestElastic(opts, `/${encodeURIComponent(index)}/_count`, { method: body ? "POST" : "GET", query, body });
         if (!res.ok) return res;
@@ -212,7 +299,7 @@ async function run(key, inputs, opts) {
       }
 
       if (key === "elasticsearch_search_delete_by_query") {
-        const body = bodyFromInputs(d);
+        const body = bodyFromInputs(d, key);
         if (!body || typeof body !== "object") return { ok: false, error: "body JSON requis." };
         const query = { refresh: maybe(d.refresh), conflicts: maybe(d.conflicts) };
         const res = await requestElastic(opts, `/${encodeURIComponent(index)}/_delete_by_query`, { method: "POST", query, body });
@@ -255,7 +342,7 @@ async function run(key, inputs, opts) {
     }
 
     if (key === "elasticsearch_alias_update") {
-      const body = bodyFromInputs(d);
+      const body = bodyFromInputs(d, key);
       if (!body || typeof body !== "object") return { ok: false, error: "body JSON requis." };
       const res = await requestElastic(opts, "/_aliases", { method: "POST", body });
       if (!res.ok) return res;
@@ -271,7 +358,7 @@ async function run(key, inputs, opts) {
 
     if (key === "elasticsearch_index_update_settings") {
       const index = requireField(d, "index");
-      const body = bodyFromInputs(d);
+      const body = bodyFromInputs(d, key);
       if (!body || typeof body !== "object") return { ok: false, error: "body JSON requis." };
       const res = await requestElastic(opts, "/" + encodeURIComponent(index) + "/_settings", { method: "PUT", body });
       if (!res.ok) return res;
@@ -280,7 +367,7 @@ async function run(key, inputs, opts) {
 
     if (key === "elasticsearch_search_update_by_query") {
       const index = requireField(d, "index");
-      const body = bodyFromInputs(d);
+      const body = bodyFromInputs(d, key);
       if (!body || typeof body !== "object") return { ok: false, error: "body JSON requis." };
       const query = { refresh: maybe(d.refresh), conflicts: maybe(d.conflicts) };
       const res = await requestElastic(opts, "/" + encodeURIComponent(index) + "/_update_by_query", { method: "POST", query, body });
@@ -289,7 +376,7 @@ async function run(key, inputs, opts) {
     }
 
     if (key === "elasticsearch_search_reindex") {
-      const body = bodyFromInputs(d);
+      const body = bodyFromInputs(d, key);
       if (!body || typeof body !== "object") return { ok: false, error: "body JSON requis." };
       const res = await requestElastic(opts, "/_reindex", { method: "POST", body });
       if (!res.ok) return res;
@@ -300,9 +387,9 @@ async function run(key, inputs, opts) {
       const method = clean(d.method || "GET").toUpperCase();
       const reqPath = clean(d.path);
       if (!reqPath) return { ok: false, error: "path requis." };
-      const query = parseJsonInput(d.query, "query", {});
-      const headers = parseJsonInput(d.headers, "headers", {});
-      const body = d.body_text ? String(d.body_text) : parseJsonInput(d.body, "body", undefined);
+      const query = parseJsonInput(d.queryParameters, "queryParameters", {});
+      const headers = parseJsonInput(d.requestHeaders, "requestHeaders", {});
+      const body = d.bodyText ? String(d.bodyText) : parseJsonInput(d.requestBody, "requestBody", undefined);
       const res = await requestElastic(opts, reqPath, { method, query, headers, body });
       if (!res.ok) return res;
       return ok(res, "Appel API exécuté.");

@@ -10,16 +10,30 @@ module.exports = {
     reqPath = reqPath.replace('{channel_id}', encodeURIComponent(channel_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.inbox_id !== undefined && d.inbox_id !== null && d.inbox_id !== '') {
+      body["inbox_id"] = d.inbox_id;
+    }
+    if (d.settings !== undefined && d.settings !== null && d.settings !== '') {
+      body["settings"] = d.settings;
+    }
+    if (d.settings_undo_send_time !== undefined && d.settings_undo_send_time !== null && d.settings_undo_send_time !== '') {
+      if (!body["settings"] || typeof body["settings"] !== 'object' || Array.isArray(body["settings"])) body["settings"] = {};
+      body["settings"]["undo_send_time"] = d.settings_undo_send_time;
+    }
+    if (d.settings_all_teammates_can_reply !== undefined && d.settings_all_teammates_can_reply !== null && d.settings_all_teammates_can_reply !== '') {
+      if (!body["settings"] || typeof body["settings"] !== 'object' || Array.isArray(body["settings"])) body["settings"] = {};
+      body["settings"]["all_teammates_can_reply"] = d.settings_all_teammates_can_reply;
+    }
+    if (d.settings_webhook_url !== undefined && d.settings_webhook_url !== null && d.settings_webhook_url !== '') {
+      if (!body["settings"] || typeof body["settings"] !== 'object' || Array.isArray(body["settings"])) body["settings"] = {};
+      body["settings"]["webhook_url"] = d.settings_webhook_url;
     }
 
     log('Requête en cours...');
@@ -39,3 +53,4 @@ module.exports = {
     };
   }
 };
+

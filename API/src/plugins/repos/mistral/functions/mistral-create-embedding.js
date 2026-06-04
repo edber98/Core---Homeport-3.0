@@ -5,7 +5,9 @@ module.exports = {
     const log = (opts && opts.log) ? opts.log : () => {};
     const d = inputs || {};
     const model = (d.model || "mistral-embed").trim();
-    const input = (d.input || "").trim();
+    const input = typeof d.embeddingInput === "string"
+      ? d.embeddingInput.trim()
+      : JSON.stringify(d.embeddingInput || "");
     if (!input) return { ok: false, error: "Missing input text." };
 
     let inputArray;

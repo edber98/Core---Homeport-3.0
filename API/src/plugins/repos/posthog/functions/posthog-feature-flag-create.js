@@ -8,7 +8,7 @@ module.exports = {
     catch (e) { return { ok: false, error: e.message }; }
 
     let payload = {};
-    try { payload = utils.parseJsonInput(d.payload, "payload", { defaultValue: {}, allowArray: false }); }
+    try { payload = utils.bodyFromFields(d, ["key", "name", "active", "filters", "deleted", "rollout_percentage", "tags", "description"], ["filters", "tags"]); }
     catch (e) { return { ok: false, error: e.message }; }
 
     if (!payload.key && !payload.name) return { ok: false, error: "payload doit contenir au moins key ou name." };

@@ -1534,9 +1534,9 @@
           },
           {
             "type": "text",
-            "key": "body",
+            "key": "messageText",
             "label": "Message",
-            "description": "Corps du message initial.",
+            "description": "Texte du message.",
             "col": {
               "xs": 24
             },
@@ -1741,9 +1741,9 @@
           },
           {
             "type": "text",
-            "key": "body",
+            "key": "messageText",
             "label": "Message",
-            "description": "Corps de la réponse.",
+            "description": "Texte du message.",
             "col": {
               "xs": 24
             },
@@ -1866,9 +1866,9 @@
           },
           {
             "type": "text",
-            "key": "body",
+            "key": "messageText",
             "label": "Message",
-            "description": "Message de fermeture (optionnel).",
+            "description": "Texte du message.",
             "col": {
               "xs": 24
             }
@@ -2045,9 +2045,9 @@
           },
           {
             "type": "text",
-            "key": "body",
+            "key": "messageText",
             "label": "Message",
-            "description": "Message d'assignation (optionnel).",
+            "description": "Texte du message.",
             "col": {
               "xs": 24
             }
@@ -2545,9 +2545,9 @@
           },
           {
             "type": "text",
-            "key": "body",
-            "label": "Contenu",
-            "description": "Contenu de la note.",
+            "key": "noteBody",
+            "label": "Contenu de la note",
+            "description": "Texte de la note.",
             "col": {
               "xs": 24
             },
@@ -3036,9 +3036,9 @@
           },
           {
             "type": "json",
-            "key": "query",
-            "label": "Query JSON",
-            "description": "Corps query Intercom (optionnel).",
+            "key": "searchQuery",
+            "label": "Requête de recherche",
+            "description": "Objet JSON query Intercom.",
             "col": {
               "xs": 24
             }

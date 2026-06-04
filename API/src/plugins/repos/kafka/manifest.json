@@ -874,9 +874,9 @@
           },
           {
             "type": "json",
-            "key": "headers",
-            "label": "Headers",
-            "description": "",
+            "key": "messageHeaders",
+            "label": "En-têtes du message",
+            "description": "Objet JSON des headers Kafka.",
             "col": {
               "xs": 24
             }

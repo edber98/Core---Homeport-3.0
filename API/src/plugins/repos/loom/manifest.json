@@ -448,9 +448,9 @@
           },
           {
             "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
+            "key": "videoProperties",
+            "label": "Propriétés vidéo",
+            "description": "Objet JSON de propriétés avancées à envoyer.",
             "col": {
               "xs": 24
             }

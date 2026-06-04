@@ -8,16 +8,42 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.user !== undefined && d.user !== null && d.user !== '') {
+      body["user"] = d.user;
+    }
+    if (d.user_email !== undefined && d.user_email !== null && d.user_email !== '') {
+      if (!body["user"] || typeof body["user"] !== 'object' || Array.isArray(body["user"])) body["user"] = {};
+      body["user"]["email"] = d.user_email;
+    }
+    if (d.user_userid !== undefined && d.user_userid !== null && d.user_userid !== '') {
+      if (!body["user"] || typeof body["user"] !== 'object' || Array.isArray(body["user"])) body["user"] = {};
+      body["user"]["userid"] = d.user_userid;
+    }
+    if (d.user_datafields !== undefined && d.user_datafields !== null && d.user_datafields !== '') {
+      if (!body["user"] || typeof body["user"] !== 'object' || Array.isArray(body["user"])) body["user"] = {};
+      body["user"]["datafields"] = d.user_datafields;
+    }
+    if (d.items !== undefined && d.items !== null && d.items !== '') {
+      body["items"] = d.items;
+    }
+    if (d.total !== undefined && d.total !== null && d.total !== '') {
+      body["total"] = d.total;
+    }
+    if (d.createdat !== undefined && d.createdat !== null && d.createdat !== '') {
+      body["createdat"] = d.createdat;
+    }
+    if (d.datafields !== undefined && d.datafields !== null && d.datafields !== '') {
+      body["datafields"] = d.datafields;
+    }
+    if (d.campaignid !== undefined && d.campaignid !== null && d.campaignid !== '') {
+      body["campaignid"] = d.campaignid;
+    }
+    if (d.templateid !== undefined && d.templateid !== null && d.templateid !== '') {
+      body["templateid"] = d.templateid;
     }
 
     log('Requête en cours...');
@@ -37,3 +63,4 @@ module.exports = {
     };
   }
 };
+

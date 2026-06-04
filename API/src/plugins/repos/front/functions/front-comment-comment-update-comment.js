@@ -10,16 +10,15 @@ module.exports = {
     reqPath = reqPath.replace('{comment_id}', encodeURIComponent(comment_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
+    const headers = {};
+
+    const body = {};
     if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+      body["body"] = d.body;
+    }
+    if (d.is_pinned !== undefined && d.is_pinned !== null && d.is_pinned !== '') {
+      body["is_pinned"] = d.is_pinned;
     }
 
     log('Requête en cours...');
@@ -34,3 +33,5 @@ module.exports = {
     };
   }
 };
+
+

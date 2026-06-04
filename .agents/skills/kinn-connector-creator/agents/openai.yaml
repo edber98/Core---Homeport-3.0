@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kinn Connector Creator"
+  short_description: "Cree un connecteur Kinn depuis un JSON d endpoints filtre."
+  default_prompt: "Cree le connecteur Kinn a partir de ce JSON d endpoints filtre."

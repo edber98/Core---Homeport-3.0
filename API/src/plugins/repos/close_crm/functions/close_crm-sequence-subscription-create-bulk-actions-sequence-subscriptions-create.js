@@ -12,13 +12,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"action_type","target":"action_type","type":"string"},{"key":"contact_preference","target":"contact_preference","type":"string"},{"key":"results_limit","target":"results_limit","type":"string"},{"key":"s_query","target":"s_query","type":"object"},{"key":"sender_account_id","target":"sender_account_id","type":"string"},{"key":"sender_email","target":"sender_email","type":"string"},{"key":"sender_name","target":"sender_name","type":"string"},{"key":"sequence_id","target":"sequence_id","type":"string"},{"key":"sort","target":"sort","type":"array"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

@@ -7,28 +7,16 @@ module.exports = {
     let reqPath = "/nodes/{nodeID}";
     const nodeid = String(d.nodeid || '').trim();
     if (!nodeid) return { ok: false, error: 'nodeid requis.' };
-    reqPath = reqPath.replace('{nodeid}', encodeURIComponent(nodeid));
+    reqPath = reqPath.replace('{nodeID}', encodeURIComponent(nodeid));
 
     const query = {};
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    // Propager automatiquement les autres entrées en query params.
-    const reserved = new Set(['body', 'pageSize', 'page', 'search']);
-    for (const [k, v] of Object.entries(d)) {
-      if (reserved.has(k)) continue;
-      if (v === undefined || v === null || v === '') continue;
-      query[k] = v;
-    }
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"clusterID","target":"clusterID","type":"string"},{"key":"status","target":"status","type":"string"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

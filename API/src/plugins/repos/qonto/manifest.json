@@ -594,15 +594,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -713,15 +704,6 @@
             "type": "textarea",
             "key": "reference",
             "label": "Référence",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
             "col": {
               "xs": 24
             }
@@ -880,15 +862,6 @@
             "type": "text",
             "key": "bic",
             "label": "BIC",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
             "col": {
               "xs": 24
             }
@@ -1099,15 +1072,6 @@
             "type": "text",
             "key": "vat_number",
             "label": "TVA",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
             "col": {
               "xs": 24
             }

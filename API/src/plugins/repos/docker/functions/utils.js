@@ -4,6 +4,10 @@ function compactJson(v) { try { return JSON.stringify(v); } catch { return Strin
 function parseJson(v, label, fallback) { if (v === undefined || v === null || v === "") return fallback; if (typeof v === "object") return v; try { return JSON.parse(String(v)); } catch { throw new Error("JSON invalide dans " + label + "."); } }
 function interpolate(path, d) { return path.replace(/\{([A-Za-z0-9_]+)\}/g, (_, k) => encodeURIComponent(String(d[k] || ""))); }
 function pick(d, keys) { const out = {}; for (const k of keys || []) if (d[k] !== undefined && d[k] !== null && d[k] !== "") out[k] = d[k]; return out; }
+function assignJson(out, inputs, key, target = key) {
+  if (inputs[key] === undefined || inputs[key] === null || inputs[key] === "") return;
+  out[target] = parseJson(inputs[key], key, undefined);
+}
 const ACTIONS = {
   "docker_system_version": {
     "path": "/version",
@@ -233,11 +237,17 @@ async function request(opts, spec, inputs) {
   const socketPath = c.socketPath || "/var/run/docker.sock";
   const baseUrl = c.baseUrl || "";
   const reqPath = interpolate(spec.path, inputs || {});
-  const query = new URLSearchParams(pick(inputs || {}, spec.query || [])).toString();
+  const queryParams = pick(inputs || {}, spec.query || []);
+  if (inputs && inputs.pruneFilters !== undefined && inputs.pruneFilters !== null && inputs.pruneFilters !== "") {
+    queryParams.filters = JSON.stringify(parseJson(inputs.pruneFilters, "filtres de nettoyage", {}));
+  }
+  const query = new URLSearchParams(queryParams).toString();
   const fullPath = reqPath + (query ? "?" + query : "");
-  const payload = parseJson(inputs.payload, "payload", undefined);
-  const bodyObj = payload && typeof payload === "object" ? { ...payload } : {};
-  for (const k of ["Image", "Cmd", "Name", "Container", "Force"]) if (inputs[k] !== undefined && inputs[k] !== "") bodyObj[k] = k === "Cmd" ? parseJson(inputs[k], k, inputs[k]) : inputs[k];
+  const bodyObj = {};
+  for (const k of ["Image", "Name", "Driver", "WorkingDir", "User"]) if (inputs[k] !== undefined && inputs[k] !== "") bodyObj[k] = inputs[k];
+  for (const k of ["Internal", "Attachable", "EnableIPv6"]) if (inputs[k] !== undefined && inputs[k] !== null && inputs[k] !== "") bodyObj[k] = inputs[k] === true || String(inputs[k]).toLowerCase() === "true";
+  for (const k of ["Cmd", "Env", "ExposedPorts", "HostConfig", "NetworkingConfig", "Labels", "Entrypoint", "IPAM"]) assignJson(bodyObj, inputs, k);
+  assignJson(bodyObj, inputs, "DriverOptions", spec.path === "/volumes/create" ? "DriverOpts" : "Options");
   const body = ["POST", "PUT", "PATCH"].includes(spec.method) && Object.keys(bodyObj).length ? JSON.stringify(bodyObj) : undefined;
   return await new Promise((resolve) => {
     const done = (res) => {

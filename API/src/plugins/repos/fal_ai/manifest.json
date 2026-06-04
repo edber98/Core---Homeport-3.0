@@ -524,9 +524,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "modelInput",
+            "label": "Entrées du modèle",
+            "description": "Objet JSON envoyé au modèle fal.ai appelé.",
             "col": {
               "xs": 24
             }
@@ -611,9 +611,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "modelInput",
+            "label": "Entrées du modèle",
+            "description": "Objet JSON envoyé au modèle fal.ai appelé.",
             "col": {
               "xs": 24
             }
@@ -684,9 +684,18 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "modelInput",
+            "label": "Entrées du modèle",
+            "description": "Objet JSON envoyé au modèle fal.ai appelé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "falWebhook",
+            "label": "Webhook fal",
+            "description": "URL appelée par fal.ai quand la requête de file est terminée.",
             "col": {
               "xs": 24
             }
@@ -771,9 +780,18 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "modelInput",
+            "label": "Entrées du modèle",
+            "description": "Objet JSON envoyé au modèle fal.ai appelé.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "falWebhook",
+            "label": "Webhook fal",
+            "description": "URL appelée par fal.ai quand la requête de file est terminée.",
             "col": {
               "xs": 24
             }
@@ -1089,15 +1107,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,

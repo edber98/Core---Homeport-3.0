@@ -212,6 +212,21 @@ export class ProviderAuthService {
     });
   }
 
+  /**
+   * Liste des providers OAuth2 CONNECTABLES maintenant (app OAuth configurée
+   * côté serveur : client_id/secret injectés + concentrateur prêt). Sert à
+   * n'afficher « Se connecter » que quand ça marchera réellement.
+   * Retourne un Set de providerKey.
+   */
+  fetchAvailableKeys(): Promise<Set<string>> {
+    return new Promise((resolve) => {
+      this.api.get<{ providers: Array<{ providerKey: string }> }>('/api/auth/connections/available').subscribe({
+        next: (resp) => resolve(new Set((resp?.providers || []).map(p => String(p.providerKey)))),
+        error: () => resolve(new Set()),
+      });
+    });
+  }
+
   listScopes(values: any): string[] {
     const raw = String(values?.scope || '').trim();
     if (!raw) return [];

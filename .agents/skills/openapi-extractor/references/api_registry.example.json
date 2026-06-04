@@ -1,0 +1,8 @@
+{
+  "apis": {
+    "example-api": {
+      "spec": "https://example.com/openapi.json",
+      "description": "Replace with the real OpenAPI/Swagger URL or a local file path."
+    }
+  }
+}

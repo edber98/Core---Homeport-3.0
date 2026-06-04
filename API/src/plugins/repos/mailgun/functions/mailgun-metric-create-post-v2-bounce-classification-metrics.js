@@ -8,16 +8,45 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.start !== undefined && d.start !== null && d.start !== '') {
+      body["start"] = d.start;
+    }
+    if (d.end !== undefined && d.end !== null && d.end !== '') {
+      body["end"] = d.end;
+    }
+    if (d.resolution !== undefined && d.resolution !== null && d.resolution !== '') {
+      body["resolution"] = d.resolution;
+    }
+    if (d.duration !== undefined && d.duration !== null && d.duration !== '') {
+      body["duration"] = d.duration;
+    }
+    if (d.dimensions !== undefined && d.dimensions !== null && d.dimensions !== '') {
+      body["dimensions"] = d.dimensions;
+    }
+    if (d.metrics !== undefined && d.metrics !== null && d.metrics !== '') {
+      body["metrics"] = d.metrics;
+    }
+    if (d.filter_and !== undefined && d.filter_and !== null && d.filter_and !== '') {
+      body["filter_and"] = d.filter_and;
+    }
+    if (d.include_subaccounts !== undefined && d.include_subaccounts !== null && d.include_subaccounts !== '') {
+      body["include_subaccounts"] = d.include_subaccounts;
+    }
+    if (d.pagination_sort !== undefined && d.pagination_sort !== null && d.pagination_sort !== '') {
+      if (!body["pagination"] || typeof body["pagination"] !== 'object' || Array.isArray(body["pagination"])) body["pagination"] = {};
+      body["pagination"]["sort"] = d.pagination_sort;
+    }
+    if (d.pagination_skip !== undefined && d.pagination_skip !== null && d.pagination_skip !== '') {
+      if (!body["pagination"] || typeof body["pagination"] !== 'object' || Array.isArray(body["pagination"])) body["pagination"] = {};
+      body["pagination"]["skip"] = d.pagination_skip;
+    }
+    if (d.pagination_limit !== undefined && d.pagination_limit !== null && d.pagination_limit !== '') {
+      if (!body["pagination"] || typeof body["pagination"] !== 'object' || Array.isArray(body["pagination"])) body["pagination"] = {};
+      body["pagination"]["limit"] = d.pagination_limit;
     }
 
     log('Requête en cours...');
@@ -37,3 +66,4 @@ module.exports = {
     };
   }
 };
+

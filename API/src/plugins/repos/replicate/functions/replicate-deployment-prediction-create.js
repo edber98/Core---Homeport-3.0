@@ -3,7 +3,7 @@ module.exports = { async replicate_deployment_prediction_create(node, msg, input
   const d = inputs || {};
   if (!d.owner || !d.deployment) return { ok: false, error: "Propriétaire et déploiement requis." };
   let input;
-  try { input = utils.parseJsonInput(d.input, "entrée", {}); } catch (e) { return { ok: false, error: e.message }; }
+  try { input = utils.parseJsonInput(d.modelInput, "modelInput", {}); } catch (e) { return { ok: false, error: e.message }; }
   const body = { input };
   if (d.webhook) body.webhook = String(d.webhook);
   const res = await utils.replicateRequest(opts, `/deployments/${encodeURIComponent(String(d.owner))}/${encodeURIComponent(String(d.deployment))}/predictions`, { method: "POST", body });

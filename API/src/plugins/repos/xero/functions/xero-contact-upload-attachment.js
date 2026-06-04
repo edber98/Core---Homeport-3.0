@@ -1,5 +1,37 @@
 const { utils } = require('./utils');
 
+const BODY_FIELDS = [
+  {
+    "key": "content_base64",
+    "type": "textarea",
+    "bodyPath": [
+      "contentBase64"
+    ]
+  },
+  {
+    "key": "content",
+    "type": "textarea",
+    "bodyPath": [
+      "content"
+    ]
+  },
+  {
+    "key": "content_type",
+    "type": "text",
+    "bodyPath": [
+      "contentType"
+    ]
+  },
+  {
+    "key": "include_online",
+    "type": "checkbox",
+    "bodyPath": [
+      "includeOnline"
+    ]
+  }
+];
+
+
 module.exports = {
   async xero_contact_upload_attachment(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
@@ -13,14 +45,11 @@ module.exports = {
     reqPath = reqPath.replace('{filename}', encodeURIComponent(filename));
 
     const query = {};
-    
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let body;
+    try {
+      body = utils.buildBodyFromFields(d, BODY_FIELDS);
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
 
     log('Requête en cours...');

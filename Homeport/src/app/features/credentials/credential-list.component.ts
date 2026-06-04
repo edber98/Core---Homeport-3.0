@@ -119,11 +119,12 @@ import { environment } from '../../../environments/environment';
             </form>
             <!-- Connexion managée (OAuth2 SSO via bouncer) -->
             <div *ngIf="isManaged" class="oauth-connect">
-              <div class="oauth-status" [class.connected]="isConnected">
+              <div class="oauth-status" [class.connected]="isConnected" [class.unavailable]="!oauthAvailable">
                 <span *ngIf="isConnected">✓ Connecté<span *ngIf="credValues?.accountEmail"> — {{ credValues.accountEmail }}</span></span>
-                <span *ngIf="!isConnected">Connexion requise pour cette application.</span>
+                <span *ngIf="!isConnected && oauthAvailable">Connexion requise pour cette application.</span>
+                <span *ngIf="!isConnected && !oauthAvailable">⚠ Connexion OAuth non configurée côté serveur (contactez l'administrateur).</span>
               </div>
-              <button nz-button nzType="default" [nzLoading]="connecting" (click)="connect()">
+              <button nz-button nzType="default" [nzLoading]="connecting" [disabled]="!oauthAvailable" (click)="connect()">
                 {{ isConnected ? 'Reconnecter' : 'Se connecter' }}
               </button>
             </div>
@@ -192,6 +193,7 @@ import { environment } from '../../../environments/environment';
     .oauth-connect { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; margin:8px 0 12px; border:1px solid #e5e7eb; border-radius:10px; background:#fafafa; }
     .oauth-status { font-size:13px; color:#6b7280; }
     .oauth-status.connected { color:#15803d; }
+    .oauth-status.unavailable { color:#b45309; }
     .actions.end { display:flex; justify-content:flex-end; gap:8px; margin-top: 10px; }
     .actions.end .primary-cta { background:#e61982; border-color:#e61982; color:#fff; border-radius: 14px; font-weight: 600; box-shadow: 0 2px 8px rgba(230,25,130,0.2); }
     .actions.end .primary-cta:hover:not([disabled]),
@@ -274,6 +276,10 @@ export class CredentialListComponent implements OnInit, OnDestroy {
         try { this.cdr.detectChanges(); } catch {}
       });
     });
+    // Quels providers OAuth2 sont réellement configurés côté serveur (env prêt) ?
+    this.providerAuth.fetchAvailableKeys()
+      .then(keys => this.zone.run(() => { this.availableOAuth = keys; try { this.cdr.detectChanges(); } catch {} }))
+      .catch(() => {});
     try { this.aclSub = this.acl.changes$.subscribe(() => this.zone.run(() => { this.reload(); try { this.cdr.detectChanges(); } catch {} })); } catch {}
   }
   ngOnDestroy(): void { try { this.aclSub?.unsubscribe?.(); } catch {} }
@@ -301,12 +307,19 @@ export class CredentialListComponent implements OnInit, OnDestroy {
   closeCreate() { this.createVisible = false; }
 
   connecting = false;
+  /** providerKey des providers OAuth2 réellement configurés côté serveur (env prêt). */
+  availableOAuth = new Set<string>();
   /** Provider sélectionné dans le formulaire de création. */
   get selectedProvider(): AppProvider | undefined {
     return this.providers.find(x => x.id === this.createForm?.value?.providerId);
   }
   /** Le provider expose-t-il un flow OAuth2 managé (« Se connecter ») ? */
   get isManaged(): boolean { return this.providerAuth.hasManagedCredentialFlow(this.selectedProvider); }
+  /** L'app OAuth de ce provider est-elle configurée côté serveur (connexion possible) ? */
+  get oauthAvailable(): boolean {
+    const id = this.selectedProvider?.id;
+    return !!id && this.availableOAuth.has(id);
+  }
   /** Un compte est-il déjà connecté (refreshToken présent) ? */
   get isConnected(): boolean { return this.providerAuth.hasCredentialValues(this.selectedProvider, this.credValues); }
 

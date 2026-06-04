@@ -8,16 +8,21 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.campaignid !== undefined && d.campaignid !== null && d.campaignid !== '') {
+      body["campaignid"] = d.campaignid;
+    }
+    if (d.recipientemail !== undefined && d.recipientemail !== null && d.recipientemail !== '') {
+      body["recipientemail"] = d.recipientemail;
+    }
+    if (d.datafields !== undefined && d.datafields !== null && d.datafields !== '') {
+      body["datafields"] = d.datafields;
+    }
+    if (d.attachments !== undefined && d.attachments !== null && d.attachments !== '') {
+      body["attachments"] = d.attachments;
     }
 
     log('Requête en cours...');
@@ -32,3 +37,4 @@ module.exports = {
     };
   }
 };
+

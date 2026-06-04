@@ -741,24 +741,448 @@
         },
         "fields": [
           {
-            "type": "textarea",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Payload Vercel complet.",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          },
-          {
             "type": "text",
             "key": "teamId",
             "label": "ID équipe",
             "description": "Team ID optionnel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "custom_environment_slug_or_id",
+            "label": "Identifiant ou ID de l environnement personnalise",
+            "description": "Renseignez l identifiant ou l ID de l environnement personnalise.",
+            "required": false,
+            "bodyPath": [
+              "customEnvironmentSlugOrId"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "deployment_id",
+            "label": "ID du deploiement",
+            "description": "Renseignez l ID du deploiement.",
+            "required": false,
+            "bodyPath": [
+              "deploymentId"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "files",
+            "label": "Fichiers",
+            "description": "Renseignez les fichiers au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "files"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "git_metadata_remote_url",
+            "label": "Git metadata URL distant",
+            "description": "Renseignez git metadata url distant.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "remoteUrl"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "git_metadata_commit_author_name",
+            "label": "Git metadata commit nom auteur",
+            "description": "Renseignez git metadata commit nom auteur.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "commitAuthorName"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "git_metadata_commit_author_email",
+            "label": "Git metadata commit auteur email",
+            "description": "Renseignez git metadata commit auteur email.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "commitAuthorEmail"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "git_metadata_commit_message",
+            "label": "Git metadata commit message",
+            "description": "Renseignez git metadata commit message.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "commitMessage"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "git_metadata_commit_ref",
+            "label": "Git metadata commit ref",
+            "description": "Renseignez git metadata commit ref.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "commitRef"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "git_metadata_commit_sha",
+            "label": "Git metadata commit SHA",
+            "description": "Renseignez git metadata commit sha.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "commitSha"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "git_metadata_dirty",
+            "label": "Git metadata dirty",
+            "description": "Cochez si git metadata dirty.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "dirty"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "git_metadata_ci",
+            "label": "Git metadata ci",
+            "description": "Cochez si git metadata ci.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "ci"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "git_metadata_ci_type",
+            "label": "Git metadata ci type",
+            "description": "Renseignez git metadata ci type.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "ciType"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "git_metadata_ci_git_provider_username",
+            "label": "Git metadata ci Git provider username",
+            "description": "Renseignez git metadata ci git provider username.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "ciGitProviderUsername"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "git_metadata_ci_git_repo_visibility",
+            "label": "Git metadata ci Git repo visibility",
+            "description": "Renseignez git metadata ci git repo visibility.",
+            "required": false,
+            "bodyPath": [
+              "gitMetadata",
+              "ciGitRepoVisibility"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "git_source",
+            "label": "Git source",
+            "description": "Renseignez git source au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "gitSource"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "meta",
+            "label": "Meta",
+            "description": "Renseignez meta au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "meta"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "monorepo_manager",
+            "label": "Monorepo manager",
+            "description": "Renseignez monorepo manager.",
+            "required": false,
+            "bodyPath": [
+              "monorepoManager"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseignez nom.",
+            "required": true,
+            "bodyPath": [
+              "name"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project",
+            "label": "Projet",
+            "description": "Renseignez projet.",
+            "required": false,
+            "bodyPath": [
+              "project"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project_settings_build_command",
+            "label": "Projet parametres build command",
+            "description": "Renseignez projet parametres build command.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "buildCommand"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project_settings_command_for_ignoring_build_step",
+            "label": "Projet parametres command for ignoring build step",
+            "description": "Renseignez projet parametres command for ignoring build step.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "commandForIgnoringBuildStep"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project_settings_dev_command",
+            "label": "Projet parametres dev command",
+            "description": "Renseignez projet parametres dev command.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "devCommand"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project_settings_framework",
+            "label": "Projet parametres framework",
+            "description": "Renseignez projet parametres framework.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "framework"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project_settings_install_command",
+            "label": "Projet parametres install command",
+            "description": "Renseignez projet parametres install command.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "installCommand"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project_settings_node_version",
+            "label": "Projet parametres node version",
+            "description": "Renseignez projet parametres node version.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "nodeVersion"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project_settings_output_directory",
+            "label": "Projet parametres output dossier",
+            "description": "Renseignez projet parametres output dossier.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "outputDirectory"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project_settings_root_directory",
+            "label": "Projet parametres racine dossier",
+            "description": "Renseignez projet parametres racine dossier.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "rootDirectory"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "project_settings_serverless_function_region",
+            "label": "Region des fonctions serverless du projet",
+            "description": "Renseignez la region des fonctions serverless du projet.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "serverlessFunctionRegion"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "project_settings_skip_git_connect_during_link",
+            "label": "Projet parametres skip Git connect during link",
+            "description": "Cochez si projet parametres skip git connect during link.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "skipGitConnectDuringLink"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "project_settings_source_files_outside_root_directory",
+            "label": "Autoriser les fichiers source hors du dossier racine",
+            "description": "Cochez si autoriser les fichiers source hors du dossier racine.",
+            "required": false,
+            "bodyPath": [
+              "projectSettings",
+              "sourceFilesOutsideRootDirectory"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "target",
+            "label": "Target",
+            "description": "Renseignez target.",
+            "required": false,
+            "bodyPath": [
+              "target"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "with_latest_commit",
+            "label": "Utiliser le dernier commit",
+            "description": "Cochez si utiliser le dernier commit.",
+            "required": false,
+            "bodyPath": [
+              "withLatestCommit"
+            ],
             "col": {
               "xs": 24
             }

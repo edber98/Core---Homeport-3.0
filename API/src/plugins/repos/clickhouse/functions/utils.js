@@ -172,9 +172,10 @@ async function run(key, inputs, opts) {
       const method = clean(d.method || "GET").toUpperCase();
       const reqPath = clean(d.path);
       if (!reqPath) return { ok: false, error: "path requis." };
-      const query = parseJsonInput(d.query, "query", {});
-      const headers = parseJsonInput(d.headers, "headers", {});
-      const body = d.body_text ? String(d.body_text) : (d.body !== undefined && d.body !== null && d.body !== "" ? JSON.stringify(parseJsonInput(d.body, "body", {})) : undefined);
+      const query = buildObjectFromFields(d.queryFields) || {};
+      const headers = buildObjectFromFields(d.headerFields) || {};
+      const builtBody = buildObjectFromFields(d.requestFields);
+      const body = d.body_text ? String(d.body_text) : (builtBody === undefined ? undefined : JSON.stringify(builtBody));
       const res = await requestClickHouse(opts, reqPath, { method, query, headers, body });
       if (!res.ok) return res;
       return ok(res, "Appel API exécuté.");

@@ -1,5 +1,171 @@
 const { utils } = require('./utils');
 
+const BODY_FIELDS = [
+  {
+    "key": "code",
+    "type": "text",
+    "bodyPath": [
+      "Code"
+    ]
+  },
+  {
+    "key": "inventory_asset_account_code",
+    "type": "text",
+    "bodyPath": [
+      "InventoryAssetAccountCode"
+    ]
+  },
+  {
+    "key": "name",
+    "type": "text",
+    "bodyPath": [
+      "Name"
+    ]
+  },
+  {
+    "key": "is_sold",
+    "type": "checkbox",
+    "bodyPath": [
+      "IsSold"
+    ]
+  },
+  {
+    "key": "is_purchased",
+    "type": "checkbox",
+    "bodyPath": [
+      "IsPurchased"
+    ]
+  },
+  {
+    "key": "description",
+    "type": "text",
+    "bodyPath": [
+      "Description"
+    ]
+  },
+  {
+    "key": "purchase_description",
+    "type": "text",
+    "bodyPath": [
+      "PurchaseDescription"
+    ]
+  },
+  {
+    "key": "purchase_details_unit_price",
+    "type": "number",
+    "bodyPath": [
+      "PurchaseDetails",
+      "UnitPrice"
+    ]
+  },
+  {
+    "key": "purchase_details_account_code",
+    "type": "text",
+    "bodyPath": [
+      "PurchaseDetails",
+      "AccountCode"
+    ]
+  },
+  {
+    "key": "purchase_details_cogsaccount_code",
+    "type": "text",
+    "bodyPath": [
+      "PurchaseDetails",
+      "COGSAccountCode"
+    ]
+  },
+  {
+    "key": "purchase_details_tax_type",
+    "type": "text",
+    "bodyPath": [
+      "PurchaseDetails",
+      "TaxType"
+    ]
+  },
+  {
+    "key": "sales_details_unit_price",
+    "type": "number",
+    "bodyPath": [
+      "SalesDetails",
+      "UnitPrice"
+    ]
+  },
+  {
+    "key": "sales_details_account_code",
+    "type": "text",
+    "bodyPath": [
+      "SalesDetails",
+      "AccountCode"
+    ]
+  },
+  {
+    "key": "sales_details_cogsaccount_code",
+    "type": "text",
+    "bodyPath": [
+      "SalesDetails",
+      "COGSAccountCode"
+    ]
+  },
+  {
+    "key": "sales_details_tax_type",
+    "type": "text",
+    "bodyPath": [
+      "SalesDetails",
+      "TaxType"
+    ]
+  },
+  {
+    "key": "is_tracked_as_inventory",
+    "type": "checkbox",
+    "bodyPath": [
+      "IsTrackedAsInventory"
+    ]
+  },
+  {
+    "key": "total_cost_pool",
+    "type": "number",
+    "bodyPath": [
+      "TotalCostPool"
+    ]
+  },
+  {
+    "key": "quantity_on_hand",
+    "type": "number",
+    "bodyPath": [
+      "QuantityOnHand"
+    ]
+  },
+  {
+    "key": "updated_date_utc",
+    "type": "text",
+    "bodyPath": [
+      "UpdatedDateUTC"
+    ]
+  },
+  {
+    "key": "item_id",
+    "type": "text",
+    "bodyPath": [
+      "ItemID"
+    ]
+  },
+  {
+    "key": "status_attribute_string",
+    "type": "text",
+    "bodyPath": [
+      "StatusAttributeString"
+    ]
+  },
+  {
+    "key": "validation_errors",
+    "type": "json",
+    "bodyPath": [
+      "ValidationErrors"
+    ]
+  }
+];
+
+
 module.exports = {
   async xero_item_update(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
@@ -10,14 +176,11 @@ module.exports = {
     reqPath = reqPath.replace('{itemid}', encodeURIComponent(itemid));
 
     const query = {};
-    
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let body;
+    try {
+      body = utils.buildBodyFromFields(d, BODY_FIELDS);
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
 
     log('Requête en cours...');

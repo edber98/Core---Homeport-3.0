@@ -10,7 +10,7 @@ module.exports = {
     let vectors, payload;
     try {
       vectors = utils.parseJsonInput(d.vector, "vector", undefined);
-      payload = utils.parseJsonInput(d.payload, "payload", undefined);
+      payload = utils.parseJsonInput(d.pointPayload, "pointPayload", undefined);
     } catch (e) {
       return { ok: false, error: e.message };
     }

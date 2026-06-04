@@ -84,7 +84,7 @@ module.exports = {
       const flowId = String(inputs.flowId || '').trim();
       if (!flowId) return fail('flowId requis');
       const body = {
-        input: inputs.input || {},
+        input: inputs.runInput || {},
         ...(inputs.async === true ? { async: true } : {}),
       };
       const res = await c.fetchKinn(`/api/flows/${encodeURIComponent(flowId)}/runs`, {

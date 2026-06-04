@@ -10,16 +10,27 @@ module.exports = {
     reqPath = reqPath.replace('{id}', encodeURIComponent(id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.campaign !== undefined && d.campaign !== null && d.campaign !== '') {
+      body["campaign"] = d.campaign;
+    }
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.target_hook_url !== undefined && d.target_hook_url !== null && d.target_hook_url !== '') {
+      body["target_hook_url"] = d.target_hook_url;
+    }
+    if (d.event_type !== undefined && d.event_type !== null && d.event_type !== '') {
+      body["event_type"] = d.event_type;
+    }
+    if (d.custom_interest_value !== undefined && d.custom_interest_value !== null && d.custom_interest_value !== '') {
+      body["custom_interest_value"] = d.custom_interest_value;
+    }
+    if (d.headers !== undefined && d.headers !== null && d.headers !== '') {
+      body["headers"] = d.headers;
     }
 
     log('Requête en cours...');
@@ -34,3 +45,5 @@ module.exports = {
     };
   }
 };
+
+

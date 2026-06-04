@@ -12,13 +12,8 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = utils.buildBodyFromInputs(d, [{"source":"Name","target":"Name","type":"text"},{"source":"Color","target":"Color","type":"text"},{"source":"SmtpApiActivated","target":"SmtpApiActivated","type":"checkbox"},{"source":"RawEmailEnabled","target":"RawEmailEnabled","type":"checkbox"},{"source":"DeliveryType","target":"DeliveryType","type":"text"},{"source":"InboundHookUrl","target":"InboundHookUrl","type":"url"},{"source":"BounceHookUrl","target":"BounceHookUrl","type":"url"},{"source":"OpenHookUrl","target":"OpenHookUrl","type":"url"},{"source":"PostFirstOpenOnly","target":"PostFirstOpenOnly","type":"checkbox"},{"source":"TrackOpens","target":"TrackOpens","type":"checkbox"},{"source":"TrackLinks","target":"TrackLinks","type":"text"},{"source":"IncludeBounceContentInHook","target":"IncludeBounceContentInHook","type":"checkbox"}]);
+    if (body && body.__invalid) return { ok: false, error: body.__invalid };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'PUT', query, body });

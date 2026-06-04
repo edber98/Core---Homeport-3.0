@@ -10,9 +10,10 @@ module.exports = {
     reqPath = reqPath.replace('{query}', encodeURIComponent(query));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+    if (d.limit !== undefined && d.limit !== null && d.limit !== '') query["limit"] = d.limit;
+    if (d.page_token !== undefined && d.page_token !== null && d.page_token !== '') query["page_token"] = d.page_token;
+
+    const headers = {};
 
     const body = undefined;
 
@@ -40,3 +41,4 @@ module.exports = {
     };
   }
 };
+

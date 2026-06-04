@@ -35,7 +35,7 @@ async function providerRequest(opts, path, options = {}) {
   const baseUrl = normalizeBase(credentials.baseUrl, 'https://api.hotjar.io');
   const url = new URL(`${baseUrl}${path.startsWith('/') ? path : '/' + path}`);
 
-  const query = parseJsonInput(options.query, 'query', { defaultValue: {}, allowArray: false }) || {};
+  const query = parseJsonInput(options.query, 'queryParameters', { defaultValue: {}, allowArray: false }) || {};
   Object.entries(query).forEach(([k, v]) => {
     if (v !== undefined && v !== null && v !== '') url.searchParams.set(k, String(v));
   });

@@ -12,13 +12,8 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const body = utils.buildBodyFromInputs(d, [{"source":"model","target":"model","type":"text"},{"source":"responseInput","target":"input","type":"json"},{"source":"instructions","target":"instructions","type":"textarea"},{"source":"tools","target":"tools","type":"json"},{"source":"toolChoice","target":"tool_choice","type":"json"},{"source":"temperature","target":"temperature","type":"number"},{"source":"maxOutputTokens","target":"max_output_tokens","type":"number"},{"source":"text","target":"text","type":"json"},{"source":"reasoning","target":"reasoning","type":"json"},{"source":"metadata","target":"metadata","type":"json"},{"source":"store","target":"store","type":"checkbox"}]);
+    if (body && body.__invalid) return { ok: false, error: body.__invalid };
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

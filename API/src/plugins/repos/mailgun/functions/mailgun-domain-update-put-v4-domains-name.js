@@ -10,16 +10,45 @@ module.exports = {
     reqPath = reqPath.replace('{name}', encodeURIComponent(name));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.archive_to !== undefined && d.archive_to !== null && d.archive_to !== '') {
+      body["archive_to"] = d.archive_to;
+    }
+    if (d.mailfrom_host !== undefined && d.mailfrom_host !== null && d.mailfrom_host !== '') {
+      body["mailfrom_host"] = d.mailfrom_host;
+    }
+    if (d.message_ttl !== undefined && d.message_ttl !== null && d.message_ttl !== '') {
+      body["message_ttl"] = d.message_ttl;
+    }
+    if (d.require_tls !== undefined && d.require_tls !== null && d.require_tls !== '') {
+      body["require_tls"] = d.require_tls;
+    }
+    if (d.skip_verification !== undefined && d.skip_verification !== null && d.skip_verification !== '') {
+      body["skip_verification"] = d.skip_verification;
+    }
+    if (d.smtp_password !== undefined && d.smtp_password !== null && d.smtp_password !== '') {
+      body["smtp_password"] = d.smtp_password;
+    }
+    if (d.spam_action !== undefined && d.spam_action !== null && d.spam_action !== '') {
+      body["spam_action"] = d.spam_action;
+    }
+    if (d.use_automatic_sender_security !== undefined && d.use_automatic_sender_security !== null && d.use_automatic_sender_security !== '') {
+      body["use_automatic_sender_security"] = d.use_automatic_sender_security;
+    }
+    if (d.webhooks_redact_pii !== undefined && d.webhooks_redact_pii !== null && d.webhooks_redact_pii !== '') {
+      body["webhooks_redact_pii"] = d.webhooks_redact_pii;
+    }
+    if (d.web_scheme !== undefined && d.web_scheme !== null && d.web_scheme !== '') {
+      body["web_scheme"] = d.web_scheme;
+    }
+    if (d.web_prefix !== undefined && d.web_prefix !== null && d.web_prefix !== '') {
+      body["web_prefix"] = d.web_prefix;
+    }
+    if (d.wildcard !== undefined && d.wildcard !== null && d.wildcard !== '') {
+      body["wildcard"] = d.wildcard;
     }
 
     log('Requête en cours...');
@@ -39,3 +68,4 @@ module.exports = {
     };
   }
 };
+

@@ -3,8 +3,8 @@ const { utils } = require("./utils");
 module.exports = {
   async openai_audio_speech_create(node, msg, inputs, opts) {
     const d = inputs || {};
-    const input = String(d.input || "").trim();
-    if (!input) return { ok: false, error: "Le champ input est requis." };
+    const input = String(d.speechText || "").trim();
+    if (!input) return { ok: false, error: "Le champ speechText est requis." };
 
     const body = {
       model: String(d.model || "gpt-4o-mini-tts"),

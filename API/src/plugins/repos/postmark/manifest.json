@@ -4666,9 +4666,23 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "Messages",
+            "label": "Messages",
+            "description": "Tableau Messages.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "MessageStream",
+            "label": "Flux message",
+            "description": "MessageStream.",
             "col": {
               "xs": 24
             }
@@ -4725,9 +4739,23 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "Messages",
+            "label": "Messages",
+            "description": "Tableau de messages template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "MessageStream",
+            "label": "Flux message",
+            "description": "MessageStream.",
             "col": {
               "xs": 24
             }
@@ -5866,10 +5894,151 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "From",
+            "label": "From",
+            "description": "Expéditeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "To",
+            "label": "To",
+            "description": "Destinataires séparés par virgule.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "Cc",
+            "label": "Cc",
+            "description": "Copies.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "Bcc",
+            "label": "Bcc",
+            "description": "Copies cachées.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Subject",
+            "label": "Subject",
+            "description": "Objet.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Tag",
+            "label": "Tag",
+            "description": "Tag Postmark.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "HtmlBody",
+            "label": "HTML",
+            "description": "Corps HTML.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "TextBody",
+            "label": "Texte",
+            "description": "Corps texte.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ReplyTo",
+            "label": "Reply-To",
+            "description": "Adresse reply-to.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "emailHeaders",
+            "label": "En-têtes email",
+            "description": "Objet ou tableau envoyé dans Headers.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "TrackOpens",
+            "label": "Suivre ouvertures",
+            "description": "TrackOpens.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TrackLinks",
+            "label": "Suivre liens",
+            "description": "TrackLinks.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "Attachments",
+            "label": "Pièces jointes",
+            "description": "Tableau Attachments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "Metadata",
+            "label": "Métadonnées",
+            "description": "Objet Metadata.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "MessageStream",
+            "label": "Flux message",
+            "description": "MessageStream.",
             "col": {
               "xs": 24
             }
@@ -6294,13 +6463,18 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "Rule",
+            "label": "Règle",
+            "description": "Inbound rule.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
           }
         ],
         "displayTitle": false,
@@ -7338,10 +7512,109 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "Name",
+            "label": "Nom",
+            "description": "Nom serveur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Color",
+            "label": "Couleur",
+            "description": "Couleur serveur.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "SmtpApiActivated",
+            "label": "SMTP API active",
+            "description": "SmtpApiActivated.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "RawEmailEnabled",
+            "label": "Raw email",
+            "description": "RawEmailEnabled.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "DeliveryType",
+            "label": "Delivery type",
+            "description": "DeliveryType.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "InboundHookUrl",
+            "label": "Webhook entrant",
+            "description": "InboundHookUrl.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "BounceHookUrl",
+            "label": "Webhook bounce",
+            "description": "BounceHookUrl.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "url",
+            "key": "OpenHookUrl",
+            "label": "Webhook open",
+            "description": "OpenHookUrl.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "PostFirstOpenOnly",
+            "label": "Premier open seulement",
+            "description": "PostFirstOpenOnly.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "TrackOpens",
+            "label": "Suivre ouvertures",
+            "description": "TrackOpens.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TrackLinks",
+            "label": "Suivre liens",
+            "description": "TrackLinks.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "IncludeBounceContentInHook",
+            "label": "Inclure contenu bounce",
+            "description": "IncludeBounceContentInHook.",
             "col": {
               "xs": 24
             }
@@ -7552,10 +7825,69 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "Name",
+            "label": "Nom",
+            "description": "Nom template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "Subject",
+            "label": "Subject",
+            "description": "Objet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "HtmlBody",
+            "label": "HTML",
+            "description": "Corps HTML.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "TextBody",
+            "label": "Texte",
+            "description": "Corps texte.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Alias",
+            "label": "Alias",
+            "description": "Alias template.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TemplateType",
+            "label": "Type template",
+            "description": "TemplateType.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "LayoutTemplate",
+            "label": "Layout",
+            "description": "LayoutTemplate.",
             "col": {
               "xs": 24
             }
@@ -7880,10 +8212,46 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "Subject",
+            "label": "Subject",
+            "description": "Objet.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "HtmlBody",
+            "label": "HTML",
+            "description": "Corps HTML.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "TextBody",
+            "label": "Texte",
+            "description": "Corps texte.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "TestRenderModel",
+            "label": "Modèle test",
+            "description": "Objet TestRenderModel.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "InlineCssForHtmlTestRender",
+            "label": "Inline CSS test",
+            "description": "InlineCssForHtmlTestRender.",
             "col": {
               "xs": 24
             }
@@ -7939,10 +8307,160 @@
         },
         "fields": [
           {
+            "type": "text",
+            "key": "From",
+            "label": "From",
+            "description": "Expéditeur.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "To",
+            "label": "To",
+            "description": "Destinataires séparés par virgule.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "textarea",
+            "key": "Cc",
+            "label": "Cc",
+            "description": "Copies.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "Bcc",
+            "label": "Bcc",
+            "description": "Copies cachées.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "Tag",
+            "label": "Tag",
+            "description": "Tag Postmark.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "ReplyTo",
+            "label": "Reply-To",
+            "description": "Adresse reply-to.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "emailHeaders",
+            "label": "En-têtes email",
+            "description": "Objet ou tableau envoyé dans Headers.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "TrackOpens",
+            "label": "Suivre ouvertures",
+            "description": "TrackOpens.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TrackLinks",
+            "label": "Suivre liens",
+            "description": "TrackLinks.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "Attachments",
+            "label": "Pièces jointes",
+            "description": "Tableau Attachments.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "Metadata",
+            "label": "Métadonnées",
+            "description": "Objet Metadata.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "MessageStream",
+            "label": "Flux message",
+            "description": "MessageStream.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "TemplateId",
+            "label": "Template ID",
+            "description": "ID template.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "TemplateAlias",
+            "label": "Alias template",
+            "description": "Alias template.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "TemplateModel",
+            "label": "Modèle template",
+            "description": "Objet TemplateModel.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "checkbox",
+            "key": "InlineCss",
+            "label": "Inline CSS",
+            "description": "Active InlineCss.",
             "col": {
               "xs": 24
             }

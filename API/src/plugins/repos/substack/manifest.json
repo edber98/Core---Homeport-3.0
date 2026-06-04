@@ -579,8 +579,8 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload JSON",
+            "key": "postContent",
+            "label": "Contenu du post",
             "col": {
               "xs": 24
             },
@@ -588,7 +588,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Objet JSON de création du post Substack."
           }
         ],
         "displayTitle": false,

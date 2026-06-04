@@ -6,11 +6,11 @@ module.exports = {
     const d = inputs || {};
     if (!d.name) return { ok: false, error: "Nom du monitor requis." };
     if (!d.type) return { ok: false, error: "Type du monitor requis." };
-    if (!d.query) return { ok: false, error: "Requête du monitor requise." };
+    if (!d.monitorQuery) return { ok: false, error: "Requête du monitor requise." };
 
     let options;
     try {
-      options = utils.parseJson(d.options, "options", undefined);
+      options = utils.parseJson(d.monitorOptions, "options", undefined);
     } catch (e) {
       return { ok: false, error: e.message };
     }
@@ -18,7 +18,7 @@ module.exports = {
     const body = utils.compact({
       name: d.name,
       type: d.type,
-      query: d.query,
+      query: d.monitorQuery,
       message: d.message,
       tags: utils.splitCsv(d.tags),
       priority: utils.toNumber(d.priority),

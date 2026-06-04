@@ -295,8 +295,8 @@
         "fields": [
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Requête",
+            "key": "sqlQuery",
+            "label": "Requête SQL",
             "default": "SELECT 1",
             "col": {
               "xs": 24
@@ -305,7 +305,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Requête SQL à exécuter."
           },
           {
             "type": "json",
@@ -694,8 +695,8 @@
           },
           {
             "type": "json",
-            "key": "data",
-            "label": "Données",
+            "key": "recordData",
+            "label": "Données de la ligne",
             "col": {
               "xs": 24
             },
@@ -703,7 +704,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Objet JSON colonne/valeur."
           }
         ],
         "displayTitle": false,
@@ -777,8 +779,8 @@
           },
           {
             "type": "json",
-            "key": "data",
-            "label": "Données",
+            "key": "recordData",
+            "label": "Données de la ligne",
             "col": {
               "xs": 24
             },
@@ -786,7 +788,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Objet JSON colonne/valeur."
           },
           {
             "type": "text",
@@ -954,9 +957,9 @@
           },
           {
             "type": "json",
-            "key": "data",
-            "label": "Données JSON",
-            "description": "Objet JSON à insérer.",
+            "key": "recordData",
+            "label": "Données de la ligne",
+            "description": "Objet JSON colonne/valeur.",
             "col": {
               "xs": 24
             },

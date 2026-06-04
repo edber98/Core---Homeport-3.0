@@ -1,7 +1,7 @@
 apiVersion: v2
 name: kinn
-version: 1.0.30
-appVersion: v0.0.44
+version: 1.0.31
+appVersion: v0.0.45
 description: "Super logiciel d'automatisation"
 annotations:
   catalog.cattle.io/display-name: "Kinn"

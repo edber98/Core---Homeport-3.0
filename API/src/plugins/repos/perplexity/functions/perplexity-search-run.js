@@ -13,10 +13,10 @@ function itemFromUnknown(value, index = 0) {
 
 module.exports = { async perplexity_search_run(node, msg, inputs, opts) {
   const d = inputs || {};
-  if (!d.query) return { ok: false, error: "Requête requise." };
+  if (!d.searchQuery) return { ok: false, error: "Requête requise." };
   let options;
-  try { options = utils.parseJsonInput(d.options, "options", {}); } catch (e) { return { ok: false, error: e.message }; }
-  const body = { ...options, query: String(d.query) };
+  try { options = utils.parseJsonInput(d.searchOptions, "searchOptions", {}); } catch (e) { return { ok: false, error: e.message }; }
+  const body = { ...options, query: String(d.searchQuery) };
   if (d.limit) body.max_results = parseInt(d.limit, 10);
   const res = await utils.perplexityRequest(opts, "/search", { method: "POST", body });
   if (!res.ok) return { ok: false, error: res.error, status: res.status, details: res.details };

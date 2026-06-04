@@ -279,10 +279,46 @@
             }
           },
           {
-            "type": "textarea",
-            "key": "options",
-            "label": "Options JSON",
-            "description": "Options de transcription supplémentaires.",
+            "type": "checkbox",
+            "key": "speakerLabels",
+            "label": "Séparer les intervenants",
+            "description": "Active l'identification des locuteurs.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "autoChapters",
+            "label": "Chapitres automatiques",
+            "description": "Génère automatiquement des chapitres.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "entityDetection",
+            "label": "Détecter les entités",
+            "description": "Extrait les personnes, entreprises et lieux mentionnés.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "sentimentAnalysis",
+            "label": "Analyser le sentiment",
+            "description": "Active l'analyse de sentiment par segment.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "webhookUrl",
+            "label": "URL webhook",
+            "description": "URL appelée quand la transcription est terminée.",
             "col": {
               "xs": 24
             }

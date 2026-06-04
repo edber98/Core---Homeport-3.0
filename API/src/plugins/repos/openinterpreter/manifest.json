@@ -503,9 +503,9 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Messages OpenAI-compatibles.",
+            "key": "chatRequest",
+            "label": "Requête chat",
+            "description": "Objet JSON compatible OpenAI Chat Completions.",
             "col": {
               "xs": 24
             },

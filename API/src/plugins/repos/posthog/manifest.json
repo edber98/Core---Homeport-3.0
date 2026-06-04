@@ -1854,18 +1854,36 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Body query",
-            "description": "Payload JSON de la query.",
+            "key": "posthogQuery",
+            "label": "Query",
+            "description": "Attribut query du body PostHog.",
             "col": {
               "xs": 24
             }
           },
           {
-            "type": "json",
-            "key": "query",
-            "label": "Query (alias)",
-            "description": "Alias du payload query JSON.",
+            "type": "text",
+            "key": "client_query_id",
+            "label": "Client query ID",
+            "description": "Attribut client_query_id du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "refresh",
+            "label": "Refresh",
+            "description": "Attribut refresh du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "async",
+            "label": "Async",
+            "description": "Attribut async du body.",
             "col": {
               "xs": 24
             }
@@ -2114,7 +2132,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Crée un feature flag via payload JSON.",
+      "description": "Crée un feature flag PostHog.",
       "args": {
         "title": "Créer un feature flag",
         "ui": {
@@ -2137,18 +2155,76 @@
             ]
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload",
-            "description": "Payload JSON de création.",
+            "type": "text",
+            "key": "key",
+            "label": "Key",
+            "description": "Attribut key du body.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut name du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "active",
+            "label": "Active",
+            "description": "Attribut active du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "filters",
+            "label": "Filters",
+            "description": "Attribut filters du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "deleted",
+            "label": "Deleted",
+            "description": "Attribut deleted du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "rollout_percentage",
+            "label": "Rollout percentage",
+            "description": "Attribut rollout_percentage du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tags",
+            "label": "Tags",
+            "description": "Attribut tags du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Attribut description du body.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2228,18 +2304,76 @@
             ]
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour.",
+            "type": "text",
+            "key": "key",
+            "label": "Key",
+            "description": "Attribut key du body.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut name du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "active",
+            "label": "Active",
+            "description": "Attribut active du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "filters",
+            "label": "Filters",
+            "description": "Attribut filters du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "deleted",
+            "label": "Deleted",
+            "description": "Attribut deleted du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "number",
+            "key": "rollout_percentage",
+            "label": "Rollout percentage",
+            "description": "Attribut rollout_percentage du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "tags",
+            "label": "Tags",
+            "description": "Attribut tags du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Attribut description du body.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2517,7 +2651,7 @@
         }
       ],
       "authorize_catch_error": true,
-      "description": "Crée une cohorte via payload JSON.",
+      "description": "Crée une cohorte PostHog.",
       "args": {
         "title": "Créer une cohorte",
         "ui": {
@@ -2540,10 +2674,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload",
-            "description": "Payload JSON de création.",
+            "type": "text",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut name du body.",
             "col": {
               "xs": 24
             },
@@ -2552,6 +2686,42 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Attribut description du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "groups",
+            "label": "Groups",
+            "description": "Attribut groups du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_static",
+            "label": "Is static",
+            "description": "Attribut is_static du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "deleted",
+            "label": "Deleted",
+            "description": "Attribut deleted du body.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2631,18 +2801,49 @@
             ]
           },
           {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload",
-            "description": "Payload JSON de mise à jour.",
+            "type": "text",
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut name du body.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Attribut description du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "groups",
+            "label": "Groups",
+            "description": "Attribut groups du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_static",
+            "label": "Is static",
+            "description": "Attribut is_static du body.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "deleted",
+            "label": "Deleted",
+            "description": "Attribut deleted du body.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2895,17 +3096,21 @@
           },
           {
             "type": "json",
-            "key": "payload",
-            "label": "Payload",
-            "description": "Payload JSON avec person_ids ou person_id.",
+            "key": "person_ids",
+            "label": "Person IDs",
+            "description": "Attribut person_ids du body.",
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "person_id",
+            "label": "Person ID",
+            "description": "Attribut person_id du body.",
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,

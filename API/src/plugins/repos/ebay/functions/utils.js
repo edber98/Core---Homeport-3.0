@@ -178,6 +178,42 @@ function maybeBinaryPayload(body) {
   };
 }
 
+function parseBodyInputValue(value, expectedType) {
+  if (value === undefined || value === null || value === '') return { present: false };
+  if (expectedType === 'checkbox') return { present: true, value: Boolean(value) };
+  if (expectedType === 'number') {
+    const numberValue = Number(value);
+    return Number.isFinite(numberValue) ? { present: true, value: numberValue } : { present: false };
+  }
+  if (expectedType === 'json') {
+    if (typeof value === 'object') return { present: true, value };
+    try {
+      return { present: true, value: JSON.parse(String(value)) };
+    } catch {
+      return { present: false, error: 'JSON invalide dans un champ du corps.' };
+    }
+  }
+  return { present: true, value };
+}
+
+function buildBodyFromInputs(inputs, fields) {
+  const body = {};
+  let hasValue = false;
+
+  for (const field of fields || []) {
+    const source = typeof field === 'string' ? field : field.source;
+    const target = typeof field === 'string' ? field : (field.target || field.source);
+    const expectedType = typeof field === 'string' ? undefined : field.type;
+    const parsed = parseBodyInputValue(inputs[source], expectedType);
+    if (parsed.error) return { __invalid: parsed.error };
+    if (!parsed.present) continue;
+    body[target] = parsed.value;
+    hasValue = true;
+  }
+
+  return hasValue ? body : undefined;
+}
+
 async function providerRequest(opts, path, options = {}) {
   const credentials = (opts && opts.credentials) || {};
   const sandbox = credentials.environment === "sandbox";
@@ -289,4 +325,4 @@ async function providerRequest(opts, path, options = {}) {
   };
 }
 
-module.exports = { utils: { providerRequest } };
+module.exports = { utils: { providerRequest, buildBodyFromInputs } };

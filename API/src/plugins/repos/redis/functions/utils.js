@@ -57,7 +57,7 @@ async function run(key, inputs, opts) {
     else if (key === "redis_key_expire") args = ["EXPIRE", d.keyName, d.seconds];
     else if (key === "redis_keys_scan") args = ["SCAN", "0", "MATCH", d.pattern || "*", "COUNT", d.count || 100];
     else if (key === "redis_hash_get") args = ["HGETALL", d.keyName];
-    else if (key === "redis_hash_set") args = ["HSET", d.keyName, ...flatObject(parseJson(d.data, "data", {}))];
+    else if (key === "redis_hash_set") args = ["HSET", d.keyName, ...flatObject(parseJson(d.hashFields ?? d.streamFields, "champs", {}))];
     else if (key === "redis_hash_delete") args = ["HDEL", d.keyName, ...splitCsv(d.fields)];
     else if (key === "redis_list_push") args = [String(d.side || "right").toLowerCase() === "left" ? "LPUSH" : "RPUSH", d.keyName, d.value];
     else if (key === "redis_list_range") args = ["LRANGE", d.keyName, d.start || 0, d.stop || 99];
@@ -65,7 +65,7 @@ async function run(key, inputs, opts) {
     else if (key === "redis_set_add") args = ["SADD", d.keyName, ...splitCsv(d.members)];
     else if (key === "redis_set_remove") args = ["SREM", d.keyName, ...splitCsv(d.members)];
     else if (key === "redis_set_members") args = ["SMEMBERS", d.keyName];
-    else if (key === "redis_stream_add") args = ["XADD", d.keyName, "*", ...flatObject(parseJson(d.data, "data", {}))];
+    else if (key === "redis_stream_add") args = ["XADD", d.keyName, "*", ...flatObject(parseJson(d.hashFields ?? d.streamFields, "champs", {}))];
     else if (key === "redis_stream_read") args = ["XREAD", "COUNT", d.count || 10, "STREAMS", d.keyName, d.lastId || "0"];
     else if (key === "redis_publish") args = ["PUBLISH", d.channel, d.message];
     else if (key === "redis_command_execute") args = [d.command, ...parseJson(d.args, "args", [])];

@@ -271,9 +271,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Entrée JSON",
-            "description": "Objet JSON d'entrée du modèle.",
+            "key": "modelInput",
+            "label": "Entrées du modèle",
+            "description": "Objet JSON input envoyé au modèle Replicate.",
             "col": {
               "xs": 24
             },
@@ -706,9 +706,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Entrée JSON",
-            "description": "Objet JSON d'entrée.",
+            "key": "modelInput",
+            "label": "Entrées du modèle",
+            "description": "Objet JSON input envoyé au modèle Replicate.",
             "col": {
               "xs": 24
             },
@@ -805,9 +805,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Entrée JSON",
-            "description": "Objet JSON d'entrée.",
+            "key": "modelInput",
+            "label": "Entrées du modèle",
+            "description": "Objet JSON input envoyé au modèle Replicate.",
             "col": {
               "xs": 24
             },
@@ -1102,9 +1102,9 @@
           },
           {
             "type": "textarea",
-            "key": "input",
-            "label": "Entrée JSON",
-            "description": "Objet JSON d'entraînement.",
+            "key": "modelInput",
+            "label": "Entrées du modèle",
+            "description": "Objet JSON input envoyé au modèle Replicate.",
             "col": {
               "xs": 24
             },

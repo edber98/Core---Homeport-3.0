@@ -9241,15 +9241,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -9314,15 +9305,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -9401,15 +9383,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -9488,15 +9461,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -9627,18 +9591,76 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "min_replica",
+            "label": "Min Replica",
+            "description": "Attribut Min Replica du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "number"
+          },
+          {
+            "key": "max_replica",
+            "label": "Max Replica",
+            "description": "Attribut Max Replica du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "autoscaling_window",
+            "label": "Autoscaling Window",
+            "description": "Attribut Autoscaling Window du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "scale_down_delay",
+            "label": "Scale Down Delay",
+            "description": "Attribut Scale Down Delay du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "concurrency_target",
+            "label": "Concurrency Target",
+            "description": "Attribut Concurrency Target du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "target_utilization_percentage",
+            "label": "Target Utilization Percentage",
+            "description": "Attribut Target Utilization Percentage du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "target_in_flight_tokens",
+            "label": "Target In Flight Tokens",
+            "description": "Attribut Target In Flight Tokens du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "max_scale_down_rate",
+            "label": "Max Scale Down Rate",
+            "description": "Attribut Max Scale Down Rate du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
           }
         ],
         "displayTitle": false,
@@ -9691,18 +9713,76 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "min_replica",
+            "label": "Min Replica",
+            "description": "Attribut Min Replica du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "number"
+          },
+          {
+            "key": "max_replica",
+            "label": "Max Replica",
+            "description": "Attribut Max Replica du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "autoscaling_window",
+            "label": "Autoscaling Window",
+            "description": "Attribut Autoscaling Window du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "scale_down_delay",
+            "label": "Scale Down Delay",
+            "description": "Attribut Scale Down Delay du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "concurrency_target",
+            "label": "Concurrency Target",
+            "description": "Attribut Concurrency Target du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "target_utilization_percentage",
+            "label": "Target Utilization Percentage",
+            "description": "Attribut Target Utilization Percentage du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "target_in_flight_tokens",
+            "label": "Target In Flight Tokens",
+            "description": "Attribut Target In Flight Tokens du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "max_scale_down_rate",
+            "label": "Max Scale Down Rate",
+            "description": "Attribut Max Scale Down Rate du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
           }
         ],
         "displayTitle": false,
@@ -9755,18 +9835,76 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "min_replica",
+            "label": "Min Replica",
+            "description": "Attribut Min Replica du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "number"
+          },
+          {
+            "key": "max_replica",
+            "label": "Max Replica",
+            "description": "Attribut Max Replica du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "autoscaling_window",
+            "label": "Autoscaling Window",
+            "description": "Attribut Autoscaling Window du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "scale_down_delay",
+            "label": "Scale Down Delay",
+            "description": "Attribut Scale Down Delay du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "concurrency_target",
+            "label": "Concurrency Target",
+            "description": "Attribut Concurrency Target du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "target_utilization_percentage",
+            "label": "Target Utilization Percentage",
+            "description": "Attribut Target Utilization Percentage du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "target_in_flight_tokens",
+            "label": "Target In Flight Tokens",
+            "description": "Attribut Target In Flight Tokens du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "max_scale_down_rate",
+            "label": "Max Scale Down Rate",
+            "description": "Attribut Max Scale Down Rate du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
           }
         ],
         "displayTitle": false,
@@ -9819,13 +9957,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "updates",
+            "label": "Updates",
+            "description": "Mapping of chainlet name to the desired chainlet autoscaling settings. If the chainlet name doesn't exist, an error is returned.",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
@@ -9909,15 +10047,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -10323,13 +10452,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "checkpoint_path",
+            "label": "Checkpoint Path",
+            "description": "bt:// URI of a trainer checkpoint. Form: bt://loops:<trainer_id>/(weights|sampler_weights)/<checkpoint_name>.",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
@@ -10681,15 +10810,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -10754,15 +10874,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -10841,15 +10952,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -10928,15 +11030,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -11015,15 +11108,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -11088,15 +11172,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -11213,13 +11288,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "source",
+            "label": "Source",
+            "description": "Add a deployment from an archive previously uploaded via the credentials\nissued by `POST /v1/prepare_model_upload`.",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
@@ -11459,15 +11534,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -11853,18 +11919,90 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "resources",
+            "label": "Resources",
+            "description": "Resources allocated to the model",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "llm_version",
+            "label": "LLM Version",
+            "description": "Version of the helm chart to use",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "llm_config",
+            "label": "LLM Config",
+            "description": "Configuration specific to the LLM model",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "environment_variables",
+            "label": "Environment Variables",
+            "description": "Environment variables for the model",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "model_metadata",
+            "label": "Model Metadata",
+            "description": "Attribut Model Metadata du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "autoscaling_settings",
+            "label": "Autoscaling Settings",
+            "description": "A request to update autoscaling settings for a deployment. All fields are optional, and we only update ones passed in.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "additional_autoscaling_config",
+            "label": "Additional Autoscaling Config",
+            "description": "Attribut Additional Autoscaling Config du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "Attribut Metadata du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "weights",
+            "label": "Weights",
+            "description": "Attribut Weights du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
           }
         ],
         "displayTitle": false,
@@ -11993,15 +12131,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -12274,18 +12403,36 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "name",
+            "label": "Name",
+            "description": "Name of the environment",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "autoscaling_settings",
+            "label": "Autoscaling Settings",
+            "description": "A request to update autoscaling settings for a deployment. All fields are optional, and we only update ones passed in.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "promotion_settings",
+            "label": "Promotion Settings",
+            "description": "Promotion settings for model promotion",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
           }
         ],
         "displayTitle": false,
@@ -12416,18 +12563,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "autoscaling_settings",
+            "label": "Autoscaling Settings",
+            "description": "A request to update autoscaling settings for a deployment. All fields are optional, and we only update ones passed in.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "json"
+          },
+          {
+            "key": "promotion_settings",
+            "label": "Promotion Settings",
+            "description": "Promotion settings for model promotion",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
           }
         ],
         "displayTitle": false,
@@ -12544,18 +12695,36 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "name",
+            "label": "Name",
+            "description": "Name of the environment",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "promotion_settings",
+            "label": "Promotion Settings",
+            "description": "Promotion settings for model promotion",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "chainlet_settings",
+            "label": "Chainlet Settings",
+            "description": "Attribut Chainlet Settings du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
           }
         ],
         "displayTitle": false,
@@ -12686,18 +12855,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "promotion_settings",
+            "label": "Promotion Settings",
+            "description": "Promotion settings for model promotion",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "json"
           }
         ],
         "displayTitle": false,
@@ -12932,15 +13096,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -13019,15 +13174,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -13178,16 +13324,34 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "timeout_minutes",
+            "label": "Timeout Minutes",
+            "description": "Attribut Timeout Minutes du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
+            "type": "number"
+          },
+          {
+            "key": "trigger",
+            "label": "Trigger",
+            "description": "Attribut Trigger du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "select",
+            "options": [
               {
-                "type": "required"
+                "label": "on_startup",
+                "value": "on_startup"
+              },
+              {
+                "label": "on_failure",
+                "value": "on_failure"
+              },
+              {
+                "label": "on_demand",
+                "value": "on_demand"
               }
             ]
           }
@@ -13306,13 +13470,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "training_job",
+            "label": "Training Job",
+            "description": "The training job to create.",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
@@ -13575,18 +13739,41 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "display_name",
+            "label": "Display Name",
+            "description": "Display name of the library listing",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "user_defined_id",
+            "label": "User Defined ID",
+            "description": "User-defined identifier of the library listing",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "key": "is_public",
+            "label": "Is Public",
+            "description": "Whether the listing is publicly accessible",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
           }
         ],
         "displayTitle": false,
@@ -13767,18 +13954,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "display_name",
+            "label": "Display Name",
+            "description": "Attribut Display Name du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
+          },
+          {
+            "key": "is_public",
+            "label": "Is Public",
+            "description": "Attribut Is Public du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
           }
         ],
         "displayTitle": false,
@@ -13831,13 +14022,99 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "resources",
+            "label": "Resources",
+            "description": "Resources allocated to the model",
             "col": {
               "xs": 24
             },
+            "type": "json",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "key": "llm_version",
+            "label": "LLM Version",
+            "description": "Version of the helm chart to use",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "llm_config",
+            "label": "LLM Config",
+            "description": "Configuration specific to the LLM model",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "environment_variables",
+            "label": "Environment Variables",
+            "description": "Environment variables for the model",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "model_metadata",
+            "label": "Model Metadata",
+            "description": "Attribut Model Metadata du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "autoscaling_settings",
+            "label": "Autoscaling Settings",
+            "description": "A request to update autoscaling settings for a deployment. All fields are optional, and we only update ones passed in.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "additional_autoscaling_config",
+            "label": "Additional Autoscaling Config",
+            "description": "Attribut Additional Autoscaling Config du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "metadata",
+            "label": "Metadata",
+            "description": "Attribut Metadata du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "weights",
+            "label": "Weights",
+            "description": "Attribut Weights du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "name",
+            "label": "Name",
+            "description": "Name of the model",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
@@ -14285,13 +14562,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "source",
+            "label": "Source",
+            "description": "Create a model by forking a library listing accessible to the caller's organization.",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
@@ -14552,15 +14829,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -14613,18 +14881,63 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "deployment",
+            "label": "Deployment",
+            "description": "Deployment-level payload, identical to the payload sent at commit.",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "name",
+            "label": "Name",
+            "description": "Attribut Name du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "team_id",
+            "label": "Team ID",
+            "description": "Attribut Team ID du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "model_id",
+            "label": "Model ID",
+            "description": "Attribut Model ID du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "dry_run",
+            "label": "Dry Run",
+            "description": "If true, validate the payload only and do not issue upload credentials. The response sets `creds`, `s3_bucket`, and `s3_key` to `null`.",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
+          },
+          {
+            "key": "is_development",
+            "label": "Is Development",
+            "description": "If true, validate a development-deployment push. Only valid when `name` is set. The following `deployment` fields must be left at their defaults: `environment_name`, `preserve_env_instance_type`, `deployment_name`.",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
           }
         ],
         "displayTitle": false,
@@ -14753,15 +15066,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -14814,18 +15118,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "scale_down_previous_production",
+            "label": "Scale Down Previous Production",
+            "description": "Whether to scale down the previous production deployment after promoting",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "checkbox"
+          },
+          {
+            "key": "preserve_env_instance_type",
+            "label": "Preserve Env Instance Type",
+            "description": "Whether to use the promoting deployment's instance type or preserve target environment's instance type",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
           }
         ],
         "displayTitle": false,
@@ -14878,18 +15186,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "scale_down_previous_production",
+            "label": "Scale Down Previous Production",
+            "description": "Whether to scale down the previous production deployment after promoting",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "checkbox"
+          },
+          {
+            "key": "preserve_env_instance_type",
+            "label": "Preserve Env Instance Type",
+            "description": "Whether to use the promoting deployment's instance type or preserve target environment's instance type",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
           }
         ],
         "displayTitle": false,
@@ -14942,18 +15254,36 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "scale_down_previous_deployment",
+            "label": "Scale Down Previous Deployment",
+            "description": "Whether to scale down the previous deployment after promoting",
             "col": {
               "xs": 24
             },
+            "type": "checkbox"
+          },
+          {
+            "key": "deployment_id",
+            "label": "Deployment ID",
+            "description": "The id of the deployment to promote",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "preserve_env_instance_type",
+            "label": "Preserve Env Instance Type",
+            "description": "Whether to use the promoting deployment's instance type or preserve target environment's instance type",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
           }
         ],
         "displayTitle": false,
@@ -15006,13 +15336,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "scale_down_previous_deployment",
+            "label": "Scale Down Previous Deployment",
+            "description": "Whether to scale down the previous deployment after promoting",
             "col": {
               "xs": 24
             },
+            "type": "checkbox"
+          },
+          {
+            "key": "deployment_id",
+            "label": "Deployment ID",
+            "description": "The id of the chain deployment to promote",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
@@ -15096,15 +15435,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -15275,15 +15605,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -15404,18 +15725,86 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "session_id",
+            "label": "Session ID",
+            "description": "ID of the Loops session this run belongs to.",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "base_model",
+            "label": "Base Model",
+            "description": "Base model ID (e.g. 'Qwen/Qwen3-8B').",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "key": "max_seq_len",
+            "label": "Max Seq Len",
+            "description": "Attribut Max Seq Len du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "lora_rank",
+            "label": "Lora Rank",
+            "description": "LoRA rank.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "seed",
+            "label": "Seed",
+            "description": "Attribut Seed du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "scale_down_delay_seconds",
+            "label": "Scale Down Delay Seconds",
+            "description": "Seconds of inactivity before the run scales to zero. Must be positive. Defaults to 3600 (1 hour).",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "path",
+            "label": "Path",
+            "description": "Attribut Path du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "reuse_from_session_id",
+            "label": "Reuse From Session ID",
+            "description": "Attribut Reuse From Session ID du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -15532,18 +15921,36 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "model",
+            "label": "Model",
+            "description": "Model to use for standalone samplers (eg, for baselines).",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "max_seq_length",
+            "label": "Max Seq Length",
+            "description": "Attribut Max Seq Length du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "checkpoint_path",
+            "label": "Checkpoint Path",
+            "description": "Attribut Checkpoint Path du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -15645,18 +16052,59 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "session_id",
+            "label": "Session ID",
+            "description": "ID of the Loops session this sampler belongs to.",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "base_model",
+            "label": "Base Model",
+            "description": "Base model ID for standalone samplers (e.g., for baselines).",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "key": "max_seq_length",
+            "label": "Max Seq Length",
+            "description": "Attribut Max Seq Length du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "model_path",
+            "label": "Model Path",
+            "description": "Attribut Model Path du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "reuse_from_session_id",
+            "label": "Reuse From Session ID",
+            "description": "Attribut Reuse From Session ID du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -15773,18 +16221,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "training_project_id",
+            "label": "Training Project ID",
+            "description": "Attribut Training Project ID du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -15901,18 +16344,27 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "public_key",
+            "label": "Public Key",
+            "description": "The user's SSH public key (e.g., 'ssh-ed25519 AAAA... user@host').",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "replica_id",
+            "label": "Replica ID",
+            "description": "Attribut Replica ID du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -15965,18 +16417,27 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "public_key",
+            "label": "Public Key",
+            "description": "The user's SSH public key (e.g., 'ssh-ed25519 AAAA... user@host').",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "replica_id",
+            "label": "Replica ID",
+            "description": "Attribut Replica ID du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -16078,13 +16539,27 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "model",
+            "label": "Model",
+            "description": "Unique identifier of the model",
             "col": {
               "xs": 24
             },
+            "type": "text",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "key": "snapshot_uri",
+            "label": "Snapshot URI",
+            "description": "Path to the model weight snapshot",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
@@ -16204,22 +16679,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
-            "col": {
-              "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -16432,18 +16892,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "trainer_id",
+            "label": "Trainer ID",
+            "description": "Attribut Trainer ID du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -16496,18 +16951,63 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "model",
+            "label": "Model",
+            "description": "Base model ID (e.g. 'Qwen/Qwen3-8B').",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
               }
             ]
+          },
+          {
+            "key": "max_seq_len",
+            "label": "Max Seq Len",
+            "description": "Attribut Max Seq Len du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "lora_rank",
+            "label": "Lora Rank",
+            "description": "LoRA rank.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "seed",
+            "label": "Seed",
+            "description": "Attribut Seed du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "scale_down_delay_seconds",
+            "label": "Scale Down Delay Seconds",
+            "description": "Seconds of inactivity before the trainer scales to zero. Must be positive. Defaults to 3600 (1 hour).",
+            "col": {
+              "xs": 24
+            },
+            "type": "number"
+          },
+          {
+            "key": "checkpoint_path",
+            "label": "Checkpoint Path",
+            "description": "Attribut Checkpoint Path du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -16560,18 +17060,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "training_project_id",
+            "label": "Training Project ID",
+            "description": "Attribut Training Project ID du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
           }
         ],
         "displayTitle": false,
@@ -16624,18 +17119,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "project_id",
+            "label": "Project ID",
+            "description": "Attribut Project ID du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "text"
+          },
+          {
+            "key": "job_id",
+            "label": "Job ID",
+            "description": "Attribut Job ID du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "text"
+          },
+          {
+            "key": "statuses",
+            "label": "Statuses",
+            "description": "Attribut Statuses du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
+          },
+          {
+            "key": "order_by",
+            "label": "Order By",
+            "description": "Order the training jobs by a field. Currently supports created_at",
+            "col": {
+              "xs": 24
+            },
+            "type": "json"
           }
         ],
         "displayTitle": false,
@@ -16688,13 +17205,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "training_project",
+            "label": "Training Project",
+            "description": "The training project to upsert.",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
@@ -16801,13 +17318,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "training_project",
+            "label": "Training Project",
+            "description": "The training project to upsert.",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
@@ -16993,13 +17510,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "updates",
+            "label": "Updates",
+            "description": "Mapping of chainlet name to the desired chainlet instance type. If the chainlet name doesn't exist, an error is returned.",
             "col": {
               "xs": 24
             },
+            "type": "json",
             "validators": [
               {
                 "type": "required"
@@ -17121,13 +17638,13 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "checkpoint_path",
+            "label": "Checkpoint Path",
+            "description": "bt:// URI of a sampler checkpoint. Form: bt://loops:<run_id>/sampler_weights/<checkpoint_name>.",
             "col": {
               "xs": 24
             },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
@@ -17249,13 +17766,54 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "display_name",
+            "label": "Display Name",
+            "description": "Attribut Display Name du corps de requête.",
             "col": {
               "xs": 24
             },
+            "type": "text"
+          },
+          {
+            "key": "is_public",
+            "label": "Is Public",
+            "description": "Whether the listing is publicly accessible. Only used when creating a new listing.",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
+          },
+          {
+            "key": "oracle_version_id",
+            "label": "Oracle Version ID",
+            "description": "Id of the source model version to publish",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "key": "allow_truss_download",
+            "label": "Allow Truss Download",
+            "description": "Whether users deploying this model can download the Truss",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
+          },
+          {
+            "key": "version_tag",
+            "label": "Version Tag",
+            "description": "Human-readable tag for this version",
+            "col": {
+              "xs": 24
+            },
+            "type": "text",
             "validators": [
               {
                 "type": "required"
@@ -17469,18 +18027,22 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps Json de la requête",
+            "key": "is_live",
+            "label": "Is Live",
+            "description": "Attribut Is Live du corps de requête.",
             "col": {
               "xs": 24
             },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            "type": "checkbox"
+          },
+          {
+            "key": "allow_truss_download",
+            "label": "Allow Truss Download",
+            "description": "Attribut Allow Truss Download du corps de requête.",
+            "col": {
+              "xs": 24
+            },
+            "type": "checkbox"
           }
         ],
         "displayTitle": false,

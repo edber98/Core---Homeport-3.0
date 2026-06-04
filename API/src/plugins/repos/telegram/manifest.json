@@ -2194,9 +2194,9 @@
           },
           {
             "type": "textarea",
-            "key": "options",
-            "label": "Options (JSON)",
-            "description": "Tableau JSON de chaînes (ex: [\"Oui\",\"Non\",\"Peut-être\"]).",
+            "key": "pollOptions",
+            "label": "Options du sondage",
+            "description": "Tableau JSON des options du sondage Telegram.",
             "col": {
               "xs": 24
             },

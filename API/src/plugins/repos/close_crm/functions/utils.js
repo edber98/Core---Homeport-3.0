@@ -46,4 +46,38 @@ async function providerRequest(opts, path, options = {}) {
   return { ok: true, status: res.status, data };
 }
 
-module.exports = { utils: { providerRequest } };
+function parseStructuredValue(value, key, type) {
+  if (value === undefined || value === null || value === '') return { skip: true };
+  if (type === 'number') {
+    const number = Number(value);
+    if (Number.isNaN(number)) return { ok: false, error: `Nombre invalide pour ${key}.` };
+    return { ok: true, value: number };
+  }
+  if (type === 'boolean') return { ok: true, value: value === true || String(value).toLowerCase() === 'true' };
+  if (type === 'array' || type === 'object' || type === 'customFields') {
+    if (typeof value === 'object') return { ok: true, value };
+    try { return { ok: true, value: JSON.parse(String(value)) }; }
+    catch { return { ok: false, error: `JSON invalide pour ${key}.` }; }
+  }
+  return { ok: true, value };
+}
+
+function buildRequestBody(inputs, fields) {
+  const body = {};
+  for (const field of Array.isArray(fields) ? fields : []) {
+    const raw = inputs ? inputs[field.key] : undefined;
+    const parsed = parseStructuredValue(raw, field.key, field.type || 'string');
+    if (parsed && parsed.skip) continue;
+    if (!parsed.ok) return { ok: false, error: parsed.error };
+    if (field.type === 'customFields') {
+      if (parsed.value && typeof parsed.value === 'object' && !Array.isArray(parsed.value)) {
+        for (const [key, value] of Object.entries(parsed.value)) body[key] = value;
+      }
+      continue;
+    }
+    body[field.target || field.key] = parsed.value;
+  }
+  return { ok: true, body: Object.keys(body).length ? body : undefined };
+}
+
+module.exports = { utils: { providerRequest, buildRequestBody } };

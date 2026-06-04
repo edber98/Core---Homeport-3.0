@@ -12,13 +12,9 @@ module.exports = {
     if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
-    }
+    const bodyResult = utils.buildRequestBody(d, [{"key":"userId","target":"userId","type":"string"},{"key":"type","target":"type","type":"string"},{"key":"event","target":"event","type":"string"},{"key":"properties","target":"properties","type":"object"},{"key":"integrations","target":"integrations","type":"object"},{"key":"messageId","target":"messageId","type":"string"},{"key":"receivedAt","target":"receivedAt","type":"string"},{"key":"sentAt","target":"sentAt","type":"string"},{"key":"originalTimestamp","target":"originalTimestamp","type":"string"},{"key":"timestamp","target":"timestamp","type":"string"},{"key":"version","target":"version","type":"number"},{"key":"context","target":"context","type":"object"},{"key":"anonymousId","target":"anonymousId","type":"string"},{"key":"groupId","target":"groupId","type":"string"}]);
+    if (!bodyResult.ok) return bodyResult;
+    const body = bodyResult.body;
 
     log('Requête en cours...');
     const res = await utils.providerRequest(opts, reqPath, { method: 'POST', query, body });

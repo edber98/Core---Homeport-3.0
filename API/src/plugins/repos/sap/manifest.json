@@ -3706,9 +3706,9 @@
           },
           {
             "type": "textarea",
-            "key": "body",
-            "label": "Corps (JSON)",
-            "description": "Corps de la requête en JSON.",
+            "key": "entityData",
+            "label": "Données OData",
+            "description": "Objet JSON de l’entité à envoyer.",
             "col": {
               "xs": 24
             }

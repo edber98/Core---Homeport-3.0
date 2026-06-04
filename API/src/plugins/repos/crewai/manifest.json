@@ -918,9 +918,8 @@
         "fields": [
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "inputs",
+            "label": "Entrées du crew",
             "col": {
               "xs": 24
             },
@@ -928,7 +927,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "description": "Objet JSON contenant les variables attendues par le crew."
           }
         ],
         "displayTitle": false,
@@ -981,10 +981,9 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "executionId",
+            "label": "ID d'exécution",
             "col": {
               "xs": 24
             },
@@ -993,6 +992,15 @@
                 "type": "required"
               }
             ]
+          },
+          {
+            "type": "json",
+            "key": "inputs",
+            "label": "Entrées de reprise",
+            "col": {
+              "xs": 24
+            },
+            "description": "Objet JSON avec les valeurs nécessaires pour reprendre l’exécution."
           }
         ],
         "displayTitle": false,
@@ -1126,19 +1134,21 @@
           },
           {
             "type": "textarea",
-            "key": "query",
-            "label": "Query JSON",
+            "key": "queryParametersJson",
+            "label": "Paramètres de requête",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON des paramètres à ajouter à l’URL."
           },
           {
             "type": "textarea",
-            "key": "body",
-            "label": "Body JSON",
+            "key": "requestBodyJson",
+            "label": "Corps de requête",
             "col": {
               "xs": 24
-            }
+            },
+            "description": "Objet JSON envoyé pour un appel API personnalisé."
           }
         ]
       },

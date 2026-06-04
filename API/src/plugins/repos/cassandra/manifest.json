@@ -873,10 +873,64 @@
             ]
           },
           {
-            "type": "json",
-            "key": "data",
-            "label": "Données JSON",
-            "description": "Objet clé/valeur à insérer.",
+            "type": "section",
+            "title": "Colonnes à insérer",
+            "description": "Paires colonne-valeur à insérer.",
+            "mode": "array",
+            "key": "rowFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "columnName",
+                "label": "Colonne",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "columnValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "columnType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             },
@@ -959,10 +1013,64 @@
             ]
           },
           {
-            "type": "json",
-            "key": "data",
-            "label": "Données JSON",
-            "description": "Colonnes à mettre à jour.",
+            "type": "section",
+            "title": "Colonnes à mettre à jour",
+            "description": "Paires colonne-valeur à modifier.",
+            "mode": "array",
+            "key": "updateFields",
+            "array": {
+              "initialItems": 0,
+              "minItems": 0
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "columnName",
+                "label": "Colonne",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "columnValue",
+                "label": "Valeur",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "select",
+                "key": "columnType",
+                "label": "Type",
+                "col": {
+                  "xs": 24
+                },
+                "options": [
+                  {
+                    "label": "string",
+                    "value": "string"
+                  },
+                  {
+                    "label": "number",
+                    "value": "number"
+                  },
+                  {
+                    "label": "boolean",
+                    "value": "boolean"
+                  },
+                  {
+                    "label": "json",
+                    "value": "json"
+                  },
+                  {
+                    "label": "null",
+                    "value": "null"
+                  }
+                ],
+                "default": "string"
+              }
+            ],
             "col": {
               "xs": 24
             },

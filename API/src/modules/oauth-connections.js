@@ -154,7 +154,10 @@ module.exports = function () {
     });
 
     // State signé HS256 (routage only). Vérifié par le bouncer ET re-vérifié au callback.
-    const state = signOauthState({ returnOrigin, vendor: oauth2.vendor, providerKey, nonce });
+    // `provider` est un ALIAS de `vendor` (même valeur) : le bouncer Panel lit
+    // selon les versions soit `claims.provider` soit `claims.vendor` → on met les
+    // deux pour garantir l'interop du check « provider URL == JWT claim ».
+    const state = signOauthState({ returnOrigin, vendor: oauth2.vendor, provider: oauth2.vendor, providerKey, nonce });
 
     // Cookie anti-CSRF (httpOnly). SameSite=Lax → renvoyé sur la navigation top-level GET du callback.
     res.cookie(cookieName(oauth2.vendor), nonce, {
@@ -187,6 +190,37 @@ module.exports = function () {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
+  // DISCOVERY — quels providers OAuth2 sont CONNECTABLES MAINTENANT (env prêt) ?
+  // Permet au front de n'afficher « Se connecter » que si l'app OAuth est
+  // réellement configurée (client_id/secret injectés + concentrateur set),
+  // plutôt que de se fier au seul bloc `auth` du manifest.
+  // ─────────────────────────────────────────────────────────────────────────
+  r.get('/api/auth/connections/available', authMiddleware(), requireCompanyScope(), async (req, res) => {
+    if (req.ctx?.useMemory) return res.apiOk({ providers: [] });
+
+    const relayReady = !!String(KINN_OAUTH_RELAY_SECRET || '').trim();
+    const providers = await Provider.find({ enabled: true, 'auth.type': 'oauth2' }).lean();
+    const available = [];
+    for (const provider of (providers || [])) {
+      const oauth2 = getProviderOAuth2Config(provider);
+      if (!oauth2) continue;
+      // Le bouncer exige le secret de relais partagé.
+      if (oauth2.useBouncer && !relayReady) continue;
+      const env = resolveOAuth2Environment(oauth2);
+      if (!env.clientId || !env.clientSecret) continue; // app OAuth non configurée → on masque
+      available.push({
+        providerKey: provider.key,
+        vendor: oauth2.vendor,
+        displayName: String(provider.title || provider.name || provider.key),
+        iconClass: provider.iconClass || undefined,
+        iconUrl: provider.iconUrl || undefined,
+        useBouncer: oauth2.useBouncer,
+      });
+    }
+    return res.apiOk({ providers: available });
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
   // CALLBACK — relayé par le bouncer (302). DOIT re-vérifier la signature du state.
   // ─────────────────────────────────────────────────────────────────────────
   r.get('/oauth/:vendor/callback', async (req, res) => {
@@ -210,7 +244,9 @@ module.exports = function () {
     }
 
     // (2) Cross-vendor : le vendor du path doit matcher celui signé dans le state.
-    if (String(claims.vendor || '').toLowerCase() !== vendor) {
+    // Tolérant : accepte `vendor` ou son alias `provider`.
+    const claimVendor = String(claims.vendor || claims.provider || '').toLowerCase();
+    if (claimVendor !== vendor) {
       return renderPopupResult(res, { success: false, origin: claims.returnOrigin, state: stateRaw, error: { code: 'vendor_mismatch', message: 'Unexpected OAuth vendor' } });
     }
 

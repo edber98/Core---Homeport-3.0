@@ -1,0 +1,4 @@
+interface:
+  display_name: "Automation Endpoint Pruner"
+  short_description: "Retire du JSON OpenAPI les endpoints inutiles a l automation."
+  default_prompt: "Filtre ce JSON d endpoints et garde seulement les endpoints utiles a l automation."
