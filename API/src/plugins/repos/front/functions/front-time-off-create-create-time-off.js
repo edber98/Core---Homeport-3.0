@@ -10,16 +10,37 @@ module.exports = {
     reqPath = reqPath.replace('{teammate_id}', encodeURIComponent(teammate_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.start_at !== undefined && d.start_at !== null && d.start_at !== '') {
+      body["start_at"] = d.start_at;
+    }
+    if (d.end_at !== undefined && d.end_at !== null && d.end_at !== '') {
+      body["end_at"] = d.end_at;
+    }
+    if (d.auto_responder !== undefined && d.auto_responder !== null && d.auto_responder !== '') {
+      body["auto_responder"] = d.auto_responder;
+    }
+    if (d.auto_responder_body !== undefined && d.auto_responder_body !== null && d.auto_responder_body !== '') {
+      if (!body["auto_responder"] || typeof body["auto_responder"] !== 'object' || Array.isArray(body["auto_responder"])) body["auto_responder"] = {};
+      body["auto_responder"]["body"] = d.auto_responder_body;
+    }
+    if (d.auto_responder_is_enabled !== undefined && d.auto_responder_is_enabled !== null && d.auto_responder_is_enabled !== '') {
+      if (!body["auto_responder"] || typeof body["auto_responder"] !== 'object' || Array.isArray(body["auto_responder"])) body["auto_responder"] = {};
+      body["auto_responder"]["is_enabled"] = d.auto_responder_is_enabled;
+    }
+    if (d.auto_responder_is_contacts_only !== undefined && d.auto_responder_is_contacts_only !== null && d.auto_responder_is_contacts_only !== '') {
+      if (!body["auto_responder"] || typeof body["auto_responder"] !== 'object' || Array.isArray(body["auto_responder"])) body["auto_responder"] = {};
+      body["auto_responder"]["is_contacts_only"] = d.auto_responder_is_contacts_only;
+    }
+    if (d.auto_responder_channel_ids !== undefined && d.auto_responder_channel_ids !== null && d.auto_responder_channel_ids !== '') {
+      if (!body["auto_responder"] || typeof body["auto_responder"] !== 'object' || Array.isArray(body["auto_responder"])) body["auto_responder"] = {};
+      body["auto_responder"]["channel_ids"] = d.auto_responder_channel_ids;
     }
 
     log('Requête en cours...');
@@ -39,3 +60,4 @@ module.exports = {
     };
   }
 };
+

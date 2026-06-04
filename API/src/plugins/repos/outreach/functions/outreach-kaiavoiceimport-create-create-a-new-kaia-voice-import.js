@@ -8,16 +8,37 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.data_attributes_callid !== undefined && d.data_attributes_callid !== null && d.data_attributes_callid !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      if (!body["data"]["attributes"] || typeof body["data"]["attributes"] !== 'object' || Array.isArray(body["data"]["attributes"])) body["data"]["attributes"] = {};
+      body["data"]["attributes"]["callid"] = d.data_attributes_callid;
+    }
+    if (d.data_attributes_instanceid !== undefined && d.data_attributes_instanceid !== null && d.data_attributes_instanceid !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      if (!body["data"]["attributes"] || typeof body["data"]["attributes"] !== 'object' || Array.isArray(body["data"]["attributes"])) body["data"]["attributes"] = {};
+      body["data"]["attributes"]["instanceid"] = d.data_attributes_instanceid;
+    }
+    if (d.data_attributes_metadata !== undefined && d.data_attributes_metadata !== null && d.data_attributes_metadata !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      if (!body["data"]["attributes"] || typeof body["data"]["attributes"] !== 'object' || Array.isArray(body["data"]["attributes"])) body["data"]["attributes"] = {};
+      body["data"]["attributes"]["metadata"] = d.data_attributes_metadata;
+    }
+    if (d.data_attributes_recordingurl !== undefined && d.data_attributes_recordingurl !== null && d.data_attributes_recordingurl !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      if (!body["data"]["attributes"] || typeof body["data"]["attributes"] !== 'object' || Array.isArray(body["data"]["attributes"])) body["data"]["attributes"] = {};
+      body["data"]["attributes"]["recordingurl"] = d.data_attributes_recordingurl;
+    }
+    if (d.data_relationships !== undefined && d.data_relationships !== null && d.data_relationships !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      body["data"]["relationships"] = d.data_relationships;
+    }
+    if (d.data_type !== undefined && d.data_type !== null && d.data_type !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      body["data"]["type"] = d.data_type;
     }
 
     log('Requête en cours...');
@@ -37,3 +58,4 @@ module.exports = {
     };
   }
 };
+

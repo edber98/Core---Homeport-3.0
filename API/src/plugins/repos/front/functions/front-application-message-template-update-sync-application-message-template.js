@@ -10,16 +10,30 @@ module.exports = {
     reqPath = reqPath.replace('{channel_id}', encodeURIComponent(channel_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.blurb !== undefined && d.blurb !== null && d.blurb !== '') {
+      body["blurb"] = d.blurb;
+    }
+    if (d.is_disabled !== undefined && d.is_disabled !== null && d.is_disabled !== '') {
+      body["is_disabled"] = d.is_disabled;
+    }
+    if (d.status_name !== undefined && d.status_name !== null && d.status_name !== '') {
+      body["status_name"] = d.status_name;
+    }
+    if (d.variable_mappings !== undefined && d.variable_mappings !== null && d.variable_mappings !== '') {
+      body["variable_mappings"] = d.variable_mappings;
+    }
+    if (d.template_preview !== undefined && d.template_preview !== null && d.template_preview !== '') {
+      body["template_preview"] = d.template_preview;
+    }
+    if (d.external_id !== undefined && d.external_id !== null && d.external_id !== '') {
+      body["external_id"] = d.external_id;
     }
 
     log('Requête en cours...');
@@ -39,3 +53,4 @@ module.exports = {
     };
   }
 };
+

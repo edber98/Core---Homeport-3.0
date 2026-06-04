@@ -8,16 +8,18 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.url !== undefined && d.url !== null && d.url !== '') {
+      body["url"] = d.url;
+    }
+    if (d.events !== undefined && d.events !== null && d.events !== '') {
+      body["events"] = d.events;
+    }
+    if (d.secret !== undefined && d.secret !== null && d.secret !== '') {
+      body["secret"] = d.secret;
     }
 
     log('Requête en cours...');
@@ -37,3 +39,4 @@ module.exports = {
     };
   }
 };
+

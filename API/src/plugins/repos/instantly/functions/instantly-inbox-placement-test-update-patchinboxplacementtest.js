@@ -10,16 +10,38 @@ module.exports = {
     reqPath = reqPath.replace('{id}', encodeURIComponent(id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.schedule !== undefined && d.schedule !== null && d.schedule !== '') {
+      body["schedule"] = d.schedule;
+    }
+    if (d.schedule_days !== undefined && d.schedule_days !== null && d.schedule_days !== '') {
+      if (!body["schedule"] || typeof body["schedule"] !== 'object' || Array.isArray(body["schedule"])) body["schedule"] = {};
+      body["schedule"]["days"] = d.schedule_days;
+    }
+    if (d.schedule_timing !== undefined && d.schedule_timing !== null && d.schedule_timing !== '') {
+      if (!body["schedule"] || typeof body["schedule"] !== 'object' || Array.isArray(body["schedule"])) body["schedule"] = {};
+      body["schedule"]["timing"] = d.schedule_timing;
+    }
+    if (d.schedule_timing_from !== undefined && d.schedule_timing_from !== null && d.schedule_timing_from !== '') {
+      if (!body["schedule"] || typeof body["schedule"] !== 'object' || Array.isArray(body["schedule"])) body["schedule"] = {};
+      if (!body["schedule"]["timing"] || typeof body["schedule"]["timing"] !== 'object' || Array.isArray(body["schedule"]["timing"])) body["schedule"]["timing"] = {};
+      body["schedule"]["timing"]["from"] = d.schedule_timing_from;
+    }
+    if (d.schedule_timezone !== undefined && d.schedule_timezone !== null && d.schedule_timezone !== '') {
+      if (!body["schedule"] || typeof body["schedule"] !== 'object' || Array.isArray(body["schedule"])) body["schedule"] = {};
+      body["schedule"]["timezone"] = d.schedule_timezone;
+    }
+    if (d.automations !== undefined && d.automations !== null && d.automations !== '') {
+      body["automations"] = d.automations;
+    }
+    if (d.status !== undefined && d.status !== null && d.status !== '') {
+      body["status"] = d.status;
     }
 
     log('Requête en cours...');
@@ -39,3 +61,4 @@ module.exports = {
     };
   }
 };
+

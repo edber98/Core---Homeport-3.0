@@ -10,16 +10,21 @@ module.exports = {
     reqPath = reqPath.replace('{team_id}', encodeURIComponent(team_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.name !== undefined && d.name !== null && d.name !== '') {
+      body["name"] = d.name;
+    }
+    if (d.teammate_ids !== undefined && d.teammate_ids !== null && d.teammate_ids !== '') {
+      body["teammate_ids"] = d.teammate_ids;
+    }
+    if (d.is_public !== undefined && d.is_public !== null && d.is_public !== '') {
+      body["is_public"] = d.is_public;
+    }
+    if (d.custom_fields !== undefined && d.custom_fields !== null && d.custom_fields !== '') {
+      body["custom_fields"] = d.custom_fields;
     }
 
     log('Requête en cours...');
@@ -39,3 +44,4 @@ module.exports = {
     };
   }
 };
+

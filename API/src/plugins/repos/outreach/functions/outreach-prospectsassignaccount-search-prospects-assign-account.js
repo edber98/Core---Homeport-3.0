@@ -8,16 +8,21 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
+    if (d.actionparams !== undefined && d.actionparams !== null && d.actionparams !== '') query["actionParams"] = d.actionparams;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.data_attributes_accountid !== undefined && d.data_attributes_accountid !== null && d.data_attributes_accountid !== '') {
+      if (!body["data"] || typeof body["data"] !== 'object' || Array.isArray(body["data"])) body["data"] = {};
+      if (!body["data"]["attributes"] || typeof body["data"]["attributes"] !== 'object' || Array.isArray(body["data"]["attributes"])) body["data"]["attributes"] = {};
+      body["data"]["attributes"]["accountid"] = d.data_attributes_accountid;
+    }
+    if (d.data_attributes_ids !== undefined && d.data_attributes_ids !== null && d.data_attributes_ids !== '') {
+      body["data_attributes_ids"] = d.data_attributes_ids;
+    }
+    if (d.type !== undefined && d.type !== null && d.type !== '') {
+      body["type"] = d.type;
     }
 
     log('Requête en cours...');
@@ -44,3 +49,4 @@ module.exports = {
     };
   }
 };
+

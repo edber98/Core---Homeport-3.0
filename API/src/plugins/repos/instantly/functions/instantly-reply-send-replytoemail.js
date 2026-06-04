@@ -8,16 +8,41 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
+    const headers = {};
+
+    const body = {};
+    if (d.eaccount !== undefined && d.eaccount !== null && d.eaccount !== '') {
+      body["eaccount"] = d.eaccount;
+    }
+    if (d.reply_to_uuid !== undefined && d.reply_to_uuid !== null && d.reply_to_uuid !== '') {
+      body["reply_to_uuid"] = d.reply_to_uuid;
+    }
+    if (d.subject !== undefined && d.subject !== null && d.subject !== '') {
+      body["subject"] = d.subject;
+    }
     if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+      body["body"] = d.body;
+    }
+    if (d.body_html !== undefined && d.body_html !== null && d.body_html !== '') {
+      if (!body["body"] || typeof body["body"] !== 'object' || Array.isArray(body["body"])) body["body"] = {};
+      body["body"]["html"] = d.body_html;
+    }
+    if (d.body_text !== undefined && d.body_text !== null && d.body_text !== '') {
+      if (!body["body"] || typeof body["body"] !== 'object' || Array.isArray(body["body"])) body["body"] = {};
+      body["body"]["text"] = d.body_text;
+    }
+    if (d.cc_address_email_list !== undefined && d.cc_address_email_list !== null && d.cc_address_email_list !== '') {
+      body["cc_address_email_list"] = d.cc_address_email_list;
+    }
+    if (d.bcc_address_email_list !== undefined && d.bcc_address_email_list !== null && d.bcc_address_email_list !== '') {
+      body["bcc_address_email_list"] = d.bcc_address_email_list;
+    }
+    if (d.reminder_ts !== undefined && d.reminder_ts !== null && d.reminder_ts !== '') {
+      body["reminder_ts"] = d.reminder_ts;
+    }
+    if (d.assigned_to !== undefined && d.assigned_to !== null && d.assigned_to !== '') {
+      body["assigned_to"] = d.assigned_to;
     }
 
     log('Requête en cours...');
@@ -32,3 +57,5 @@ module.exports = {
     };
   }
 };
+
+

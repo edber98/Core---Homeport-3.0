@@ -8,16 +8,23 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.user !== undefined && d.user !== null && d.user !== '') {
+      body["user"] = d.user;
+    }
+    if (d.user_email !== undefined && d.user_email !== null && d.user_email !== '') {
+      if (!body["user"] || typeof body["user"] !== 'object' || Array.isArray(body["user"])) body["user"] = {};
+      body["user"]["email"] = d.user_email;
+    }
+    if (d.user_userid !== undefined && d.user_userid !== null && d.user_userid !== '') {
+      if (!body["user"] || typeof body["user"] !== 'object' || Array.isArray(body["user"])) body["user"] = {};
+      body["user"]["userid"] = d.user_userid;
+    }
+    if (d.items !== undefined && d.items !== null && d.items !== '') {
+      body["items"] = d.items;
     }
 
     log('Requête en cours...');
@@ -37,3 +44,4 @@ module.exports = {
     };
   }
 };
+

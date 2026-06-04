@@ -11322,10 +11322,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "A user-friendly name for the alert.",
             "col": {
               "xs": 24
             },
@@ -11333,7 +11333,155 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metric",
+            "label": "Metric",
+            "description": "Metric",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metric"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comparator",
+            "label": "Comparator",
+            "description": "Metric Comparator",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comparator"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "limit",
+            "label": "Limit",
+            "description": "The threshold limit for the alert.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dimension",
+            "label": "Dimension",
+            "description": "Dimension",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimension"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "alert_channels",
+            "label": "Alert Channels",
+            "description": "A list of alert channels to notify.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "alert_channels"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filters",
+            "label": "Filters",
+            "description": "A list of filters to apply to the alert.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "period",
+            "label": "Period",
+            "description": "The time period for the metric aggregation in the format of '1h' '1d'.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "period"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "A description of what the alert does.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -11464,10 +11612,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "metric",
+            "label": "Metric",
+            "description": "Metric",
             "col": {
               "xs": 24
             },
@@ -11475,7 +11623,137 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "metric"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comparator",
+            "label": "Comparator",
+            "description": "Metric Comparator",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comparator"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "limit",
+            "label": "Limit",
+            "description": "The threshold limit for the alert.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dimension",
+            "label": "Dimension",
+            "description": "Dimension",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimension"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "alert_channels",
+            "label": "Alert Channels",
+            "description": "A list of alert channels to notify.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "alert_channels"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filters",
+            "label": "Filters",
+            "description": "A list of filters to apply to the alert.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "period",
+            "label": "Period",
+            "description": "The time period for the metric aggregation in the format of '1h' '1d'.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "period"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "A description of what the alert does.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -11592,10 +11870,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "good_reputation",
+            "label": "Good Reputation",
+            "description": "IP(s) to include in the good_reputation pool",
             "col": {
               "xs": 24
             },
@@ -11603,7 +11881,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "good_reputation"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "poor_reputation",
+            "label": "Poor Reputation",
+            "description": "IP(s) to include in the poor_reputation pool",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "poor_reputation"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "new_senders",
+            "label": "New Senders",
+            "description": "IP(s) to include in the new_senders pool",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "new_senders"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -11705,10 +12023,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "tag",
+            "label": "Tag",
+            "description": "The tag to update.",
             "col": {
               "xs": 24
             },
@@ -11716,7 +12034,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "tag"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "The updated tag description.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -11769,10 +12109,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "pagination_sort",
+            "label": "Sort",
+            "description": "Colon-separated value indicating column name and sort direction e.g. 'lastseen:desc'.",
             "col": {
               "xs": 24
             },
@@ -11780,7 +12120,142 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "pagination",
+              "sort"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "pagination_skip",
+            "label": "Skip",
+            "description": "The number of items to skip over when satisfying the request. To get the first page of data set skip to zero.  Then increment the skip by the limit for subsequent calls.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "skip"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "pagination_limit",
+            "label": "Limit",
+            "description": "The maximum number of items returned in the response. Default 10 max 1000.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "pagination_total",
+            "label": "Total",
+            "description": "The total number of tags matching the search criteria.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "total"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pagination_include_total",
+            "label": "Total",
+            "description": "Boolean indicating whether or not to include total number of items. Default false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "include_total"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "include_subaccounts",
+            "label": "Include Subaccounts",
+            "description": "Boolean indicating whether or not to include data from all subaccounts. Default false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "include_subaccounts"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "include_metrics",
+            "label": "Include Metrics",
+            "description": "Boolean indicating whether or not to include metrics for tags. Default false.  When true max limit is 20.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "include_metrics"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "tag",
+            "label": "Tag",
+            "description": "The tag or tag prefix.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "tag"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -12403,10 +12878,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "content_type",
+            "label": "Type",
+            "description": "Content-Type must be `application/json` if inserting using JSON, no header necessary for form-data insertion",
             "col": {
               "xs": 24
             },
@@ -12414,7 +12889,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "in": "header"
           }
         ],
         "displayTitle": false,
@@ -12943,10 +13419,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "content_type",
+            "label": "Type",
+            "description": "Content-Type must be `application/json` if inserting using JSON, no header necessary for form-data insertion",
             "col": {
               "xs": 24
             },
@@ -12954,7 +13430,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "in": "header"
           }
         ],
         "displayTitle": false,
@@ -13100,9 +13577,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "requests",
+            "label": "Requests",
+            "description": "List of copy requests",
             "col": {
               "xs": 24
             },
@@ -13110,7 +13587,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "requests"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_versions",
+            "label": "Source Versions",
+            "description": "Versions to copy or all versions if empty.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "source_versions"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -13293,9 +13792,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "requests",
+            "label": "Requests",
+            "description": "List of copy requests",
             "col": {
               "xs": 24
             },
@@ -13303,7 +13802,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "requests"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "source_versions",
+            "label": "Source Versions",
+            "description": "Versions to copy or all versions if empty.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "source_versions"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -13553,10 +14074,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "login",
+            "label": "Login",
+            "description": "Email address of SMTP credential user; accepts multiple values",
             "col": {
               "xs": 24
             },
@@ -13564,7 +14085,65 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "login"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "mailbox",
+            "label": "Mailbox",
+            "description": "Email address of SMTP credential user, may be used in place of 'login'; accepts multiple values",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "mailbox"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "system",
+            "label": "System",
+            "description": "Identify if these are system account credentials, defaults to false",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "system"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "description": "Supply desired password(s) for the new credentials if preferred over generated ones; accepts multiple values",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "password"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -13709,10 +14288,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "password",
+            "label": "Mot de passe",
+            "description": "Supply desired password for the credentials to update if preferred over a generated one",
             "col": {
               "xs": 24
             },
@@ -13720,7 +14299,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "password"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -13947,10 +14530,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "self",
+            "label": "Self",
+            "description": "Change the DKIM authority for a domain.\nIf set to true, the domain will be the DKIM authority for itself even if the root domain is registered on the same mailgun account\n If set to false, the domain will have the same DKIM authority as the root domain registered on the same mailgun account.",
             "col": {
               "xs": 24
             },
@@ -13958,7 +14541,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "self"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -14025,10 +14612,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "dkim_selector",
+            "label": "Dkim Selector",
+            "description": "Update the DKIM selector for a domain. If omitted no change is committed.",
             "col": {
               "xs": 24
             },
@@ -14036,7 +14623,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "dkim_selector"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -14202,10 +14793,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "archive_to",
+            "label": "Archive To",
+            "description": "If set to a URL, then each successfully delivered message will be submitted in an HTTP POST request to the URL. The Content-Type of the POST requests is application/mime and the request body is exactly what the recipient SMTP server received.",
             "col": {
               "xs": 24
             },
@@ -14213,7 +14804,353 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "archive_to"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dkim_host_name",
+            "label": "Dkim Host Name",
+            "description": "Set the DKIM host name for the domain that is being created. Note, the value must be a valid domain name, and can be the domain name being created or the root domain. This parameter cannot be used in conjunction with force_dkim_authority or force_root_dkim_host.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dkim_host_name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dkim_key_size",
+            "label": "Dkim Key Size",
+            "description": "The size of the new domain's DKIM key. Shall be either 1024 or 2048.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dkim_key_size"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dkim_selector",
+            "label": "Dkim Selector",
+            "description": "Explicitly set the value of the DKIM selector for the domain being created. If the domain key does not already exist, one will be created.  The selector must be a valid atom per RFC2822. e.g valid value `foobar`, invalid value `foo.bar`\n\nhttps://datatracker.ietf.org/doc/html/rfc2822#section-3.2.4",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dkim_selector"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "encrypt_incoming_message",
+            "label": "Encrypt Incoming Message",
+            "description": "Enable encrypting incoming messages for the given domain. This cannot be altered via API after being set for security purposes. Reach out to Support to disable if necessary. Default to false",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "encrypt_incoming_message"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "force_dkim_authority",
+            "label": "Force Dkim Authority",
+            "description": "If set to true, the domain will be the DKIM authority for itself even if the root domain is registered on the same mailgun account. If set to false, the domain will have the same DKIM authority as the root domain registered on the same mailgun account. Default to false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "force_dkim_authority"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "force_root_dkim_host",
+            "label": "Force Root Dkim Host",
+            "description": "If set to true, the root domain will be the DKIM Host for the domain being created even if the root domain itself is not registered with Mailgun. The domain being created will still need to pass domain verification with valid spf records for the domain and valid DKIM record for the root domain.  This does not effect the smtp mail-from host for the domain being created. The mail-from host will remain the domain name being created, not the root domain.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "force_root_dkim_host"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "wildcard",
+            "label": "Wildcard",
+            "description": "Allows domain to accept inbound messages received on subdomains that have MX records pointed to Mailgun. Default is false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "wildcard"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "The name of the new domain",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pool_id",
+            "label": "Pool Id",
+            "description": "Requested IP Pool to be assigned to the domain at creation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pool_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "ips",
+            "label": "Ips",
+            "description": "An optional, comma-separated list of IP addresses to be assigned to this domain. If not specified, all dedicated IP addresses on the account will be assigned. If the request cannot be fulfilled (e.g. a requested IP is not assigned to the account, etc), a 400 will be returned.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "ips"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "require_tls",
+            "label": "Require Tls",
+            "description": "If set to true, this requires messages for the domain only be sent over a TLS connection. If a TLS connection cannot be established, Mailgun will not deliver the message.\n\nIf set to false, Mailgun will still try and upgrade the connection, but if Mailgun cannot, the message will be delivered over a plaintext SMTP connection.\n\nThe default value is false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "require_tls"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "skip_verification",
+            "label": "Skip Verification",
+            "description": "If set to true, the certificate and hostname will not be verified when trying to establish a TLS connection and Mailgun will accept any certificate during delivery of a message.\n\nIf set to false, Mailgun will verify the certificate and hostname. If either one can not be verified, a TLS connection will not be established.\n\nThe default value is false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "skip_verification"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "spam_action",
+            "label": "Spam Action",
+            "description": "Disabled, block or tag. Default to disabled. If disabled, no spam filtering will occur for inbound messages.\n\nIf block, inbound spam messages will not be delivered.\n\nIf tag, inbound messages will be tagged with a spam header. See Spam Filter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "spam_action"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "smtp_password",
+            "label": "Smtp Password",
+            "description": "Password for SMTP authentication",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "smtp_password"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "use_automatic_sender_security",
+            "label": "Use Automatic Sender Security",
+            "description": "Enable Automatic Sender Security. This requires setting DNS CNAME entries for DKIM keys instead of a TXT record. Defaults to false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "use_automatic_sender_security"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "webhooks_redact_pii",
+            "label": "Webhooks Redact Pii",
+            "description": "If set to true, Personally Identifiable Information (PII) will be redacted from the payload of any webhook posted for this domain",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "webhooks_redact_pii"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "web_prefix",
+            "label": "Web Prefix",
+            "description": "Sets your open, click and unsubscribe URLs domain name prefix. Links rewritten or added by Mailgun in your emails will look like <web_scheme>://<web_prefix>.<domain_name>/... Default to email",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "web_prefix"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "web_scheme",
+            "label": "Web Scheme",
+            "description": "Sets your open, click and unsubscribe URLs to use http or https. Value either `http` or `https`. Defaults to http. In order for https to work, you must have a valid cert created for your domain. See Domain Tracking for TLS cert generation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "web_scheme"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "message_ttl",
+            "label": "Message Ttl",
+            "description": "Specifies the time-to-live (TTL) in seconds for retrieving both incoming and outgoing messages. The maximum TTL value is determined by your subscription plan.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "message_ttl"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -14344,10 +15281,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "archive_to",
+            "label": "Archive To",
+            "description": "If set to a URL, then each successfully delivered message will be submitted in an HTTP POST request to the URL. The Content-Type of the POST requests is application/mime and the request body is exactly what the recipient SMTP server received.",
             "col": {
               "xs": 24
             },
@@ -14355,7 +15292,209 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "archive_to"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "mailfrom_host",
+            "label": "Mailfrom Host",
+            "description": "The hostname to update to. Must be in lower case",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "mailfrom_host"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "message_ttl",
+            "label": "Message Ttl",
+            "description": "Specifies the time-to-live (TTL) in seconds for retrieving both incoming and outgoing messages. The maximum TTL value is determined by your subscription plan.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "message_ttl"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "require_tls",
+            "label": "Require Tls",
+            "description": "If set to true, this requires messages for the domain only be sent over a TLS connection. If a TLS connection cannot be established, Mailgun will not deliver the message.\n\nIf set to false, Mailgun will still try and upgrade the connection, but if Mailgun cannot, the message will be delivered over a plaintext SMTP connection.\n\nThe default value is false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "require_tls"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "skip_verification",
+            "label": "Skip Verification",
+            "description": "If set to true, the certificate and hostname will not be verified when trying to establish a TLS connection and Mailgun will accept any certificate during delivery of a message.\n\nIf set to false, Mailgun will verify the certificate and hostname. If either one can not be verified, a TLS connection will not be established.\n\nThe default value is false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "skip_verification"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "smtp_password",
+            "label": "Smtp Password",
+            "description": "Updates the domain's SMTP credentials with the given string",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "smtp_password"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "spam_action",
+            "label": "Spam Action",
+            "description": "Updates the domain's spam action. Valid values are 'disabled', 'tag', and 'block'",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "spam_action"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "use_automatic_sender_security",
+            "label": "Use Automatic Sender Security",
+            "description": "Enable or disable Automatic Sender Security. If enabled, requires setting DNS CNAME entries for DKIM keys instead of a TXT record. Domain must be reverified after changing this field. Defaults to false",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "use_automatic_sender_security"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "webhooks_redact_pii",
+            "label": "Webhooks Redact Pii",
+            "description": "If set to true, Personally Identifiable Information (PII) will be redacted from the payload of any webhook posted for this domain",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "webhooks_redact_pii"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "web_scheme",
+            "label": "Web Scheme",
+            "description": "Updates your open, click and unsubscribe URLs to use http or https. Value either `http` or `https`. Defaults to http. In order for https to work, you must have a valid cert created for your domain. See Domain Tracking for TLS cert generation.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "web_scheme"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "web_prefix",
+            "label": "Web Prefix",
+            "description": "This updates the web prefix used for a domain's tracking features.  Must be a valid atom. Nothing will be updated if omitted. This impacts click, open, and unsubscribe tracking features. \n\n Note: Updating the web prefix for a domain will require also updating the domain's DNS to include the CNAME record to match. For example, if you set the web prefix to `zed` for the domain `my-domain.com`, the corresponding CNAME `zed.my-domain.com` will need to be created in your domain's dns zone.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "web_prefix"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "wildcard",
+            "label": "Wildcard",
+            "description": "Updates the domain's wildcard status with the given boolean",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "wildcard"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -14550,10 +15689,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "id",
+            "label": "Identifiant",
+            "description": "Webhook type to create.",
             "col": {
               "xs": 24
             },
@@ -14561,7 +15700,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "url(s) for webhooks to be sent to. Use multiple times to associate more than one url. Maximum of 3 urls for a given webhook type.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "url"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -14720,10 +15881,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "New url(s) to associate to webhook. Use multiple times to associate more than one url. Maximum of 3 urls for a given type.",
             "col": {
               "xs": 24
             },
@@ -14731,7 +15892,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "url"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -14876,10 +16041,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "The webhook URL to update",
             "col": {
               "xs": 24
             },
@@ -14887,7 +16052,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "event_types",
+            "label": "Event Types",
+            "description": "Event types to associate with this URL. Use multiple times to specify multiple event types. This replaces the existing associations.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "event_types"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -14954,10 +16141,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "The webhook URL that will receive POST requests",
             "col": {
               "xs": 24
             },
@@ -14965,7 +16152,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "event_types",
+            "label": "Event Types",
+            "description": "Event types. Use multiple times to specify multiple event types.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "event_types"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -15502,10 +16711,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "add_ip",
+            "label": "Add Ip",
+            "description": "IP(s) to add to the pool",
             "col": {
               "xs": 24
             },
@@ -15513,7 +16722,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "add_ip"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "remove_ip",
+            "label": "Remove Ip",
+            "description": "IP(s) to remove from the pool",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "remove_ip"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -15628,17 +16859,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -16074,10 +17295,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "event_type",
+            "label": "Event Type",
+            "description": "The type of event for which you would like to receive alerts.",
             "col": {
               "xs": 24
             },
@@ -16085,7 +17306,103 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "event_type"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "description": "Alert channel type.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "channel"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "settings_url",
+            "label": "URL",
+            "description": "For webhook channel.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "settings",
+              "url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "settings_emails",
+            "label": "Settings Emails",
+            "description": "For email channel",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "settings_emails"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "settings_channel_ids",
+            "label": "Settings Channel Ids",
+            "description": "For slack channel",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "settings_channel_ids"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "settings_disabled_channel_ids",
+            "label": "Ids",
+            "description": "List of disabled Slack channels.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "settings",
+              "disabled_channel_ids"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -16152,10 +17469,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "event_type",
+            "label": "Event Type",
+            "description": "The type of event for which you would like to receive alerts.",
             "col": {
               "xs": 24
             },
@@ -16163,7 +17480,103 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "event_type"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "channel",
+            "label": "Canal",
+            "description": "Alert channel type.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "channel"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "settings_url",
+            "label": "URL",
+            "description": "For webhook channel.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "settings",
+              "url"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "settings_emails",
+            "label": "Settings Emails",
+            "description": "For email channel",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "settings_emails"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "settings_channel_ids",
+            "label": "Settings Channel Ids",
+            "description": "For slack channel",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "settings_channel_ids"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "settings_disabled_channel_ids",
+            "label": "Ids",
+            "description": "List of disabled Slack channels.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "settings",
+              "disabled_channel_ids"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -16280,13 +17693,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "webhooks_redact_pii",
+            "label": "Webhooks Redact Pii",
+            "description": "JSON object encoded as a string",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "webhooks_redact_pii"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "ai_insights",
+            "label": "Ai Insights",
+            "description": "JSON object encoded as a string",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "ai_insights"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -16353,13 +17793,94 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "email_preview",
+            "label": "Email Preview",
+            "description": "JSON object encoded as a string",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "email_preview"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "inbox_placement",
+            "label": "Inbox Placement",
+            "description": "JSON object encoded as a string",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "inbox_placement"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "sending",
+            "label": "Sending",
+            "description": "JSON object encoded as a string",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "sending"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "validations",
+            "label": "Validations",
+            "description": "JSON object encoded as a string",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "validations"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "validations_bulk",
+            "label": "Validations Bulk",
+            "description": "JSON object encoded as a string",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "validations_bulk"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -17135,17 +18656,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -17210,10 +18721,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "content_type",
+            "label": "Type",
+            "description": "Content-Type must be `multipart/form-data`",
             "col": {
               "xs": 24
             },
@@ -17221,7 +18732,26 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "file",
+            "label": "File",
+            "description": "CSV file",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "file"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -17288,10 +18818,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "content_type",
+            "label": "Type",
+            "description": "Content-Type must be `multipart/form-data`",
             "col": {
               "xs": 24
             },
@@ -17299,7 +18829,26 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "file",
+            "label": "File",
+            "description": "CSV file",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "file"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -17366,10 +18915,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "content_type",
+            "label": "Type",
+            "description": "Content-Type must be `multipart/form-data`",
             "col": {
               "xs": 24
             },
@@ -17377,7 +18926,26 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "file",
+            "label": "File",
+            "description": "CSV file",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "file"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -17444,10 +19012,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "content_type",
+            "label": "Type",
+            "description": "Content-Type must be `multipart/form-data`",
             "col": {
               "xs": 24
             },
@@ -17455,7 +19023,26 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "file",
+            "label": "File",
+            "description": "CSV file",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "file"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -17606,10 +19193,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "A user-friendly name for the limit.",
             "col": {
               "xs": 24
             },
@@ -17617,7 +19204,137 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metric",
+            "label": "Metric",
+            "description": "Limit Metric",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metric"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comparator",
+            "label": "Comparator",
+            "description": "Metric Comparator",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comparator"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "limit",
+            "label": "Limit",
+            "description": "The threshold limit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dimension",
+            "label": "Dimension",
+            "description": "Dimension",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimension"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filters",
+            "label": "Filters",
+            "description": "A list of filters to apply to the limit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "period",
+            "label": "Period",
+            "description": "The time period for the metric aggregation in the format of '1h' '1d'.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "period"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "A description of what the limit does.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -17748,10 +19465,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "metric",
+            "label": "Metric",
+            "description": "Limit Metric",
             "col": {
               "xs": 24
             },
@@ -17759,7 +19476,119 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "metric"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comparator",
+            "label": "Comparator",
+            "description": "Metric Comparator",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comparator"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "limit",
+            "label": "Limit",
+            "description": "The threshold limit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dimension",
+            "label": "Dimension",
+            "description": "Dimension",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimension"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filters",
+            "label": "Filters",
+            "description": "A list of filters to apply to the limit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filters"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "period",
+            "label": "Period",
+            "description": "The time period for the metric aggregation in the format of '1h' '1d'.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "period"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "A description of what the limit does.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -17876,13 +19705,94 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "address",
+            "label": "Address",
+            "description": "A valid email address for the mailing list, e.g. developers@mailgun.net, or Developers <devs@mg.net>",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "address"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Mailing list name, e.g. Developers",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "A description",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "access_level",
+            "label": "Access Level",
+            "description": "List access level, one of: readonly, members, everyone. Defaults to readonly",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "access_level"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "reply_preference",
+            "label": "Reply Preference",
+            "description": "Set where replies should go: list or sender. Defaults to list",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "reply_preference"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -18026,13 +19936,112 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "address",
+            "label": "Address",
+            "description": "The new mailing list address.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "address"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Renseignez description.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Renseignez nom.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "access_level",
+            "label": "Access Level",
+            "description": "One of: readonly, members, everyone. Defaults to readonly.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "access_level"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "reply_reference",
+            "label": "Reply Reference",
+            "description": "Set where replies should go. Can be list or sender. Defaults to list.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "reply_reference"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "list_id",
+            "label": "List Id",
+            "description": "Renseignez list id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "list_id"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -18213,10 +20222,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "start",
+            "label": "Start",
+            "description": "The start date (default: 1 day before current time). Must be in RFC 2822 format: https://datatracker.ietf.org/doc/html/rfc2822.html#page-14",
             "col": {
               "xs": 24
             },
@@ -18224,7 +20233,194 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "start"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "end",
+            "label": "End",
+            "description": "The end date (default: current time). Must be in RFC 2822 format: https://datatracker.ietf.org/doc/html/rfc2822.html#page-14",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "end"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "duration",
+            "label": "Duration",
+            "description": "A duration in the format of '1d' '2h'. If duration is provided then it is calculated from the end date and overwrites the start date.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "duration"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "events",
+            "label": "Events",
+            "description": "The set of events to include.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "events"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "metric_events",
+            "label": "Metric Events",
+            "description": "Optional set of analytics metric events. Will be converted into corresponding events.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metric_events"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filter_and",
+            "label": "Filter And",
+            "description": "Renseignez filter and.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filter_and"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "include_subaccounts",
+            "label": "Include Subaccounts",
+            "description": "Include logs from all subaccounts.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "include_subaccounts"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "include_totals",
+            "label": "Include Totals",
+            "description": "Include total number of log entries.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "include_totals"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pagination_sort",
+            "label": "Sort",
+            "description": "Colon-separated value indicating column name and sort direction e.g. 'timestamp:desc'.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "sort"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pagination_token",
+            "label": "Token",
+            "description": "A token to the requested page.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "token"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "pagination_limit",
+            "label": "Limit",
+            "description": "The maximum number of items returned (100 max).",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "limit"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -18504,13 +20700,94 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "address",
+            "label": "Address",
+            "description": "Valid email address specification.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "address"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "An optional member name.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "vars",
+            "label": "Vars",
+            "description": "JSON-encoded dictionary string with arbitrary parameters.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "vars"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "subscribed",
+            "label": "Subscribed",
+            "description": "Set the member as subscribed or not. Defaults to true.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "subscribed"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "upsert",
+            "label": "Upsert",
+            "description": "Set to True to update member if present, False to raise error in case of a duplicate member. Defaults to false.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "upsert"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -18669,13 +20946,76 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "address",
+            "label": "Address",
+            "description": "A valid email address specification.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "address"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "An optional member name.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "vars",
+            "label": "Vars",
+            "description": "JSON-encoded dictionary string with arbitrary parameters.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "vars"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "subscribed",
+            "label": "Subscribed",
+            "description": "Set the member to subscribed or not. Defaults to True.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "subscribed"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -18820,13 +21160,58 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "subscribed",
+            "label": "Subscribed",
+            "description": "Renseignez subscribed.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "subscribed"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "upsert",
+            "label": "Upsert",
+            "description": "Renseignez upsert.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "upsert"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "members",
+            "label": "Members",
+            "description": "Absolute path to the CSV file",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "members"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -18980,10 +21365,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "from",
+            "label": "From",
+            "description": "Email address of the `From` header. Can include a friendly name using the format `\"Friendly Name <email@domain.com>\"`. Note: not required if sending with a template that has a pre-set From header, but will override the template's From header if provided.",
             "col": {
               "xs": 24
             },
@@ -18991,7 +21376,641 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "from"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "to",
+            "label": "To",
+            "description": "Email address of the recipient(s). Supports friendly name format. Example: `\"Bob <bob@host.com>\"`. Use commas to separate multiple recipients. Duplicate addresses are automatically ignored.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "to"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "cc",
+            "label": "Cc",
+            "description": "Same as `to` but for carbon copy recipients. Supports friendly name format.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "cc"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "bcc",
+            "label": "Bcc",
+            "description": "Same as `to` but for blind carbon copy recipients. Supports friendly name format.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "bcc"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "subject",
+            "label": "Sujet",
+            "description": "Message subject. Note: not required if sending with a template that has a pre-set Subject header, but it will override it if provided.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "subject"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "description": "Body of the message (text version)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "text"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "html",
+            "label": "HTML",
+            "description": "Body of the message (HTML version)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "html"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "amp_html",
+            "label": "Amp Html",
+            "description": "AMP part of the message.  Please follow Google guidelines to compose and send AMP emails",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "amp_html"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "attachment",
+            "label": "Attachment",
+            "description": "File attachment.  You can post multiple `attachment` values.  **Important:** You must use `multipart/form-data` encoding for sending attachments",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "attachment"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "inline",
+            "label": "Inline",
+            "description": "Attachment with `inline` disposition.  Can be used to send inline images (see example). You can post multiple `inline` values",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "inline"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "template",
+            "label": "Template",
+            "description": "Name of a template stored via the Templates API to use to render the email body. See [Templates](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-templates) for more information",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "template"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "t_version",
+            "label": "T Version",
+            "description": "Render a specific version of the given template instead of the latest version. `template` option must also be provided.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "t_version"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "t_text",
+            "label": "T Text",
+            "description": "Generates a plain text version of the template alongside the HTML version when sending templated emails. When set to 'yes', instructs Mailgun to create a text/plain MIME part based on the template content, ensuring compatibility with email clients that don't support HTML or have HTML rendering disabled. This improves email deliverability and accessibility by providing a fallback text version in multipart emails.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "t_text"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "t_variables",
+            "label": "T Variables",
+            "description": "A valid JSON-encoded dictionary used as the input for template variable expansion.  See [Templates](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-templates) for more information",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "t_variables"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "o_tag",
+            "label": "O Tag",
+            "description": "Tag string.  See [Tagging](https://documentation.mailgun.com/docs/mailgun/user-manual/tracking-messages/track-tagging) for more information",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tag"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_dkim",
+            "label": "O Dkim",
+            "description": "Enables or disables DKIM signatures on a per-message basis. Overrides the domain-level DKIM setting for this specific message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_dkim"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_secondary_dkim",
+            "label": "O Secondary Dkim",
+            "description": "Specify a second domain key to sign the email with. The value is formatted as `signing_domain/selector`, e.g. `example.com/s1`. This tells Mailgun to sign the message with the signing domain `example.com` using the selector `s1`. Note: the domain key specified must have been previously created and activated.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_secondary_dkim"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_secondary_dkim_public",
+            "label": "O Secondary Dkim Public",
+            "description": "Specify an alias of the domain key specified in `o:secondary-dkim`. Also formatted as `public_signing_domain/selector`. `o:secondary-dkim` option must also be provided. Mailgun will sign the message with the provided key of the secondary DKIM, but use the public secondary DKIM name and selector. Note: We will perform a DNS check prior to signing the message to ensure the public keys matches the secondary DKIM.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_secondary_dkim_public"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_deliverytime",
+            "label": "O Deliverytime",
+            "description": "Specifies the scheduled delivery time in [RFC-2822 format](https://documentation.mailgun.com/docs/mailgun/api-reference/api-overview#date-format). Depending on your plan, you can schedule messages up to 3 or 7 days in advance. If your domain has a custom message_ttl (time-to-live) setting, this value determines the maximum scheduling duration. Example: 'Fri, 14 Oct 2011 12:00:00 +0000'",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_deliverytime"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_deliver_within",
+            "label": "O Deliver Within",
+            "description": "Specifies the maximum time window for delivering the message. Accepts values in format `[0-9]+h[0-9]+m` (e.g., `1h30m`, `30m`, `24h`), with a minimum of `5m` and maximum of `24h`. For scheduled messages, the delivery window starts from the scheduled time. The standard retry schedule applies within this window, so shorter timeframes may result in fewer delivery attempts.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_deliver_within"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_deliverytime_optimize_period",
+            "label": "O Deliverytime Optimize Period",
+            "description": "Toggles Send Time Optimization (STO) on a per-message basis.  String should be set to the number of hours in `[0-9]+h` format, with the minimum being `24h` and the maximum being `72h`.  This value defines the time window in which Mailgun will run the optimization algorithm based on prior engagement data of a given recipient. See [Sending a Message with STO](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-sto) for details. *Please note that STO is only available on certain plans. See www.mailgun.com/pricing for more info*",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_deliverytime_optimize_period"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_time_zone_localize",
+            "label": "O Time Zone Localize",
+            "description": "Toggles Timezone Optimization (TZO) on a per message basis. String should be set to preferred delivery time in `HH:mm` or `hh:mmaa` format, where `HH:mm` is used for 24 hour format without AM/PM and hh:mmaa is used for 12 hour format with AM/PM. See [Sending a Message with TZO](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-tzo) for details. *Please note that TZO is only available on certain plans. See www.mailgun.com/pricing for more info*",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_time_zone_localize"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_testmode",
+            "label": "O Testmode",
+            "description": "Enables sending in test mode. Messages are processed normally but not actually delivered to recipients. Useful for testing without sending real emails. See [Sending in Test Mode](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/test-mode)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_testmode"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_tracking",
+            "label": "O Tracking",
+            "description": "Toggles both click and open tracking on a per-message basis",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tracking"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_tracking_clicks",
+            "label": "O Tracking Clicks",
+            "description": "Toggles click tracking on a per-message basis, see [Tracking Clicks](https://documentation.mailgun.com/docs/mailgun/user-manual/tracking-messages/tracking-clicks).  This overrides the domain-level click tracking setting.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tracking_clicks"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_tracking_opens",
+            "label": "O Tracking Opens",
+            "description": "Toggles opens tracking on a per-message basis, see [Tracking Opens](https://documentation.mailgun.com/docs/mailgun/user-manual/tracking-messages/tracking-opens).  Has higher priority than domain-level setting.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tracking_opens"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_require_tls",
+            "label": "O Require Tls",
+            "description": "When set to 'yes', requires the message to be sent only over a TLS connection to the Email Service Provider. If TLS cannot be established, the message will not be delivered. When set to 'no' (default), Mailgun attempts TLS but falls back to plaintext SMTP if needed.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_require_tls"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_skip_verification",
+            "label": "O Skip Verification",
+            "description": "If `true`, the certificate and hostname of the resolved MX Host will not be verified when trying to establish a TLS connection. If `false`, Mailgun will verify the certificate and hostname. If either one can not be verified, a TLS connection will not be established. The default is `false`",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_skip_verification"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_sending_ip",
+            "label": "O Sending Ip",
+            "description": "Used to specify an IP Address to send an email that is owned by your account",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_sending_ip"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_sending_ip_pool",
+            "label": "O Sending Ip Pool",
+            "description": "If an IP Pool ID is provided, the email will be delivered with an IP that belongs in that pool",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_sending_ip_pool"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_tracking_pixel_location_top",
+            "label": "O Tracking Pixel Location Top",
+            "description": "Places the tracking pixel at the top of emails instead of the bottom. Useful for long emails that may be truncated or have rendering issues, ensuring open tracking works accurately.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tracking_pixel_location_top"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_archive_to",
+            "label": "O Archive To",
+            "description": "Sends a copy of successfully delivered messages to the specified URL via HTTP POST. The request uses Content-Type: application/mime and contains the exact message the recipient's SMTP server received. NOTE: These are accounted for and billed as delivered messages",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_archive_to"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_suppress_headers",
+            "label": "O Suppress Headers",
+            "description": "Removes specified X-Mailgun headers from the delivered message. Provide header names separated by commas (e.g., 'X-Mailgun-Variables,X-Mailgun-Tag') or use 'all' to remove all X-Mailgun headers.Note: X-Mailgun-Sid header is currently used to process complains received via feedback loops.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_suppress_headers"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "h_x_my_header",
+            "label": "H X My Header",
+            "description": "Adds custom headers to the email. Use 'h:' prefix followed by header name and value. Example: 'h:X-Custom-Header=my-value'",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "h_x_my_header"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "v_my_var",
+            "label": "V My Var",
+            "description": "Attaches custom data to the message using the 'v:' prefix followed by a variable name. When sending with templates, provides values for template variable substitution (overridden by 't:variables' if both are provided). When not using templates, treated as metadata and included in events/webhooks. Variables are visible in the delivered email's X-Mailgun-Variables header. Example: 'v:user-id=123'. NOTE: Anything over 4KB will be truncated in the event/webhooks.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "v_my_var"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "recipient_variables",
+            "label": "Recipient Variables",
+            "description": "A JSON-encoded dictionary for batch sending with personalized variables per recipient. Each key is a recipient email address, each value is a dictionary of variables for that recipient. Variables can be referenced in the message using %recipient.variablename%. Example: '{\"alice@example.com\": {\"name\":\"Alice\", \"id\":1}, \"bob@example.com\": {\"name\":\"Bob\", \"id\":2}}'. Maximum 1,000 recipients per batch. See [Batch Sending](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/batch-sending) for more information",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "recipient_variables"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -19150,10 +22169,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "to",
+            "label": "To",
+            "description": "Email address of the recipient(s). Supports friendly name format. Example: `\"Bob <bob@host.com>\"`. Use commas to separate multiple recipients. Duplicate addresses are automatically ignored.",
             "col": {
               "xs": 24
             },
@@ -19161,7 +22180,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "to"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -19229,9 +22252,9 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "to",
+            "label": "To",
+            "description": "Email address of the recipient(s). Supports friendly name format. Example: `\"Bob <bob@host.com>\"`. Use commas to separate multiple recipients. Duplicate addresses are automatically ignored.",
             "col": {
               "xs": 24
             },
@@ -19239,7 +22262,497 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "to"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "message",
+            "label": "Message",
+            "description": "MIME string of the message.  Make sure to use `multipart/form-data` content type to send this as a file upload",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "message"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "template",
+            "label": "Template",
+            "description": "Name of a template stored via template API to use to render the email body. See [Templates](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-templates) for more information",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "template"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "t_version",
+            "label": "T Version",
+            "description": "Render a specific version of the given template instead of the latest version. `template` option must also be provided.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "t_version"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "t_text",
+            "label": "T Text",
+            "description": "Generates a plain text version of the template alongside the HTML version when sending templated emails. When set to 'yes', instructs Mailgun to create a text/plain MIME part based on the template content, ensuring compatibility with email clients that don't support HTML or have HTML rendering disabled. This improves email deliverability and accessibility by providing a fallback text version in multipart emails.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "t_text"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "t_variables",
+            "label": "T Variables",
+            "description": "A valid JSON-encoded dictionary used as the input for template variable expansion. See [Templates](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-templates) for more information",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "t_variables"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "o_tag",
+            "label": "O Tag",
+            "description": "Tag string.  See [Tags](https://documentation.mailgun.com/docs/mailgun/user-manual/tracking-messages/track-tagging) for more information",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tag"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_dkim",
+            "label": "O Dkim",
+            "description": "Enables or disables DKIM signatures on a per-message basis. Overrides the domain-level DKIM setting for this specific message.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_dkim"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_secondary_dkim",
+            "label": "O Secondary Dkim",
+            "description": "Specify a second domain key to sign the email with. The value is formatted as `signing_domain/selector`, e.g. `example.com/s1`. This tells Mailgun to sign the message with the signing domain `example.com` using the selector `s1`. Note: the domain key specified must have been previously created and activated.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_secondary_dkim"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_secondary_dkim_public",
+            "label": "O Secondary Dkim Public",
+            "description": "Specify an alias of the domain key specified in `o:secondary-dkim`. Also formatted as `public_signing_domain/selector`. `o:secondary-dkim` option must also be provided. Mailgun will sign the message with the provided key of the secondary DKIM, but use the public secondary DKIM name and selector. Note: We will perform a DNS check prior to signing the message to ensure the public keys matches the secondary DKIM.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_secondary_dkim_public"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_deliverytime",
+            "label": "O Deliverytime",
+            "description": "Specifies the scheduled delivery time in [RFC-2822 format](https://documentation.mailgun.com/docs/mailgun/api-reference/api-overview#date-format). Depending on your plan, you can schedule messages up to 3 or 7 days in advance. If your domain has a custom message_ttl (time-to-live) setting, this value determines the maximum scheduling duration. Example: 'Fri, 14 Oct 2011 12:00:00 +0000'",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_deliverytime"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_deliver_within",
+            "label": "O Deliver Within",
+            "description": "Specifies the maximum time window for delivering the message. Accepts values in format `[0-9]+h[0-9]+m` (e.g., `1h30m`, `30m`, `24h`), with a minimum of `5m` and maximum of `24h`. For scheduled messages, the delivery window starts from the scheduled time. The standard retry schedule applies within this window, so shorter timeframes may result in fewer delivery attempts.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_deliver_within"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_deliverytime_optimize_period",
+            "label": "O Deliverytime Optimize Period",
+            "description": "Toggles Send Time Optimization (STO) on a per-message basis.  String should be set to the number of hours in `[0-9]+h` format, with the minimum being `24h` and the maximum being `72h`.  This value defines the time window in which Mailgun will run the optimization algorithm based on prior engagement data of a given recipient.  See [Sending a Message with STO](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-sto) for details. *Please note that STO is only available on certain plans. See www.mailgun.com/pricing for more info*",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_deliverytime_optimize_period"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_time_zone_localize",
+            "label": "O Time Zone Localize",
+            "description": "Toggles Timezone Optimization (TZO) on a per message basis. String should be set to preferred delivery time in `HH:mm` or `hh:mmaa` format, where `HH:mm` is used for 24 hour format without AM/PM and hh:mmaa is used for 12 hour format with AM/PM. See [Sending a Message with TZO](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-tzo) for details.  *Please note that TZO is only available on certain plans. See www.mailgun.com/pricing for more info*",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_time_zone_localize"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_testmode",
+            "label": "O Testmode",
+            "description": "Enables sending in test mode. Messages are processed normally but not actually delivered to recipients. Useful for testing without sending real emails. See [Sending in Test Mode](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/test-mode)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_testmode"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_tracking",
+            "label": "O Tracking",
+            "description": "Toggles both click and open tracking on a per-message basis, see [Tracking Messages](https://documentation.mailgun.com/docs/mailgun/user-manual/tracking-messages) for details.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tracking"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_tracking_clicks",
+            "label": "O Tracking Clicks",
+            "description": "Toggles click tracking on a per-message basis, see [Tracking Clicks](https://documentation.mailgun.com/docs/mailgun/user-manual/tracking-messages/tracking-clicks).  This overrides the domain-level click tracking setting",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tracking_clicks"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_tracking_opens",
+            "label": "O Tracking Opens",
+            "description": "Toggles opens tracking on a per-message basis, see [Tracking Opens](https://documentation.mailgun.com/docs/mailgun/user-manual/tracking-messages/tracking-opens). Has higher priority than domain-level setting.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tracking_opens"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_require_tls",
+            "label": "O Require Tls",
+            "description": "When set to 'yes', requires the message to be sent only over a TLS connection. If TLS cannot be established, the message will not be delivered. When set to 'no' (default), Mailgun attempts TLS but falls back to plaintext SMTP if needed.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_require_tls"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_skip_verification",
+            "label": "O Skip Verification",
+            "description": "When set to 'true', skips certificate and hostname verification for TLS connections. When 'false' (default), Mailgun verifies certificates and hostnames - if verification fails, TLS connection is not established.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_skip_verification"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_sending_ip",
+            "label": "O Sending Ip",
+            "description": "Used to specify an IP Address to send an email that is owned by your account",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_sending_ip"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_sending_ip_pool",
+            "label": "O Sending Ip Pool",
+            "description": "If an IP Pool ID is provided, the email will be delivered with an IP that belongs in that pool",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_sending_ip_pool"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_tracking_pixel_location_top",
+            "label": "O Tracking Pixel Location Top",
+            "description": "Places the tracking pixel at the top of emails instead of the bottom. Useful for long emails that may be truncated or have rendering issues, ensuring open tracking works accurately.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_tracking_pixel_location_top"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_archive_to",
+            "label": "O Archive To",
+            "description": "Sends a copy of successfully delivered messages to the specified URL via HTTP POST. The request uses Content-Type: application/mime and contains the exact message the recipient's SMTP server received. NOTE: These are accounted for and billed as delivered messages",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_archive_to"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "o_suppress_headers",
+            "label": "O Suppress Headers",
+            "description": "Removes specified X-Mailgun headers from the delivered message. Provide header names separated by commas (e.g., 'X-Mailgun-Variables,X-Mailgun-Tag') or use 'all' to remove all X-Mailgun headers.Note: X-Mailgun-Sid header is currently used to process complains received via feedback loops.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "o_suppress_headers"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "h_x_my_header",
+            "label": "H X My Header",
+            "description": "Adds custom headers to the email. Use 'h:' prefix followed by header name and value. Example: 'h:X-Custom-Header=my-value'",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "h_x_my_header"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "v_my_var",
+            "label": "V My Var",
+            "description": "Attaches custom data to the message using the 'v:' prefix followed by a variable name. When sending with templates, provides values for template variable substitution (overridden by 't:variables' if both are provided). When not using templates, treated as metadata and included in events/webhooks. Variables are visible in the delivered email's X-Mailgun-Variables header. Example: 'v:user-id=123'.NOTE: Anything over 4KB will be truncated in the event/webhooks",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "v_my_var"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "recipient_variables",
+            "label": "Recipient Variables",
+            "description": "A JSON-encoded dictionary for batch sending with personalized variables per recipient. Each key is a recipient email address, each value is a dictionary of variables for that recipient. Variables can be referenced in the message using %recipient.variablename%. Example: '{\"alice@example.com\": {\"name\":\"Alice\", \"id\":1}, \"bob@example.com\": {\"name\":\"Bob\", \"id\":2}}'. Maximum 1,000 recipients per batch. See [Batch Sending](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/batch-sending) for more information.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "recipient_variables"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -19292,10 +22805,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "start",
+            "label": "Start",
+            "description": "A start date (default: 7 days before current time). Must be in RFC 2822 format: https://datatracker.ietf.org/doc/html/rfc2822.html#page-14",
             "col": {
               "xs": 24
             },
@@ -19303,7 +22816,155 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "start"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "end",
+            "label": "End",
+            "description": "An end date (default: current time). Must be in RFC 2822 format: https://datatracker.ietf.org/doc/html/rfc2822.html#page-14",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "end"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "resolution",
+            "label": "Resolution",
+            "description": "A resolution in the format of 'day' 'hour' 'month'. Default is day.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "resolution"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "duration",
+            "label": "Duration",
+            "description": "A duration in the format of '1d' '2h' '2m'. If duration is provided then it is calculated from the end date and overwrites the start date.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "duration"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "dimensions",
+            "label": "Dimensions",
+            "description": "Attributes of the metric data such as 'subaccount'.  See [dimensions](https://documentation.mailgun.com/docs/mailgun/user-manual/reporting/dimensions)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimensions"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "metrics",
+            "label": "Metrics",
+            "description": "Name of the metrics to receive the stats for such as 'processed_count'. See [metrics](https://documentation.mailgun.com/docs/mailgun/user-manual/reporting/metric-definitions)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metrics"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filter_and",
+            "label": "Filter And",
+            "description": "Renseignez filter and.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filter_and"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "include_subaccounts",
+            "label": "Include Subaccounts",
+            "description": "Include stats from all subaccounts.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "include_subaccounts"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "include_aggregates",
+            "label": "Include Aggregates",
+            "description": "Include top-level aggregate metrics.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "include_aggregates"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -19356,10 +23017,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "start",
+            "label": "Start",
+            "description": "A start date (default: 7 days before current time). Must be in RFC 2822 format: https://datatracker.ietf.org/doc/html/rfc2822.html#page-14",
             "col": {
               "xs": 24
             },
@@ -19367,7 +23028,155 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "start"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "end",
+            "label": "End",
+            "description": "An end date (default: current time). Must be in RFC 2822 format: https://datatracker.ietf.org/doc/html/rfc2822.html#page-14",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "end"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "resolution",
+            "label": "Resolution",
+            "description": "A resolution in the format of 'day' 'hour' 'month'. Default is day.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "resolution"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "duration",
+            "label": "Duration",
+            "description": "A duration in the format of '1d' '2h' '2m'. If duration is provided then it is calculated from the end date and overwrites the start date.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "duration"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "dimensions",
+            "label": "Dimensions",
+            "description": "Attributes of the metric data such as 'subaccount'.  See [dimensions](https://documentation.mailgun.com/docs/mailgun/user-manual/reporting/dimensions)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimensions"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "metrics",
+            "label": "Metrics",
+            "description": "Name of the metrics to receive the stats for such as 'processed_count'.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metrics"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filter_and",
+            "label": "Filter And",
+            "description": "Renseignez filter and.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filter_and"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "include_subaccounts",
+            "label": "Include Subaccounts",
+            "description": "Include stats from all subaccounts.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "include_subaccounts"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "include_aggregates",
+            "label": "Include Aggregates",
+            "description": "Include top-level aggregate metrics.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "include_aggregates"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -19420,10 +23229,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "start",
+            "label": "Start",
+            "description": "Renseignez start.",
             "col": {
               "xs": 24
             },
@@ -19431,7 +23240,194 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "start"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "end",
+            "label": "End",
+            "description": "Renseignez end.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "end"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "resolution",
+            "label": "Resolution",
+            "description": "Resolution of the metrics.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "resolution"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "duration",
+            "label": "Duration",
+            "description": "A duration in the format of '48h' '60m' '30s'. If duration is provided then it is calculated from the end date and overwrites the start date.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "duration"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "dimensions",
+            "label": "Dimensions",
+            "description": "Dimensions.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimensions"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "metrics",
+            "label": "Metrics",
+            "description": "Metrics to return. See example.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metrics"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "filter_and",
+            "label": "Filter And",
+            "description": "Renseignez filter and.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filter_and"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "include_subaccounts",
+            "label": "Include Subaccounts",
+            "description": "Include stats from all subaccounts.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "include_subaccounts"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "pagination_sort",
+            "label": "Sort",
+            "description": "Colon-separated value indicating column name and sort direction e.g. 'entity-name:asc'.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "sort"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "pagination_skip",
+            "label": "Skip",
+            "description": "The number of items to skip over when satisfying the request. To get the first page of data set skip to zero. Then increment the skip by the limit for subsequent calls.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "skip"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "pagination_limit",
+            "label": "Limit",
+            "description": "The maximum number of items returned in the response.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "pagination",
+              "limit"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -19866,10 +23862,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "pool",
+            "label": "Pool",
+            "description": "The name of the Dynamic IP pool to override the domain with. Must be a valid pool name (ex: dynamic_good, dynamic_new, etc.)",
             "col": {
               "xs": 24
             },
@@ -19877,7 +23873,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "pool"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -20472,17 +24472,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -20611,10 +24601,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "rotation_enabled",
+            "label": "Rotation Enabled",
+            "description": "If true, enables DKIM Auto-Rotation. If false, disables it",
             "col": {
               "xs": 24
             },
@@ -20622,7 +24612,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "rotation_enabled"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "rotation_interval",
+            "label": "Rotation Interval",
+            "description": "The interval at which to rotate keys. Example, '5d' for five days",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "rotation_interval"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -20675,13 +24687,76 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Smaller number indicates higher priority. Higher priority routes are handled first. Defaults to 0.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "priority"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "An arbitrary string.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "expression",
+            "label": "Expression",
+            "description": "The filtering rule.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "expression"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "action",
+            "label": "Action",
+            "description": "This action is executed when the expression evaluates to True. You can pass multiple parameters.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "action"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -20880,13 +24955,76 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "priority",
+            "label": "Priority",
+            "description": "Smaller number indicates higher priority. Higher priority routes are handled first.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "priority"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "An arbitrary string.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "expression",
+            "label": "Expression",
+            "description": "The filtering rule.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "expression"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "action",
+            "label": "Action",
+            "description": "This action is executed when the expression evaluates to True. You can pass multiple parameters.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "action"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -21114,17 +25252,7 @@
           "layout": "vertical",
           "labelsOnTop": true
         },
-        "fields": [
-          {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
-            "col": {
-              "xs": 24
-            }
-          }
-        ],
+        "fields": [],
         "displayTitle": false,
         "displayDescription": false
       },
@@ -21175,10 +25303,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "token",
+            "label": "Token",
+            "description": "Renseignez token.",
             "col": {
               "xs": 24
             },
@@ -21186,7 +25314,65 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "token"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "team_id",
+            "label": "Team Id",
+            "description": "Renseignez team id.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "team_id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "team_name",
+            "label": "Team Name",
+            "description": "Renseignez team name.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "team_name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "scope",
+            "label": "Scope",
+            "description": "Renseignez scope.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "scope"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -21738,10 +25924,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Name of the template being stored. Supports utf-8 characters and name will be down cased.",
             "col": {
               "xs": 24
             },
@@ -21749,7 +25935,119 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description of the template being stored",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "createdby",
+            "label": "Createdby",
+            "description": "Optional metadata field api user can indicate who created the template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "createdby"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "template",
+            "label": "Template",
+            "description": "Content of the template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "template"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "tag",
+            "label": "Tag",
+            "description": "Initial tag of the created version. If the template parameter is provided and the tag is missing, the default value `initial` is used.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "tag"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Comment",
+            "description": "Version comment. This is valid only if a new version is being created. (template parameter is provided.)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comment"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "headers",
+            "label": "Headers",
+            "description": "Key value JSON object of headers to be stored with the template. Where key is the header name and value is the header value. The header names `From`, `Subject`, and `Reply-To` are the only ones currently supported.  These headers will be inserted into the MIME at the time we attempt delivery. \n\nHeaders set at the message level will override headers set on the template. e.g. Setting the From header at the time of sending will override the From header saved on the template. Additionally, headers generated by templates are not reflected on the accepted event as they are not prepended to the message until the message is prepped for delivery. if a From header is not provided either in the message or template, we will default to `postmaster@your-sending-domain.tld`",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "headers"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -21981,10 +26279,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Update description of the template being updated.",
             "col": {
               "xs": 24
             },
@@ -21992,7 +26290,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22200,10 +26502,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "name",
+            "label": "Nom",
+            "description": "Name of the template being stored. Supports utf-8 characters and name will be down cased.",
             "col": {
               "xs": 24
             },
@@ -22211,7 +26513,119 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "name"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description of the template being stored",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "createdby",
+            "label": "Createdby",
+            "description": "Optional metadata field api user can indicate who created the template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "createdby"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "template",
+            "label": "Template",
+            "description": "Content of the template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "template"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "tag",
+            "label": "Tag",
+            "description": "Initial tag of the created version. If the template parameter is provided and the tag is missing, the default value `initial` is used.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "tag"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Comment",
+            "description": "Version comment. This is valid only if a new version is being created. (template parameter is provided.)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comment"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "headers",
+            "label": "Headers",
+            "description": "Key value JSON object of headers to be stored with the template. Where key is the header name and value is the header value. The header names `From`, `Subject`, and `Reply-To` are the only ones currently supported.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "headers"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22400,10 +26814,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Update description of the template being updated.",
             "col": {
               "xs": 24
             },
@@ -22411,7 +26825,11 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22528,10 +26946,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "event_type",
+            "label": "Event Type",
+            "description": "Renseignez event type.",
             "col": {
               "xs": 24
             },
@@ -22539,7 +26957,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "event_type"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "Renseignez url.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "url"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22592,10 +27032,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "event_type",
+            "label": "Event Type",
+            "description": "Renseignez event type.",
             "col": {
               "xs": 24
             },
@@ -22603,7 +27043,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "event_type"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "emails",
+            "label": "Emails",
+            "description": "Renseignez emails.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "emails"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -22656,10 +27118,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "event_type",
+            "label": "Event Type",
+            "description": "Renseignez event type.",
             "col": {
               "xs": 24
             },
@@ -22667,7 +27129,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "event_type"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "channel_ids",
+            "label": "Channel Ids",
+            "description": "If omitted would be taken from the event settings",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "channel_ids"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23000,10 +27484,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "content_type",
+            "label": "Type",
+            "description": "Content-Type must be `application/json` if inserting using JSON, no header necessary for form-data insertion",
             "col": {
               "xs": 24
             },
@@ -23011,7 +27495,8 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "in": "header"
           }
         ],
         "displayTitle": false,
@@ -23466,10 +27951,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "template",
+            "label": "Template",
+            "description": "Content of the template.",
             "col": {
               "xs": 24
             },
@@ -23477,7 +27962,83 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "template"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "tag",
+            "label": "Tag",
+            "description": "Tag of the version that is being created. Must be unique to the template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "tag"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Comment",
+            "description": "Comment related to the version that is being created.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comment"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "active",
+            "label": "Active",
+            "description": "If this flag is set to yes, this version becomes active",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "active"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "headers",
+            "label": "Headers",
+            "description": "Key value JSON object of headers to be stored with the template. Where key is the header name and value is the header value. The header names `From`, `Subject`, and `Reply-To` are the only ones currently supported.  These headers will be inserted into the MIME at the time we attempt delivery. \n\nHeaders set at the message level will override headers set on the template. e.g. Setting the From header at the time of sending will override the From header saved on the template. Additionally, headers generated by templates are not reflected on the accepted event as they are not prepended to the message until the message is prepped for delivery. if a From header is not provided either in the message or template, we will default to `postmaster@your-sending-domain.tld`",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "headers"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23664,10 +28225,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "template",
+            "label": "Template",
+            "description": "Content of the template.",
             "col": {
               "xs": 24
             },
@@ -23675,7 +28236,65 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "template"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Comment",
+            "description": "Comment related to the version that is being created.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comment"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "active",
+            "label": "Active",
+            "description": "If this flag is set to yes, this version becomes active",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "active"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "headers",
+            "label": "Headers",
+            "description": "Key value JSON object of headers to be stored with the template. Where key is the header name and value is the header value. The header names `From`, `Subject`, and `Reply-To` are the only ones currently supported.  These headers will be inserted into the MIME at the time we attempt delivery.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "headers"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -23925,10 +28544,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "template",
+            "label": "Template",
+            "description": "Content of the template.",
             "col": {
               "xs": 24
             },
@@ -23936,7 +28555,83 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "template"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "tag",
+            "label": "Tag",
+            "description": "Tag of the version that is being created. Must be unique to the template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "tag"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Comment",
+            "description": "Comment related to the version that is being created.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comment"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "active",
+            "label": "Active",
+            "description": "If this flag is set to yes, this version becomes active",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "active"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "headers",
+            "label": "Headers",
+            "description": "Key value JSON object of headers to be stored with the template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "headers"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -24095,10 +28790,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "template",
+            "label": "Template",
+            "description": "Content of the template.",
             "col": {
               "xs": 24
             },
@@ -24106,7 +28801,65 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "template"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "comment",
+            "label": "Comment",
+            "description": "Comment related to the version.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "comment"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "active",
+            "label": "Active",
+            "description": "If this flag is set to yes, this version becomes active",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "active"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "headers",
+            "label": "Headers",
+            "description": "Key value JSON object of headers to be stored with the template.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "headers"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -24296,10 +29049,10 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description for the webhook",
             "col": {
               "xs": 24
             },
@@ -24307,7 +29060,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "event_types",
+            "label": "Event Types",
+            "description": "Event types to subscribe to. Use multiple times to specify multiple event types. Maximum of 3 unique URLs per event type.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "event_types"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL for webhook to be sent to",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "url"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -24506,10 +29299,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "Description for the webhook",
             "col": {
               "xs": 24
             },
@@ -24517,7 +29310,47 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "event_types",
+            "label": "Event Types",
+            "description": "Event types to subscribe to. Use multiple times to specify multiple event types. Maximum of 3 unique URLs per event type.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "event_types"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "URL for webhook to be sent to",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "url"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -24914,10 +29747,10 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "address",
+            "label": "Address",
+            "description": "Valid email address if you would like to allowlist email address (prior over 'domain' parameter)",
             "col": {
               "xs": 24
             },
@@ -24925,7 +29758,29 @@
               {
                 "type": "required"
               }
-            ]
+            ],
+            "bodyPath": [
+              "address"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "domain",
+            "label": "Domain",
+            "description": "Valid domain name if you would like allowlist entire domain name",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "domain"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,

@@ -8,16 +8,21 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.label !== undefined && d.label !== null && d.label !== '') {
+      body["label"] = d.label;
+    }
+    if (d.interest_status_label !== undefined && d.interest_status_label !== null && d.interest_status_label !== '') {
+      body["interest_status_label"] = d.interest_status_label;
+    }
+    if (d.description !== undefined && d.description !== null && d.description !== '') {
+      body["description"] = d.description;
+    }
+    if (d.use_with_ai !== undefined && d.use_with_ai !== null && d.use_with_ai !== '') {
+      body["use_with_ai"] = d.use_with_ai;
     }
 
     log('Requête en cours...');
@@ -37,3 +42,4 @@ module.exports = {
     };
   }
 };
+

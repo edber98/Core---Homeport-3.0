@@ -8,16 +8,57 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.query !== undefined && d.query !== null && d.query !== '') {
+      body["query"] = d.query;
+    }
+    if (d.agent_id !== undefined && d.agent_id !== null && d.agent_id !== '') {
+      body["agent_id"] = d.agent_id;
+    }
+    if (d.user_id !== undefined && d.user_id !== null && d.user_id !== '') {
+      body["user_id"] = d.user_id;
+    }
+    if (d.app_id !== undefined && d.app_id !== null && d.app_id !== '') {
+      body["app_id"] = d.app_id;
+    }
+    if (d.run_id !== undefined && d.run_id !== null && d.run_id !== '') {
+      body["run_id"] = d.run_id;
+    }
+    if (d.metadata !== undefined && d.metadata !== null && d.metadata !== '') {
+      body["metadata"] = d.metadata;
+    }
+    if (d.top_k !== undefined && d.top_k !== null && d.top_k !== '') {
+      body["top_k"] = d.top_k;
+    }
+    if (d.fields !== undefined && d.fields !== null && d.fields !== '') {
+      body["fields"] = d.fields;
+    }
+    if (d.rerank !== undefined && d.rerank !== null && d.rerank !== '') {
+      body["rerank"] = d.rerank;
+    }
+    if (d.keyword_search !== undefined && d.keyword_search !== null && d.keyword_search !== '') {
+      body["keyword_search"] = d.keyword_search;
+    }
+    if (d.output_format !== undefined && d.output_format !== null && d.output_format !== '') {
+      body["output_format"] = d.output_format;
+    }
+    if (d.org_id !== undefined && d.org_id !== null && d.org_id !== '') {
+      body["org_id"] = d.org_id;
+    }
+    if (d.project_id !== undefined && d.project_id !== null && d.project_id !== '') {
+      body["project_id"] = d.project_id;
+    }
+    if (d.filter_memories !== undefined && d.filter_memories !== null && d.filter_memories !== '') {
+      body["filter_memories"] = d.filter_memories;
+    }
+    if (d.categories !== undefined && d.categories !== null && d.categories !== '') {
+      body["categories"] = d.categories;
+    }
+    if (d.only_metadata_based_search !== undefined && d.only_metadata_based_search !== null && d.only_metadata_based_search !== '') {
+      body["only_metadata_based_search"] = d.only_metadata_based_search;
     }
 
     log('Requête en cours...');
@@ -44,3 +85,5 @@ module.exports = {
     };
   }
 };
+
+

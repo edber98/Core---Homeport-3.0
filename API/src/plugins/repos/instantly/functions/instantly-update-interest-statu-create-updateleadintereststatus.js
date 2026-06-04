@@ -8,16 +8,27 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.lead_email !== undefined && d.lead_email !== null && d.lead_email !== '') {
+      body["lead_email"] = d.lead_email;
+    }
+    if (d.interest_value !== undefined && d.interest_value !== null && d.interest_value !== '') {
+      body["interest_value"] = d.interest_value;
+    }
+    if (d.campaign_id !== undefined && d.campaign_id !== null && d.campaign_id !== '') {
+      body["campaign_id"] = d.campaign_id;
+    }
+    if (d.ai_interest_value !== undefined && d.ai_interest_value !== null && d.ai_interest_value !== '') {
+      body["ai_interest_value"] = d.ai_interest_value;
+    }
+    if (d.disable_auto_interest !== undefined && d.disable_auto_interest !== null && d.disable_auto_interest !== '') {
+      body["disable_auto_interest"] = d.disable_auto_interest;
+    }
+    if (d.list_id !== undefined && d.list_id !== null && d.list_id !== '') {
+      body["list_id"] = d.list_id;
     }
 
     log('Requête en cours...');
@@ -37,3 +48,4 @@ module.exports = {
     };
   }
 };
+

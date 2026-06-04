@@ -8,16 +8,38 @@ module.exports = {
     
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.dbname !== undefined && d.dbname !== null && d.dbname !== '') {
+      body["dbname"] = d.dbname;
+    }
+    if (d.collectionname !== undefined && d.collectionname !== null && d.collectionname !== '') {
+      body["collectionname"] = d.collectionname;
+    }
+    if (d.filter !== undefined && d.filter !== null && d.filter !== '') {
+      body["filter"] = d.filter;
+    }
+    if (d.limit !== undefined && d.limit !== null && d.limit !== '') {
+      body["limit"] = d.limit;
+    }
+    if (d.offset !== undefined && d.offset !== null && d.offset !== '') {
+      body["offset"] = d.offset;
+    }
+    if (d.outputfields !== undefined && d.outputfields !== null && d.outputfields !== '') {
+      body["outputfields"] = d.outputfields;
+    }
+    if (d.vector !== undefined && d.vector !== null && d.vector !== '') {
+      body["vector"] = d.vector;
+    }
+    if (d.params_radius !== undefined && d.params_radius !== null && d.params_radius !== '') {
+      if (!body["params"] || typeof body["params"] !== 'object' || Array.isArray(body["params"])) body["params"] = {};
+      body["params"]["radius"] = d.params_radius;
+    }
+    if (d.params_range_filter !== undefined && d.params_range_filter !== null && d.params_range_filter !== '') {
+      if (!body["params"] || typeof body["params"] !== 'object' || Array.isArray(body["params"])) body["params"] = {};
+      body["params"]["range_filter"] = d.params_range_filter;
     }
 
     log('Requête en cours...');
@@ -44,3 +66,4 @@ module.exports = {
     };
   }
 };
+

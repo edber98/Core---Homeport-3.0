@@ -10,16 +10,42 @@ module.exports = {
     reqPath = reqPath.replace('{channel_id}', encodeURIComponent(channel_id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
+    const headers = {};
+
+    const body = {};
+    if (d.author_id !== undefined && d.author_id !== null && d.author_id !== '') {
+      body["author_id"] = d.author_id;
+    }
+    if (d.to !== undefined && d.to !== null && d.to !== '') {
+      body["to"] = d.to;
+    }
+    if (d.cc !== undefined && d.cc !== null && d.cc !== '') {
+      body["cc"] = d.cc;
+    }
+    if (d.bcc !== undefined && d.bcc !== null && d.bcc !== '') {
+      body["bcc"] = d.bcc;
+    }
+    if (d.subject !== undefined && d.subject !== null && d.subject !== '') {
+      body["subject"] = d.subject;
+    }
     if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+      body["body"] = d.body;
+    }
+    if (d.quote_body !== undefined && d.quote_body !== null && d.quote_body !== '') {
+      body["quote_body"] = d.quote_body;
+    }
+    if (d.attachments !== undefined && d.attachments !== null && d.attachments !== '') {
+      body["attachments"] = d.attachments;
+    }
+    if (d.mode !== undefined && d.mode !== null && d.mode !== '') {
+      body["mode"] = d.mode;
+    }
+    if (d.signature_id !== undefined && d.signature_id !== null && d.signature_id !== '') {
+      body["signature_id"] = d.signature_id;
+    }
+    if (d.should_add_default_signature !== undefined && d.should_add_default_signature !== null && d.should_add_default_signature !== '') {
+      body["should_add_default_signature"] = d.should_add_default_signature;
     }
 
     log('Requête en cours...');
@@ -39,3 +65,5 @@ module.exports = {
     };
   }
 };
+
+

@@ -10,16 +10,24 @@ module.exports = {
     reqPath = reqPath.replace('{id}', encodeURIComponent(id));
 
     const query = {};
-    if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.page_size = d.pageSize;
-    if (d.page !== undefined && d.page !== null && d.page !== '') query.page = d.page;
-    if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
 
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    const headers = {};
+
+    const body = {};
+    if (d.id !== undefined && d.id !== null && d.id !== '') {
+      body["id"] = d.id;
+    }
+    if (d.priority !== undefined && d.priority !== null && d.priority !== '') {
+      body["priority"] = d.priority;
+    }
+    if (d.description !== undefined && d.description !== null && d.description !== '') {
+      body["description"] = d.description;
+    }
+    if (d.expression !== undefined && d.expression !== null && d.expression !== '') {
+      body["expression"] = d.expression;
+    }
+    if (d.action !== undefined && d.action !== null && d.action !== '') {
+      body["action"] = d.action;
     }
 
     log('Requête en cours...');
@@ -39,3 +47,4 @@ module.exports = {
     };
   }
 };
+

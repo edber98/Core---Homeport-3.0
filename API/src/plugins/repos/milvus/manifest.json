@@ -864,13 +864,42 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation. Setting this to None indicates that this operation times out when any response returns or an error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -923,13 +952,60 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation. Setting this to None indicates that this operation times out when any response returns or an error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -982,13 +1058,60 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation. Setting this to None indicates that this operation times out when any response returns or an error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1041,13 +1164,130 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "The name of the database. <zilliz>This parameter applies only to dedicated clusters.</zilliz>",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "The name of the collection to create.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "dimension",
+            "label": "Dimension",
+            "description": "The number of dimensions for the vector field of the collection. For performance-optimized CUs, this value ranges from 1 to 32768. For capacity-optimized and cost-optimized CUs, this value ranges from 32 to 32768.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimension"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metrictype",
+            "label": "Metrictype",
+            "description": "The distance metric used for the collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metrictype"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "primaryfield",
+            "label": "Primaryfield",
+            "description": "The primary key field.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "primaryfield"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "vectorfield",
+            "label": "Vectorfield",
+            "description": "The vector field.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "vectorfield"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "The description of the collection",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1100,13 +1340,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "The name of the database.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "The name of the collection to delete.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1159,13 +1426,91 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation in seconds. Setting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "newdbname",
+            "label": "Newdbname",
+            "description": "Renseignez newdbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "newdbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "newcollectionname",
+            "label": "Newcollectionname",
+            "description": "Renseignez newcollectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "newcollectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1218,13 +1563,65 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation in seconds. Setting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1277,13 +1674,60 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation. Setting this to None indicates that this operation times out when any response returns or an error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1336,13 +1780,60 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation in seconds. Setting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1395,13 +1886,60 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation. Setting this to None indicates that this operation times out when any response returns or an error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1454,13 +1992,78 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation.\nSetting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "partitionname",
+            "label": "Partitionname",
+            "description": "Renseignez partitionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "partitionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1513,13 +2116,130 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "The name of the database. <zilliz>This parameter applies only to dedicated clusters.</zilliz>",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "The name of the collection to create.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "dimension",
+            "label": "Dimension",
+            "description": "The number of dimensions for the vector field of the collection. For performance-optimized CUs, this value ranges from 1 to 32768. For capacity-optimized and cost-optimized CUs, this value ranges from 32 to 32768.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimension"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metrictype",
+            "label": "Metrictype",
+            "description": "The distance metric used for the collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metrictype"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "primaryfield",
+            "label": "Primaryfield",
+            "description": "The primary key field.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "primaryfield"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "vectorfield",
+            "label": "Vectorfield",
+            "description": "The vector field.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "vectorfield"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "The description of the collection",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1572,13 +2292,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "The name of the database.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "The name of the collection to delete.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1631,13 +2378,78 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation.\nSetting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "partitionnames",
+            "label": "Partitionnames",
+            "description": "Renseignez partitionnames.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "partitionnames"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1690,13 +2502,78 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation.\nSetting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "partitionnames",
+            "label": "Partitionnames",
+            "description": "Renseignez partitionnames.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "partitionnames"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1749,13 +2626,60 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation.\nSetting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1808,13 +2732,78 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation. Setting this to None indicates that this operation times out when any response returns or an error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "indexname",
+            "label": "Indexname",
+            "description": "Renseignez indexname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "indexname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1867,13 +2856,130 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "The name of the database. <zilliz>This parameter applies only to dedicated clusters.</zilliz>",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "The name of the collection to create.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "dimension",
+            "label": "Dimension",
+            "description": "The number of dimensions for the vector field of the collection. For performance-optimized CUs, this value ranges from 1 to 32768. For capacity-optimized and cost-optimized CUs, this value ranges from 32 to 32768.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dimension"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "metrictype",
+            "label": "Metrictype",
+            "description": "The distance metric used for the collection.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "metrictype"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "primaryfield",
+            "label": "Primaryfield",
+            "description": "The primary key field.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "primaryfield"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "vectorfield",
+            "label": "Vectorfield",
+            "description": "The vector field.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "vectorfield"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "description": "The description of the collection",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "description"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1926,13 +3032,40 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "The name of the database.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "The name of the collection to delete.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -1985,13 +3118,91 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation. Setting this to None indicates that this operation times out when any response returns or an error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "partitionname",
+            "label": "Partitionname",
+            "description": "Renseignez partitionname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "partitionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "data",
+            "label": "Data",
+            "description": "Renseignez data.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "data"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -2044,13 +3255,91 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation.\nSetting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "partitionname",
+            "label": "Partitionname",
+            "description": "Renseignez partitionname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "partitionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "data",
+            "label": "Data",
+            "description": "Renseignez data.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "data"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -2103,13 +3392,91 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation.\nSetting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filter",
+            "description": "Renseignez filter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filter"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "partitionname",
+            "label": "Partitionname",
+            "description": "Renseignez partitionname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "partitionname"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -2162,13 +3529,104 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "number",
+            "key": "request_timeout",
+            "label": "Timeout",
+            "description": "The timeout duration for this operation.\nSetting this to None indicates that this operation timeouts when any response arrives or any error occurs.",
             "col": {
               "xs": 24
-            }
+            },
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "id",
+            "label": "Identifiant",
+            "description": "Renseignez identifiant.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "id"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "outputfields",
+            "label": "Outputfields",
+            "description": "Renseignez outputfields.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "outputfields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "partitionnames",
+            "label": "Partitionnames",
+            "description": "Renseignez partitionnames.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "partitionnames"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -2221,13 +3679,112 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "The name of the database.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "The name of the collection to which this operation applies.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filter",
+            "description": "The filter used to find matches for the search.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filter"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limit",
+            "description": "The maximum number of entities to return.<br/>The sum of this value and that of `offset` should be less than **16384**.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "The number of entities to skip in the search results.<br/>The sum of this value and that of `limit` should be less than **16384**.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "offset"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "outputfields",
+            "label": "Outputfields",
+            "description": "An array of fields to return along with the search results.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "outputfields"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -2280,13 +3837,168 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "The name of the database.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "The name of the collection to which this operation applies.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "filter",
+            "label": "Filter",
+            "description": "The filter used to find matches for the search",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "filter"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limit",
+            "description": "The maximum number of entities to return.<br>The sum of this value of that of `offset` should be less than **1024**.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "offset",
+            "label": "Offset",
+            "description": "The number of entities to skip in the search results.<br>The sum of this value and that of `limit` should not be greater than **1024**.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "offset"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "outputfields",
+            "label": "Outputfields",
+            "description": "An array of fields to return along with the search results.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "outputfields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "json",
+            "key": "vector",
+            "label": "Vector",
+            "description": "The query vector in the form of a list of floating numbers.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "vector"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "params_radius",
+            "label": "Radius",
+            "description": "The angle where the vector with the least similarity resides.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "params",
+              "radius"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "params_range_filter",
+            "label": "Filter",
+            "description": "Used in combination to filter vector field values whose similarity to the query vector falls into a specific range.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "params",
+              "range_filter"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
@@ -2339,13 +4051,313 @@
         },
         "fields": [
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "authorization",
+            "label": "Authorization",
+            "description": "The authentication token should be <include target=\"zilliz\">an API key with appropriate privileges or </include>a pair of colon-joined username and password, like `username:password`.",
             "col": {
               "xs": 24
-            }
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "in": "header"
+          },
+          {
+            "type": "text",
+            "key": "dbname",
+            "label": "Dbname",
+            "description": "Renseignez dbname.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "dbname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "collectionname",
+            "label": "Collectionname",
+            "description": "Renseignez collectionname.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "collectionname"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "partitionnames",
+            "label": "Partitionnames",
+            "description": "Renseignez partitionnames.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "partitionnames"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "search_data",
+            "label": "Data",
+            "description": "Renseignez data.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "search",
+              "data"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "search_annsfield",
+            "label": "Annsfield",
+            "description": "Renseignez annsfield.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "search",
+              "annsfield"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "search_filter",
+            "label": "Filter",
+            "description": "Renseignez filter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "search",
+              "filter"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "search_groupingfield",
+            "label": "Groupingfield",
+            "description": "Renseignez groupingfield.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "search",
+              "groupingfield"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "search_metrictype",
+            "label": "Metrictype",
+            "description": "Renseignez metrictype.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "search",
+              "metrictype"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "search_limit",
+            "label": "Limit",
+            "description": "Renseignez limit.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "search",
+              "limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "search_offset",
+            "label": "Offset",
+            "description": "Renseignez offset.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "search",
+              "offset"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "search_ignoregrowing",
+            "label": "Ignoregrowing",
+            "description": "Renseignez ignoregrowing.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "search",
+              "ignoregrowing"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "search_params_radius",
+            "label": "Radius",
+            "description": "Renseignez radius.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "search",
+              "params",
+              "radius"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "search_params_range_filter",
+            "label": "Filter",
+            "description": "Renseignez filter.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "search",
+              "params",
+              "range_filter"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "rerank_strategy",
+            "label": "Strategy",
+            "description": "Renseignez strategy.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "rerank",
+              "strategy"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "rerank_params_k",
+            "label": "K",
+            "description": "Renseignez k.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "bodyPath": [
+              "rerank",
+              "params",
+              "k"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "number",
+            "key": "limit",
+            "label": "Limit",
+            "description": "Renseignez limit.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "limit"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "outputfields",
+            "label": "Outputfields",
+            "description": "Renseignez outputfields.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "outputfields"
+            ],
+            "in": "body"
+          },
+          {
+            "type": "text",
+            "key": "consistencylevel",
+            "label": "Consistencylevel",
+            "description": "Renseignez consistencylevel.",
+            "col": {
+              "xs": 24
+            },
+            "bodyPath": [
+              "consistencylevel"
+            ],
+            "in": "body"
           }
         ],
         "displayTitle": false,
