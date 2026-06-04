@@ -435,3 +435,126 @@ questions:
     default: ""
     label: TikTok — Client Secret
     group: OAuth Bouncer
+
+  # ── Crédits (Kinn-panel) ──
+  - variable: kinn.kinnApi.kinn_panel_credits_enabled
+    type: boolean
+    default: false
+    label: Activer le système de crédits
+    description: Décompte les crédits via Kinn-panel à chaque exécution IA.
+    group: Crédits
+  - variable: kinn.kinnApi.kinn_panel_credits_fail_open
+    type: boolean
+    default: false
+    label: Fail-open si panel injoignable
+    description: Si vrai, autorise l'exécution même si le service crédits ne répond pas.
+    group: Crédits
+  - variable: kinn.kinnApi.kinn_panel_credits_timeout_ms
+    type: int
+    default: 3000
+    label: Timeout appel crédits (ms)
+    group: Crédits
+  - variable: kinn.kinnApi.kinn_panel_internal_url
+    type: string
+    default: ""
+    label: URL interne Kinn-panel
+    description: Endpoint interne du panel pour le décompte des crédits.
+    group: Crédits
+  - variable: kinn.kinnApi.kinn_panel_app_id
+    type: string
+    default: ""
+    label: App ID (Kinn-panel)
+    group: Crédits
+  - variable: kinn.kinnApi.kinn_panel_client_id
+    type: string
+    default: ""
+    label: Client ID (Kinn-panel)
+    group: Crédits
+
+  # ── Sécurité ──
+  - variable: kinn.kinnApi.enc_key
+    type: password
+    default: ""
+    label: Clé de chiffrement des credentials (ENC_KEY)
+    description: AES des Credential.secret. OBLIGATOIRE en prod (openssl rand -hex 32).
+    group: Sécurité
+
+  # ── IA locale (vLLM / Ollama / LM Studio) ──
+  - variable: kinn.kinnApi.ai_base_url
+    type: string
+    default: ""
+    label: URL serveur LLM local
+    description: ex http://vllm:8000/v1. Renseigné → AI_PROVIDER bascule sur vllm.
+    group: IA locale
+  - variable: kinn.kinnApi.vllm_model
+    type: string
+    default: ""
+    label: Modèle LLM local
+    group: IA locale
+  - variable: kinn.kinnApi.vllm_api_key
+    type: password
+    default: "local"
+    label: Clé API LLM local
+    group: IA locale
+  - variable: kinn.kinnApi.vllm_max_tokens
+    type: int
+    default: 0
+    label: Max tokens LLM local (0 = défaut)
+    group: IA locale
+  - variable: kinn.kinnApi.ai_force_chat_completions
+    type: boolean
+    default: false
+    label: Forcer l'API Chat Completions
+    group: IA locale
+
+  # ── Stockage fichiers ──
+  - variable: kinn.kinnApi.file_storage_type
+    type: enum
+    options:
+      - local
+      - s3
+    default: local
+    label: Type de stockage fichiers
+    group: Stockage
+  - variable: kinn.kinnApi.file_s3_bucket
+    type: string
+    default: ""
+    label: S3 — Bucket
+    group: Stockage
+  - variable: kinn.kinnApi.file_s3_region
+    type: string
+    default: "us-east-1"
+    label: S3 — Région
+    group: Stockage
+  - variable: kinn.kinnApi.file_s3_endpoint
+    type: string
+    default: ""
+    label: S3 — Endpoint (S3-compatible)
+    group: Stockage
+  - variable: kinn.kinnApi.file_s3_access_key
+    type: string
+    default: ""
+    label: S3 — Access Key
+    group: Stockage
+  - variable: kinn.kinnApi.file_s3_secret_key
+    type: password
+    default: ""
+    label: S3 — Secret Key
+    group: Stockage
+
+  # ── Redis (optionnel) ──
+  - variable: kinn.kinnApi.redis_host
+    type: string
+    default: ""
+    label: Redis — Host (vide = désactivé)
+    group: Redis
+  - variable: kinn.kinnApi.redis_port
+    type: int
+    default: 6379
+    label: Redis — Port
+    group: Redis
+  - variable: kinn.kinnApi.redis_password
+    type: password
+    default: ""
+    label: Redis — Mot de passe
+    group: Redis
