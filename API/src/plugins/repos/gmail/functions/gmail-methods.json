@@ -1,0 +1,4709 @@
+[
+  {
+    "key": "gmail_drafts_create",
+    "methodId": "gmail.users.drafts.create",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/drafts",
+    "requestSchema": "Draft",
+    "responseSchema": "Draft",
+    "action": "create",
+    "resourceKey": "drafts",
+    "category": "Brouillons",
+    "group": "Brouillons",
+    "subtitle": "Brouillons",
+    "title": "Créer un brouillon",
+    "description": "Créer un brouillon.",
+    "icon": "fa-solid fa-plus",
+    "tags": [
+      "création",
+      "gmail",
+      "brouillons"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "from",
+        "label": "De",
+        "description": "Valeur pour de.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "to",
+        "label": "À",
+        "description": "Valeur pour à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "cc",
+        "label": "CC",
+        "description": "Valeur pour cc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "bcc",
+        "label": "BCC",
+        "description": "Valeur pour bcc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "replyTo",
+        "label": "Répondre à",
+        "description": "Valeur pour répondre à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "subject",
+        "label": "Objet",
+        "description": "Sujet du message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "text",
+        "label": "Texte",
+        "description": "Valeur pour texte.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "html",
+        "label": "HTML",
+        "description": "Valeur pour html.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "threadId",
+        "label": "ID de conversation",
+        "description": "Valeur pour id de la conversation.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "inReplyTo",
+        "label": "In-Reply-To",
+        "description": "Valeur pour in-reply-to.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "references",
+        "label": "References",
+        "description": "Valeur pour references.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "tags",
+        "key": "labelIds",
+        "label": "IDs de libellés",
+        "description": "Liste des IDs de libellés Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "classificationLabelValuesJson",
+        "label": "Labels de classification JSON",
+        "description": "Valeur JSON pour labels de classification.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "headersJson",
+        "label": "En-têtes JSON",
+        "description": "En-têtes supplémentaires au format JSON.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "raw",
+        "label": "Message brut",
+        "description": "Message RFC 2822 encodé en base64url, ou texte RFC 2822 à encoder automatiquement.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "file",
+        "key": "attachments",
+        "label": "Pièces jointes",
+        "description": "Pièces jointes à inclure dans le message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "multiple": true,
+        "maxCount": 20,
+        "lifecycle": "execution"
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": "compose_message",
+    "supportsMediaUpload": true,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_drafts_delete",
+    "methodId": "gmail.users.drafts.delete",
+    "httpMethod": "DELETE",
+    "path": "gmail/v1/users/{userId}/drafts/{id}",
+    "requestSchema": null,
+    "responseSchema": null,
+    "action": "delete",
+    "resourceKey": "drafts",
+    "category": "Brouillons",
+    "group": "Brouillons",
+    "subtitle": "Brouillons",
+    "title": "Supprimer un brouillon",
+    "description": "Supprimer un brouillon.",
+    "icon": "fa-solid fa-trash",
+    "tags": [
+      "suppression",
+      "gmail",
+      "brouillons"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_drafts_get",
+    "methodId": "gmail.users.drafts.get",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/drafts/{id}",
+    "requestSchema": null,
+    "responseSchema": "Draft",
+    "action": "get",
+    "resourceKey": "drafts",
+    "category": "Brouillons",
+    "group": "Brouillons",
+    "subtitle": "Brouillons",
+    "title": "Récupérer un brouillon",
+    "description": "Récupérer un brouillon.",
+    "icon": "fa-solid fa-eye",
+    "tags": [
+      "lecture",
+      "gmail",
+      "brouillons"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "key": "format",
+        "label": "Format",
+        "description": "Valeur pour format.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Minimal",
+            "value": "minimal"
+          },
+          {
+            "label": "Full",
+            "value": "full"
+          },
+          {
+            "label": "Message brut",
+            "value": "raw"
+          },
+          {
+            "label": "Metadata",
+            "value": "metadata"
+          }
+        ],
+        "default": "full"
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [
+      "format"
+    ],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_drafts_list",
+    "methodId": "gmail.users.drafts.list",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/drafts",
+    "requestSchema": null,
+    "responseSchema": "ListDraftsResponse",
+    "action": "list",
+    "resourceKey": "drafts",
+    "category": "Brouillons",
+    "group": "Brouillons",
+    "subtitle": "Brouillons",
+    "title": "Lister les brouillons",
+    "description": "Lister les brouillons.",
+    "icon": "fa-solid fa-list",
+    "tags": [
+      "liste",
+      "gmail",
+      "brouillons"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "q",
+        "label": "Requête Gmail",
+        "description": "Recherche Gmail au format de la barre de recherche Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "pageToken",
+        "label": "Jeton de page",
+        "description": "Jeton de pagination retourné par Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "number",
+        "key": "maxResults",
+        "label": "Résultats max",
+        "description": "Nombre maximum de résultats.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "100"
+      },
+      {
+        "type": "checkbox",
+        "key": "includeSpamTrash",
+        "label": "Inclure spam/corbeille",
+        "description": "Inclure les messages ou conversations dans le spam et la corbeille.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "false"
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [
+      "q",
+      "pageToken",
+      "maxResults",
+      "includeSpamTrash"
+    ],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_drafts_send",
+    "methodId": "gmail.users.drafts.send",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/drafts/send",
+    "requestSchema": "Draft",
+    "responseSchema": "Message",
+    "action": "send",
+    "resourceKey": "drafts",
+    "category": "Brouillons",
+    "group": "Brouillons",
+    "subtitle": "Brouillons",
+    "title": "Envoyer un brouillon",
+    "description": "Envoyer un brouillon.",
+    "icon": "fa-solid fa-paper-plane",
+    "tags": [
+      "envoi",
+      "gmail",
+      "brouillons"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "draftId",
+        "label": "ID du brouillon",
+        "description": "ID du brouillon existant à envoyer.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "from",
+        "label": "De",
+        "description": "Valeur pour de.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "to",
+        "label": "À",
+        "description": "Valeur pour à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "cc",
+        "label": "CC",
+        "description": "Valeur pour cc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "bcc",
+        "label": "BCC",
+        "description": "Valeur pour bcc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "replyTo",
+        "label": "Répondre à",
+        "description": "Valeur pour répondre à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "subject",
+        "label": "Objet",
+        "description": "Sujet du message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "text",
+        "label": "Texte",
+        "description": "Valeur pour texte.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "html",
+        "label": "HTML",
+        "description": "Valeur pour html.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "threadId",
+        "label": "ID de conversation",
+        "description": "Valeur pour id de la conversation.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "inReplyTo",
+        "label": "In-Reply-To",
+        "description": "Valeur pour in-reply-to.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "references",
+        "label": "References",
+        "description": "Valeur pour references.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "tags",
+        "key": "labelIds",
+        "label": "IDs de libellés",
+        "description": "Liste des IDs de libellés Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "classificationLabelValuesJson",
+        "label": "Labels de classification JSON",
+        "description": "Valeur JSON pour labels de classification.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "headersJson",
+        "label": "En-têtes JSON",
+        "description": "En-têtes supplémentaires au format JSON.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "raw",
+        "label": "Message brut",
+        "description": "Message RFC 2822 encodé en base64url, ou texte RFC 2822 à encoder automatiquement.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "file",
+        "key": "attachments",
+        "label": "Pièces jointes",
+        "description": "Pièces jointes à inclure dans le message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "multiple": true,
+        "maxCount": 20,
+        "lifecycle": "execution"
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": "drafts_send",
+    "supportsMediaUpload": true,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_drafts_update",
+    "methodId": "gmail.users.drafts.update",
+    "httpMethod": "PUT",
+    "path": "gmail/v1/users/{userId}/drafts/{id}",
+    "requestSchema": "Draft",
+    "responseSchema": "Draft",
+    "action": "update",
+    "resourceKey": "drafts",
+    "category": "Brouillons",
+    "group": "Brouillons",
+    "subtitle": "Brouillons",
+    "title": "Mettre à jour un brouillon",
+    "description": "Mettre à jour un brouillon.",
+    "icon": "fa-solid fa-pen",
+    "tags": [
+      "mise à jour",
+      "gmail",
+      "brouillons"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID du brouillon",
+        "description": "ID du brouillon à remplacer.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "key": "from",
+        "label": "De",
+        "description": "Valeur pour de.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "to",
+        "label": "À",
+        "description": "Valeur pour à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "cc",
+        "label": "CC",
+        "description": "Valeur pour cc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "bcc",
+        "label": "BCC",
+        "description": "Valeur pour bcc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "replyTo",
+        "label": "Répondre à",
+        "description": "Valeur pour répondre à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "subject",
+        "label": "Objet",
+        "description": "Sujet du message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "text",
+        "label": "Texte",
+        "description": "Valeur pour texte.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "html",
+        "label": "HTML",
+        "description": "Valeur pour html.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "threadId",
+        "label": "ID de conversation",
+        "description": "Valeur pour id de la conversation.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "inReplyTo",
+        "label": "In-Reply-To",
+        "description": "Valeur pour in-reply-to.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "references",
+        "label": "References",
+        "description": "Valeur pour references.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "tags",
+        "key": "labelIds",
+        "label": "IDs de libellés",
+        "description": "Liste des IDs de libellés Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "classificationLabelValuesJson",
+        "label": "Labels de classification JSON",
+        "description": "Valeur JSON pour labels de classification.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "headersJson",
+        "label": "En-têtes JSON",
+        "description": "En-têtes supplémentaires au format JSON.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "raw",
+        "label": "Message brut",
+        "description": "Message RFC 2822 encodé en base64url, ou texte RFC 2822 à encoder automatiquement.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "file",
+        "key": "attachments",
+        "label": "Pièces jointes",
+        "description": "Pièces jointes à inclure dans le message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "multiple": true,
+        "maxCount": 20,
+        "lifecycle": "execution"
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": "compose_message",
+    "supportsMediaUpload": true,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_profile_get",
+    "methodId": "gmail.users.getProfile",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/profile",
+    "requestSchema": null,
+    "responseSchema": "Profile",
+    "action": "get",
+    "resourceKey": "profile",
+    "category": "Compte",
+    "group": "Profil",
+    "subtitle": "Profil",
+    "title": "Récupérer le profil",
+    "description": "Récupérer le profil.",
+    "icon": "fa-solid fa-eye",
+    "tags": [
+      "lecture",
+      "gmail",
+      "profil"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_history_list",
+    "methodId": "gmail.users.history.list",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/history",
+    "requestSchema": null,
+    "responseSchema": "ListHistoryResponse",
+    "action": "list",
+    "resourceKey": "history",
+    "category": "Historique",
+    "group": "Historique",
+    "subtitle": "Historique",
+    "title": "Lister l’historique",
+    "description": "Lister l’historique.",
+    "icon": "fa-solid fa-list",
+    "tags": [
+      "liste",
+      "gmail",
+      "historique"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "pageToken",
+        "label": "Jeton de page",
+        "description": "Jeton de pagination retourné par Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "labelId",
+        "label": "Label ID",
+        "description": "Valeur pour label id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "number",
+        "key": "maxResults",
+        "label": "Résultats max",
+        "description": "Nombre maximum de résultats.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "100"
+      },
+      {
+        "type": "select",
+        "key": "historyTypes",
+        "label": "History Types",
+        "description": "Valeur pour history types.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Message Added",
+            "value": "messageAdded"
+          },
+          {
+            "label": "Message Deleted",
+            "value": "messageDeleted"
+          },
+          {
+            "label": "Label Added",
+            "value": "labelAdded"
+          },
+          {
+            "label": "Label Removed",
+            "value": "labelRemoved"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "key": "startHistoryId",
+        "label": "Start History ID",
+        "description": "Valeur pour start history id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [
+      "pageToken",
+      "labelId",
+      "maxResults",
+      "historyTypes",
+      "startHistoryId"
+    ],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_labels_create",
+    "methodId": "gmail.users.labels.create",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/labels",
+    "requestSchema": "Label",
+    "responseSchema": "Label",
+    "action": "create",
+    "resourceKey": "labels",
+    "category": "Libellés",
+    "group": "Libellés",
+    "subtitle": "Libellés",
+    "title": "Créer un libellé",
+    "description": "Créer un libellé.",
+    "icon": "fa-solid fa-plus",
+    "tags": [
+      "création",
+      "gmail",
+      "libellés"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "label_list_visibility",
+        "label": "Label List Visibility",
+        "description": "Valeur pour label list visibility.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Label Show",
+            "value": "labelShow"
+          },
+          {
+            "label": "Label Show If Unread",
+            "value": "labelShowIfUnread"
+          },
+          {
+            "label": "Label Hide",
+            "value": "labelHide"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "key": "threads_total",
+        "label": "Threads Total",
+        "description": "Valeur pour threads total.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "type",
+        "label": "Type",
+        "description": "Valeur pour type.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "System",
+            "value": "system"
+          },
+          {
+            "label": "User",
+            "value": "user"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "key": "color_text_color",
+        "label": "Color Text Color",
+        "description": "Valeur pour color text color.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "color_background_color",
+        "label": "Color Background Color",
+        "description": "Valeur pour color background color.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "message_list_visibility",
+        "label": "Message List Visibility",
+        "description": "Valeur pour message list visibility.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Show",
+            "value": "show"
+          },
+          {
+            "label": "Hide",
+            "value": "hide"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "key": "messages_total",
+        "label": "Messages Total",
+        "description": "Valeur pour messages total.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "number",
+        "key": "threads_unread",
+        "label": "Threads Unread",
+        "description": "Valeur pour threads unread.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "name",
+        "label": "Name",
+        "description": "Valeur pour name.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "number",
+        "key": "messages_unread",
+        "label": "Messages Unread",
+        "description": "Valeur pour messages unread.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [
+      {
+        "inputKey": "id",
+        "targetPath": [
+          "id"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "label_list_visibility",
+        "targetPath": [
+          "labelListVisibility"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "threads_total",
+        "targetPath": [
+          "threadsTotal"
+        ],
+        "parse": "number"
+      },
+      {
+        "inputKey": "type",
+        "targetPath": [
+          "type"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "color_text_color",
+        "targetPath": [
+          "color",
+          "textColor"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "color_background_color",
+        "targetPath": [
+          "color",
+          "backgroundColor"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "message_list_visibility",
+        "targetPath": [
+          "messageListVisibility"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "messages_total",
+        "targetPath": [
+          "messagesTotal"
+        ],
+        "parse": "number"
+      },
+      {
+        "inputKey": "threads_unread",
+        "targetPath": [
+          "threadsUnread"
+        ],
+        "parse": "number"
+      },
+      {
+        "inputKey": "name",
+        "targetPath": [
+          "name"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "messages_unread",
+        "targetPath": [
+          "messagesUnread"
+        ],
+        "parse": "number"
+      }
+    ],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_labels_delete",
+    "methodId": "gmail.users.labels.delete",
+    "httpMethod": "DELETE",
+    "path": "gmail/v1/users/{userId}/labels/{id}",
+    "requestSchema": null,
+    "responseSchema": null,
+    "action": "delete",
+    "resourceKey": "labels",
+    "category": "Libellés",
+    "group": "Libellés",
+    "subtitle": "Libellés",
+    "title": "Supprimer un libellé",
+    "description": "Supprimer un libellé.",
+    "icon": "fa-solid fa-trash",
+    "tags": [
+      "suppression",
+      "gmail",
+      "libellés"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_labels_get",
+    "methodId": "gmail.users.labels.get",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/labels/{id}",
+    "requestSchema": null,
+    "responseSchema": "Label",
+    "action": "get",
+    "resourceKey": "labels",
+    "category": "Libellés",
+    "group": "Libellés",
+    "subtitle": "Libellés",
+    "title": "Récupérer un libellé",
+    "description": "Récupérer un libellé.",
+    "icon": "fa-solid fa-eye",
+    "tags": [
+      "lecture",
+      "gmail",
+      "libellés"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_labels_list",
+    "methodId": "gmail.users.labels.list",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/labels",
+    "requestSchema": null,
+    "responseSchema": "ListLabelsResponse",
+    "action": "list",
+    "resourceKey": "labels",
+    "category": "Libellés",
+    "group": "Libellés",
+    "subtitle": "Libellés",
+    "title": "Lister les libellés",
+    "description": "Lister les libellés.",
+    "icon": "fa-solid fa-list",
+    "tags": [
+      "liste",
+      "gmail",
+      "libellés"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_labels_patch",
+    "methodId": "gmail.users.labels.patch",
+    "httpMethod": "PATCH",
+    "path": "gmail/v1/users/{userId}/labels/{id}",
+    "requestSchema": "Label",
+    "responseSchema": "Label",
+    "action": "patch",
+    "resourceKey": "labels",
+    "category": "Libellés",
+    "group": "Libellés",
+    "subtitle": "Libellés",
+    "title": "Modifier partiellement un libellé",
+    "description": "Modifier partiellement un libellé.",
+    "icon": "fa-solid fa-pen-to-square",
+    "tags": [
+      "mise à jour",
+      "gmail",
+      "libellés"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "key": "label_list_visibility",
+        "label": "Label List Visibility",
+        "description": "Valeur pour label list visibility.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Label Show",
+            "value": "labelShow"
+          },
+          {
+            "label": "Label Show If Unread",
+            "value": "labelShowIfUnread"
+          },
+          {
+            "label": "Label Hide",
+            "value": "labelHide"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "key": "threads_total",
+        "label": "Threads Total",
+        "description": "Valeur pour threads total.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "type",
+        "label": "Type",
+        "description": "Valeur pour type.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "System",
+            "value": "system"
+          },
+          {
+            "label": "User",
+            "value": "user"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "key": "color_text_color",
+        "label": "Color Text Color",
+        "description": "Valeur pour color text color.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "color_background_color",
+        "label": "Color Background Color",
+        "description": "Valeur pour color background color.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "message_list_visibility",
+        "label": "Message List Visibility",
+        "description": "Valeur pour message list visibility.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Show",
+            "value": "show"
+          },
+          {
+            "label": "Hide",
+            "value": "hide"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "key": "messages_total",
+        "label": "Messages Total",
+        "description": "Valeur pour messages total.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "number",
+        "key": "threads_unread",
+        "label": "Threads Unread",
+        "description": "Valeur pour threads unread.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "name",
+        "label": "Name",
+        "description": "Valeur pour name.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "number",
+        "key": "messages_unread",
+        "label": "Messages Unread",
+        "description": "Valeur pour messages unread.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [
+      {
+        "inputKey": "label_list_visibility",
+        "targetPath": [
+          "labelListVisibility"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "threads_total",
+        "targetPath": [
+          "threadsTotal"
+        ],
+        "parse": "number"
+      },
+      {
+        "inputKey": "type",
+        "targetPath": [
+          "type"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "color_text_color",
+        "targetPath": [
+          "color",
+          "textColor"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "color_background_color",
+        "targetPath": [
+          "color",
+          "backgroundColor"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "message_list_visibility",
+        "targetPath": [
+          "messageListVisibility"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "messages_total",
+        "targetPath": [
+          "messagesTotal"
+        ],
+        "parse": "number"
+      },
+      {
+        "inputKey": "threads_unread",
+        "targetPath": [
+          "threadsUnread"
+        ],
+        "parse": "number"
+      },
+      {
+        "inputKey": "name",
+        "targetPath": [
+          "name"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "messages_unread",
+        "targetPath": [
+          "messagesUnread"
+        ],
+        "parse": "number"
+      }
+    ],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_labels_update",
+    "methodId": "gmail.users.labels.update",
+    "httpMethod": "PUT",
+    "path": "gmail/v1/users/{userId}/labels/{id}",
+    "requestSchema": "Label",
+    "responseSchema": "Label",
+    "action": "update",
+    "resourceKey": "labels",
+    "category": "Libellés",
+    "group": "Libellés",
+    "subtitle": "Libellés",
+    "title": "Mettre à jour un libellé",
+    "description": "Mettre à jour un libellé.",
+    "icon": "fa-solid fa-pen",
+    "tags": [
+      "mise à jour",
+      "gmail",
+      "libellés"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "key": "label_list_visibility",
+        "label": "Label List Visibility",
+        "description": "Valeur pour label list visibility.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Label Show",
+            "value": "labelShow"
+          },
+          {
+            "label": "Label Show If Unread",
+            "value": "labelShowIfUnread"
+          },
+          {
+            "label": "Label Hide",
+            "value": "labelHide"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "key": "threads_total",
+        "label": "Threads Total",
+        "description": "Valeur pour threads total.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "type",
+        "label": "Type",
+        "description": "Valeur pour type.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "System",
+            "value": "system"
+          },
+          {
+            "label": "User",
+            "value": "user"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "key": "color_text_color",
+        "label": "Color Text Color",
+        "description": "Valeur pour color text color.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "color_background_color",
+        "label": "Color Background Color",
+        "description": "Valeur pour color background color.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "message_list_visibility",
+        "label": "Message List Visibility",
+        "description": "Valeur pour message list visibility.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Show",
+            "value": "show"
+          },
+          {
+            "label": "Hide",
+            "value": "hide"
+          }
+        ]
+      },
+      {
+        "type": "number",
+        "key": "messages_total",
+        "label": "Messages Total",
+        "description": "Valeur pour messages total.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "number",
+        "key": "threads_unread",
+        "label": "Threads Unread",
+        "description": "Valeur pour threads unread.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "name",
+        "label": "Name",
+        "description": "Valeur pour name.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "number",
+        "key": "messages_unread",
+        "label": "Messages Unread",
+        "description": "Valeur pour messages unread.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [
+      {
+        "inputKey": "label_list_visibility",
+        "targetPath": [
+          "labelListVisibility"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "threads_total",
+        "targetPath": [
+          "threadsTotal"
+        ],
+        "parse": "number"
+      },
+      {
+        "inputKey": "type",
+        "targetPath": [
+          "type"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "color_text_color",
+        "targetPath": [
+          "color",
+          "textColor"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "color_background_color",
+        "targetPath": [
+          "color",
+          "backgroundColor"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "message_list_visibility",
+        "targetPath": [
+          "messageListVisibility"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "messages_total",
+        "targetPath": [
+          "messagesTotal"
+        ],
+        "parse": "number"
+      },
+      {
+        "inputKey": "threads_unread",
+        "targetPath": [
+          "threadsUnread"
+        ],
+        "parse": "number"
+      },
+      {
+        "inputKey": "name",
+        "targetPath": [
+          "name"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "messages_unread",
+        "targetPath": [
+          "messagesUnread"
+        ],
+        "parse": "number"
+      }
+    ],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_attachments_get",
+    "methodId": "gmail.users.messages.attachments.get",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/messages/{messageId}/attachments/{id}",
+    "requestSchema": null,
+    "responseSchema": "MessagePartBody",
+    "action": "get",
+    "resourceKey": "messages_attachments",
+    "category": "Messages",
+    "group": "Pièces jointes",
+    "subtitle": "Pièces jointes",
+    "title": "Récupérer une pièce jointe",
+    "description": "Récupérer une pièce jointe.",
+    "icon": "fa-solid fa-eye",
+    "tags": [
+      "lecture",
+      "gmail",
+      "pièces jointes"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "messageId",
+        "label": "ID du message",
+        "description": "Valeur pour id du message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "key": "storeAttachment",
+        "label": "Stocker comme fichier",
+        "description": "Créer un fichier Homeport avec le contenu récupéré.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "attachmentName",
+        "label": "Nom du fichier",
+        "description": "Nom du fichier si le contenu est stocké.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "attachmentMimeType",
+        "label": "MIME type",
+        "description": "Type MIME si le contenu est stocké.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "attachmentLifecycle",
+        "label": "Cycle de vie",
+        "description": "Cycle de vie du fichier stocké.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Execution",
+            "value": "execution"
+          },
+          {
+            "label": "Temp",
+            "value": "temp"
+          }
+        ],
+        "default": "execution"
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "messageId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_batch_delete",
+    "methodId": "gmail.users.messages.batchDelete",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/messages/batchDelete",
+    "requestSchema": "BatchDeleteMessagesRequest",
+    "responseSchema": null,
+    "action": "batch_delete",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Supprimer plusieurs messages",
+    "description": "Supprimer plusieurs messages.",
+    "icon": "fa-solid fa-trash",
+    "tags": [
+      "lot",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "textarea",
+        "key": "ids_json",
+        "label": "Ids JSON",
+        "description": "Valeur JSON pour ids json.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [
+      {
+        "inputKey": "ids_json",
+        "targetPath": [
+          "ids"
+        ],
+        "parse": "json"
+      }
+    ],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_batch_modify",
+    "methodId": "gmail.users.messages.batchModify",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/messages/batchModify",
+    "requestSchema": "BatchModifyMessagesRequest",
+    "responseSchema": null,
+    "action": "batch_modify",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Modifier plusieurs messages",
+    "description": "Modifier plusieurs messages.",
+    "icon": "fa-solid fa-sliders",
+    "tags": [
+      "lot",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "textarea",
+        "key": "ids_json",
+        "label": "Ids JSON",
+        "description": "Valeur JSON pour ids json.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "add_label_ids_json",
+        "label": "Add Label Ids JSON",
+        "description": "Valeur JSON pour add label ids json.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "remove_label_ids_json",
+        "label": "Remove Label Ids JSON",
+        "description": "Valeur JSON pour remove label ids json.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [
+      {
+        "inputKey": "ids_json",
+        "targetPath": [
+          "ids"
+        ],
+        "parse": "json"
+      },
+      {
+        "inputKey": "add_label_ids_json",
+        "targetPath": [
+          "addLabelIds"
+        ],
+        "parse": "json"
+      },
+      {
+        "inputKey": "remove_label_ids_json",
+        "targetPath": [
+          "removeLabelIds"
+        ],
+        "parse": "json"
+      }
+    ],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_delete",
+    "methodId": "gmail.users.messages.delete",
+    "httpMethod": "DELETE",
+    "path": "gmail/v1/users/{userId}/messages/{id}",
+    "requestSchema": null,
+    "responseSchema": null,
+    "action": "delete",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Supprimer un message",
+    "description": "Supprimer un message.",
+    "icon": "fa-solid fa-trash",
+    "tags": [
+      "suppression",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_get",
+    "methodId": "gmail.users.messages.get",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/messages/{id}",
+    "requestSchema": null,
+    "responseSchema": "Message",
+    "action": "get",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Récupérer un message",
+    "description": "Récupérer un message.",
+    "icon": "fa-solid fa-eye",
+    "tags": [
+      "lecture",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "key": "format",
+        "label": "Format",
+        "description": "Valeur pour format.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Minimal",
+            "value": "minimal"
+          },
+          {
+            "label": "Full",
+            "value": "full"
+          },
+          {
+            "label": "Message brut",
+            "value": "raw"
+          },
+          {
+            "label": "Metadata",
+            "value": "metadata"
+          }
+        ],
+        "default": "full"
+      },
+      {
+        "type": "tags",
+        "key": "metadataHeaders",
+        "label": "En-têtes",
+        "description": "Liste des en-têtes à retourner.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [
+      "format",
+      "metadataHeaders"
+    ],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_import",
+    "methodId": "gmail.users.messages.import",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/messages/import",
+    "requestSchema": "Message",
+    "responseSchema": "Message",
+    "action": "import",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Importer un message",
+    "description": "Importer un message.",
+    "icon": "fa-solid fa-file-import",
+    "tags": [
+      "import",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "from",
+        "label": "De",
+        "description": "Valeur pour de.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "to",
+        "label": "À",
+        "description": "Valeur pour à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "cc",
+        "label": "CC",
+        "description": "Valeur pour cc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "bcc",
+        "label": "BCC",
+        "description": "Valeur pour bcc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "replyTo",
+        "label": "Répondre à",
+        "description": "Valeur pour répondre à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "subject",
+        "label": "Objet",
+        "description": "Sujet du message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "text",
+        "label": "Texte",
+        "description": "Valeur pour texte.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "html",
+        "label": "HTML",
+        "description": "Valeur pour html.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "threadId",
+        "label": "ID de conversation",
+        "description": "Valeur pour id de la conversation.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "inReplyTo",
+        "label": "In-Reply-To",
+        "description": "Valeur pour in-reply-to.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "references",
+        "label": "References",
+        "description": "Valeur pour references.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "tags",
+        "key": "labelIds",
+        "label": "IDs de libellés",
+        "description": "Liste des IDs de libellés Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "classificationLabelValuesJson",
+        "label": "Labels de classification JSON",
+        "description": "Valeur JSON pour labels de classification.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "headersJson",
+        "label": "En-têtes JSON",
+        "description": "En-têtes supplémentaires au format JSON.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "raw",
+        "label": "Message brut",
+        "description": "Message RFC 2822 encodé en base64url, ou texte RFC 2822 à encoder automatiquement.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "file",
+        "key": "attachments",
+        "label": "Pièces jointes",
+        "description": "Pièces jointes à inclure dans le message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "multiple": true,
+        "maxCount": 20,
+        "lifecycle": "execution"
+      },
+      {
+        "type": "select",
+        "key": "internalDateSource",
+        "label": "Source de date interne",
+        "description": "Valeur pour source de date interne.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Received Time",
+            "value": "receivedTime"
+          },
+          {
+            "label": "Date Header",
+            "value": "dateHeader"
+          }
+        ],
+        "default": "dateHeader"
+      },
+      {
+        "type": "checkbox",
+        "key": "deleted",
+        "label": "Marquer supprimé",
+        "description": "Valeur pour marquer supprimé.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "false"
+      },
+      {
+        "type": "checkbox",
+        "key": "neverMarkSpam",
+        "label": "Ne jamais marquer comme spam",
+        "description": "Valeur pour ne jamais marquer comme spam.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "false"
+      },
+      {
+        "type": "checkbox",
+        "key": "processForCalendar",
+        "label": "Traiter pour Calendar",
+        "description": "Valeur pour traiter pour calendar.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "false"
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [
+      "internalDateSource",
+      "deleted",
+      "neverMarkSpam",
+      "processForCalendar"
+    ],
+    "bodyFields": [],
+    "special": "compose_message",
+    "supportsMediaUpload": true,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_insert",
+    "methodId": "gmail.users.messages.insert",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/messages",
+    "requestSchema": "Message",
+    "responseSchema": "Message",
+    "action": "insert",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Insérer un message",
+    "description": "Insérer un message.",
+    "icon": "fa-solid fa-file-circle-plus",
+    "tags": [
+      "insertion",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "from",
+        "label": "De",
+        "description": "Valeur pour de.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "to",
+        "label": "À",
+        "description": "Valeur pour à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "cc",
+        "label": "CC",
+        "description": "Valeur pour cc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "bcc",
+        "label": "BCC",
+        "description": "Valeur pour bcc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "replyTo",
+        "label": "Répondre à",
+        "description": "Valeur pour répondre à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "subject",
+        "label": "Objet",
+        "description": "Sujet du message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "text",
+        "label": "Texte",
+        "description": "Valeur pour texte.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "html",
+        "label": "HTML",
+        "description": "Valeur pour html.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "threadId",
+        "label": "ID de conversation",
+        "description": "Valeur pour id de la conversation.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "inReplyTo",
+        "label": "In-Reply-To",
+        "description": "Valeur pour in-reply-to.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "references",
+        "label": "References",
+        "description": "Valeur pour references.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "tags",
+        "key": "labelIds",
+        "label": "IDs de libellés",
+        "description": "Liste des IDs de libellés Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "classificationLabelValuesJson",
+        "label": "Labels de classification JSON",
+        "description": "Valeur JSON pour labels de classification.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "headersJson",
+        "label": "En-têtes JSON",
+        "description": "En-têtes supplémentaires au format JSON.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "raw",
+        "label": "Message brut",
+        "description": "Message RFC 2822 encodé en base64url, ou texte RFC 2822 à encoder automatiquement.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "file",
+        "key": "attachments",
+        "label": "Pièces jointes",
+        "description": "Pièces jointes à inclure dans le message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "multiple": true,
+        "maxCount": 20,
+        "lifecycle": "execution"
+      },
+      {
+        "type": "select",
+        "key": "internalDateSource",
+        "label": "Source de date interne",
+        "description": "Valeur pour source de date interne.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Received Time",
+            "value": "receivedTime"
+          },
+          {
+            "label": "Date Header",
+            "value": "dateHeader"
+          }
+        ],
+        "default": "receivedTime"
+      },
+      {
+        "type": "checkbox",
+        "key": "deleted",
+        "label": "Marquer supprimé",
+        "description": "Valeur pour marquer supprimé.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "false"
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [
+      "internalDateSource",
+      "deleted"
+    ],
+    "bodyFields": [],
+    "special": "compose_message",
+    "supportsMediaUpload": true,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_list",
+    "methodId": "gmail.users.messages.list",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/messages",
+    "requestSchema": null,
+    "responseSchema": "ListMessagesResponse",
+    "action": "list",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Lister les messages",
+    "description": "Lister les messages.",
+    "icon": "fa-solid fa-list",
+    "tags": [
+      "liste",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "q",
+        "label": "Requête Gmail",
+        "description": "Recherche Gmail au format de la barre de recherche Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "pageToken",
+        "label": "Jeton de page",
+        "description": "Jeton de pagination retourné par Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "checkbox",
+        "key": "includeSpamTrash",
+        "label": "Inclure spam/corbeille",
+        "description": "Inclure les messages ou conversations dans le spam et la corbeille.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "false"
+      },
+      {
+        "type": "number",
+        "key": "maxResults",
+        "label": "Résultats max",
+        "description": "Nombre maximum de résultats.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "100"
+      },
+      {
+        "type": "tags",
+        "key": "labelIds",
+        "label": "IDs de libellés",
+        "description": "Liste des IDs de libellés Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [
+      "q",
+      "pageToken",
+      "includeSpamTrash",
+      "maxResults",
+      "labelIds"
+    ],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_modify",
+    "methodId": "gmail.users.messages.modify",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/messages/{id}/modify",
+    "requestSchema": "ModifyMessageRequest",
+    "responseSchema": "Message",
+    "action": "modify",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Modifier un message",
+    "description": "Modifier un message.",
+    "icon": "fa-solid fa-sliders",
+    "tags": [
+      "modification",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "textarea",
+        "key": "add_label_ids_json",
+        "label": "Add Label Ids JSON",
+        "description": "Valeur JSON pour add label ids json.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "remove_label_ids_json",
+        "label": "Remove Label Ids JSON",
+        "description": "Valeur JSON pour remove label ids json.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [
+      {
+        "inputKey": "add_label_ids_json",
+        "targetPath": [
+          "addLabelIds"
+        ],
+        "parse": "json"
+      },
+      {
+        "inputKey": "remove_label_ids_json",
+        "targetPath": [
+          "removeLabelIds"
+        ],
+        "parse": "json"
+      }
+    ],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_send",
+    "methodId": "gmail.users.messages.send",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/messages/send",
+    "requestSchema": "Message",
+    "responseSchema": "Message",
+    "action": "send",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Envoyer un message",
+    "description": "Envoyer un message.",
+    "icon": "fa-solid fa-paper-plane",
+    "tags": [
+      "envoi",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "from",
+        "label": "De",
+        "description": "Valeur pour de.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "to",
+        "label": "À",
+        "description": "Valeur pour à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "cc",
+        "label": "CC",
+        "description": "Valeur pour cc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "email",
+        "key": "bcc",
+        "label": "BCC",
+        "description": "Valeur pour bcc.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "replyTo",
+        "label": "Répondre à",
+        "description": "Valeur pour répondre à.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "subject",
+        "label": "Objet",
+        "description": "Sujet du message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "text",
+        "label": "Texte",
+        "description": "Valeur pour texte.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "html",
+        "label": "HTML",
+        "description": "Valeur pour html.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "threadId",
+        "label": "ID de conversation",
+        "description": "Valeur pour id de la conversation.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "inReplyTo",
+        "label": "In-Reply-To",
+        "description": "Valeur pour in-reply-to.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "references",
+        "label": "References",
+        "description": "Valeur pour references.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "tags",
+        "key": "labelIds",
+        "label": "IDs de libellés",
+        "description": "Liste des IDs de libellés Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "classificationLabelValuesJson",
+        "label": "Labels de classification JSON",
+        "description": "Valeur JSON pour labels de classification.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "headersJson",
+        "label": "En-têtes JSON",
+        "description": "En-têtes supplémentaires au format JSON.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "raw",
+        "label": "Message brut",
+        "description": "Message RFC 2822 encodé en base64url, ou texte RFC 2822 à encoder automatiquement.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "file",
+        "key": "attachments",
+        "label": "Pièces jointes",
+        "description": "Pièces jointes à inclure dans le message.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "multiple": true,
+        "maxCount": 20,
+        "lifecycle": "execution"
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": "compose_message",
+    "supportsMediaUpload": true,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_trash",
+    "methodId": "gmail.users.messages.trash",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/messages/{id}/trash",
+    "requestSchema": null,
+    "responseSchema": "Message",
+    "action": "trash",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Mettre à la corbeille un message",
+    "description": "Mettre à la corbeille un message.",
+    "icon": "fa-solid fa-trash",
+    "tags": [
+      "corbeille",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_messages_untrash",
+    "methodId": "gmail.users.messages.untrash",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/messages/{id}/untrash",
+    "requestSchema": null,
+    "responseSchema": "Message",
+    "action": "untrash",
+    "resourceKey": "messages",
+    "category": "Messages",
+    "group": "Messages",
+    "subtitle": "Messages",
+    "title": "Restaurer un message",
+    "description": "Restaurer un message.",
+    "icon": "fa-solid fa-rotate-left",
+    "tags": [
+      "restauration",
+      "gmail",
+      "messages"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_watch_stop",
+    "methodId": "gmail.users.stop",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/stop",
+    "requestSchema": null,
+    "responseSchema": null,
+    "action": "stop",
+    "resourceKey": "watch",
+    "category": "Compte",
+    "group": "Surveillance",
+    "subtitle": "Surveillance",
+    "title": "Arrêter la surveillance",
+    "description": "Arrêter la surveillance.",
+    "icon": "fa-solid fa-bell-slash",
+    "tags": [
+      "surveillance",
+      "gmail"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_threads_delete",
+    "methodId": "gmail.users.threads.delete",
+    "httpMethod": "DELETE",
+    "path": "gmail/v1/users/{userId}/threads/{id}",
+    "requestSchema": null,
+    "responseSchema": null,
+    "action": "delete",
+    "resourceKey": "threads",
+    "category": "Conversations",
+    "group": "Conversations",
+    "subtitle": "Conversations",
+    "title": "Supprimer une conversation",
+    "description": "Supprimer une conversation.",
+    "icon": "fa-solid fa-trash",
+    "tags": [
+      "suppression",
+      "gmail",
+      "conversations"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_threads_get",
+    "methodId": "gmail.users.threads.get",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/threads/{id}",
+    "requestSchema": null,
+    "responseSchema": "Thread",
+    "action": "get",
+    "resourceKey": "threads",
+    "category": "Conversations",
+    "group": "Conversations",
+    "subtitle": "Conversations",
+    "title": "Récupérer une conversation",
+    "description": "Récupérer une conversation.",
+    "icon": "fa-solid fa-eye",
+    "tags": [
+      "lecture",
+      "gmail",
+      "conversations"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "key": "format",
+        "label": "Format",
+        "description": "Valeur pour format.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Full",
+            "value": "full"
+          },
+          {
+            "label": "Metadata",
+            "value": "metadata"
+          },
+          {
+            "label": "Minimal",
+            "value": "minimal"
+          }
+        ],
+        "default": "full"
+      },
+      {
+        "type": "tags",
+        "key": "metadataHeaders",
+        "label": "En-têtes",
+        "description": "Liste des en-têtes à retourner.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [
+      "format",
+      "metadataHeaders"
+    ],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_threads_list",
+    "methodId": "gmail.users.threads.list",
+    "httpMethod": "GET",
+    "path": "gmail/v1/users/{userId}/threads",
+    "requestSchema": null,
+    "responseSchema": "ListThreadsResponse",
+    "action": "list",
+    "resourceKey": "threads",
+    "category": "Conversations",
+    "group": "Conversations",
+    "subtitle": "Conversations",
+    "title": "Lister les conversations",
+    "description": "Lister les conversations.",
+    "icon": "fa-solid fa-list",
+    "tags": [
+      "liste",
+      "gmail",
+      "conversations"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "q",
+        "label": "Requête Gmail",
+        "description": "Recherche Gmail au format de la barre de recherche Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "text",
+        "key": "pageToken",
+        "label": "Jeton de page",
+        "description": "Jeton de pagination retourné par Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "checkbox",
+        "key": "includeSpamTrash",
+        "label": "Inclure spam/corbeille",
+        "description": "Inclure les messages ou conversations dans le spam et la corbeille.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "false"
+      },
+      {
+        "type": "number",
+        "key": "maxResults",
+        "label": "Résultats max",
+        "description": "Nombre maximum de résultats.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "default": "100"
+      },
+      {
+        "type": "tags",
+        "key": "labelIds",
+        "label": "IDs de libellés",
+        "description": "Liste des IDs de libellés Gmail.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [
+      "q",
+      "pageToken",
+      "includeSpamTrash",
+      "maxResults",
+      "labelIds"
+    ],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_threads_modify",
+    "methodId": "gmail.users.threads.modify",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/threads/{id}/modify",
+    "requestSchema": "ModifyThreadRequest",
+    "responseSchema": "Thread",
+    "action": "modify",
+    "resourceKey": "threads",
+    "category": "Conversations",
+    "group": "Conversations",
+    "subtitle": "Conversations",
+    "title": "Modifier une conversation",
+    "description": "Modifier une conversation.",
+    "icon": "fa-solid fa-sliders",
+    "tags": [
+      "modification",
+      "gmail",
+      "conversations"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      },
+      {
+        "type": "textarea",
+        "key": "add_label_ids_json",
+        "label": "Add Label Ids JSON",
+        "description": "Valeur JSON pour add label ids json.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "remove_label_ids_json",
+        "label": "Remove Label Ids JSON",
+        "description": "Valeur JSON pour remove label ids json.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [
+      {
+        "inputKey": "add_label_ids_json",
+        "targetPath": [
+          "addLabelIds"
+        ],
+        "parse": "json"
+      },
+      {
+        "inputKey": "remove_label_ids_json",
+        "targetPath": [
+          "removeLabelIds"
+        ],
+        "parse": "json"
+      }
+    ],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_threads_trash",
+    "methodId": "gmail.users.threads.trash",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/threads/{id}/trash",
+    "requestSchema": null,
+    "responseSchema": "Thread",
+    "action": "trash",
+    "resourceKey": "threads",
+    "category": "Conversations",
+    "group": "Conversations",
+    "subtitle": "Conversations",
+    "title": "Mettre à la corbeille une conversation",
+    "description": "Mettre à la corbeille une conversation.",
+    "icon": "fa-solid fa-trash",
+    "tags": [
+      "corbeille",
+      "gmail",
+      "conversations"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_threads_untrash",
+    "methodId": "gmail.users.threads.untrash",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/threads/{id}/untrash",
+    "requestSchema": null,
+    "responseSchema": "Thread",
+    "action": "untrash",
+    "resourceKey": "threads",
+    "category": "Conversations",
+    "group": "Conversations",
+    "subtitle": "Conversations",
+    "title": "Restaurer une conversation",
+    "description": "Restaurer une conversation.",
+    "icon": "fa-solid fa-rotate-left",
+    "tags": [
+      "restauration",
+      "gmail",
+      "conversations"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "text",
+        "key": "id",
+        "label": "ID",
+        "description": "Valeur pour id.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId",
+      "id"
+    ],
+    "queryParams": [],
+    "bodyFields": [],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  },
+  {
+    "key": "gmail_watch_start",
+    "methodId": "gmail.users.watch",
+    "httpMethod": "POST",
+    "path": "gmail/v1/users/{userId}/watch",
+    "requestSchema": "WatchRequest",
+    "responseSchema": "WatchResponse",
+    "action": "start",
+    "resourceKey": "watch",
+    "category": "Compte",
+    "group": "Surveillance",
+    "subtitle": "Surveillance",
+    "title": "Démarrer la surveillance",
+    "description": "Démarrer la surveillance.",
+    "icon": "fa-solid fa-bell",
+    "tags": [
+      "surveillance",
+      "gmail"
+    ],
+    "fields": [
+      {
+        "type": "text",
+        "key": "userId",
+        "label": "Utilisateur",
+        "description": "Adresse e-mail Gmail cible. Laisser `me` pour le compte connecté.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "validators": [
+          {
+            "type": "required"
+          }
+        ],
+        "default": "me"
+      },
+      {
+        "type": "select",
+        "key": "label_filter_action",
+        "label": "Label Filter Action",
+        "description": "Valeur pour label filter action.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Include",
+            "value": "include"
+          },
+          {
+            "label": "Exclude",
+            "value": "exclude"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "key": "topic_name",
+        "label": "Topic Pub/Sub",
+        "description": "Nom complet du topic Google Cloud Pub/Sub.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "textarea",
+        "key": "label_ids_json",
+        "label": "Label Ids JSON",
+        "description": "Valeur JSON pour label ids json.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        }
+      },
+      {
+        "type": "select",
+        "key": "label_filter_behavior",
+        "label": "Label Filter Behavior",
+        "description": "Valeur pour label filter behavior.",
+        "col": {
+          "xs": 24
+        },
+        "expression": {
+          "allow": true
+        },
+        "options": [
+          {
+            "label": "Include",
+            "value": "include"
+          },
+          {
+            "label": "Exclude",
+            "value": "exclude"
+          }
+        ]
+      }
+    ],
+    "pathParams": [
+      "userId"
+    ],
+    "queryParams": [],
+    "bodyFields": [
+      {
+        "inputKey": "label_filter_action",
+        "targetPath": [
+          "labelFilterAction"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "topic_name",
+        "targetPath": [
+          "topicName"
+        ],
+        "parse": "text"
+      },
+      {
+        "inputKey": "label_ids_json",
+        "targetPath": [
+          "labelIds"
+        ],
+        "parse": "json"
+      },
+      {
+        "inputKey": "label_filter_behavior",
+        "targetPath": [
+          "labelFilterBehavior"
+        ],
+        "parse": "text"
+      }
+    ],
+    "special": null,
+    "supportsMediaUpload": false,
+    "adminOnly": false,
+    "securitySensitive": false
+  }
+]

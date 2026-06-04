@@ -1,0 +1,2552 @@
+{
+  "repo": {
+    "name": "google-calendar",
+    "type": "local",
+    "label": "Google Calendar"
+  },
+  "variables": {
+    "gcal_calendar": {
+      "title": "Calendrier Google",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summary",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timeZone",
+          "label": "Fuseau horaire",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "accessRole",
+          "label": "Rôle d'accès",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_calendars": {
+      "title": "Calendriers Google",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Calendriers",
+          "description": "Liste",
+          "mode": "array",
+          "key": "calendars",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "summary",
+              "label": "Nom",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "timeZone",
+              "label": "Fuseau horaire",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "accessRole",
+              "label": "Rôle d'accès",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_event": {
+      "title": "Événement Google Calendar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summary",
+          "label": "Titre",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "description",
+          "label": "Description",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "location",
+          "label": "Lieu",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "start",
+          "label": "Début",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "end",
+          "label": "Fin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "htmlLink",
+          "label": "Lien",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "creator",
+          "label": "Créateur",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "organizer",
+          "label": "Organisateur",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "attendees",
+          "label": "Participants",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_events": {
+      "title": "Événements Google Calendar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "section",
+          "title": "Événements",
+          "description": "Liste",
+          "mode": "array",
+          "key": "events",
+          "array": {
+            "initialItems": 0,
+            "minItems": 0
+          },
+          "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "ID",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "summary",
+              "label": "Titre",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "description",
+              "label": "Description",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "location",
+              "label": "Lieu",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "start",
+              "label": "Début",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "end",
+              "label": "Fin",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "status",
+              "label": "Statut",
+              "col": {
+                "xs": 24
+              }
+            },
+            {
+              "type": "text",
+              "key": "htmlLink",
+              "label": "Lien",
+              "col": {
+                "xs": 24
+              }
+            }
+          ],
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_result": {
+      "title": "Résultat Calendar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "status",
+          "label": "Statut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "message",
+          "label": "Message",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_freebusy": {
+      "title": "Disponibilites Google Calendar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "timeMin",
+          "label": "Debut",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timeMax",
+          "label": "Fin",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "calendarsJson",
+          "label": "Calendriers JSON",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "groupsJson",
+          "label": "Groupes JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_calendar_list_entry": {
+      "title": "Abonnement Google Calendar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "id",
+          "label": "ID",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summary",
+          "label": "Nom",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "summaryOverride",
+          "label": "Nom personnalise",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "timeZone",
+          "label": "Fuseau horaire",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "accessRole",
+          "label": "Role d acces",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "colorId",
+          "label": "Couleur",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "backgroundColor",
+          "label": "Fond",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "text",
+          "key": "foregroundColor",
+          "label": "Texte",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "hidden",
+          "label": "Masque",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "selected",
+          "label": "Selectionne",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "checkbox",
+          "key": "primary",
+          "label": "Principal",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    },
+    "gcal_colors": {
+      "title": "Couleurs Google Calendar",
+      "ui": {
+        "layout": "vertical",
+        "labelsOnTop": true
+      },
+      "fields": [
+        {
+          "type": "text",
+          "key": "updated",
+          "label": "Mise a jour",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "calendarColorsJson",
+          "label": "Couleurs calendriers JSON",
+          "col": {
+            "xs": 24
+          }
+        },
+        {
+          "type": "textarea",
+          "key": "eventColorsJson",
+          "label": "Couleurs evenements JSON",
+          "col": {
+            "xs": 24
+          }
+        }
+      ]
+    }
+  },
+  "providers": [
+    {
+      "key": "googleCalendar",
+      "name": "Google Calendar",
+      "title": "Google Calendar",
+      "iconClass": "fa-solid fa-calendar-days",
+      "iconUrl": "https://cdn.simpleicons.org/googlecalendar",
+      "color": "#4285F4",
+      "tags": [
+        "google",
+        "calendar",
+        "events"
+      ],
+      "categories": [
+        "Calendar"
+      ],
+      "hasCredentials": true,
+      "auth": {
+        "type": "oauth2",
+        "oauth2": {
+          "useBouncer": true,
+          "vendor": "google",
+          "authorizeUrl": "https://accounts.google.com/o/oauth2/v2/auth",
+          "tokenUrl": "https://oauth2.googleapis.com/token",
+          "userinfoUrl": "https://openidconnect.googleapis.com/v1/userinfo",
+          "clientIdEnv": "GOOGLE_OAUTH_CLIENT_ID",
+          "clientSecretEnv": "GOOGLE_OAUTH_CLIENT_SECRET",
+          "redirectUriEnv": "GOOGLE_OAUTH_REDIRECT_URI",
+          "defaultRedirectUri": "http://localhost:{env:PORT|5055}/oauth/google/callback",
+          "scopes": [
+            "openid",
+            "email",
+            "profile",
+            "https://www.googleapis.com/auth/calendar"
+          ],
+          "authorizationParams": {
+            "access_type": "offline",
+            "include_granted_scopes": "true",
+            "prompt": "consent"
+          },
+          "fieldMap": {
+            "refreshToken": "token.refresh_token",
+            "accountEmail": "userinfo.email",
+            "accountName": "userinfo.name",
+            "scope": "token.scope",
+            "tokenType": "token.token_type"
+          },
+          "requireRefreshToken": true
+        }
+      }
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "gcal_list_calendars",
+      "name": "gcalListCalendars",
+      "schemaVersion": 2,
+      "title": "Lister les calendriers",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_calendars"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste tous les calendriers de l'utilisateur.",
+      "args": {
+        "title": "Lister les calendriers",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendrier",
+      "icon": "fa-solid fa-list",
+      "group": "Calendrier",
+      "tags": [
+        "liste",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_get_calendar",
+      "name": "gcalGetCalendar",
+      "schemaVersion": 2,
+      "title": "Obtenir un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_calendar"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Obtient les détails d'un calendrier.",
+      "args": {
+        "title": "Obtenir un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendrier",
+      "icon": "fa-solid fa-eye",
+      "group": "Calendrier",
+      "tags": [
+        "lecture",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_subscribe_calendar",
+      "name": "gcal_subscribe_calendar",
+      "schemaVersion": 2,
+      "title": "S abonner a un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_calendar_list_entry"
+        }
+      ],
+      "description": "Ajoute un calendrier existant a la liste de calendriers du compte.",
+      "args": {
+        "title": "S abonner a un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "description": "Calendrier a ajouter.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summaryOverride",
+            "label": "Nom personnalise",
+            "description": "Nom personnalise dans la liste.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "colorId",
+            "label": "Couleur",
+            "description": "ID de couleur Google Calendar.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "backgroundColor",
+            "label": "Fond hex",
+            "description": "Couleur de fond en hex.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "foregroundColor",
+            "label": "Texte hex",
+            "description": "Couleur du texte en hex.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "hidden",
+            "label": "Masque",
+            "description": "Masquer le calendrier dans la liste.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "selected",
+            "label": "Selectionne",
+            "description": "Selectionner le calendrier par defaut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "defaultRemindersJson",
+            "label": "Rappels JSON",
+            "description": "Tableau JSON des rappels par defaut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "notificationSettingsJson",
+            "label": "Notifications JSON",
+            "description": "Objet JSON notificationSettings.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendriers",
+      "icon": "fa-solid fa-calendar-plus",
+      "group": "Google Calendar",
+      "tags": [
+        "calendar",
+        "abonnement",
+        "creation"
+      ]
+    },
+    {
+      "key": "gcal_update_calendar_subscription",
+      "name": "gcal_update_calendar_subscription",
+      "schemaVersion": 2,
+      "title": "Mettre a jour un abonnement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_calendar_list_entry"
+        }
+      ],
+      "description": "Met a jour les preferences d un calendrier dans la liste utilisateur.",
+      "args": {
+        "title": "Mettre a jour un abonnement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "description": "Calendrier a mettre a jour.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summaryOverride",
+            "label": "Nom personnalise",
+            "description": "Nom personnalise dans la liste.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "colorId",
+            "label": "Couleur",
+            "description": "ID de couleur Google Calendar.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "backgroundColor",
+            "label": "Fond hex",
+            "description": "Couleur de fond en hex.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "foregroundColor",
+            "label": "Texte hex",
+            "description": "Couleur du texte en hex.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "hidden",
+            "label": "Masque",
+            "description": "Masquer le calendrier dans la liste.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "selected",
+            "label": "Selectionne",
+            "description": "Selectionner le calendrier par defaut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "defaultRemindersJson",
+            "label": "Rappels JSON",
+            "description": "Tableau JSON des rappels par defaut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "notificationSettingsJson",
+            "label": "Notifications JSON",
+            "description": "Objet JSON notificationSettings.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendriers",
+      "icon": "fa-solid fa-calendar-check",
+      "group": "Google Calendar",
+      "tags": [
+        "calendar",
+        "abonnement",
+        "mise a jour"
+      ]
+    },
+    {
+      "key": "gcal_unsubscribe_calendar",
+      "name": "gcal_unsubscribe_calendar",
+      "schemaVersion": 2,
+      "title": "Retirer un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_result"
+        }
+      ],
+      "description": "Retire un calendrier de la liste utilisateur.",
+      "args": {
+        "title": "Retirer un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "description": "Calendrier a retirer.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendriers",
+      "icon": "fa-solid fa-calendar-minus",
+      "group": "Google Calendar",
+      "tags": [
+        "calendar",
+        "abonnement",
+        "suppression"
+      ]
+    },
+    {
+      "key": "gcal_get_colors",
+      "name": "gcal_get_colors",
+      "schemaVersion": 2,
+      "title": "Lister les couleurs",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_colors"
+        }
+      ],
+      "description": "Recupere la palette de couleurs Google Calendar pour calendriers et evenements.",
+      "args": {
+        "title": "Lister les couleurs",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendriers",
+      "icon": "fa-solid fa-palette",
+      "group": "Google Calendar",
+      "tags": [
+        "calendar",
+        "couleurs",
+        "liste"
+      ]
+    },
+    {
+      "key": "gcal_import_event",
+      "name": "gcal_import_event",
+      "schemaVersion": 2,
+      "title": "Importer un evenement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "description": "Importe une copie privee d un evenement existant dans un calendrier.",
+      "args": {
+        "title": "Importer un evenement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "description": "Calendrier cible.",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary"
+          },
+          {
+            "type": "text",
+            "key": "iCalUID",
+            "label": "iCalUID",
+            "description": "Identifiant iCal unique de l evenement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Titre",
+            "description": "Titre de l evenement.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description de l evenement.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "location",
+            "label": "Lieu",
+            "description": "Lieu de l evenement.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "start_dateTime",
+            "label": "Debut",
+            "description": "Date de debut ISO 8601.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "start_timeZone",
+            "label": "Fuseau debut",
+            "description": "Fuseau horaire de debut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "end_dateTime",
+            "label": "Fin",
+            "description": "Date de fin ISO 8601.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "end_timeZone",
+            "label": "Fuseau fin",
+            "description": "Fuseau horaire de fin.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "attendees",
+            "label": "Participants",
+            "description": "Emails separes par des virgules.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "recurrence",
+            "label": "Recurrence",
+            "description": "Regle RRULE optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Evenements",
+      "icon": "fa-solid fa-file-import",
+      "group": "Google Calendar",
+      "tags": [
+        "calendar",
+        "evenement",
+        "import"
+      ]
+    },
+    {
+      "key": "gcal_create_calendar",
+      "name": "gcalCreateCalendar",
+      "schemaVersion": 2,
+      "title": "Créer un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_calendar"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouveau calendrier.",
+      "args": {
+        "title": "Créer un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Nom",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "timeZone",
+            "label": "Fuseau horaire",
+            "col": {
+              "xs": 24
+            },
+            "description": "Ex: America/Montreal"
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendrier",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Calendrier",
+      "tags": [
+        "création",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_delete_calendar",
+      "name": "gcalDeleteCalendar",
+      "schemaVersion": 2,
+      "title": "Supprimer un calendrier",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un calendrier.",
+      "args": {
+        "title": "Supprimer un calendrier",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Calendrier",
+      "icon": "fa-solid fa-trash",
+      "group": "Calendrier",
+      "tags": [
+        "suppression",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_list_events",
+      "name": "gcalListEvents",
+      "schemaVersion": 2,
+      "title": "Lister les événements",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_events"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les événements d'un calendrier.",
+      "args": {
+        "title": "Lister les événements",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "primary",
+            "description": "ID du calendrier (primary par défaut)."
+          },
+          {
+            "type": "date",
+            "key": "timeMin",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Format ISO 8601 (ex: 2024-01-01T00:00:00Z).",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "date",
+            "key": "timeMax",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "number",
+            "key": "maxResults",
+            "label": "Nombre max",
+            "col": {
+              "xs": 24
+            },
+            "description": "Nombre max d'événements."
+          },
+          {
+            "type": "text",
+            "key": "q",
+            "label": "Recherche",
+            "col": {
+              "xs": 24
+            },
+            "description": "Terme de recherche."
+          },
+          {
+            "type": "checkbox",
+            "key": "singleEvents",
+            "label": "Événements uniques",
+            "col": {
+              "xs": 24
+            },
+            "default": true,
+            "description": "Développer les événements récurrents."
+          },
+          {
+            "type": "select",
+            "key": "orderBy",
+            "label": "Trier par",
+            "col": {
+              "xs": 24
+            },
+            "options": [
+              {
+                "label": "Date de début",
+                "value": "startTime"
+              },
+              {
+                "label": "Dernière modification",
+                "value": "updated"
+              }
+            ],
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-list",
+      "group": "Événements",
+      "tags": [
+        "liste",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_get_event",
+      "name": "gcalGetEvent",
+      "schemaVersion": 2,
+      "title": "Obtenir un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Obtient les détails d'un événement.",
+      "args": {
+        "title": "Obtenir un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-eye",
+      "group": "Événements",
+      "tags": [
+        "lecture",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_create_event",
+      "name": "gcalCreateEvent",
+      "schemaVersion": 2,
+      "title": "Créer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un nouvel événement dans un calendrier.",
+      "args": {
+        "title": "Créer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "default": "primary",
+            "description": "ID du calendrier (primary par défaut)."
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "location",
+            "label": "Lieu",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "start_dateTime",
+            "label": "Début (date/heure)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "start_timeZone",
+            "label": "Fuseau horaire début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Ex: America/Montreal"
+          },
+          {
+            "type": "date",
+            "key": "end_dateTime",
+            "label": "Fin (date/heure)",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "end_timeZone",
+            "label": "Fuseau horaire fin",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "attendees",
+            "label": "Participants",
+            "col": {
+              "xs": 24
+            },
+            "description": "Emails séparés par des virgules."
+          },
+          {
+            "type": "text",
+            "key": "recurrence",
+            "label": "Récurrence",
+            "col": {
+              "xs": 24
+            },
+            "description": "Règle RRULE (ex: RRULE:FREQ=WEEKLY;COUNT=5)."
+          },
+          {
+            "type": "number",
+            "key": "reminders_minutes",
+            "label": "Rappel (minutes)",
+            "col": {
+              "xs": 24
+            },
+            "description": "Minutes avant l'événement."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-square-plus",
+      "group": "Événements",
+      "tags": [
+        "création",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_update_event",
+      "name": "gcalUpdateEvent",
+      "schemaVersion": 2,
+      "title": "Modifier un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Modifie un événement existant.",
+      "args": {
+        "title": "Modifier un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Titre",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "location",
+            "label": "Lieu",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "start_dateTime",
+            "label": "Début (date/heure)",
+            "col": {
+              "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "date",
+            "key": "end_dateTime",
+            "label": "Fin (date/heure)",
+            "col": {
+              "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "attendees",
+            "label": "Participants",
+            "col": {
+              "xs": 24
+            },
+            "description": "Emails séparés par des virgules."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Événements",
+      "tags": [
+        "mise-à-jour",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_delete_event",
+      "name": "gcalDeleteEvent",
+      "schemaVersion": 2,
+      "title": "Supprimer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_result"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Supprime un événement.",
+      "args": {
+        "title": "Supprimer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-trash",
+      "group": "Événements",
+      "tags": [
+        "suppression",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_quick_add",
+      "name": "gcalQuickAdd",
+      "schemaVersion": 2,
+      "title": "Ajout rapide",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Crée un événement à partir d'une phrase.",
+      "args": {
+        "title": "Ajout rapide",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary",
+            "description": "ID du calendrier (primary par défaut)."
+          },
+          {
+            "type": "text",
+            "key": "text",
+            "label": "Texte",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "description": "Ex: \"Réunion demain 15h\"."
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-wand-magic-sparkles",
+      "group": "Événements",
+      "tags": [
+        "création",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_move_event",
+      "name": "gcalMoveEvent",
+      "schemaVersion": 2,
+      "title": "Déplacer un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Déplace un événement vers un autre calendrier.",
+      "args": {
+        "title": "Déplacer un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier source ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "destinationCalendarId",
+            "label": "Calendrier destination ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-arrow-right",
+      "group": "Événements",
+      "tags": [
+        "mise-à-jour",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_event_instances",
+      "name": "gcalEventInstances",
+      "schemaVersion": 2,
+      "title": "Instances d'un événement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_events"
+        }
+      ],
+      "authorize_skip_error": true,
+      "description": "Liste les instances d'un événement récurrent.",
+      "args": {
+        "title": "Instances d'un événement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendrier ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Événement ID",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "date",
+            "key": "timeMin",
+            "label": "Date début",
+            "col": {
+              "xs": 24
+            },
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "date",
+            "key": "timeMax",
+            "label": "Date fin",
+            "col": {
+              "xs": 24
+            },
+            "description": "Format ISO 8601.",
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Événements",
+      "icon": "fa-solid fa-list",
+      "group": "Événements",
+      "tags": [
+        "liste",
+        "Google Calendar"
+      ]
+    },
+    {
+      "key": "gcal_patch_event",
+      "name": "gcal_patch_event",
+      "schemaVersion": 2,
+      "title": "Modifier partiellement un evenement",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_event"
+        }
+      ],
+      "description": "Met a jour partiellement un evenement Google Calendar.",
+      "args": {
+        "title": "Modifier partiellement un evenement",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "calendarId",
+            "label": "Calendar ID",
+            "description": "Calendrier cible.",
+            "col": {
+              "xs": 24
+            },
+            "default": "primary"
+          },
+          {
+            "type": "text",
+            "key": "eventId",
+            "label": "Event ID",
+            "description": "Identifiant de l evenement.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "summary",
+            "label": "Titre",
+            "description": "Nouveau titre.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "description": "Description de l evenement.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "location",
+            "label": "Lieu",
+            "description": "Lieu.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "start_dateTime",
+            "label": "Debut",
+            "description": "Nouvelle date de debut.",
+            "col": {
+              "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "start_timeZone",
+            "label": "Fuseau debut",
+            "description": "Fuseau horaire de debut.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "date",
+            "key": "end_dateTime",
+            "label": "Fin",
+            "description": "Nouvelle date de fin.",
+            "col": {
+              "xs": 24
+            },
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "text",
+            "key": "end_timeZone",
+            "label": "Fuseau fin",
+            "description": "Fuseau horaire de fin.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "attendees",
+            "label": "Participants",
+            "description": "Emails separes par des virgules.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "status",
+            "label": "Statut",
+            "description": "confirmed, tentative ou cancelled.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "colorId",
+            "label": "Couleur",
+            "description": "ID de couleur Google Calendar.",
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "recurrence",
+            "label": "Recurrence",
+            "description": "Regle RRULE optionnelle.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Evenements",
+      "icon": "fa-solid fa-pen-to-square",
+      "group": "Google Calendar",
+      "tags": [
+        "calendar",
+        "evenement",
+        "patch"
+      ]
+    },
+    {
+      "key": "gcal_freebusy_query",
+      "name": "gcal_freebusy_query",
+      "schemaVersion": 2,
+      "title": "Verifier les disponibilites",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Google Calendar",
+      "providerKey": "googleCalendar",
+      "inputHandles": [
+        {
+          "id": "in",
+          "name": "In",
+          "type": "any",
+          "accepts": [
+            "any",
+            "payload"
+          ]
+        }
+      ],
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Success",
+          "type": "payload",
+          "schema": "$var:gcal_freebusy"
+        }
+      ],
+      "description": "Interroge les disponibilites de plusieurs calendriers.",
+      "args": {
+        "title": "Verifier les disponibilites",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "date",
+            "key": "timeMin",
+            "label": "Debut",
+            "description": "Debut de la fenetre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "date",
+            "key": "timeMax",
+            "label": "Fin",
+            "description": "Fin de la fenetre.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ],
+            "date": {
+              "showTime": true,
+              "format": "dd/MM/yyyy HH:mm:ss"
+            },
+            "expression": {
+              "allow": true,
+              "defaultMode": "val"
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "calendarIdsJson",
+            "label": "Calendriers JSON ou CSV",
+            "description": "Liste JSON ou CSV des calendar IDs.",
+            "col": {
+              "xs": 24
+            },
+            "validators": [
+              {
+                "type": "required"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "key": "timeZone",
+            "label": "Fuseau horaire",
+            "description": "Fuseau horaire optionnel.",
+            "col": {
+              "xs": 24
+            }
+          }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Disponibilites",
+      "icon": "fa-solid fa-user-clock",
+      "group": "Google Calendar",
+      "tags": [
+        "calendar",
+        "freebusy",
+        "disponibilite"
+      ]
+    }
+  ]
+}
