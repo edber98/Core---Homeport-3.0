@@ -172,6 +172,21 @@ kinn:
     # TikTok utilise client_key (et non client_id).
     tiktok_oauth_client_key: ""
     tiktok_oauth_client_secret: ""
+    # ── Système de crédits (Panel ↔ Kinn-app) ────────────────────────────────
+    # Toutes ces clés sont injectées par le worker Kinn-panel au déploiement
+    # selon Application.creditsEnabled. Si le toggle est OFF côté Panel,
+    # `kinn_panel_credits_enabled` reste à "false" et le helper Kinn-app
+    # passe en mode standalone (mocks no-op).
+    #
+    # Voir docs/credits-overview.md et docs/credits-setup-prod.md.
+    kinn_panel_internal_url: "https://panel.kinn.fr"
+    kinn_panel_credits_enabled: "false"
+    kinn_panel_app_id: ""        # ObjectId de l'Application côté Panel
+    kinn_panel_client_id: ""     # ObjectId du ClientAccount côté Panel
+    # Si "true", erreur réseau Panel → mock no-op (Kinn-app continue).
+    # En prod recommandé "false" pour bloquer l'appel IA si Panel down.
+    kinn_panel_credits_fail_open: "false"
+    kinn_panel_credits_timeout_ms: "3000"
   kinnHomeport:
     replicaCount: 1
     port: 80
