@@ -12,7 +12,7 @@
 | anthropic | Oui |
 | apify | Oui |
 | apollo | Oui |
-| appsmith | Non |
+| appsmith | Oui |
 | asana | Oui |
 | assemblyai | Oui |
 | atera | Oui |

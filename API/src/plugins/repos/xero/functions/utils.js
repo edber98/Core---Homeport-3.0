@@ -5,6 +5,62 @@ function isPlainObject(value) {
   return !!value && typeof value === "object" && !Array.isArray(value);
 }
 
+function setNestedValue(target, path, value) {
+  if (!Array.isArray(path) || !path.length) return;
+  let cursor = target;
+  for (let i = 0; i < path.length - 1; i += 1) {
+    const segment = path[i];
+    if (!isPlainObject(cursor[segment])) cursor[segment] = {};
+    cursor = cursor[segment];
+  }
+  cursor[path[path.length - 1]] = value;
+}
+
+function coerceFieldValue(value, field) {
+  if (value === undefined || value === null || value === "") return undefined;
+  const type = String(field?.type || "text");
+  const key = field?.key || "champ";
+
+  if (type === "json") {
+    if (typeof value === "object") return value;
+    try {
+      return JSON.parse(String(value));
+    } catch {
+      throw new Error(`JSON invalide dans ${key}.`);
+    }
+  }
+
+  if (type === "checkbox") {
+    if (typeof value === "boolean") return value;
+    if (typeof value === "string") {
+      const normalized = value.trim().toLowerCase();
+      if (["true", "1", "yes", "oui"].includes(normalized)) return true;
+      if (["false", "0", "no", "non"].includes(normalized)) return false;
+    }
+    return !!value;
+  }
+
+  if (type === "number") {
+    if (typeof value === "number") return value;
+    const num = Number(value);
+    if (Number.isNaN(num)) throw new Error(`Nombre invalide dans ${key}.`);
+    return num;
+  }
+
+  return value;
+}
+
+function buildBodyFromFields(inputs, fields) {
+  const body = {};
+  for (const field of fields || []) {
+    const rawValue = inputs ? inputs[field.key] : undefined;
+    const value = coerceFieldValue(rawValue, field);
+    if (value === undefined) continue;
+    setNestedValue(body, field.bodyPath || [field.key], value);
+  }
+  return Object.keys(body).length ? body : undefined;
+}
+
 function firstPathSegment(pathname) {
   const parts = String(pathname || "").split("/").filter(Boolean);
   return parts[0] || "";
@@ -392,4 +448,4 @@ async function providerRequest(opts, pathname, options = {}) {
   };
 }
 
-module.exports = { utils: { providerRequest, getAccessToken } };
+module.exports = { utils: { buildBodyFromFields, providerRequest, getAccessToken } };

@@ -1,5 +1,142 @@
 const { utils } = require('./utils');
 
+const BODY_FIELDS = [
+  {
+    "key": "expense_claim_id",
+    "type": "text",
+    "bodyPath": [
+      "ExpenseClaimID"
+    ]
+  },
+  {
+    "key": "status",
+    "type": "text",
+    "bodyPath": [
+      "Status"
+    ]
+  },
+  {
+    "key": "payments",
+    "type": "json",
+    "bodyPath": [
+      "Payments"
+    ]
+  },
+  {
+    "key": "user_user_id",
+    "type": "text",
+    "bodyPath": [
+      "User",
+      "UserID"
+    ]
+  },
+  {
+    "key": "user_email_address",
+    "type": "text",
+    "bodyPath": [
+      "User",
+      "EmailAddress"
+    ]
+  },
+  {
+    "key": "user_first_name",
+    "type": "text",
+    "bodyPath": [
+      "User",
+      "FirstName"
+    ]
+  },
+  {
+    "key": "user_last_name",
+    "type": "text",
+    "bodyPath": [
+      "User",
+      "LastName"
+    ]
+  },
+  {
+    "key": "user_updated_date_utc",
+    "type": "text",
+    "bodyPath": [
+      "User",
+      "UpdatedDateUTC"
+    ]
+  },
+  {
+    "key": "user_is_subscriber",
+    "type": "checkbox",
+    "bodyPath": [
+      "User",
+      "IsSubscriber"
+    ]
+  },
+  {
+    "key": "user_organisation_role",
+    "type": "text",
+    "bodyPath": [
+      "User",
+      "OrganisationRole"
+    ]
+  },
+  {
+    "key": "receipts",
+    "type": "json",
+    "bodyPath": [
+      "Receipts"
+    ]
+  },
+  {
+    "key": "updated_date_utc",
+    "type": "text",
+    "bodyPath": [
+      "UpdatedDateUTC"
+    ]
+  },
+  {
+    "key": "total",
+    "type": "number",
+    "bodyPath": [
+      "Total"
+    ]
+  },
+  {
+    "key": "amount_due",
+    "type": "number",
+    "bodyPath": [
+      "AmountDue"
+    ]
+  },
+  {
+    "key": "amount_paid",
+    "type": "number",
+    "bodyPath": [
+      "AmountPaid"
+    ]
+  },
+  {
+    "key": "payment_due_date",
+    "type": "text",
+    "bodyPath": [
+      "PaymentDueDate"
+    ]
+  },
+  {
+    "key": "reporting_date",
+    "type": "text",
+    "bodyPath": [
+      "ReportingDate"
+    ]
+  },
+  {
+    "key": "receipt_id",
+    "type": "text",
+    "bodyPath": [
+      "ReceiptID"
+    ]
+  }
+];
+
+
 module.exports = {
   async xero_expense_claim_create(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
@@ -8,14 +145,11 @@ module.exports = {
     
 
     const query = {};
-    
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let body;
+    try {
+      body = utils.buildBodyFromFields(d, BODY_FIELDS);
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
 
     log('Requête en cours...');

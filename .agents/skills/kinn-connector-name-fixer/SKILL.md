@@ -22,7 +22,7 @@ API/src/plugins/repos/{connector}/manifest.json
 
 1. Ouvrir `manifest.json` du connecteur cible et parcourir `nodeTemplates[]` intégralement, un noeud à la fois, sans en sauter, même si le connecteur contient plusieurs centaines ou milliers de noeuds.
 2. Pour chaque noeud, vérifier si les champs sont entièrement en français et compréhensibles:
-   - `title`: libellé d’action clair en français (verbe d’action + objet métier), sans symbole de séparation du type `/`, `-`, `_` ou formulation technique compacte.
+   - `title`: libellé d’action clair en français (verbe d’action + objet métier), sans symbole de séparation du type `/`, `-`, `_`, sans suffixe artificiel comme `(2)`, `v2`, `copy` ou `bis`, et sans formulation technique compacte.
    - `subtitle`: libellé de groupe ou catégorie court, clair et traduit en français. Si le connecteur regroupe les noeuds par familles techniques ou métiers, ces groupes doivent aussi être renommés en français.
    - `description`: courte phrase explicative en français qui dit clairement ce que le noeud fait comme action pour l’utilisateur.
 3. Traiter chaque noeud individuellement. Même si un noeud semble deja correct, il doit etre relu explicitement puis conservé ou réécrit en connaissance du contexte métier.
@@ -45,6 +45,7 @@ node .agents/skills/kinn-connector-creator/scripts/check-connector.js {connector
 - Le `title`, le `subtitle` et la `description` doivent être rédigés en français.
 - Les libellés de groupe ou de catégorie exposés dans le manifest doivent aussi être traduits en français, pas seulement les titres des noeuds.
 - Le `title` doit être un vrai libellé explicite, lisible seul, sans symbole de structure du type `/`, `-` ou `_`.
+- Le `title` ne doit jamais se terminer par un suffixe artificiel de désambiguïsation du type `(2)`, `(3)`, `v2`, `v3`, `copy`, `bis`.
 - Le `title` doit exprimer clairement l'action et son objet métier, par exemple `Créer un contact` ou `Lister les factures`.
 - Pas de fragments techniques bruts dans les libellés utilisateur (`get_xxx`, `list_xxx`, `patch`, `docs_api`, etc.).
 - Pas de description mécanique de type "Action création créations ...".

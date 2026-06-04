@@ -1,5 +1,107 @@
 const { utils } = require('./utils');
 
+const BODY_FIELDS = [
+  {
+    "key": "narration",
+    "type": "text",
+    "bodyPath": [
+      "Narration"
+    ]
+  },
+  {
+    "key": "journal_lines",
+    "type": "json",
+    "bodyPath": [
+      "JournalLines"
+    ]
+  },
+  {
+    "key": "date",
+    "type": "text",
+    "bodyPath": [
+      "Date"
+    ]
+  },
+  {
+    "key": "line_amount_types",
+    "type": "text",
+    "bodyPath": [
+      "LineAmountTypes"
+    ]
+  },
+  {
+    "key": "status",
+    "type": "text",
+    "bodyPath": [
+      "Status"
+    ]
+  },
+  {
+    "key": "url",
+    "type": "text",
+    "bodyPath": [
+      "Url"
+    ]
+  },
+  {
+    "key": "show_on_cash_basis_reports",
+    "type": "checkbox",
+    "bodyPath": [
+      "ShowOnCashBasisReports"
+    ]
+  },
+  {
+    "key": "has_attachments",
+    "type": "checkbox",
+    "bodyPath": [
+      "HasAttachments"
+    ]
+  },
+  {
+    "key": "updated_date_utc",
+    "type": "text",
+    "bodyPath": [
+      "UpdatedDateUTC"
+    ]
+  },
+  {
+    "key": "manual_journal_id",
+    "type": "text",
+    "bodyPath": [
+      "ManualJournalID"
+    ]
+  },
+  {
+    "key": "status_attribute_string",
+    "type": "text",
+    "bodyPath": [
+      "StatusAttributeString"
+    ]
+  },
+  {
+    "key": "warnings",
+    "type": "json",
+    "bodyPath": [
+      "Warnings"
+    ]
+  },
+  {
+    "key": "validation_errors",
+    "type": "json",
+    "bodyPath": [
+      "ValidationErrors"
+    ]
+  },
+  {
+    "key": "attachments",
+    "type": "json",
+    "bodyPath": [
+      "Attachments"
+    ]
+  }
+];
+
+
 module.exports = {
   async xero_manual_journal_update(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
@@ -10,14 +112,11 @@ module.exports = {
     reqPath = reqPath.replace('{manualjournalid}', encodeURIComponent(manualjournalid));
 
     const query = {};
-    
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let body;
+    try {
+      body = utils.buildBodyFromFields(d, BODY_FIELDS);
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
 
     log('Requête en cours...');

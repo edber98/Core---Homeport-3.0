@@ -2079,17 +2079,42 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "JSON de publication (customDomains, publishToWebflowSubdomain).",
+            "key": "custom_domains",
+            "label": "Personnalise domaines",
+            "description": "Renseignez personnalise domaines au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "customDomains"
+            ],
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "publish_to_webflow_subdomain",
+            "label": "Publier vers Webflow sous-domaine",
+            "description": "Cochez si publier vers webflow sous-domaine.",
+            "required": false,
+            "bodyPath": [
+              "publishToWebflowSubdomain"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "page_id",
+            "label": "ID de la page",
+            "description": "Renseignez l ID de la page.",
+            "required": false,
+            "bodyPath": [
+              "pageId"
+            ],
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2239,18 +2264,56 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "display_name",
+            "label": "Nom affiche",
+            "description": "Renseignez nom affiche.",
+            "required": true,
+            "bodyPath": [
+              "displayName"
+            ],
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "singular_name",
+            "label": "Nom singulier",
+            "description": "Renseignez nom singulier.",
+            "required": true,
+            "bodyPath": [
+              "singularName"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Identifiant lisible",
+            "description": "Renseignez l identifiant lisible.",
+            "required": false,
+            "bodyPath": [
+              "slug"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "fields",
+            "label": "Fields",
+            "description": "Renseignez fields au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "fields"
+            ],
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -2460,17 +2523,14 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "value",
+            "label": "Value",
+            "description": "Renseignez value au format JSON.",
+            "required": false,
+            "bodyPath": [],
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -2551,10 +2611,40 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "checkbox",
+            "key": "is_required",
+            "label": "Is required",
+            "description": "Cochez si is required.",
+            "required": false,
+            "bodyPath": [
+              "isRequired"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "display_name",
+            "label": "Nom affiche",
+            "description": "Renseignez nom affiche.",
+            "required": false,
+            "bodyPath": [
+              "displayName"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "help_text",
+            "label": "Help text",
+            "description": "Renseignez help text.",
+            "required": false,
+            "bodyPath": [
+              "helpText"
+            ],
             "col": {
               "xs": 24
             }
@@ -2864,17 +2954,14 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "value",
+            "label": "Value",
+            "description": "Renseignez value au format JSON.",
+            "required": false,
+            "bodyPath": [],
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
           }
         ],
         "displayTitle": false,
@@ -2955,10 +3042,53 @@
             ]
           },
           {
+            "type": "checkbox",
+            "key": "is_archived",
+            "label": "Is archived",
+            "description": "Cochez si is archived.",
+            "required": false,
+            "bodyPath": [
+              "isArchived"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_draft",
+            "label": "Is draft",
+            "description": "Cochez si is draft.",
+            "required": false,
+            "bodyPath": [
+              "isDraft"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cms_locale_id",
+            "label": "ID de la locale CMS",
+            "description": "Renseignez l ID de la locale CMS.",
+            "required": false,
+            "bodyPath": [
+              "cmsLocaleId"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "field_data",
+            "label": "Field data",
+            "description": "Renseignez field data au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "fieldData"
+            ],
             "col": {
               "xs": 24
             }
@@ -3107,9 +3237,11 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "value",
+            "label": "Value",
+            "description": "Renseignez value au format JSON.",
+            "required": false,
+            "bodyPath": [],
             "col": {
               "xs": 24
             }
@@ -3326,18 +3458,109 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "id",
+            "label": "ID",
+            "description": "Renseignez id.",
+            "required": false,
+            "bodyPath": [
+              "id"
+            ],
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "trigger_type",
+            "label": "Trigger type",
+            "description": "Renseignez trigger type.",
+            "required": false,
+            "bodyPath": [
+              "triggerType"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "url",
+            "label": "URL",
+            "description": "Renseignez url.",
+            "required": false,
+            "bodyPath": [
+              "url"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "workspace_id",
+            "label": "ID de l espace de travail",
+            "description": "Renseignez l ID de l espace de travail.",
+            "required": false,
+            "bodyPath": [
+              "workspaceId"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "site_id",
+            "label": "ID du site",
+            "description": "Renseignez l ID du site.",
+            "required": false,
+            "bodyPath": [
+              "siteId"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "filter_name",
+            "label": "Nom filter",
+            "description": "Renseignez nom filter.",
+            "required": false,
+            "bodyPath": [
+              "filter",
+              "name"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "last_triggered",
+            "label": "Last triggered",
+            "description": "Renseignez last triggered.",
+            "required": false,
+            "bodyPath": [
+              "lastTriggered"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "created_on",
+            "label": "Creation on",
+            "description": "Renseignez creation on.",
+            "required": false,
+            "bodyPath": [
+              "createdOn"
+            ],
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -3703,9 +3926,11 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "value",
+            "label": "Value",
+            "description": "Renseignez value au format JSON.",
+            "required": false,
+            "bodyPath": [],
             "col": {
               "xs": 24
             }
@@ -3776,9 +4001,13 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "items",
+            "label": "Items",
+            "description": "Renseignez items au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "items"
+            ],
             "col": {
               "xs": 24
             }
@@ -3913,9 +4142,52 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "field_data",
+            "label": "Field data",
+            "description": "Renseignez field data au format JSON.",
+            "required": true,
+            "bodyPath": [
+              "fieldData"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "json",
+            "key": "cms_locale_ids",
+            "label": "CMS locale IDs",
+            "description": "Renseignez cms locale ids au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "cmsLocaleIds"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_archived",
+            "label": "Is archived",
+            "description": "Cochez si is archived.",
+            "required": false,
+            "bodyPath": [
+              "isArchived"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_draft",
+            "label": "Is draft",
+            "description": "Cochez si is draft.",
+            "required": false,
+            "bodyPath": [
+              "isDraft"
+            ],
             "col": {
               "xs": 24
             }
@@ -4077,10 +4349,53 @@
             ]
           },
           {
+            "type": "checkbox",
+            "key": "is_archived",
+            "label": "Is archived",
+            "description": "Cochez si is archived.",
+            "required": false,
+            "bodyPath": [
+              "isArchived"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "is_draft",
+            "label": "Is draft",
+            "description": "Cochez si is draft.",
+            "required": false,
+            "bodyPath": [
+              "isDraft"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "cms_locale_id",
+            "label": "ID de la locale CMS",
+            "description": "Renseignez l ID de la locale CMS.",
+            "required": false,
+            "bodyPath": [
+              "cmsLocaleId"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "field_data",
+            "label": "Field data",
+            "description": "Renseignez field data au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "fieldData"
+            ],
             "col": {
               "xs": 24
             }
@@ -4398,10 +4713,111 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "title",
+            "label": "Title",
+            "description": "Renseignez title.",
+            "required": false,
+            "bodyPath": [
+              "title"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "slug",
+            "label": "Identifiant lisible",
+            "description": "Renseignez l identifiant lisible.",
+            "required": false,
+            "bodyPath": [
+              "slug"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "seo_title",
+            "label": "Seo title",
+            "description": "Renseignez seo title.",
+            "required": false,
+            "bodyPath": [
+              "seo",
+              "title"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "seo_description",
+            "label": "Seo description",
+            "description": "Renseignez seo description.",
+            "required": false,
+            "bodyPath": [
+              "seo",
+              "description"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "open_graph_title",
+            "label": "Open graph title",
+            "description": "Renseignez open graph title.",
+            "required": false,
+            "bodyPath": [
+              "openGraph",
+              "title"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "open_graph_title_copied",
+            "label": "Open graph title copied",
+            "description": "Cochez si open graph title copied.",
+            "required": false,
+            "bodyPath": [
+              "openGraph",
+              "titleCopied"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "open_graph_description",
+            "label": "Open graph description",
+            "description": "Renseignez open graph description.",
+            "required": false,
+            "bodyPath": [
+              "openGraph",
+              "description"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "checkbox",
+            "key": "open_graph_description_copied",
+            "label": "Open graph description copied",
+            "description": "Cochez si open graph description copied.",
+            "required": false,
+            "bodyPath": [
+              "openGraph",
+              "descriptionCopied"
+            ],
             "col": {
               "xs": 24
             }
@@ -4563,18 +4979,43 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "file_name",
+            "label": "Nom fichier",
+            "description": "Renseignez nom fichier.",
+            "required": true,
+            "bodyPath": [
+              "fileName"
+            ],
             "col": {
               "xs": 24
-            },
-            "validators": [
-              {
-                "type": "required"
-              }
-            ]
+            }
+          },
+          {
+            "type": "text",
+            "key": "file_hash",
+            "label": "Fichier hash",
+            "description": "Renseignez fichier hash.",
+            "required": true,
+            "bodyPath": [
+              "fileHash"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "parent_folder",
+            "label": "Parent folder",
+            "description": "Renseignez parent folder.",
+            "required": false,
+            "bodyPath": [
+              "parentFolder"
+            ],
+            "col": {
+              "xs": 24
+            }
           }
         ],
         "displayTitle": false,
@@ -4719,10 +5160,27 @@
             ]
           },
           {
-            "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "type": "text",
+            "key": "display_name",
+            "label": "Nom affiche",
+            "description": "Renseignez nom affiche.",
+            "required": false,
+            "bodyPath": [
+              "displayName"
+            ],
+            "col": {
+              "xs": 24
+            }
+          },
+          {
+            "type": "text",
+            "key": "alt_text",
+            "label": "Alt text",
+            "description": "Renseignez alt text.",
+            "required": false,
+            "bodyPath": [
+              "altText"
+            ],
             "col": {
               "xs": 24
             }
@@ -5275,9 +5733,13 @@
           },
           {
             "type": "json",
-            "key": "body",
-            "label": "Payload",
-            "description": "Corps JSON de la requête.",
+            "key": "form_submission_data",
+            "label": "Form submission data",
+            "description": "Renseignez form submission data au format JSON.",
+            "required": false,
+            "bodyPath": [
+              "formSubmissionData"
+            ],
             "col": {
               "xs": 24
             }

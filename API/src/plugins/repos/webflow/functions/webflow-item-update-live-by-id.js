@@ -1,5 +1,37 @@
 const { utils } = require('./utils');
 
+const BODY_FIELDS = [
+  {
+    "key": "is_archived",
+    "type": "checkbox",
+    "bodyPath": [
+      "isArchived"
+    ]
+  },
+  {
+    "key": "is_draft",
+    "type": "checkbox",
+    "bodyPath": [
+      "isDraft"
+    ]
+  },
+  {
+    "key": "cms_locale_id",
+    "type": "text",
+    "bodyPath": [
+      "cmsLocaleId"
+    ]
+  },
+  {
+    "key": "field_data",
+    "type": "json",
+    "bodyPath": [
+      "fieldData"
+    ]
+  }
+];
+
+
 module.exports = {
   async webflow_item_update_live_by_id(node, msg, inputs, opts) {
     const log = (opts && opts.log) ? opts.log : () => {};
@@ -16,13 +48,11 @@ module.exports = {
     if (d.pageSize !== undefined && d.pageSize !== null && d.pageSize !== '') query.limit = d.pageSize;
     if (d.page !== undefined && d.page !== null && d.page !== '') query.offset = d.page;
     if (d.search !== undefined && d.search !== null && d.search !== '') query.search = d.search;
-
-    let body = undefined;
-    if (d.body !== undefined && d.body !== null && d.body !== '') {
-      if (typeof d.body === 'object') body = d.body;
-      else {
-        try { body = JSON.parse(String(d.body)); } catch { return { ok: false, error: 'JSON invalide dans body.' }; }
-      }
+    let body;
+    try {
+      body = utils.buildBodyFromFields(d, BODY_FIELDS);
+    } catch (e) {
+      return { ok: false, error: e.message };
     }
 
     log('Requête en cours...');

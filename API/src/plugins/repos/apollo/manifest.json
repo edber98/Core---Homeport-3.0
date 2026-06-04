@@ -330,15 +330,6 @@
             "col": {
               "xs": 12
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -420,15 +411,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -503,15 +485,6 @@
             "default": 50,
             "col": {
               "xs": 12
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
             }
           }
         ],
@@ -596,15 +569,6 @@
             "type": "text",
             "key": "account_id",
             "label": "ID compte",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
             "col": {
               "xs": 24
             }
@@ -764,15 +728,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -910,15 +865,6 @@
             "col": {
               "xs": 12
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -994,15 +940,6 @@
             "type": "text",
             "key": "domain",
             "label": "Domaine",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
             "col": {
               "xs": 24
             }
@@ -1146,15 +1083,6 @@
             "col": {
               "xs": 24
             }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1222,15 +1150,6 @@
             "type": "text",
             "key": "name",
             "label": "Nom",
-            "col": {
-              "xs": 24
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
             "col": {
               "xs": 24
             }
@@ -1376,15 +1295,6 @@
                 "type": "required"
               }
             ]
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
-            }
           }
         ],
         "displayTitle": false,
@@ -1459,15 +1369,6 @@
             "default": 50,
             "col": {
               "xs": 12
-            }
-          },
-          {
-            "type": "json",
-            "key": "payload",
-            "label": "Payload JSON",
-            "description": "Données avancées à envoyer à l'API.",
-            "col": {
-              "xs": 24
             }
           }
         ],
