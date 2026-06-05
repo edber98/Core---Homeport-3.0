@@ -18,6 +18,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { AiPanelComponent } from '../../features/ai/ai-panel.component';
 import { AiOnboardingDialogComponent } from '../../features/ai/ai-onboarding-dialog.component';
+import { CreditsBadgeComponent } from '../credits-badge/credits-badge.component';
 import { AiService } from '../../features/ai/ai.service';
 import { FlowsBackendService } from '../../services/flows-backend.service';
 import { FormsModule } from '@angular/forms';
@@ -55,6 +56,7 @@ type MenuItem = { label: string; icon: string; route?: string; children?: MenuIt
     NzToolTipModule,
     AiPanelComponent,
     AiOnboardingDialogComponent,
+    CreditsBadgeComponent,
   ],
   templateUrl: './layout-main.html',
   styleUrl: './layout-main.scss'
