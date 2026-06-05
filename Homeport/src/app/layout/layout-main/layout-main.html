@@ -61,6 +61,7 @@
         <button class="hdr-icon-btn ai-accent" (click)="toggleAi()" nz-tooltip nzTooltipTitle="Assistant IA">
           <span nz-icon nzType="robot" nzTheme="outline"></span>
         </button>
+        <credits-badge></credits-badge>
         <button class="hdr-icon-btn" nz-popover [nzPopoverTrigger]="'click'" (click)="openNotificationsPopover()" [nzPopoverPlacement]="'bottomRight'" [nzPopoverOverlayClassName]="'hdr-popover'" [nzPopoverContent]="notifTpl" nz-tooltip nzTooltipTitle="Notifications">
           <nz-badge [nzCount]="notifUnreadCount" [nzOverflowCount]="99" [nzShowZero]="false" nzSize="small">
             <i class="fa-regular fa-bell"></i>

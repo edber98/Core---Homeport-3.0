@@ -1,6 +1,6 @@
 apiVersion: v2
 name: kinn
-version: 1.0.31
+version: 1.0.32
 appVersion: v0.0.45
 description: "Super logiciel d'automatisation"
 annotations:

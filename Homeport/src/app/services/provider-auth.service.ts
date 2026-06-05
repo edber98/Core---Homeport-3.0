@@ -178,13 +178,22 @@ export class ProviderAuthService {
 
       try { window.addEventListener('message', onMessage); } catch {}
 
+      // Polling `popup.closed` UNIQUEMENT pour détecter une fermeture
+      // utilisateur (croix de la fenêtre). NE PAS rejeter sur exception :
+      // quand la popup est sur un cross-origin (Google), Chrome applique
+      // `Cross-Origin-Opener-Policy: same-origin-allow-popups` qui throw
+      // sur l'accès à `popup.closed` depuis le parent. Si on rejette dans
+      // le catch, on annule à tort le flow alors qu'il est encore en cours.
+      // Source de vérité de fin = postMessage envoyé par le callback Kinn.
       closePoll = setInterval(() => {
         try {
           if (popup.closed) finish(() => reject(new Error('Connexion OAuth2 interrompue.')));
         } catch {
-          finish(() => reject(new Error('Connexion OAuth2 interrompue.')));
+          // COOP cross-origin : popup hors de notre domaine. Ignore — on
+          // attend le postMessage du callback (ou que la popup revienne
+          // sur notre domaine, ce qui rétablira l'accès à popup.closed).
         }
-      }, 400);
+      }, 1000);
 
       this.api.post<AuthPrepareResponse>('/api/auth/connections/prepare', {
         providerKey: provider.id,

@@ -6,6 +6,7 @@ const User = require('../../db/models/user.model');
 const Workspace = require('../../db/models/workspace.model');
 const WorkspaceMembership = require('../../db/models/workspace-membership.model');
 const Pat = require('../../db/models/personal-access-token.model');
+const panelCredits = require('../../services/panel-credits');
 
 const PAT_PREFIX = 'kpat_';
 
@@ -106,6 +107,55 @@ function buildRouter() {
       requestId: req.requestId,
       ts: Date.now(),
     });
+  });
+
+  // Solde de crédits du user courant (proxy vers Panel via HMAC).
+  // Renvoie wallet + userQuota (si défini) + panelPublicUrl + appId pour
+  // permettre au front d'afficher le badge et de rediriger vers le Panel.
+  // En mode dev standalone (KINN_PANEL_CREDITS_ENABLED!=true) → mock illimité.
+  r.get('/me/credits', async (req, res) => {
+    try {
+      const userId = String(req.user?.id || '');
+      const data = await panelCredits.getBalance({ userId });
+      const panelPublicUrl = String(
+        process.env.KINN_PANEL_PUBLIC_URL
+          || process.env.KINN_PANEL_INTERNAL_URL
+          || ''
+      ).replace(/\/+$/, '');
+      const appId = String(process.env.KINN_PANEL_APP_ID || '');
+      res.apiOk({
+        enabled: !!panelCredits.isEnabled(),
+        mocked: !!data?.mocked,
+        exists: data?.exists !== false,
+        balance: data?.balance || null,
+        currency: data?.currency || 'EUR',
+        totalConsumed: data?.totalConsumed ?? null,
+        userQuota: data?.userQuota || null,
+        panelPublicUrl,
+        appId,
+        // URL prête à ouvrir pour aller voir le détail dans le Panel.
+        // Vide si panelPublicUrl ou appId manquant (le frontend masque le lien).
+        detailsUrl: (panelPublicUrl && appId)
+          ? `${panelPublicUrl}/client/credits/${appId}`
+          : '',
+      });
+    } catch (e) {
+      // Erreur réseau Panel sans fail-open → on remonte un état dégradé
+      // plutôt qu'une 500 qui casserait l'UI. Le badge masquera le solde.
+      res.apiOk({
+        enabled: !!panelCredits.isEnabled(),
+        mocked: false,
+        exists: false,
+        balance: null,
+        currency: 'EUR',
+        totalConsumed: null,
+        userQuota: null,
+        panelPublicUrl: '',
+        appId: '',
+        detailsUrl: '',
+        error: String(e?.message || e),
+      });
+    }
   });
 
   // Révoque un PAT
