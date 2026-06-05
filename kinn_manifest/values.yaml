@@ -180,6 +180,10 @@ kinn:
     #
     # Voir docs/credits-overview.md et docs/credits-setup-prod.md.
     kinn_panel_internal_url: "https://panel.kinn.fr"
+    # URL publique du Panel (visible par l'utilisateur final) — affichée
+    # dans le badge crédits frontend pour le lien "Voir détails dans le Panel".
+    # Vide => le frontend retombe sur kinn_panel_internal_url.
+    kinn_panel_public_url: ""
     kinn_panel_credits_enabled: "false"
     kinn_panel_app_id: ""        # ObjectId de l'Application côté Panel
     kinn_panel_client_id: ""     # ObjectId du ClientAccount côté Panel

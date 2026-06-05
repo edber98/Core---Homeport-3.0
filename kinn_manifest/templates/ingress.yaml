@@ -23,13 +23,19 @@ spec:
       backendRefs:
         - name: {{ .Release.Name }}-kinn-api
           port: {{ .Values.kinn.kinnApi.port | int }}
+    # Routes OAuth (callback bouncer Panel) — DOIVENT aller au backend Node,
+    # pas au SPA Angular. Le chemin /oauth/<vendor>/callback est servi par
+    # API/src/modules/oauth-connections.js et render une page HTML qui
+    # postMessage + window.close() pour finaliser le flow popup.
     - matches:
         - path:
             type: PathPrefix
-            value: /api/auth
+            value: /oauth
       backendRefs:
         - name: {{ .Release.Name }}-kinn-api
           port: {{ .Values.kinn.kinnApi.port | int }}
+    # Catch-all → SPA Angular (Homeport). Doit rester en DERNIER pour ne
+    # pas masquer les routes /api et /oauth ci-dessus.
     - matches:
         - path:
             type: PathPrefix
