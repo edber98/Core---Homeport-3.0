@@ -29,6 +29,7 @@ export interface CreditsMeResponse {
   appId: string;
   detailsUrl: string;
   error?: string;
+  errorStatus?: number | null;
 }
 
 @Injectable({ providedIn: 'root' })

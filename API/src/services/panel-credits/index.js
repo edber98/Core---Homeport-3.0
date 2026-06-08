@@ -100,8 +100,13 @@ async function panelCall(method, path, body = null) {
     }
     return json;
   } catch (e) {
+    // Log toujours en warn (même hors fail-open) : sinon impossible de
+    // diagnostiquer pourquoi le badge frontend dit « Impossible de
+    // récupérer le solde ». L'appelant peut décider de re-throw ou pas.
+    const status = e?.status ? ` [HTTP ${e.status}]` : '';
+    const bodyHint = e?.body ? ` body=${JSON.stringify(e.body).slice(0, 200)}` : '';
+    console.warn(`[panel-credits] call failed: ${method} ${path}${status} — ${e?.message || e}${bodyHint}`);
     if (CFG.failOpen) {
-      console.warn(`[panel-credits] fail-open: ${e?.message || e}`);
       return { ok: true, mocked: true, _mockReason: 'panel-credits-fail-open', _error: String(e?.message || e) };
     }
     throw e;
