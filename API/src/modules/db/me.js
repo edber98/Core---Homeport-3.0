@@ -123,6 +123,7 @@ function buildRouter() {
           || ''
       ).replace(/\/+$/, '');
       const appId = String(process.env.KINN_PANEL_APP_ID || '');
+      const clientId = String(process.env.KINN_PANEL_CLIENT_ID || '');
       res.apiOk({
         enabled: !!panelCredits.isEnabled(),
         mocked: !!data?.mocked,
@@ -133,10 +134,14 @@ function buildRouter() {
         userQuota: data?.userQuota || null,
         panelPublicUrl,
         appId,
+        clientId,
         // URL prête à ouvrir pour aller voir le détail dans le Panel.
-        // Vide si panelPublicUrl ou appId manquant (le frontend masque le lien).
+        // On joint TOUJOURS `?clientId=<ID>` même pour un client owner :
+        // côté Panel, la route client-credits.js ignore le query param si
+        // le user a déjà clientId dans son JWT, et l'exige sinon (admin/
+        // consultant). Donc le lien fonctionne pour tous les profils.
         detailsUrl: (panelPublicUrl && appId)
-          ? `${panelPublicUrl}/client/credits/${appId}`
+          ? `${panelPublicUrl}/client/credits/${appId}${clientId ? `?clientId=${encodeURIComponent(clientId)}` : ''}`
           : '',
       });
     } catch (e) {
@@ -148,6 +153,9 @@ function buildRouter() {
       const errStatus = (e && e.status) ? ` [HTTP ${e.status}]` : '';
       const errBody = (e && e.body) ? ` body=${JSON.stringify(e.body).slice(0, 300)}` : '';
       console.warn(`[me/credits] panel-credits call failed for user=${req.user?.id}: ${errMsg}${errStatus}${errBody}`);
+      const panelPublicUrlErr = String(process.env.KINN_PANEL_PUBLIC_URL || process.env.KINN_PANEL_INTERNAL_URL || '').replace(/\/+$/, '');
+      const appIdErr = String(process.env.KINN_PANEL_APP_ID || '');
+      const clientIdErr = String(process.env.KINN_PANEL_CLIENT_ID || '');
       res.apiOk({
         enabled: !!panelCredits.isEnabled(),
         mocked: false,
@@ -156,13 +164,29 @@ function buildRouter() {
         currency: 'EUR',
         totalConsumed: null,
         userQuota: null,
-        panelPublicUrl: String(process.env.KINN_PANEL_PUBLIC_URL || process.env.KINN_PANEL_INTERNAL_URL || '').replace(/\/+$/, ''),
-        appId: String(process.env.KINN_PANEL_APP_ID || ''),
-        detailsUrl: '',
+        panelPublicUrl: panelPublicUrlErr,
+        appId: appIdErr,
+        clientId: clientIdErr,
+        detailsUrl: (panelPublicUrlErr && appIdErr)
+          ? `${panelPublicUrlErr}/client/credits/${appIdErr}${clientIdErr ? `?clientId=${encodeURIComponent(clientIdErr)}` : ''}`
+          : '',
         error: errMsg,
         errorStatus: (e && e.status) || null,
       });
     }
+  });
+
+  // Debug crédits : ping Panel + dump config + un appel getBalance live.
+  // Sert uniquement à diagnostiquer (DNS, HMAC, ingress qui intercepte, etc).
+  // Pas d'info sensible — secret masqué par getConfig().
+  r.get('/me/credits/debug', async (req, res) => {
+    const out = { config: null, ping: null, balance: null };
+    try { out.config = panelCredits.getConfig(); } catch (e) { out.config = { error: e?.message }; }
+    try { out.ping = await panelCredits.pingPanel(); }
+    catch (e) { out.ping = { ok: false, error: e?.message, status: e?.status, body: e?.body }; }
+    try { out.balance = await panelCredits.getBalance({ userId: req.user?.id }); }
+    catch (e) { out.balance = { ok: false, error: e?.message, status: e?.status, body: e?.body }; }
+    res.apiOk(out);
   });
 
   // Révoque un PAT
