@@ -68,7 +68,11 @@ function getConfig() { return { ...CFG, secret: CFG.secret ? '***' : '' }; }
 function sign({ method, path, body }) {
   const ts = Math.floor(Date.now() / 1000);
   const rawBody = body ? JSON.stringify(body) : '';
-  const canonical = `${method}\n${path}\n${ts}\n${rawBody}`;
+  // CRITIQUE : on signe SANS la query string pour matcher le middleware Panel
+  // (`req.originalUrl.split('?')[0]`). Si on inclut la query, le canonical
+  // diverge dès qu'il y a un userId / param supplémentaire → 401 garanti.
+  const pathNoQuery = String(path || '').split('?')[0];
+  const canonical = `${method}\n${pathNoQuery}\n${ts}\n${rawBody}`;
   const sig = crypto.createHmac('sha256', CFG.secret).update(canonical, 'utf8').digest('hex');
   return {
     'X-Kinn-Panel-Signature': `sha256=${sig}`,
