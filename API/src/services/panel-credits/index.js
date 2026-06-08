@@ -81,21 +81,46 @@ async function panelCall(method, path, body = null) {
   if (!isEnabled()) {
     return { ok: true, mocked: true, _mockReason: 'panel-credits-dev-mode' };
   }
+  const fullUrl = `${CFG.url}${path}`;
   const headers = sign({ method, path, body });
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), CFG.timeoutMs);
   try {
-    const res = await fetch(`${CFG.url}${path}`, {
+    const res = await fetch(fullUrl, {
       method,
       headers,
       body: body ? JSON.stringify(body) : undefined,
       signal: controller.signal
     });
-    const json = await res.json().catch(() => null);
+    // Lecture du body en texte d'abord pour pouvoir le logger en cas de JSON
+    // invalide (cas typique : un ingress/proxy intermédiaire renvoie du HTML
+    // ou un 200 vide → res.json() throw silencieusement et on perd la trace).
+    const rawText = await res.text().catch(() => '');
+    let json = null;
+    try { json = rawText ? JSON.parse(rawText) : null; } catch { /* not JSON */ }
+    // Log structuré obligatoire : status + content-type + taille body + json valide ?
+    // Permet de détecter immédiatement un ingress qui répond à la place du backend.
+    const ct = res.headers.get('content-type') || '';
+    const isJson = json !== null;
+    console.log(`[panel-credits] ${method} ${fullUrl} → HTTP ${res.status} ct=${ct} bytes=${rawText.length} json=${isJson}`);
+    if (!isJson && rawText) {
+      // Dump les 300 premiers chars du body non-JSON pour identifier l'expéditeur
+      // réel (ex: nginx default page, "404 Not Found", HTML d'erreur, etc.)
+      console.warn(`[panel-credits] non-JSON body (likely intercepted by proxy/ingress): ${rawText.slice(0, 300)}`);
+    }
     if (!res.ok) {
       const err = new Error(json?.error?.code || `panel_http_${res.status}`);
       err.status = res.status;
-      err.body = json;
+      err.body = json || rawText.slice(0, 300);
+      throw err;
+    }
+    // Si HTTP 200 mais pas de JSON → c'est suspect : on throw plutôt que retourner null
+    // (sinon le badge frontend affiche « Aucun wallet provisionné » alors que
+    // le vrai problème est que la requête n'arrive PAS au backend Panel).
+    if (!isJson) {
+      const err = new Error('panel_returned_non_json');
+      err.status = res.status;
+      err.body = rawText.slice(0, 300);
       throw err;
     }
     return json;
@@ -104,8 +129,8 @@ async function panelCall(method, path, body = null) {
     // diagnostiquer pourquoi le badge frontend dit « Impossible de
     // récupérer le solde ». L'appelant peut décider de re-throw ou pas.
     const status = e?.status ? ` [HTTP ${e.status}]` : '';
-    const bodyHint = e?.body ? ` body=${JSON.stringify(e.body).slice(0, 200)}` : '';
-    console.warn(`[panel-credits] call failed: ${method} ${path}${status} — ${e?.message || e}${bodyHint}`);
+    const bodyHint = e?.body ? ` body=${typeof e.body === 'string' ? e.body.slice(0, 200) : JSON.stringify(e.body).slice(0, 200)}` : '';
+    console.warn(`[panel-credits] call failed: ${method} ${fullUrl}${status} — ${e?.message || e}${bodyHint}`);
     if (CFG.failOpen) {
       return { ok: true, mocked: true, _mockReason: 'panel-credits-fail-open', _error: String(e?.message || e) };
     }
