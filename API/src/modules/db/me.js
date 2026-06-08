@@ -142,6 +142,12 @@ function buildRouter() {
     } catch (e) {
       // Erreur réseau Panel sans fail-open → on remonte un état dégradé
       // plutôt qu'une 500 qui casserait l'UI. Le badge masquera le solde.
+      // Log explicite : c'est INVISIBLE sans ça (le helper avale les détails
+      // hors fail-open et le frontend voit juste « Impossible de récupérer »).
+      const errMsg = String(e?.message || e);
+      const errStatus = (e && e.status) ? ` [HTTP ${e.status}]` : '';
+      const errBody = (e && e.body) ? ` body=${JSON.stringify(e.body).slice(0, 300)}` : '';
+      console.warn(`[me/credits] panel-credits call failed for user=${req.user?.id}: ${errMsg}${errStatus}${errBody}`);
       res.apiOk({
         enabled: !!panelCredits.isEnabled(),
         mocked: false,
@@ -150,10 +156,11 @@ function buildRouter() {
         currency: 'EUR',
         totalConsumed: null,
         userQuota: null,
-        panelPublicUrl: '',
-        appId: '',
+        panelPublicUrl: String(process.env.KINN_PANEL_PUBLIC_URL || process.env.KINN_PANEL_INTERNAL_URL || '').replace(/\/+$/, ''),
+        appId: String(process.env.KINN_PANEL_APP_ID || ''),
         detailsUrl: '',
-        error: String(e?.message || e),
+        error: errMsg,
+        errorStatus: (e && e.status) || null,
       });
     }
   });

@@ -18,6 +18,14 @@ spec:
       # Vide ou absent → runc par défaut (containerd standard).
       runtimeClassName: {{ .Values.kinn.kinnApi.runtimeClassName | quote }}
       {{- end }}
+      # ─── DNS local : bypass NAT loopback vers Panel ─────────────────────────
+      # Le pod et panel.kinn.fr sont sur le même réseau privé. Le routeur ne
+      # sait pas hairpin l'IP publique de panel.kinn.fr vers l'intérieur, donc
+      # on force la résolution vers l'IP LAN directement dans /etc/hosts du pod.
+      hostAliases:
+        - ip: "192.168.147.45"
+          hostnames:
+            - "panel.kinn.fr"
       containers:
         - name: kinn-api
           image: registry.c4rbon.group/edouard.bernier/kinn-homeport/api:v0.0.47
