@@ -150,14 +150,39 @@ export class ProviderAuthService {
       let state = '';
       let callbackOrigin = '';
       let closePoll: ReturnType<typeof setInterval> | null = null;
+      let lsPoll: ReturnType<typeof setInterval> | null = null;
+      let bc: BroadcastChannel | null = null;
+
+      // Triple-canal pour recevoir le résultat depuis la popup (le callback
+      // backend kinn-app diffuse sur les 3) :
+      //  1. window 'message' (postMessage via window.opener)
+      //  2. BroadcastChannel('kinn:oauth') (same-origin, indépendant de l'opener)
+      //  3. localStorage 'storage' event + polling backup (clé kinn:oauth:result:<state>)
+      // Le premier qui arrive gagne, finish() nettoie les 3 abonnements.
 
       const finish = (cb: () => void) => {
         if (settled) return;
         settled = true;
         try { window.removeEventListener('message', onMessage); } catch {}
+        try { window.removeEventListener('storage', onStorage); } catch {}
         if (closePoll) clearInterval(closePoll);
+        if (lsPoll) clearInterval(lsPoll);
+        if (bc) { try { bc.removeEventListener('message', onBcMessage); bc.close(); } catch {} }
         try { if (!popup.closed) popup.close(); } catch {}
+        // Cleanup localStorage si la popup a posé le résultat sans qu'on l'ait
+        // consommé via storage event (cas où on l'a chopé via BC/postMessage)
+        try { if (state) localStorage.removeItem('kinn:oauth:result:' + state); } catch {}
         cb();
+      };
+
+      const consumeResult = (data: AuthPopupMessage) => {
+        if (!data || data.type !== 'kinn:provider-auth:result') return false;
+        if (state && data.state !== state) return false;
+        finish(() => {
+          if (data.success && data.payload?.values) resolve(data.payload);
+          else reject(new Error(String(data.error?.message || 'La connexion OAuth2 a échoué.')));
+        });
+        return true;
       };
 
       const onMessage = (event: MessageEvent<AuthPopupMessage>) => {
@@ -167,16 +192,29 @@ export class ProviderAuthService {
           this.normalizeOrigin(window.location.origin),
         ].filter(Boolean));
         if (!allowedOrigins.has(String(event.origin || ''))) return;
-        const data = event.data;
-        if (!data || data.type !== 'kinn:provider-auth:result') return;
-        if (state && data.state !== state) return;
-        finish(() => {
-          if (data.success && data.payload?.values) resolve(data.payload);
-          else reject(new Error(String(data.error?.message || 'La connexion OAuth2 a échoué.')));
-        });
+        consumeResult(event.data);
+      };
+
+      const onBcMessage = (event: MessageEvent<AuthPopupMessage>) => {
+        // BroadcastChannel est déjà same-origin par construction.
+        consumeResult(event.data);
+      };
+
+      const onStorage = (event: StorageEvent) => {
+        // Détecte la pose du résultat par la popup via localStorage.
+        if (!event.key || !event.key.startsWith('kinn:oauth:result:')) return;
+        if (!event.newValue) return; // suppression (cleanup)
+        try { consumeResult(JSON.parse(event.newValue) as AuthPopupMessage); } catch {}
       };
 
       try { window.addEventListener('message', onMessage); } catch {}
+      try { window.addEventListener('storage', onStorage); } catch {}
+      try {
+        if (typeof BroadcastChannel === 'function') {
+          bc = new BroadcastChannel('kinn:oauth');
+          bc.addEventListener('message', onBcMessage);
+        }
+      } catch {}
 
       // Polling `popup.closed` UNIQUEMENT pour détecter une fermeture
       // utilisateur (croix de la fenêtre). NE PAS rejeter sur exception :
@@ -184,16 +222,26 @@ export class ProviderAuthService {
       // `Cross-Origin-Opener-Policy: same-origin-allow-popups` qui throw
       // sur l'accès à `popup.closed` depuis le parent. Si on rejette dans
       // le catch, on annule à tort le flow alors qu'il est encore en cours.
-      // Source de vérité de fin = postMessage envoyé par le callback Kinn.
+      // Source de vérité de fin = postMessage/BC/localStorage du callback.
       closePoll = setInterval(() => {
         try {
           if (popup.closed) finish(() => reject(new Error('Connexion OAuth2 interrompue.')));
         } catch {
-          // COOP cross-origin : popup hors de notre domaine. Ignore — on
-          // attend le postMessage du callback (ou que la popup revienne
-          // sur notre domaine, ce qui rétablira l'accès à popup.closed).
+          // COOP cross-origin : popup hors de notre domaine. Ignore.
         }
       }, 1000);
+
+      // Backup : polling localStorage toutes les 500ms. Certains navigateurs
+      // ne dispatchent pas le 'storage' event vers la fenêtre qui a écrit,
+      // mais ici parent ≠ popup, donc ça devrait fire — ce poll est juste
+      // une ceinture-bretelles au cas où.
+      lsPoll = setInterval(() => {
+        if (!state) return;
+        try {
+          const raw = localStorage.getItem('kinn:oauth:result:' + state);
+          if (raw) consumeResult(JSON.parse(raw) as AuthPopupMessage);
+        } catch {}
+      }, 500);
 
       this.api.post<AuthPrepareResponse>('/api/auth/connections/prepare', {
         providerKey: provider.id,

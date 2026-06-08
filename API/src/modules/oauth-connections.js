@@ -84,13 +84,60 @@ function renderPopupResult(res, { success, origin, state, payload, error, provid
   const body = success
     ? `La connexion ${label} est terminée. Cette fenêtre peut être fermée.`
     : String(error?.message || `La connexion ${label} a échoué.`);
+  // Headers COOP/COEP « unsafe-none » : Google force `Cross-Origin-Opener-Policy:
+  // same-origin` sur ses pages d'auth ; quand la popup revient vers nous, son
+  // browsing context group est isolé → `window.opener` devient null → le
+  // postMessage ne part jamais. En posant explicitement `unsafe-none`, on
+  // signale que cette page accepte un opener cross-context.
+  res.setHeader('Cross-Origin-Opener-Policy', 'unsafe-none');
+  res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none');
   res.setHeader('Cache-Control', 'no-store');
+  // Triple-canal pour livrer le résultat au parent, par ordre de fiabilité
+  // croissante face aux isolations COOP/cross-origin :
+  //   1. window.opener.postMessage    — classique, échoue si opener = null
+  //   2. BroadcastChannel('kinn:oauth') — même origine, indépendant de l'opener
+  //   3. localStorage 'kinn:oauth:result:<state>' — déclenche 'storage' event
+  // Le parent écoute les 3 → premier qui arrive gagne.
   res.type('html').send(`<!doctype html>
 <html lang="fr"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>${escapeHtml(title)}</title>
-<style>body{font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a;margin:0;padding:24px}.card{max-width:560px;margin:10vh auto 0;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.08)}h1{font-size:20px;margin:0 0 12px}p{margin:0;color:#475569;line-height:1.5}</style>
-</head><body><div class="card"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(body)}</p></div>
-<script>(function(){var targetOrigin=${escapeJsonForInlineScript(safeOrigin)};var message=${serialized};try{if(window.opener&&!window.opener.closed&&targetOrigin){window.opener.postMessage(message,targetOrigin);window.close();return;}}catch(_){}})();</script>
+<style>body{font-family:system-ui,sans-serif;background:#f8fafc;color:#0f172a;margin:0;padding:24px}.card{max-width:560px;margin:10vh auto 0;background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.08)}h1{font-size:20px;margin:0 0 12px}p{margin:0;color:#475569;line-height:1.5}button{margin-top:16px;padding:8px 16px;border-radius:8px;border:1px solid #cbd5e1;background:#fff;cursor:pointer;font-size:14px}button:hover{background:#f1f5f9}</style>
+</head><body><div class="card"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(body)}</p><button onclick="window.close()" type="button">Fermer cette fenêtre</button></div>
+<script>(function(){
+  var targetOrigin=${escapeJsonForInlineScript(safeOrigin)};
+  var message=${serialized};
+  var delivered=false;
+  // 1) postMessage classique vers l'opener
+  try{
+    if(window.opener && !window.opener.closed && targetOrigin){
+      window.opener.postMessage(message,targetOrigin);
+      delivered=true;
+    }
+  }catch(_){}
+  // 2) BroadcastChannel — fonctionne entre tabs/popups same-origin sans opener
+  try{
+    if(typeof BroadcastChannel==='function'){
+      var bc=new BroadcastChannel('kinn:oauth');
+      bc.postMessage(message);
+      try{bc.close();}catch(_){}
+      delivered=true;
+    }
+  }catch(_){}
+  // 3) localStorage — déclenche un 'storage' event chez le parent same-origin
+  try{
+    if(window.localStorage){
+      var key='kinn:oauth:result:'+(message.state||'');
+      window.localStorage.setItem(key, JSON.stringify(message));
+      // Auto-cleanup au bout de 30s au cas où le parent ne le supprime pas
+      setTimeout(function(){ try{ window.localStorage.removeItem(key);}catch(_){}}, 30000);
+      delivered=true;
+    }
+  }catch(_){}
+  // Tentative de fermeture auto (peut échouer si la popup a navigué cross-origin
+  // et que le navigateur considère qu'elle n'a pas été ouverte par script — dans
+  // ce cas le bouton « Fermer cette fenêtre » prend le relais).
+  try{ window.close(); }catch(_){}
+})();</script>
 </body></html>`);
 }
 

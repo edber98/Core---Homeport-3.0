@@ -42,8 +42,14 @@ const POLL_INTERVAL_MS = 30_000;
         <ng-container *ngIf="state; else loadingTpl">
           <!-- Erreur ou Panel injoignable -->
           <div class="credits-error" *ngIf="state.error">
-            <i nz-icon nzType="warning" nzTheme="outline"></i>
-            Impossible de récupérer le solde.
+            <div class="credits-error-head">
+              <i nz-icon nzType="warning" nzTheme="outline"></i>
+              <span>Impossible de récupérer le solde.</span>
+            </div>
+            <div class="credits-error-detail">
+              <code>{{ state.error }}</code>
+              <code *ngIf="state.errorStatus"> · HTTP {{ state.errorStatus }}</code>
+            </div>
           </div>
 
           <!-- Quota utilisateur (si défini) -->
@@ -176,8 +182,18 @@ const POLL_INTERVAL_MS = 30_000;
     .credits-foot a:hover { text-decoration: underline; }
 
     .credits-error {
-      color: #b91c1c; font-size: 12px; display: flex; align-items: center; gap: 6px;
-      padding: 6px 0;
+      color: #b91c1c; font-size: 12px; padding: 6px 0;
+    }
+    .credits-error-head {
+      display: flex; align-items: center; gap: 6px; font-weight: 500;
+    }
+    .credits-error-detail {
+      margin-top: 4px; padding-left: 22px; font-size: 11px;
+      color: rgba(0,0,0,.55); word-break: break-word;
+    }
+    .credits-error-detail code {
+      background: rgba(185,28,28,.06); padding: 1px 4px; border-radius: 3px;
+      font-family: ui-monospace, monospace; font-size: 10px;
     }
     .credits-mocked {
       margin-top: 8px; padding-top: 8px;
