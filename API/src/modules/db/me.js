@@ -176,6 +176,66 @@ function buildRouter() {
     }
   });
 
+  // ── SSE temps réel des crédits ─────────────────────────────────────────
+  // Stream qui push à chaque débit déclenché côté pod kinn-app (hook harness
+  // → panel-credits/cjs-wrapper.bus). Évite le poll 30s du badge.
+  //
+  // Pattern : 1 connexion SSE par onglet ouvert. Filtrage userId côté serveur
+  // pour ne push qu'à l'user concerné. Heartbeat 25s (sous le timeout 30s
+  // de Traefik) + nettoyage à la déconnexion.
+  //
+  // Protocole : events `debit` et `check_failed`. Client fait fallback poll
+  // si pas d'event reçu pendant > 60s (au cas où l'EventSource est cassé
+  // par un proxy intermédiaire).
+  r.get('/me/credits/stream', (req, res) => {
+    const userId = String(req.user?.id || '');
+    if (!userId) return res.apiError(401, 'unauthorized', 'no user');
+    const panelCreditsCjs = require('../../services/panel-credits/cjs-wrapper');
+
+    // Headers SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no'); // disable nginx buffering
+    res.flushHeaders?.();
+    res.write(': sse-connected\n\n');
+
+    const send = (eventName, data) => {
+      try {
+        res.write(`event: ${eventName}\n`);
+        res.write(`data: ${JSON.stringify(data)}\n\n`);
+      } catch { /* connexion fermée */ }
+    };
+
+    // Premier message : status connecté pour que le client sache que ça marche.
+    send('open', { ok: true, userId, at: new Date().toISOString() });
+
+    // Heartbeat 25s pour keep-alive (Traefik / nginx default = 30s).
+    const heartbeat = setInterval(() => {
+      try { res.write(`: ping ${Date.now()}\n\n`); } catch {}
+    }, 25_000);
+
+    // Listeners filtrés par userId
+    const onDebit = (payload) => {
+      if (String(payload?.userId || '') !== userId) return;
+      send('debit', payload);
+    };
+    const onCheckFailed = (payload) => {
+      if (String(payload?.userId || '') !== userId) return;
+      send('check_failed', payload);
+    };
+    panelCreditsCjs.bus.on('debit', onDebit);
+    panelCreditsCjs.bus.on('check_failed', onCheckFailed);
+
+    // Cleanup à la déconnexion (client ferme l'onglet, etc.)
+    req.on('close', () => {
+      clearInterval(heartbeat);
+      try { panelCreditsCjs.bus.off('debit', onDebit); } catch {}
+      try { panelCreditsCjs.bus.off('check_failed', onCheckFailed); } catch {}
+      try { res.end(); } catch {}
+    });
+  });
+
   // Debug crédits : ping Panel + dump config + un appel getBalance live.
   // Sert uniquement à diagnostiquer (DNS, HMAC, ingress qui intercepte, etc).
   // Pas d'info sensible — secret masqué par getConfig().
