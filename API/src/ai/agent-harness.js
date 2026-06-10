@@ -26,6 +26,9 @@ const { resolveToolLabel, summarizeArgs, summarizeToolArgs } = require('./harnes
 const { nextWithTimeout, buildCapsuleInstructions, STREAM_TIMEOUT_MS } = require('./harness/stream-utils');
 const crypto = require('crypto');
 const { isDebug } = require('./util/debug');
+// Hooks billing Panel (crédits). debitTurn = facture après chaque LLM call,
+// checkBeforeCall = bloque avant si modèle inconnu ou solde insuffisant.
+const panelCredits = require('../services/panel-credits/cjs-wrapper');
 
 
 // Fallback for onboarding mode
@@ -173,7 +176,47 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
   let loopCount = 0;
   let totalUsage = { input: 0, output: 0 };
 
+  // ── BILLING : identifiants stables pour debitTurn() per-iteration ──
+  // userId vient du JWT (req.user.id propagé via metadata),
+  // conversationId = threadId pour grouper tous les tours du même chat.
+  const billingUserId = String(modeMetadata?.userId || context?.userId || '');
+  const billingConversationId = String(modeMetadata?.threadId || context?.threadId || jobContext?.jobId || '');
+  let billingIter = 0;
+
   log.log(`start: mode=${mode}, capsules=[${[...activeCapsules]}], tools=${toolSet.definitions.length}, provider=${llm.provider}, model=${llmConfig.model}`);
+
+  // ── PRÉ-CHECK BILLING : si crédits activés côté Panel, vérifier AVANT
+  // d'appeler le LLM que (1) le modèle existe dans le catalog, (2) le solde
+  // ou le quota user permet au moins une requête. Sinon → bloque immédiatement.
+  // Ne consomme pas de tokens externes inutilement si on ne peut pas facturer.
+  if (panelCredits.isEnabled() && billingUserId) {
+    try {
+      await panelCredits.checkBeforeCall({
+        userId: billingUserId,
+        provider: llm.provider,
+        model: llmConfig.model,
+        // Estimation grossière (~1500 tokens input pour le système prompt + msg)
+        estimatedInputTokens: 1500,
+        estimatedOutputTokens: 500
+      });
+    } catch (e) {
+      log.error(`billing pre-check refused: code=${e.code} model=${llmConfig.model}`);
+      const userMsg =
+        e.code === 'unknown_model' ? `Le modèle "${llmConfig.model}" n'est pas enregistré dans le catalogue de crédits du Panel. L'usage de l'IA est bloqué tant qu'un administrateur ne l'a pas ajouté.` :
+        e.code === 'model_not_enabled_for_app' ? `Le modèle "${llmConfig.model}" n'est pas activé pour cette application. Contactez votre administrateur.` :
+        e.code === 'insufficient_credits' ? `Crédits insuffisants pour effectuer cet appel IA. Rechargez votre solde dans le Panel.` :
+        `Le système de crédits a refusé l'appel : ${e.message || e.code}`;
+      yield {
+        type: 'error',
+        code: e.code || 'credit_check_failed',
+        message: userMsg,
+        balance: e.balance || null,
+        model: llmConfig.model,
+        provider: llm.provider
+      };
+      return;  // STOP : pas de call LLM, pas de tokens consommés.
+    }
+  }
 
   while (loopCount < maxLoops) {
     if (signal?.aborted) { console.log('[harness] aborted before loop', loopCount + 1); break; }
@@ -360,6 +403,52 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
             if (event.usage) {
               totalUsage.input += event.usage.input || 0;
               totalUsage.output += event.usage.output || 0;
+              // ── BILLING : débit Panel per-turn (idempotent via conversationId:iter) ──
+              // Si crédits activés, on facture maintenant que l'usage exact est connu.
+              // Erreur insufficient_credits / quota → yield error + STOP la boucle.
+              // Erreur réseau Panel → log silencieux (best-effort, ne bloque pas l'user).
+              if (panelCredits.isEnabled() && billingUserId) {
+                billingIter++;
+                try {
+                  const billing = await panelCredits.debitTurn({
+                    userId: billingUserId,
+                    conversationId: billingConversationId,
+                    iter: billingIter,
+                    provider: llm.provider,
+                    model: llmConfig.model,
+                    usage: event.usage,
+                    context: { mode, loop: loopCount }
+                  });
+                  if (billing && !billing.mocked && !billing.idempotent && billing.credits > 0) {
+                    yield {
+                      type: 'billing',
+                      credits: billing.credits,
+                      costEur: billing.costEur,
+                      balance: billing.balance,
+                      ledgerId: billing.ledgerId,
+                      iter: billingIter,
+                      model: llmConfig.model
+                    };
+                  }
+                } catch (e) {
+                  if (e.code === 'insufficient_credits' || e.code === 'user_quota_exceeded' || e.code === 'hard_cap_exceeded' || e.code === 'unknown_model' || e.code === 'model_not_enabled_for_app') {
+                    log.error(`billing debit refused: ${e.code} iter=${billingIter}`);
+                    yield {
+                      type: 'error',
+                      code: e.code,
+                      message: e.code === 'insufficient_credits' ? 'Crédits épuisés. Rechargez votre solde dans le Panel pour continuer.'
+                        : e.code === 'user_quota_exceeded' ? 'Vous avez atteint votre quota mensuel personnel. Contactez votre administrateur.'
+                        : e.code === 'hard_cap_exceeded' ? 'Plafond quotidien atteint. Réessayez demain.'
+                        : `Modèle "${llmConfig.model}" non autorisé pour la facturation.`,
+                      balance: e.balance,
+                      model: llmConfig.model
+                    };
+                    return; // STOP : ne pas continuer la boucle de tool-calls
+                  }
+                  // Autres erreurs (réseau, 5xx) → log silencieux
+                  if (isDebug()) log.warn(`billing error ignored: ${e.message || e}`);
+                }
+              }
             }
             log.log(`stream: done (events=${eventCount}, usage=${JSON.stringify(event.usage || {})})`);
             break;
