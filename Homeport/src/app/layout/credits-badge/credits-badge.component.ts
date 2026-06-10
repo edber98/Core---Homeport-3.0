@@ -5,7 +5,13 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { CreditsBackendService, CreditsMeResponse } from '../../services/credits-backend.service';
 
-const POLL_INTERVAL_MS = 30_000;
+// Poll lent en backup uniquement. Le badge se met à jour temps réel via SSE
+// (`/api/me/credits/stream`) à chaque débit. Le poll garantit la fraîcheur
+// même si l'EventSource est cassé par un proxy intermédiaire ou que l'user
+// change de wallet entre 2 onglets.
+const POLL_INTERVAL_MS = 60_000;
+const SSE_RECONNECT_BASE_MS = 3_000;
+const SSE_RECONNECT_MAX_MS = 30_000;
 
 @Component({
   selector: 'credits-badge',
@@ -207,6 +213,9 @@ export class CreditsBadgeComponent implements OnInit, OnDestroy {
   state: CreditsMeResponse | null = null;
   loading = false;
   private pollHandle: any = null;
+  private sse: EventSource | null = null;
+  private sseReconnectMs = SSE_RECONNECT_BASE_MS;
+  private sseReconnectTimer: any = null;
   // Garde le badge masqué tant que l'API n'a pas confirmé que les crédits
   // sont enabled (évite un flash en mode standalone dev).
   visible = false;
@@ -219,12 +228,71 @@ export class CreditsBadgeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.refresh();
     this.pollHandle = setInterval(() => this.refresh(), POLL_INTERVAL_MS);
+    this.connectSse();
   }
 
   ngOnDestroy(): void {
-    if (this.pollHandle) {
-      clearInterval(this.pollHandle);
-      this.pollHandle = null;
+    if (this.pollHandle) { clearInterval(this.pollHandle); this.pollHandle = null; }
+    if (this.sseReconnectTimer) { clearTimeout(this.sseReconnectTimer); this.sseReconnectTimer = null; }
+    this.closeSse();
+  }
+
+  /**
+   * Ouvre le stream SSE `/api/me/credits/stream`. À chaque event `debit`,
+   * on met à jour `state.balance` immédiatement sans attendre le poll.
+   * En cas de déconnexion (réseau / proxy timeout), reconnect avec
+   * exponential backoff capped à 30s.
+   */
+  private connectSse(): void {
+    this.closeSse();
+    try {
+      // L'URL doit être absolue pour traverser le cookie/JWT correctement.
+      // ApiClientService gère le baseUrl automatiquement pour les fetch
+      // standards mais EventSource ne supporte pas les interceptors.
+      // On reconstruit l'URL via window.location.origin (le pod sert /api).
+      const url = `${window.location.origin}/api/me/credits/stream`;
+      this.sse = new EventSource(url, { withCredentials: true });
+
+      this.sse.addEventListener('open', () => {
+        this.sseReconnectMs = SSE_RECONNECT_BASE_MS;
+      });
+
+      // À chaque débit, on met à jour la balance SANS faire un nouveau fetch.
+      this.sse.addEventListener('debit', (ev: MessageEvent) => {
+        try {
+          const payload = JSON.parse(ev.data);
+          if (this.state && payload?.balance) {
+            this.state.balance = payload.balance;
+            // Mets aussi à jour totalConsumed pour cohérence visuelle.
+            if (typeof this.state.totalConsumed === 'number' && payload.credits) {
+              this.state.totalConsumed += Number(payload.credits || 0);
+            }
+            try { this.cdr.detectChanges(); } catch {}
+          }
+        } catch {}
+      });
+
+      // Erreur côté Panel : on rafraîchit pour avoir l'état canonique
+      // (la balance n'a pas bougé mais l'user doit savoir qu'il y a un pb).
+      this.sse.addEventListener('check_failed', () => { this.refresh(); });
+
+      this.sse.addEventListener('error', () => {
+        // L'EventSource va auto-reconnect, mais on force notre logique pour
+        // avoir un backoff contrôlé (Chrome retry à intervals erratiques).
+        this.closeSse();
+        const delay = Math.min(this.sseReconnectMs, SSE_RECONNECT_MAX_MS);
+        this.sseReconnectMs = Math.min(this.sseReconnectMs * 2, SSE_RECONNECT_MAX_MS);
+        this.sseReconnectTimer = setTimeout(() => this.connectSse(), delay);
+      });
+    } catch {
+      // Browser sans EventSource (très rare) → on garde juste le poll.
+    }
+  }
+
+  private closeSse(): void {
+    if (this.sse) {
+      try { this.sse.close(); } catch {}
+      this.sse = null;
     }
   }
 
