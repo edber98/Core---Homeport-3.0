@@ -4,6 +4,7 @@ import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { CreditsBackendService, CreditsMeResponse } from '../../services/credits-backend.service';
+import { AuthTokenService } from '../../services/auth-token.service';
 
 // Poll lent en backup uniquement. Le badge se met à jour temps réel via SSE
 // (`/api/me/credits/stream`) à chaque débit. Le poll garantit la fraîcheur
@@ -223,6 +224,7 @@ export class CreditsBadgeComponent implements OnInit, OnDestroy {
   constructor(
     private credits: CreditsBackendService,
     private cdr: ChangeDetectorRef,
+    private tokenSvc: AuthTokenService,
   ) {}
 
   ngOnInit(): void {
@@ -246,12 +248,15 @@ export class CreditsBadgeComponent implements OnInit, OnDestroy {
   private connectSse(): void {
     this.closeSse();
     try {
-      // L'URL doit être absolue pour traverser le cookie/JWT correctement.
-      // ApiClientService gère le baseUrl automatiquement pour les fetch
-      // standards mais EventSource ne supporte pas les interceptors.
-      // On reconstruit l'URL via window.location.origin (le pod sert /api).
-      const url = `${window.location.origin}/api/me/credits/stream`;
-      this.sse = new EventSource(url, { withCredentials: true });
+      // EventSource ne peut PAS envoyer de header Authorization (limitation
+      // de l'API navigateur). L'auth kinn-app est un JWT Bearer (pas un
+      // cookie) → le SSE retournait 401. On passe donc le token en query
+      // `?token=` (le authMiddleware kinn-app lit `req.query.token`).
+      const token = this.tokenSvc?.token || '';
+      if (!token) { return; }  // pas connecté → pas de SSE (le poll prendra le relais)
+      const url = `${window.location.origin}/api/me/credits/stream?token=${encodeURIComponent(token)}`;
+      // withCredentials inutile ici (auth par query token), mais inoffensif.
+      this.sse = new EventSource(url);
 
       this.sse.addEventListener('open', () => {
         this.sseReconnectMs = SSE_RECONNECT_BASE_MS;

@@ -17,6 +17,24 @@ const { EventEmitter } = require('events');
 const panelCredits = require('./index.js');
 
 /**
+ * Normalise le nom du provider du harness LLM vers la clé du catalog Panel.
+ * Le harness expose des providers internes ('openai-responses', 'openai',
+ * 'claude', 'vllm'…) mais le catalog LlmModel utilise une clé canonique
+ * `${provider}:${model}` avec provider ∈ {openai, anthropic, ...}.
+ *
+ * Sans cette normalisation, gpt-5.2 (provider interne 'openai-responses')
+ * cherchait 'openai-responses:gpt-5.2' dans le catalog → unknown_model →
+ * le débit échouait silencieusement et le compteur ne descendait jamais.
+ */
+function normalizeProvider(p) {
+  const s = String(p || 'openai').toLowerCase();
+  if (s === 'openai-responses' || s === 'openai-chat' || s === 'openai-compat' || s === 'openai-compatible') return 'openai';
+  if (s === 'claude') return 'anthropic';
+  // vllm/ollama/lmstudio/etc : on garde tel quel (catalog peut les référencer)
+  return s;
+}
+
+/**
  * EventEmitter local au pod kinn-app. Émet `debit` après chaque débit réussi
  * (et `check_failed` quand le pré-check refuse). Le endpoint SSE
  * `/api/me/credits/stream` filtre par userId pour push uniquement au bon client.
@@ -43,7 +61,7 @@ bus.setMaxListeners(50);
  * À chaque débit RÉUSSI non-mocké, émet `bus.emit('debit', {...})` pour le SSE.
  */
 async function debitTurn({ userId, conversationId, iter, provider, model, usage, context }) {
-  const prov = String(provider || 'openai').toLowerCase();
+  const prov = normalizeProvider(provider);
   // Idempotency key déterministe pour replay safety :
   //   ${provider}:${conversationId}:${iter} — si un même tour est replay'd
   //   (retry réseau, etc), Panel renvoie le résultat précédent sans re-débit.
@@ -126,7 +144,7 @@ async function checkBeforeCall({ userId, provider, model, estimatedInputTokens =
     const r = await panelCredits.checkCredits({
       userId,
       input: {
-        provider: String(provider || 'openai').toLowerCase(),
+        provider: normalizeProvider(provider),
         model,
         inputTokens: estimatedInputTokens,
         outputTokens: estimatedOutputTokens
