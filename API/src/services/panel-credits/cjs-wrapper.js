@@ -162,24 +162,41 @@ async function checkBeforeCall({ userId, provider, model, estimatedInputTokens =
   } catch (e) {
     const status = e?.status || 0;
     const bodyCode = e?.body?.error?.code || e?.code;
-    if (bodyCode === 'unknown_model' || bodyCode === 'model_not_enabled_for_app' || status === 400) {
-      const err = new Error(bodyCode || 'unknown_model');
-      err.code = bodyCode || 'unknown_model';
-      err.status = status || 400;
+    // Le Panel encapsule parfois le vrai code dans message (ancien handleError
+    // qui renvoyait internal_error). On regarde aussi le message en fallback.
+    const bodyMsg = e?.body?.error?.message || e?.message || '';
+    const effectiveCode = bodyCode
+      || (/model_not_enabled_for_app/.test(bodyMsg) ? 'model_not_enabled_for_app'
+        : /unknown_model/.test(bodyMsg) ? 'unknown_model'
+        : /insufficient_credits/.test(bodyMsg) ? 'insufficient_credits'
+        : null);
+
+    if (effectiveCode === 'unknown_model' || effectiveCode === 'model_not_enabled_for_app') {
+      const err = new Error(effectiveCode);
+      err.code = effectiveCode;
+      err.status = status || 403;
       err.payload = e?.body?.error || null;
       try { bus.emit('check_failed', { userId: String(userId || ''), code: err.code, model, provider }); } catch {}
       throw err;
     }
-    if (bodyCode === 'insufficient_credits' || status === 402) {
+    if (effectiveCode === 'insufficient_credits' || status === 402) {
       const err = new Error('insufficient_credits');
       err.code = 'insufficient_credits';
       err.balance = e?.body?.error?.balance;
       err.status = 402;
       throw err;
     }
-    // Réseau / 5xx → fail-open (on laisse passer, le débit post-call gérera)
-    console.warn('[panel-credits-cjs] checkBeforeCall failed silently:', e?.message);
-    return { ok: true, sufficient: true, error: e?.message };
+    // ─── FAIL-CLOSED (sécurité) ───────────────────────────────────────────
+    // Réseau / 5xx / erreur inconnue : on NE LAISSE PAS passer. Si le Panel
+    // ne peut pas confirmer que le client peut payer, on BLOQUE l'appel IA.
+    // Sinon un client consomme de l'IA (coût réel pour nous) sans qu'on
+    // puisse facturer → perte d'argent. Le chat affiche un message d'erreur.
+    console.error(`[panel-credits-cjs] checkBeforeCall BLOCKING (fail-closed): ${e?.message || e}`);
+    const err = new Error('credits_unavailable');
+    err.code = 'credits_unavailable';
+    err.status = status || 503;
+    try { bus.emit('check_failed', { userId: String(userId || ''), code: 'credits_unavailable', model, provider }); } catch {}
+    throw err;
   }
 }
 

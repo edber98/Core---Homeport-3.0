@@ -203,8 +203,9 @@ async function* runHarness({ mode, messages, context, metadata, agentOverrides, 
       log.error(`billing pre-check refused: code=${e.code} model=${llmConfig.model}`);
       const userMsg =
         e.code === 'unknown_model' ? `Le modèle "${llmConfig.model}" n'est pas enregistré dans le catalogue de crédits du Panel. L'usage de l'IA est bloqué tant qu'un administrateur ne l'a pas ajouté.` :
-        e.code === 'model_not_enabled_for_app' ? `Le modèle "${llmConfig.model}" n'est pas activé pour cette application. Contactez votre administrateur.` :
+        e.code === 'model_not_enabled_for_app' ? `Le modèle "${llmConfig.model}" n'est pas activé pour cette application dans le Panel. Contactez votre administrateur.` :
         e.code === 'insufficient_credits' ? `Crédits insuffisants pour effectuer cet appel IA. Rechargez votre solde dans le Panel.` :
+        e.code === 'credits_unavailable' ? `Le système de crédits est momentanément injoignable. L'IA est désactivée par sécurité tant que la facturation ne peut pas être confirmée. Réessayez dans quelques instants.` :
         `Le système de crédits a refusé l'appel : ${e.message || e.code}`;
       yield {
         type: 'error',
