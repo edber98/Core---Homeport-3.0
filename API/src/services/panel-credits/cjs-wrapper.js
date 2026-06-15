@@ -137,7 +137,10 @@ async function debitAnthropicTurn({ userId, conversationId, iter, model, usage }
  * Retourne { ok: true, sufficient: true, estimated: {credits, costEur} } si OK.
  */
 async function checkBeforeCall({ userId, provider, model, estimatedInputTokens = 1000, estimatedOutputTokens = 500 }) {
-  if (!panelCredits.isEnabled()) {
+  // shouldEnforce() = crédits activés (déployé avec crédits). Si non activé
+  // (dev/local) → on laisse passer. Si activé mais NON relié, checkCredits()
+  // lèvera panel_not_configured → bloqué par le fail-closed ci-dessous.
+  if (!panelCredits.shouldEnforce()) {
     return { ok: true, mocked: true, sufficient: true };
   }
   try {
@@ -232,6 +235,7 @@ async function debitWhisper({ userId, model, durationSeconds }) {
 }
 
 function isEnabled() { return panelCredits.isEnabled(); }
+function shouldEnforce() { return panelCredits.shouldEnforce(); }
 
 module.exports = {
   getHelper: () => panelCredits,
@@ -241,5 +245,7 @@ module.exports = {
   debitWhisper,
   checkBeforeCall,
   isEnabled,
+  shouldEnforce,
+  getConfig: () => panelCredits.getConfig(),
   bus,        // EventEmitter — utilisé par routes/me-credits-stream.js
 };
