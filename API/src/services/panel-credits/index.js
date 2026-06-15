@@ -63,6 +63,36 @@ function isEnabled() {
   return CFG.enabled && CFG.url && CFG.secret;
 }
 
+// L'opérateur VEUT facturer les crédits (déployé avec crédits actifs). Distinct
+// de isEnabled() : sert à décider si l'on doit APPLIQUER la facturation et donc
+// BLOQUER si l'app est activée mais mal/pas reliée au Panel.
+function shouldEnforce() {
+  return CFG.enabled === true;
+}
+
+function isConfigured() {
+  return !!(CFG.url && CFG.secret && CFG.appId && CFG.clientId);
+}
+
+function notLinkedError() {
+  const e = new Error('panel_not_configured');
+  e.code = 'panel_not_configured';
+  e.status = 503;
+  return e;
+}
+
+// Porte d'entrée commune :
+//   - crédits non activés (dev/local)        → "mock"  (ne bloque RIEN)
+//   - activés + reliés                        → null    (appel réel)
+//   - activés mais NON reliés + failOpen      → "mock"  (dégradé toléré)
+//   - activés mais NON reliés (défaut)        → throw   (FAIL CLOSED : bloque le LLM)
+function creditsGate() {
+  if (!CFG.enabled) return 'mock';
+  if (isConfigured()) return null;
+  if (CFG.failOpen) { console.warn('[panel-credits] enabled but not linked — failOpen=true → autorisé (dégradé)'); return 'mock'; }
+  throw notLinkedError();
+}
+
 function getConfig() { return { ...CFG, secret: CFG.secret ? '***' : '' }; }
 
 function sign({ method, path, body }) {
@@ -82,7 +112,7 @@ function sign({ method, path, body }) {
 }
 
 async function panelCall(method, path, body = null) {
-  if (!isEnabled()) {
+  if (creditsGate() === 'mock') {
     return { ok: true, mocked: true, _mockReason: 'panel-credits-dev-mode' };
   }
   const fullUrl = `${CFG.url}${path}`;
@@ -143,7 +173,7 @@ async function panelCall(method, path, body = null) {
 }
 
 async function getBalance({ userId = null } = {}) {
-  if (!isEnabled()) {
+  if (creditsGate() === 'mock') {
     return { ok: true, mocked: true, balance: MOCK_BALANCE, exists: true, currency: 'EUR' };
   }
   const qs = new URLSearchParams({ clientId: CFG.clientId, applicationId: CFG.appId, ...(userId ? { userId: String(userId) } : {}) });
@@ -151,14 +181,14 @@ async function getBalance({ userId = null } = {}) {
 }
 
 async function checkCredits({ userId = null, input }) {
-  if (!isEnabled()) return { ok: true, mocked: true, sufficient: true, estimated: { credits: 0, costEur: 0 } };
+  if (creditsGate() === 'mock') return { ok: true, mocked: true, sufficient: true, estimated: { credits: 0, costEur: 0 } };
   return panelCall('POST', '/internal/credits/check', {
     clientId: CFG.clientId, applicationId: CFG.appId, userId, input
   });
 }
 
 async function debit({ userId, idempotencyKey, input, context = null }) {
-  if (!isEnabled()) {
+  if (creditsGate() === 'mock') {
     return {
       ok: true, mocked: true,
       debited: { credits: 0, costEur: 0 },
@@ -173,7 +203,7 @@ async function debit({ userId, idempotencyKey, input, context = null }) {
 }
 
 async function refund({ originalLedgerId, refundedCredits, idempotencyKey, notes = '' }) {
-  if (!isEnabled()) return { ok: true, mocked: true, balance: MOCK_BALANCE };
+  if (creditsGate() === 'mock') return { ok: true, mocked: true, balance: MOCK_BALANCE };
   if (!idempotencyKey) throw new Error('panel-credits.refund: idempotencyKey required');
   return panelCall('POST', '/internal/credits/refund', {
     clientId: CFG.clientId, applicationId: CFG.appId,
@@ -182,7 +212,7 @@ async function refund({ originalLedgerId, refundedCredits, idempotencyKey, notes
 }
 
 async function getCatalog() {
-  if (!isEnabled()) {
+  if (creditsGate() === 'mock') {
     return {
       ok: true, mocked: true, method: 'token_based',
       models: [
@@ -195,26 +225,26 @@ async function getCatalog() {
 }
 
 async function getConversationCost(conversationId) {
-  if (!isEnabled()) return { ok: true, mocked: true, totalCredits: 0, totalCostEur: 0, eventCount: 0 };
+  if (creditsGate() === 'mock') return { ok: true, mocked: true, totalCredits: 0, totalCostEur: 0, eventCount: 0 };
   const qs = new URLSearchParams({ clientId: CFG.clientId, applicationId: CFG.appId, conversationId });
   return panelCall('GET', `/internal/credits/conversation-cost?${qs.toString()}`);
 }
 
 async function getUserQuota(userId) {
-  if (!isEnabled()) return { ok: true, mocked: true, userQuota: null };
+  if (creditsGate() === 'mock') return { ok: true, mocked: true, userQuota: null };
   const qs = new URLSearchParams({ clientId: CFG.clientId, applicationId: CFG.appId });
   return panelCall('GET', `/internal/credits/quota/${encodeURIComponent(userId)}?${qs.toString()}`);
 }
 
 async function setUserQuota({ userId, monthlyMax, setBy }) {
-  if (!isEnabled()) return { ok: true, mocked: true };
+  if (creditsGate() === 'mock') return { ok: true, mocked: true };
   return panelCall('POST', `/internal/credits/quota/${encodeURIComponent(userId)}`, {
     clientId: CFG.clientId, applicationId: CFG.appId, monthlyMax, setBy
   });
 }
 
 async function pingPanel() {
-  if (!isEnabled()) return { ok: true, mocked: true };
+  if (creditsGate() === 'mock') return { ok: true, mocked: true };
   try {
     return await panelCall('GET', '/internal/credits/health');
   } catch (e) {
@@ -223,7 +253,7 @@ async function pingPanel() {
 }
 
 module.exports = {
-  isEnabled, getConfig,
+  isEnabled, shouldEnforce, isConfigured, getConfig,
   getBalance, checkCredits, debit, refund,
   getCatalog, getConversationCost,
   getUserQuota, setUserQuota,
