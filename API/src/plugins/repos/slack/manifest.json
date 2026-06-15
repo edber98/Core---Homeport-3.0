@@ -1098,7 +1098,23 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "communication",
+          "capabilities": {
+            "listChannels": {
+              "template": "slack_list_channels"
+            },
+            "searchMessages": {
+              "template": "slack_list_messages"
+            },
+            "postMessage": {
+              "template": "slack_post_message"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

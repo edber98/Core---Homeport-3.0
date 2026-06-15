@@ -112,6 +112,7 @@ function buildApp(opts = {}){
     app.use('/api', require('./modules/db/workspaces')());
     app.use('/api', require('./modules/db/runs')());
     app.use('/api', require('./modules/db/triggers')());
+    app.use('/api', require('./modules/db/radar')());
     app.use('/api', require('./modules/db/webhooks')());
     app.use('/api', require('./modules/db/me')());
     app.use('/api', require('./modules/db/form-resolvers')());

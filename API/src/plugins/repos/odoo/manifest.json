@@ -371,7 +371,167 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "accounting",
+          "capabilities": {
+            "listSupplierInvoices": {
+              "template": "odoo_invoices_list",
+              "args": {
+                "move_type": "in_invoice",
+                "limit": 100
+              }
+            },
+            "listCustomerInvoices": {
+              "template": "odoo_invoices_list",
+              "args": {
+                "move_type": "out_invoice",
+                "limit": 100
+              }
+            },
+            "listPurchaseOrders": {
+              "template": "odoo_purchase_orders_list",
+              "args": {
+                "limit": 100
+              }
+            },
+            "createDraftInvoice": {
+              "template": "odoo_invoice_create"
+            }
+          },
+          "watch": [
+            {
+              "entity": "supplier_invoice",
+              "via": "listSupplierInvoices",
+              "key": "id",
+              "hashFields": [
+                "state",
+                "amount_total",
+                "payment_state"
+              ]
+            },
+            {
+              "entity": "customer_invoice",
+              "via": "listCustomerInvoices",
+              "key": "id",
+              "hashFields": [
+                "state",
+                "amount_total",
+                "payment_state"
+              ],
+              "temporal": [
+                {
+                  "kind": "stale",
+                  "afterDays": 30,
+                  "whenField": "payment_state",
+                  "whenIn": [
+                    "not_paid",
+                    "partial"
+                  ],
+                  "category": "invoice_unpaid",
+                  "label": "Facture client impayée"
+                }
+              ]
+            },
+            {
+              "entity": "purchase_order",
+              "via": "listPurchaseOrders",
+              "key": "id",
+              "hashFields": [
+                "state",
+                "amount_total"
+              ]
+            }
+          ]
+        },
+        {
+          "family": "crm",
+          "capabilities": {
+            "listOpportunities": {
+              "template": "odoo_leads_list",
+              "args": {
+                "limit": 100
+              }
+            },
+            "listQuotes": {
+              "template": "odoo_sale_orders_list",
+              "args": {
+                "limit": 100
+              }
+            },
+            "createOpportunity": {
+              "template": "odoo_lead_create"
+            }
+          },
+          "watch": [
+            {
+              "entity": "opportunity",
+              "via": "listOpportunities",
+              "key": "id",
+              "hashFields": [
+                "stage_id",
+                "probability"
+              ]
+            },
+            {
+              "entity": "quote",
+              "via": "listQuotes",
+              "key": "id",
+              "hashFields": [
+                "state",
+                "amount_total"
+              ],
+              "temporal": [
+                {
+                  "kind": "stale",
+                  "afterDays": 14,
+                  "whenField": "state",
+                  "whenIn": [
+                    "draft",
+                    "sent"
+                  ],
+                  "category": "quote_overdue",
+                  "label": "Devis sans réponse"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "family": "support",
+          "capabilities": {
+            "listTickets": {
+              "template": "odoo_tickets_list"
+            },
+            "getTicket": {
+              "template": "odoo_ticket_get"
+            },
+            "createTicket": {
+              "template": "odoo_ticket_create"
+            }
+          },
+          "watch": [
+            {
+              "entity": "ticket",
+              "via": "listTickets",
+              "key": "id",
+              "hashFields": [
+                "stage_id",
+                "priority"
+              ]
+            }
+          ]
+        },
+        {
+          "family": "hr",
+          "capabilities": {
+            "listEmployees": {
+              "template": "odoo_employees_list"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

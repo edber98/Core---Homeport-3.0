@@ -108,6 +108,24 @@
       },
       "fields": [
         {
+          "type": "number",
+          "key": "totalCount",
+          "label": "Nombre de messages",
+          "description": "Nombre de messages retournés.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
+          "type": "text",
+          "key": "mailbox",
+          "label": "Boîte",
+          "description": "Boîte aux lettres lue.",
+          "col": {
+            "xs": 12
+          }
+        },
+        {
           "type": "section",
           "title": "Messages",
           "description": "Liste des messages",
@@ -118,6 +136,24 @@
             "minItems": 0
           },
           "fields": [
+            {
+              "type": "text",
+              "key": "id",
+              "label": "UID",
+              "description": "Identifiant IMAP du message.",
+              "col": {
+                "xs": 8
+              }
+            },
+            {
+              "type": "text",
+              "key": "date",
+              "label": "Date",
+              "description": "Date du message.",
+              "col": {
+                "xs": 16
+              }
+            },
             {
               "type": "text",
               "key": "messageId",
@@ -181,6 +217,24 @@
               "description": "Aperçu du contenu texte.",
               "col": {
                 "xs": 24
+              }
+            },
+            {
+              "type": "checkbox",
+              "key": "seen",
+              "label": "Lu",
+              "description": "Message déjà lu.",
+              "col": {
+                "xs": 8
+              }
+            },
+            {
+              "type": "text",
+              "key": "mailbox",
+              "label": "Boîte",
+              "description": "Boîte d'origine.",
+              "col": {
+                "xs": 16
               }
             }
           ],
@@ -512,7 +566,36 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "email",
+          "capabilities": {
+            "listMessages": {
+              "template": "email_read",
+              "args": {
+                "mailbox": "INBOX",
+                "limit": 50
+              }
+            },
+            "sendMessage": {
+              "template": "email_send"
+            }
+          },
+          "watch": [
+            {
+              "entity": "email_message",
+              "via": "listMessages",
+              "key": "id",
+              "hashFields": [
+                "subject",
+                "from"
+              ],
+              "itemsField": "messages"
+            }
+          ]
+        }
+      ]
     },
     {
       "key": "outlook",
@@ -607,7 +690,30 @@
           },
           "requireRefreshToken": true
         }
-      }
+      },
+      "radar": [
+        {
+          "family": "email",
+          "capabilities": {
+            "listMessages": {
+              "template": "outlook_list_messages"
+            },
+            "getMessage": {
+              "template": "outlook_get_message"
+            },
+            "sendMessage": {
+              "template": "outlook_send_email"
+            }
+          },
+          "watch": [
+            {
+              "entity": "email_message",
+              "via": "listMessages",
+              "key": "id"
+            }
+          ]
+        }
+      ]
     }
   ],
   "nodeTemplates": [
@@ -818,11 +924,11 @@
             "type": "text",
             "key": "search",
             "label": "Requête de recherche",
-            "description": "Critères IMAP (ex.: UNSEEN).",
+            "description": "Vide = tous les messages (lus ou non). 'UNSEEN' = non lus, 'SEEN' = lus, sinon texte recherché dans le sujet/expéditeur.",
             "col": {
               "xs": 24
             },
-            "default": "UNSEEN"
+            "default": ""
           },
           {
             "type": "number",
@@ -832,7 +938,17 @@
             "col": {
               "xs": 24
             },
-            "default": 10
+            "default": 20
+          },
+          {
+            "type": "checkbox",
+            "key": "includeBody",
+            "label": "Inclure le contenu",
+            "description": "Récupérer le texte du message (plafonné à 5 000 caractères).",
+            "col": {
+              "xs": 24
+            },
+            "default": true
           }
         ],
         "displayTitle": false,

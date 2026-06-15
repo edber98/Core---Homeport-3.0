@@ -664,7 +664,17 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "calendar",
+          "capabilities": {
+            "listEvents": {
+              "template": "calendly_events_list"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

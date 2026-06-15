@@ -915,7 +915,38 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "support",
+          "capabilities": {
+            "listTickets": {
+              "template": "fd_tickets_list"
+            },
+            "getTicket": {
+              "template": "fd_ticket_get"
+            },
+            "createTicket": {
+              "template": "fd_ticket_create"
+            },
+            "replyTicket": {
+              "template": "fd_ticket_reply"
+            }
+          },
+          "watch": [
+            {
+              "entity": "ticket",
+              "via": "listTickets",
+              "key": "id",
+              "hashFields": [
+                "status",
+                "priority",
+                "subject"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "nodeTemplates": [

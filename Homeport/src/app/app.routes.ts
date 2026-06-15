@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard } from './services/route-guards';
+import { adminGuard, radarGuard } from './services/route-guards';
 import { unsavedChangesGuard } from './services/route-guards';
 import { Home } from './pages/home/home';
 import { Graphviz } from './pages/graphviz/graphviz';
@@ -73,6 +73,7 @@ export const routes: Routes = [
             { path: 'credentials', loadComponent: () => import('./features/credentials/credential-list.component').then(m => m.CredentialListComponent), title: 'Credentials' },
             { path: 'runs', loadComponent: () => import('./features/flow/workspace-run-list.component').then(m => m.WorkspaceRunListComponent), title: 'Exécutions (workspace)' },
             { path: 'notifications', loadComponent: () => import('./features/notifications/notifications-page.component').then(m => m.NotificationsPageComponent), title: 'Notifications' },
+            { path: 'radar', canActivate: [radarGuard], loadComponent: () => import('./features/radar/radar-page.component').then(m => m.RadarPageComponent), title: 'Radar d\'entreprise' },
             { path: 'ai', loadComponent: () => import('./features/ai/ai-fullpage.component').then(m => m.AiFullpageComponent), title: 'Assistant IA' },
             { path: 'ai/:threadId', loadComponent: () => import('./features/ai/ai-fullpage.component').then(m => m.AiFullpageComponent), title: 'Assistant IA' },
             { path: 'learn', loadComponent: () => import('./features/learn/learn-page.component').then(m => m.LearnPageComponent), title: 'Apprendre' },

@@ -1061,7 +1061,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "productivity",
+          "capabilities": {
+            "listTasks": {
+              "template": "linear_issues_list"
+            },
+            "createTask": {
+              "template": "linear_issue_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

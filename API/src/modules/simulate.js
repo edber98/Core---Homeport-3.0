@@ -9,7 +9,7 @@ module.exports = function(store) {
   r.use(authMiddleware(store));
   r.use(requireCompanyScope());
 
-  r.post('/flows/:flowId/simulate-msg', (req, res) => {
+  r.post('/flows/:flowId/simulate-msg', async (req, res) => {
     try {
       const { flowId } = req.params;
       const flow = store.flows.get(String(flowId));

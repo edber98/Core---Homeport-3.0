@@ -1,6 +1,7 @@
 const Provider = require('../db/models/provider.model');
 const NodeTemplate = require('../db/models/node-template.model');
 const { checksumJSON } = require('../utils/checksum');
+const { validateRadarBlocks, normalizeRadarBlocks } = require('../radar/families');
 
 function toCamelCase(s){
   try {
@@ -22,7 +23,7 @@ function humanizeTitle(s){
 
 async function importManifest(manifest, { dryRun = false, repo = null, manifestPath = null } = {}){
   const m = manifest || {};
-  const summary = { providers: { created: 0, updated: 0, skipped: 0 }, nodeTemplates: { created: 0, updated: 0, skipped: 0 }, history: [], providerKeys: [], templateKeys: [] };
+  const summary = { providers: { created: 0, updated: 0, skipped: 0 }, nodeTemplates: { created: 0, updated: 0, skipped: 0 }, history: [], providerKeys: [], templateKeys: [], radarIssues: [] };
   const record = (kind, key, action, before, after) => {
     summary.history.push({ kind, key, action, beforeChecksum: before || null, afterChecksum: after || null, repoId: repo && repo.id || null, repoName: repo && repo.name || null, manifestPath: manifestPath || null, at: new Date() });
   };
@@ -35,11 +36,22 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
     const auth = p.auth || null;
     // Only local repos may define display order; use value from manifest when present, otherwise ignore
     const effOrder = isLocalRepo && (typeof p.order === 'number') ? p.order : undefined;
-    const checksum = checksumJSON({ key: p.key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags, categories: p.categories, order: effOrder, enabled: p.enabled, hasCredentials: p.hasCredentials, allowWithoutCredentials: p.allowWithoutCredentials, credentialsForm: credForm, auth });
+    // Bloc radar : validé contre les templates du manifest, normalisé en tableau ; invalide → ignoré (provider importé sans radar)
+    let radar = undefined;
+    if (p.radar){
+      const manifestTemplateKeys = (m.nodeTemplates || m.templates || []).map(t => t && t.key).filter(Boolean);
+      const v = validateRadarBlocks(p.radar, { templateKeys: manifestTemplateKeys });
+      if (v.ok) radar = normalizeRadarBlocks(p.radar);
+      else {
+        summary.radarIssues.push({ providerKey: key, errors: v.errors });
+        record('provider', key, 'radar_invalid', null, null);
+      }
+    }
+    const checksum = checksumJSON({ key: p.key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags, categories: p.categories, order: effOrder, enabled: p.enabled, hasCredentials: p.hasCredentials, allowWithoutCredentials: p.allowWithoutCredentials, credentialsForm: credForm, auth, radar });
     const existing = await Provider.findOne({ key });
     if (!existing){
       if (!dryRun){
-        const doc = { key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, auth, checksum };
+        const doc = { key, name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, auth, radar, checksum };
         if (repo && repo.id){ doc.repoId = repo.id; doc.repoName = repo.name; doc.repos = [repo.id]; doc.repoNames = [repo.name]; }
         await Provider.create(doc);
       }
@@ -54,9 +66,10 @@ async function importManifest(manifest, { dryRun = false, repo = null, manifestP
       } else {
         if (!dryRun){
           const before = existing.checksum;
-          Object.assign(existing, { name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, auth, checksum });
+          Object.assign(existing, { name: p.name, title: p.title, iconClass: p.iconClass, iconUrl: p.iconUrl, color: p.color, tags: p.tags || [], categories: p.categories || [], order: effOrder, enabled: p.enabled !== false, hasCredentials: !!p.hasCredentials, allowWithoutCredentials: !!p.allowWithoutCredentials, credentialsForm: credForm, auth, radar, checksum });
           existing.markModified('credentialsForm');
           existing.markModified('auth');
+          existing.markModified('radar');
           if (!existing.repoId && repo && repo.id) { existing.repoId = repo.id; existing.repoName = repo.name; }
           if (repo && repo.id){
             const rid = String(repo.id);

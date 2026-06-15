@@ -1268,7 +1268,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "crm",
+          "capabilities": {
+            "listOpportunities": {
+              "template": "pipedrive_deals_list"
+            },
+            "createOpportunity": {
+              "template": "pipedrive_deal_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

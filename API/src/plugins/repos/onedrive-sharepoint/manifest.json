@@ -191,7 +191,23 @@
           },
           "requireRefreshToken": true
         }
-      }
+      },
+      "radar": [
+        {
+          "family": "storage",
+          "capabilities": {
+            "listTree": {
+              "template": "sharepoint_list_items"
+            },
+            "readFile": {
+              "template": "sharepoint_download_file"
+            },
+            "uploadFile": {
+              "template": "sharepoint_upload_file"
+            }
+          }
+        }
+      ]
     }
   ],
   "variables": {

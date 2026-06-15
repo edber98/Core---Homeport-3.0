@@ -449,7 +449,32 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "storage",
+          "capabilities": {
+            "listTree": {
+              "template": "dbx_list_folder"
+            },
+            "readFile": {
+              "template": "dbx_download_file"
+            },
+            "searchFiles": {
+              "template": "dbx_search"
+            },
+            "moveFile": {
+              "template": "dbx_move_file"
+            },
+            "uploadFile": {
+              "template": "dbx_upload_file"
+            },
+            "createFolder": {
+              "template": "dbx_create_folder"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

@@ -964,7 +964,31 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "accounting",
+          "capabilities": {
+            "listCustomerInvoices": {
+              "template": "pl_customer_invoices_list"
+            },
+            "listSupplierInvoices": {
+              "template": "pl_supplier_invoices_list"
+            },
+            "createDraftInvoice": {
+              "template": "pl_customer_invoice_create"
+            }
+          }
+        },
+        {
+          "family": "crm",
+          "capabilities": {
+            "listQuotes": {
+              "template": "pl_estimates_list"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

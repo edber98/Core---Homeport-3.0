@@ -804,7 +804,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "productivity",
+          "capabilities": {
+            "listTasks": {
+              "template": "clickup_tasks_list"
+            },
+            "createTask": {
+              "template": "clickup_task_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

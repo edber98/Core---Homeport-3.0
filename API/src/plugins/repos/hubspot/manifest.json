@@ -1106,7 +1106,34 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "crm",
+          "capabilities": {
+            "listOpportunities": {
+              "template": "hubspot_deals_list"
+            },
+            "createOpportunity": {
+              "template": "hubspot_deal_create"
+            }
+          }
+        },
+        {
+          "family": "support",
+          "capabilities": {
+            "listTickets": {
+              "template": "hubspot_tickets_list"
+            },
+            "getTicket": {
+              "template": "hubspot_ticket_get"
+            },
+            "createTicket": {
+              "template": "hubspot_ticket_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

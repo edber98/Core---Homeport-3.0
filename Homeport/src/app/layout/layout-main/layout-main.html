@@ -9,7 +9,7 @@
 
     <nav class="sidebar-nav">
       <ng-container *ngFor="let it of menu">
-        <a *ngIf="!it.children?.length && (!it.adminOnly || isAdmin)"
+        <a *ngIf="!it.children?.length && (!it.adminOnly || isAdmin) && (!it.radar || radarEnabled)"
            class="nav-item"
            [routerLink]="it.route"
            routerLinkActive="active"
@@ -92,7 +92,7 @@
         </a>
         <nav class="drawer-nav">
           <ng-container *ngFor="let it of menu">
-            <a *ngIf="!it.children?.length && (!it.adminOnly || isAdmin)"
+            <a *ngIf="!it.children?.length && (!it.adminOnly || isAdmin) && (!it.radar || radarEnabled)"
                class="drawer-item"
                (click)="go(it.route)">
               <span class="drawer-item-icon" nz-icon [nzType]="it.icon" nzTheme="outline"></span>

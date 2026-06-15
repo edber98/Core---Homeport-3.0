@@ -1391,7 +1391,34 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "accounting",
+          "capabilities": {
+            "listCustomerInvoices": {
+              "template": "qb_invoices_list"
+            },
+            "listSupplierInvoices": {
+              "template": "qb_bills_list"
+            },
+            "listPayments": {
+              "template": "qb_payments_list"
+            },
+            "createDraftInvoice": {
+              "template": "qb_invoice_create"
+            }
+          }
+        },
+        {
+          "family": "crm",
+          "capabilities": {
+            "listQuotes": {
+              "template": "qb_estimates_list"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

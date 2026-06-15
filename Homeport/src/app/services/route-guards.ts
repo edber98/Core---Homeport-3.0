@@ -4,6 +4,17 @@ import { AccessControlService } from './access-control.service';
 import { AuthService } from './auth.service';
 import { FlowSharedStateService } from './flow-shared-state.service';
 import { ConfirmService } from './confirm.service';
+import { RadarConfigService } from './radar-config.service';
+
+// Bloque l'accès à /radar si la fonctionnalité est désactivée côté backend.
+export const radarGuard: CanActivateFn = async () => {
+  const cfg = inject(RadarConfigService);
+  const router = inject(Router);
+  const enabled = await cfg.load();
+  if (enabled) return true;
+  try { router.navigateByUrl('/dashboard'); } catch {}
+  return false;
+};
 
 export const adminGuard: CanActivateFn = () => {
   const acl = inject(AccessControlService);

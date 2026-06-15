@@ -4304,7 +4304,67 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "accounting",
+          "capabilities": {
+            "listCustomerInvoices": {
+              "template": "dolibarr_invoices_list"
+            },
+            "listSupplierInvoices": {
+              "template": "dolibarr_get_supplier_invoices"
+            },
+            "listPurchaseOrders": {
+              "template": "dolibarr_get_supplier_orders"
+            },
+            "createDraftInvoice": {
+              "template": "dolibarr_invoice_create"
+            }
+          }
+        },
+        {
+          "family": "crm",
+          "capabilities": {
+            "listQuotes": {
+              "template": "dolibarr_proposals_list"
+            }
+          }
+        },
+        {
+          "family": "productivity",
+          "capabilities": {
+            "listTasks": {
+              "template": "dolibarr_tasks_list"
+            },
+            "createTask": {
+              "template": "dolibarr_task_create"
+            }
+          }
+        },
+        {
+          "family": "support",
+          "capabilities": {
+            "listTickets": {
+              "template": "dolibarr_tickets_list"
+            },
+            "getTicket": {
+              "template": "dolibarr_ticket_get"
+            },
+            "createTicket": {
+              "template": "dolibarr_ticket_create"
+            }
+          }
+        },
+        {
+          "family": "calendar",
+          "capabilities": {
+            "listEvents": {
+              "template": "dolibarr_get_agendaevents"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

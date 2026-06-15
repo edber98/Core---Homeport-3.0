@@ -23,13 +23,14 @@ import { AiService } from '../../features/ai/ai.service';
 import { FlowsBackendService } from '../../services/flows-backend.service';
 import { FormsModule } from '@angular/forms';
 import { AccessControlService, User } from '../../services/access-control.service';
+import { RadarConfigService } from '../../services/radar-config.service';
 import { AuthService } from '../../services/auth.service';
 import { NotificationsBackendService, BackendNotification } from '../../services/notifications-backend.service';
 import { UiMessageService } from '../../services/ui-message.service';
 import { ConfirmService, ConfirmRequest } from '../../services/confirm.service';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { Subject, takeUntil } from 'rxjs';
-type MenuItem = { label: string; icon: string; route?: string; children?: MenuItem[]; adminOnly?: boolean };
+type MenuItem = { label: string; icon: string; route?: string; children?: MenuItem[]; adminOnly?: boolean; radar?: boolean };
 
 @Component({
   selector: 'app-layout-main',
@@ -66,6 +67,7 @@ export class LayoutMain implements OnInit, OnDestroy {
   menu: MenuItem[] = [
     { label: 'Dashboard', icon: 'home', route: '/dashboard' },
     { label: 'Assistant IA', icon: 'robot', route: '/ai' },
+    { label: 'Radar', icon: 'radar-chart', route: '/radar', radar: true },
     { label: 'Flows', icon: 'branches', route: '/flows' },
     { label: 'Formulaires', icon: 'form', route: '/forms' },
     { label: 'Sites web', icon: 'global', route: '/websites' },
@@ -96,12 +98,15 @@ export class LayoutMain implements OnInit, OnDestroy {
   selectedUserId: string | null = null;
   selectedWorkspaceId: string | null = null;
 
-  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService, private notifApi: NotificationsBackendService, private ui: UiMessageService, private confirm: ConfirmService, private modal: NzModalService, private flowsApi: FlowsBackendService, public aiService: AiService) {
+  constructor(private router: Router, public acl: AccessControlService, private cdr: ChangeDetectorRef, private auth: AuthService, private notifApi: NotificationsBackendService, private ui: UiMessageService, private confirm: ConfirmService, private modal: NzModalService, private flowsApi: FlowsBackendService, public aiService: AiService, private radarCfg: RadarConfigService) {
     // initialize selected user
     this.selectedUserId = this.acl.currentUser()?.id || null;
     this.selectedWorkspaceId = this.acl.currentWorkspaceId();
   }
+  get radarEnabled(): boolean { return this.radarCfg.enabled(); }
+
   ngOnInit(): void {
+    this.radarCfg.load().catch(() => {});
     try {
       // Restore sider collapsed state from localStorage or set default for tablet widths
       const raw = localStorage.getItem('layout.siderCollapsed');

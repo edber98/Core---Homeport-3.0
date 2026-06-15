@@ -254,7 +254,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "accounting",
+          "capabilities": {
+            "listCustomerInvoices": {
+              "template": "qonto_invoices_list"
+            },
+            "listPayments": {
+              "template": "qonto_transactions_list"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

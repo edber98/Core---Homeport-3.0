@@ -1279,7 +1279,51 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "iconUrl": "https://cdn.simpleicons.org/nextcloud"
+      "iconUrl": "https://cdn.simpleicons.org/nextcloud",
+      "radar": [
+        {
+          "family": "storage",
+          "capabilities": {
+            "listTree": {
+              "template": "nc_file_list"
+            },
+            "readFile": {
+              "template": "nc_file_get"
+            },
+            "searchFiles": {
+              "template": "nc_file_search"
+            },
+            "moveFile": {
+              "template": "nc_file_move"
+            },
+            "uploadFile": {
+              "template": "nc_file_upload"
+            },
+            "createFolder": {
+              "template": "nc_folder_create"
+            }
+          },
+          "watch": [
+            {
+              "entity": "file",
+              "via": "listTree",
+              "key": "path",
+              "hashFields": [
+                "etag",
+                "lastmod",
+                "size"
+              ],
+              "excludeWhen": [
+                {
+                  "field": "contentType",
+                  "empty": true
+                }
+              ],
+              "itemsField": "files"
+            }
+          ]
+        }
+      ]
     },
     {
       "key": "nextcloudTalk",
@@ -1296,7 +1340,31 @@
         "Communication"
       ],
       "hasCredentials": false,
-      "iconUrl": "https://cdn.simpleicons.org/nextcloud"
+      "iconUrl": "https://cdn.simpleicons.org/nextcloud",
+      "radar": [
+        {
+          "family": "communication",
+          "capabilities": {
+            "listChannels": {
+              "template": "nc_talk_rooms_list"
+            },
+            "postMessage": {
+              "template": "nc_talk_send_message"
+            }
+          },
+          "watch": [
+            {
+              "entity": "talk_room",
+              "via": "listChannels",
+              "key": "token",
+              "hashFields": [
+                "lastActivity",
+                "unreadMessages"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "key": "nextcloudCalendar",
@@ -1313,7 +1381,32 @@
         "Calendar"
       ],
       "hasCredentials": false,
-      "iconUrl": "https://cdn.simpleicons.org/nextcloud"
+      "iconUrl": "https://cdn.simpleicons.org/nextcloud",
+      "radar": [
+        {
+          "family": "calendar",
+          "capabilities": {
+            "listEvents": {
+              "template": "nc_events_list"
+            },
+            "createEvent": {
+              "template": "nc_event_create"
+            }
+          },
+          "watch": [
+            {
+              "entity": "calendar_event",
+              "via": "listEvents",
+              "key": "uid",
+              "hashFields": [
+                "summary",
+                "dtstart",
+                "dtend"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "nodeTemplates": [

@@ -1439,7 +1439,37 @@
           },
           "requireRefreshToken": true
         }
-      }
+      },
+      "radar": [
+        {
+          "family": "storage",
+          "capabilities": {
+            "listTree": {
+              "template": "ms_sp_list_files"
+            },
+            "readFile": {
+              "template": "ms_sp_download_file"
+            },
+            "uploadFile": {
+              "template": "ms_sp_upload_file"
+            }
+          }
+        },
+        {
+          "family": "communication",
+          "capabilities": {
+            "listChannels": {
+              "template": "ms_teams_list_channels"
+            },
+            "searchMessages": {
+              "template": "ms_teams_list_messages"
+            },
+            "postMessage": {
+              "template": "ms_teams_send_message"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

@@ -282,7 +282,7 @@ module.exports = function(store){
       const [field, dir] = String(sort).split(':');
       const mul = dir === 'asc' ? 1 : -1;
       list.sort((a, b) => {
-        const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
+        const va = a[field] || 0; const vb = b[field] || 0;
         const ta = typeof va === 'string' ? Date.parse(va) || va : va;
         const tb = typeof vb === 'string' ? Date.parse(vb) || vb : vb;
         return (ta > tb ? 1 : (ta < tb ? -1 : 0)) * mul;
@@ -315,7 +315,7 @@ module.exports = function(store){
       const [field, dir] = String(sort).split(':');
       const mul = dir === 'asc' ? 1 : -1;
       list.sort((a, b) => {
-        const va = (a as any)[field] || 0; const vb = (b as any)[field] || 0;
+        const va = a[field] || 0; const vb = b[field] || 0;
         const ta = typeof va === 'string' ? Date.parse(va) || va : va;
         const tb = typeof vb === 'string' ? Date.parse(vb) || vb : vb;
         return (ta > tb ? 1 : (ta < tb ? -1 : 0)) * mul;

@@ -900,7 +900,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "productivity",
+          "capabilities": {
+            "listTasks": {
+              "template": "monday_items_list"
+            },
+            "createTask": {
+              "template": "monday_item_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

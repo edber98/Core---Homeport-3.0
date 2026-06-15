@@ -870,7 +870,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "productivity",
+          "capabilities": {
+            "listTasks": {
+              "template": "jira_issues_list"
+            },
+            "createTask": {
+              "template": "jira_issue_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

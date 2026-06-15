@@ -920,7 +920,38 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "support",
+          "capabilities": {
+            "listTickets": {
+              "template": "zd_tickets_list"
+            },
+            "getTicket": {
+              "template": "zd_ticket_get"
+            },
+            "createTicket": {
+              "template": "zd_ticket_create"
+            },
+            "replyTicket": {
+              "template": "zd_comment_create"
+            }
+          },
+          "watch": [
+            {
+              "entity": "ticket",
+              "via": "listTickets",
+              "key": "id",
+              "hashFields": [
+                "status",
+                "priority",
+                "subject"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "nodeTemplates": [

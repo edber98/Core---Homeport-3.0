@@ -475,7 +475,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "productivity",
+          "capabilities": {
+            "listTasks": {
+              "template": "list_openproject_tasks"
+            },
+            "createTask": {
+              "template": "add_openproject_task"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

@@ -982,7 +982,23 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "support",
+          "capabilities": {
+            "listTickets": {
+              "template": "intercom_conversations_list"
+            },
+            "getTicket": {
+              "template": "intercom_conversation_get"
+            },
+            "replyTicket": {
+              "template": "intercom_conversation_reply"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

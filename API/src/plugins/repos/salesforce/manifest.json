@@ -1233,7 +1233,34 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "crm",
+          "capabilities": {
+            "listOpportunities": {
+              "template": "salesforce_opportunities_list"
+            },
+            "createOpportunity": {
+              "template": "salesforce_opportunity_create"
+            }
+          }
+        },
+        {
+          "family": "support",
+          "capabilities": {
+            "listTickets": {
+              "template": "salesforce_cases_list"
+            },
+            "getTicket": {
+              "template": "salesforce_case_get"
+            },
+            "createTicket": {
+              "template": "salesforce_case_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

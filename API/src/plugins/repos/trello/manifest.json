@@ -61,7 +61,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "productivity",
+          "capabilities": {
+            "listTasks": {
+              "template": "trello_member_cards"
+            },
+            "createTask": {
+              "template": "trello_card_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

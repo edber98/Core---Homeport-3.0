@@ -551,7 +551,33 @@
           },
           "requireRefreshToken": true
         }
-      }
+      },
+      "radar": [
+        {
+          "family": "calendar",
+          "capabilities": {
+            "listEvents": {
+              "template": "gcal_list_events"
+            },
+            "createEvent": {
+              "template": "gcal_create_event"
+            }
+          },
+          "watch": [
+            {
+              "entity": "calendar_event",
+              "via": "listEvents",
+              "key": "id",
+              "hashFields": [
+                "summary",
+                "start",
+                "end",
+                "status"
+              ]
+            }
+          ]
+        }
+      ]
     }
   ],
   "nodeTemplates": [

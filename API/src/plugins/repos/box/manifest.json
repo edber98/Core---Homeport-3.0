@@ -361,7 +361,29 @@
             }
           }
         ]
-      }
+      },
+      "radar": [
+        {
+          "family": "storage",
+          "capabilities": {
+            "listTree": {
+              "template": "box_folder_items_list"
+            },
+            "readFile": {
+              "template": "box_file_download"
+            },
+            "searchFiles": {
+              "template": "box_search"
+            },
+            "uploadFile": {
+              "template": "box_file_upload"
+            },
+            "createFolder": {
+              "template": "box_folder_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

@@ -1,4 +1,4 @@
-const { test, before } = require('node:test');
+const { test, before, after } = require('node:test');
 const assert = require('node:assert');
 const http = require('http');
 const { buildApp } = require('../src/app');
@@ -19,6 +19,13 @@ before(async () => {
   const wsBody = await resWs.json();
   const ws = wsBody.data ?? wsBody;
   wsId = ws[0].id;
+});
+
+after(() => {
+  if (server) {
+    if (typeof server.closeAllConnections === 'function') server.closeAllConnections();
+    server.close();
+  }
 });
 
 test('create and run a simple flow', async () => {

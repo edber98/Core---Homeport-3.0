@@ -1723,7 +1723,23 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "iconUrl": "https://cdn.simpleicons.org/stripe"
+      "iconUrl": "https://cdn.simpleicons.org/stripe",
+      "radar": [
+        {
+          "family": "accounting",
+          "capabilities": {
+            "listCustomerInvoices": {
+              "template": "stripe_invoices_list"
+            },
+            "listPayments": {
+              "template": "stripe_charges_list"
+            },
+            "createDraftInvoice": {
+              "template": "stripe_invoice_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

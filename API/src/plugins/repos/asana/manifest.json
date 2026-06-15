@@ -925,7 +925,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "productivity",
+          "capabilities": {
+            "listTasks": {
+              "template": "asana_tasks_list"
+            },
+            "createTask": {
+              "template": "asana_task_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

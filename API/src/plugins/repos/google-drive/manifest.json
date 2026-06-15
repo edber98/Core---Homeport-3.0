@@ -1015,7 +1015,44 @@
           "tokenAuthMethod": "basic",
           "requireRefreshToken": true
         }
-      }
+      },
+      "radar": [
+        {
+          "family": "storage",
+          "capabilities": {
+            "listTree": {
+              "template": "gdrive_list_files"
+            },
+            "readFile": {
+              "template": "gdrive_download_file"
+            },
+            "searchFiles": {
+              "template": "gdrive_search"
+            },
+            "moveFile": {
+              "template": "gdrive_move_file"
+            },
+            "uploadFile": {
+              "template": "gdrive_upload_file"
+            },
+            "createFolder": {
+              "template": "gdrive_create_folder"
+            }
+          },
+          "watch": [
+            {
+              "entity": "file",
+              "via": "listTree",
+              "key": "id",
+              "hashFields": [
+                "name",
+                "modifiedTime",
+                "size"
+              ]
+            }
+          ]
+        }
+      ]
     },
     {
       "key": "googleDocs",

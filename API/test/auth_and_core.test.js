@@ -15,7 +15,10 @@ before(() => {
 });
 
 after(() => {
-  server && server.close();
+  if (server) {
+    if (typeof server.closeAllConnections === 'function') server.closeAllConnections();
+    server.close();
+  }
 });
 
 test('login works and lists company workspaces', async () => {

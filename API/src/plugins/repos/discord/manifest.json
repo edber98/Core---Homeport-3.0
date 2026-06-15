@@ -47,7 +47,23 @@
         "displayTitle": false,
         "displayDescription": false
       },
-      "iconUrl": "https://upload.wikimedia.org/wikipedia/fr/thumb/4/4f/Discord_Logo_sans_texte.svg/1920px-Discord_Logo_sans_texte.svg.png"
+      "iconUrl": "https://upload.wikimedia.org/wikipedia/fr/thumb/4/4f/Discord_Logo_sans_texte.svg/1920px-Discord_Logo_sans_texte.svg.png",
+      "radar": [
+        {
+          "family": "communication",
+          "capabilities": {
+            "listChannels": {
+              "template": "discord_list_channels"
+            },
+            "searchMessages": {
+              "template": "discord_list_messages"
+            },
+            "postMessage": {
+              "template": "discord_send_message"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

@@ -12,15 +12,22 @@ module.exports = {
       const { smtpHost, smtpPort, smtpSecure, username, password } =
         opts.credentials || {};
 
+      // Normalisation : smtpPort peut arriver en string, smtpSecure en "false"
+      // (string truthy → TLS implicite sur un port STARTTLS = échec TLS).
+      const port = parseInt(smtpPort, 10) || 587;
+      const secure = smtpSecure === true || smtpSecure === 'true' || port === 465;
+
       // Créer le transporteur Nodemailer
       const transporter = nodemailer.createTransport({
         host: smtpHost,
-        port: smtpPort,
-        secure: smtpSecure, // true = 465, false = 587
+        port,
+        secure, // true = TLS implicite (465), false = STARTTLS (587)
         auth: {
           user: username,
           pass: password,
         },
+        // Serveurs auto-hébergés (cert ≠ hostname) — même politique que l'IMAP
+        tls: { rejectUnauthorized: false },
       });
 
       // Parser et résoudre les attachments (fileRef, JSON string, ou tableau)

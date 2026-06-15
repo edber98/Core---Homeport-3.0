@@ -1,0 +1,158 @@
+{
+  "repo": {
+    "name": "caldav",
+    "type": "local",
+    "label": "Agenda CalDAV"
+  },
+  "providers": [
+    {
+      "key": "caldav",
+      "name": "Agenda CalDAV",
+      "title": "Agenda CalDAV",
+      "iconClass": "fa-solid fa-calendar-days",
+      "color": "#d6f0ff",
+      "tags": ["caldav", "agenda", "calendar", "ics"],
+      "categories": ["Agenda"],
+      "hasCredentials": true,
+      "credentialsForm": {
+        "title": "Identifiants CalDAV",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          {
+            "type": "url",
+            "key": "serverUrl",
+            "label": "URL du calendrier",
+            "description": "URL complète de la collection CalDAV (ex.: https://mail.exemple.fr/dav/calendars/utilisateur/default/). Souvent fournie par votre serveur mail (SOGo, Nextcloud, Stalwart…).",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "text",
+            "key": "username",
+            "label": "Utilisateur",
+            "description": "Identifiant du compte (souvent l'adresse e-mail).",
+            "col": { "xs": 24 }
+          },
+          {
+            "type": "password",
+            "key": "password",
+            "label": "Mot de passe",
+            "description": "Mot de passe ou mot de passe d'application.",
+            "col": { "xs": 24 }
+          }
+        ]
+      },
+      "radar": [
+        {
+          "family": "calendar",
+          "capabilities": {
+            "listEvents": { "template": "caldav_events_list" },
+            "createEvent": { "template": "caldav_event_create" }
+          },
+          "watch": [
+            {
+              "entity": "calendar_event",
+              "via": "listEvents",
+              "key": "id",
+              "hashFields": ["summary", "start", "end", "status"],
+              "itemsField": "events"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "nodeTemplates": [
+    {
+      "key": "caldav_events_list",
+      "name": "caldavEventsList",
+      "title": "Lister les événements",
+      "subtitle": "Agenda CalDAV",
+      "description": "Récupérer les événements de l'agenda sur une période donnée.",
+      "icon": "fa-solid fa-calendar-days",
+      "type": "function",
+      "category": "Agenda",
+      "providerKey": "caldav",
+      "tags": ["caldav", "agenda", "événements"],
+      "args": {
+        "title": "Période",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "from", "label": "Début", "description": "Date de début (ISO, ex.: 2026-06-01). Défaut : il y a 7 jours.", "col": { "xs": 12 } },
+          { "type": "text", "key": "to", "label": "Fin", "description": "Date de fin (ISO). Défaut : dans 60 jours.", "col": { "xs": 12 } },
+          { "type": "number", "key": "limit", "label": "Limite", "description": "Nombre maximum d'événements.", "col": { "xs": 24 }, "default": 100 }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Événements",
+          "type": "payload",
+          "schema": {
+            "title": "Événements",
+            "ui": { "layout": "vertical", "labelsOnTop": true },
+            "fields": [
+              { "type": "number", "key": "totalCount", "label": "Nombre d'événements", "col": { "xs": 24 } },
+              {
+                "type": "section", "title": "Événements", "mode": "array", "key": "events",
+                "array": { "initialItems": 0, "minItems": 0 },
+                "fields": [
+                  { "type": "text", "key": "id", "label": "UID", "col": { "xs": 24 } },
+                  { "type": "text", "key": "summary", "label": "Titre", "col": { "xs": 24 } },
+                  { "type": "text", "key": "start", "label": "Début", "col": { "xs": 12 } },
+                  { "type": "text", "key": "end", "label": "Fin", "col": { "xs": 12 } },
+                  { "type": "checkbox", "key": "allDay", "label": "Journée entière", "col": { "xs": 8 } },
+                  { "type": "text", "key": "status", "label": "Statut", "col": { "xs": 16 } },
+                  { "type": "text", "key": "location", "label": "Lieu", "col": { "xs": 24 } },
+                  { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "caldav_event_create",
+      "name": "caldavEventCreate",
+      "title": "Créer un événement",
+      "subtitle": "Agenda CalDAV",
+      "description": "Créer un événement dans l'agenda.",
+      "icon": "fa-solid fa-calendar-plus",
+      "type": "function",
+      "category": "Agenda",
+      "providerKey": "caldav",
+      "tags": ["caldav", "agenda", "création"],
+      "risk": "medium",
+      "riskReason": "Écrit dans l'agenda de l'utilisateur.",
+      "args": {
+        "title": "Événement",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "summary", "label": "Titre", "description": "Titre de l'événement.", "col": { "xs": 24 } },
+          { "type": "text", "key": "start", "label": "Début", "description": "Date/heure de début (ISO, ex.: 2026-06-15T14:00:00).", "col": { "xs": 12 } },
+          { "type": "text", "key": "end", "label": "Fin", "description": "Date/heure de fin (ISO).", "col": { "xs": 12 } },
+          { "type": "checkbox", "key": "allDay", "label": "Journée entière", "col": { "xs": 24 } },
+          { "type": "text", "key": "location", "label": "Lieu", "col": { "xs": 24 } },
+          { "type": "textarea", "key": "description", "label": "Description", "col": { "xs": 24 } }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Événement créé",
+          "type": "payload",
+          "schema": {
+            "title": "Événement créé",
+            "ui": { "layout": "vertical", "labelsOnTop": true },
+            "fields": [
+              { "type": "text", "key": "id", "label": "UID", "col": { "xs": 24 } },
+              { "type": "text", "key": "summary", "label": "Titre", "col": { "xs": 24 } },
+              { "type": "text", "key": "start", "label": "Début", "col": { "xs": 12 } },
+              { "type": "text", "key": "end", "label": "Fin", "col": { "xs": 12 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

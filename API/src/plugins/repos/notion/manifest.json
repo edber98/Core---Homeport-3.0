@@ -1062,7 +1062,20 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "productivity",
+          "capabilities": {
+            "listTasks": {
+              "template": "notion_search"
+            },
+            "createTask": {
+              "template": "notion_page_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

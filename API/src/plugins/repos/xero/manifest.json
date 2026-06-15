@@ -4754,7 +4754,23 @@
         ],
         "displayTitle": false,
         "displayDescription": false
-      }
+      },
+      "radar": [
+        {
+          "family": "accounting",
+          "capabilities": {
+            "listCustomerInvoices": {
+              "template": "xero_invoice_list"
+            },
+            "listPayments": {
+              "template": "xero_payment_list"
+            },
+            "createDraftInvoice": {
+              "template": "xero_invoice_create"
+            }
+          }
+        }
+      ]
     }
   ],
   "nodeTemplates": [

@@ -212,7 +212,36 @@
           },
           "requireRefreshToken": true
         }
-      }
+      },
+      "radar": [
+        {
+          "family": "email",
+          "capabilities": {
+            "listMessages": {
+              "template": "gmail_messages_list"
+            },
+            "getMessage": {
+              "template": "gmail_messages_get"
+            },
+            "getAttachments": {
+              "template": "gmail_messages_attachments_get"
+            },
+            "createDraft": {
+              "template": "gmail_drafts_create"
+            },
+            "sendMessage": {
+              "template": "gmail_messages_send"
+            }
+          },
+          "watch": [
+            {
+              "entity": "email_message",
+              "via": "listMessages",
+              "key": "id"
+            }
+          ]
+        }
+      ]
     }
   ],
   "nodeTemplates": [
