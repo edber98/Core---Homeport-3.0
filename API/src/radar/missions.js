@@ -33,9 +33,19 @@ async function launchMission({ workspaceId, title, prompt, successCriteria = [],
 
 /** Prompt d'une tentative — la critique de la tentative précédente est injectée. */
 function buildAttemptPrompt(mission, critique) {
-  let p = `# Mission de fond du Radar d'entreprise\n\n${mission.prompt}\n\n## Critères de succès\n${(mission.successCriteria || []).map(c => `- ${c}`).join('\n') || '- Accomplir la mission décrite.'}\n\n## Méthode\n- Travaille de façon autonome avec les outils disponibles. Ne demande PAS de confirmation à l'utilisateur.\n- Sois EFFICACE : si 2-3 recherches/variantes successives ne donnent rien, la donnée n'existe probablement pas — note « non trouvé » et passe à la suite. Ne multiplie JAMAIS les variantes de la même recherche.\n- Une information introuvable chez le provider n'est pas un échec : la constater explicitement (« aucune trace de X dans Y ») fait partie d'un bon compte rendu.\n- Termine par un compte rendu factuel et complet (trouvé, fait, ET non trouvé) — il sera évalué contre les critères de succès.`;
+  let p = `# Mission de fond du Radar d'entreprise\n\n${mission.prompt}\n\n## Objectif à atteindre\n${(mission.successCriteria || []).map(c => `- ${c}`).join('\n') || '- Accomplir la mission décrite.'}\n\n## Méthode
+- Travaille de façon autonome avec les outils disponibles. Ne demande PAS de confirmation à l'utilisateur.
+- Sois EFFICACE : si 2-3 recherches/variantes successives ne donnent rien, la donnée n'existe probablement pas — note « non trouvé » et passe à la suite. Ne multiplie JAMAIS les variantes de la même recherche.
+- Une information introuvable n'est pas un échec : la constater explicitement (« aucune trace de X ») suffit.
+
+## Format du compte rendu — COURT, PRÉCIS, CONCIS (comme Claude Code)
+- Maximum ~250 mots. Va à l'essentiel : ce qui a été trouvé, ce qui manque, et LA conclusion actionnable.
+- PAS de rapport en 7 sections, PAS de verbatim intégral, PAS de recopie de threads entiers. Cite au plus 1-2 phrases clés si vraiment utile.
+- Bullet points serrés > paragraphes. Chiffres, noms, références exacts — zéro remplissage.
+- Tu DOIS terminer ta réponse complètement (jamais coupée en plein milieu). Si tu sens que c'est long, RÉSUME davantage plutôt que de tronquer.
+- Une réponse de 5 lignes nettes vaut mieux qu'un pavé exhaustif.`;
   if (critique) {
-    p += `\n\n## Tentative précédente insuffisante\nCritique de l'évaluateur :\n${critique}\nCorrige le tir : change d'approche si nécessaire.`;
+    p += `\n\n## Tentative précédente insuffisante\nCritique :\n${critique}\nCorrige UNIQUEMENT le fond manquant — ne rallonge pas inutilement, reste concis.`;
   }
   return p;
 }
@@ -59,11 +69,12 @@ ${(mission.successCriteria || []).map(c => `- ${c}`).join('\n') || '- Accomplir 
 ## Compte rendu de l'agent
 ${String(resultText || '(vide)').slice(0, 6000)}
 
-Juge sur le FOND, pas sur la forme : l'objectif métier de la mission est-il atteint avec les informations disponibles ?
-- Un critère portant sur une donnée qui N'EXISTE PAS chez le provider est SATISFAIT si le compte rendu le constate explicitement (« aucune trace de X ») — on ne peut pas exiger l'introuvable.
-- Ne recale PAS pour des questions de présentation, de verbatim incomplet ou de preuve d'appel manquante si l'information essentielle est là.
-- Recale UNIQUEMENT si une action demandée n'a pas été tentée, ou si une information essentielle ET accessible n'a pas été cherchée.
-Réponds UNIQUEMENT en JSON, avec une critique COURTE (3 phrases max) : {"met": true/false, "critique": "<si false : l'essentiel de ce qui manque>"}`,
+Juge UNIQUEMENT sur le FOND : la conclusion actionnable de la mission est-elle présente et correcte ?
+- Une donnée qui N'EXISTE PAS chez le provider et que le compte rendu constate (« aucune trace de X ») = critère SATISFAIT.
+- Ne recale JAMAIS pour : longueur, présentation, nombre de sections, verbatim incomplet, compte rendu « trop court », ou texte qui semble s'arrêter. Le radar DOIT être concis — un rapport court et net est ce qu'on veut, pas un défaut.
+- Recale SEULEMENT si la conclusion actionnable est absente, fausse, ou si une action explicitement demandée n'a pas du tout été tentée.
+- En cas de doute, considère met=true. Mieux vaut accepter un résultat correct que boucler.
+Réponds UNIQUEMENT en JSON, critique COURTE (1-2 phrases) : {"met": true/false, "critique": "<si false : la seule chose essentielle qui manque>"}`,
   { maxTokens: 1200 });
   if (!out) return { met: true, critique: null, skipped: true }; // pas de LLM → pas de critique bloquante
   return { met: !!out.met, critique: out.critique || null };
@@ -103,7 +114,7 @@ async function runMissionLoop(missionId, deps = {}) {
         console.warn(`[radar-mission] critique indisponible (${e?.message}) — résultat accepté`);
         verdict = { met: true, critique: null, skipped: true };
       }
-      mission.history.push({ attempt: mission.attempts, result: String(resultText || '').slice(0, 4000), critiqueMet: verdict.met, critique: verdict.critique, at: new Date() });
+      mission.history.push({ attempt: mission.attempts, result: String(resultText || '').slice(0, 16000), critiqueMet: verdict.met, critique: verdict.critique, at: new Date() });
       if (verdict.met) {
         mission.status = 'done';
         mission.result = resultText;
@@ -148,7 +159,12 @@ async function _defaultRunAgent(mission, prompt) {
   // Modèle des missions surchargeable (RADAR_MISSION_MODEL) — sinon celui de
   // l'assistant. Recommandé : un modèle médian (sonnet), les missions sont
   // des fouilles multi-boucles coûteuses en input.
-  if (process.env.RADAR_MISSION_MODEL && context.llmConfig) context.llmConfig.model = process.env.RADAR_MISSION_MODEL;
+  if (context.llmConfig) {
+    if (process.env.RADAR_MISSION_MODEL) context.llmConfig.model = process.env.RADAR_MISSION_MODEL;
+    // Budget de sortie large : avec la consigne « court & concis », un compte
+    // rendu tient largement — mais on garantit qu'il n'est JAMAIS tronqué.
+    context.llmConfig.maxTokens = Number(process.env.RADAR_MISSION_MAX_TOKENS) || 8000;
+  }
 
   let text = '';
   const gen = runHarness({

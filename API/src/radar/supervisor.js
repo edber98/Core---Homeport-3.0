@@ -28,7 +28,7 @@ const SUPERVISOR_MAX_LOOPS = 8;
 const SUPERVISOR_TOOL_DEFINITIONS = [
   {
     name: 'launch_mission',
-    description: 'Lance une mission de fond exécutée par un agent autonome. TU écris le prompt : objectif précis, contexte utile, ce qu\'il faut chercher/croiser, format du compte rendu attendu. Les successCriteria seront vérifiés par un évaluateur — sois exigeant et vérifiable.',
+    description: 'Lance une mission de fond exécutée par un agent autonome. TU écris le prompt : objectif précis, contexte utile, ce qu\'il faut chercher/croiser. IMPORTANT : la mission doit produire un résultat COURT et ACTIONNABLE (comme Claude Code) — ne demande JAMAIS un rapport en plusieurs sections, ni un verbatim intégral, ni la recopie de threads entiers. Les successCriteria portent sur le RÉSULTAT MÉTIER (ce qu\'on cherche à savoir/faire), pas sur le format ni l\'exhaustivité documentaire. Maximum 2-3 critères, centrés sur la conclusion utile. Exemple BON : ["Identifier si les factures d\'avril sont saisies dans Odoo", "Lister précisément celles qui manquent (n°, montant)"]. Exemple MAUVAIS (à éviter) : ["Section A avec tableau des UIDs", "Verbatim complet du thread", "Aucune phrase coupée"].',
     parameters: {
       type: 'object',
       properties: {
