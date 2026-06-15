@@ -55,6 +55,26 @@ spec:
               value: {{ .Values.kinn.kinnApi.mongo_db_name | quote }}
             - name: PLUGIN_IMPORT_ENABLED
               value: {{.Values.kinn.kinnApi.plugin_import_enabled | quote}}
+            # ── Radar d'entreprise ──
+            # radar_enabled=0 désactive tout (menu masqué, routes 404, scheduler off).
+            - name: RADAR_ENABLED
+              value: {{ .Values.kinn.kinnApi.radar_enabled | default "0" | quote }}
+            - name: RADAR_SCHEDULER_ENABLED
+              value: {{ .Values.kinn.kinnApi.radar_scheduler_enabled | default "0" | quote }}
+            - name: RADAR_SUPERVISOR_ENABLED
+              value: {{ .Values.kinn.kinnApi.radar_supervisor_enabled | default "0" | quote }}
+            {{- if .Values.kinn.kinnApi.radar_llm_model }}
+            - name: RADAR_LLM_MODEL
+              value: {{ .Values.kinn.kinnApi.radar_llm_model | quote }}
+            {{- end }}
+            {{- if .Values.kinn.kinnApi.radar_supervisor_model }}
+            - name: RADAR_SUPERVISOR_MODEL
+              value: {{ .Values.kinn.kinnApi.radar_supervisor_model | quote }}
+            {{- end }}
+            {{- if .Values.kinn.kinnApi.radar_mission_model }}
+            - name: RADAR_MISSION_MODEL
+              value: {{ .Values.kinn.kinnApi.radar_mission_model | quote }}
+            {{- end }}
             - name: SEED
               value: {{ .Values.kinn.kinnApi.seed | quote }}
             - name: DEFAULT_COMPANY

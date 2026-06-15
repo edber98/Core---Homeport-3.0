@@ -30,6 +30,17 @@ services:
       - ANTHROPIC_MODEL=${ANTHROPIC_MODEL}
       - PLUGIN_IMPORT_ENABLED=1
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # ── Radar d'entreprise ──────────────────────────────────────
+      # DÉSACTIVÉ par défaut. RADAR_ENABLED=1 active la fonctionnalité
+      # (menu, routes, scheduler). 0/vide = menu masqué + routes 404.
+      - RADAR_ENABLED=${RADAR_ENABLED:-0}
+      # Observation continue (collecte + signifiance) et superviseur : opt-in.
+      - RADAR_SCHEDULER_ENABLED=${RADAR_SCHEDULER_ENABLED:-0}
+      - RADAR_SUPERVISOR_ENABLED=${RADAR_SUPERVISOR_ENABLED:-0}
+      # Modèles dédiés (sinon : filtre=haiku, superviseur/mission=ANTHROPIC_MODEL).
+      - RADAR_LLM_MODEL=${RADAR_LLM_MODEL:-}
+      - RADAR_SUPERVISOR_MODEL=${RADAR_SUPERVISOR_MODEL:-}
+      - RADAR_MISSION_MODEL=${RADAR_MISSION_MODEL:-}
       - SSRF_ALLOW_PRIVATE=1
       - HOST=0.0.0.0
       # ── Sandbox d'exécution de code ────────────────────────────

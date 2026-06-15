@@ -78,9 +78,12 @@ function sampleOf(value, depth = 0) {
   return value;
 }
 
-// Flag global : RADAR_ENABLED=0 désactive entièrement la fonctionnalité Radar
-// (routes coupées sauf /radar/config, qui dit au frontend de masquer le menu).
-function radarEnabled() { return process.env.RADAR_ENABLED !== '0'; }
+// Flag global : le Radar est DÉSACTIVÉ par défaut. Il faut RADAR_ENABLED
+// explicitement à 1/true/on/yes pour l'activer (routes + menu + scheduler).
+// /radar/config reste toujours servie pour informer le frontend.
+function radarEnabled() {
+  return ['1', 'true', 'on', 'yes'].includes(String(process.env.RADAR_ENABLED || '').trim().toLowerCase());
+}
 
 module.exports = function () {
   const r = express.Router();

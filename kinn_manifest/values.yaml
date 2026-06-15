@@ -27,6 +27,16 @@ kinn:
     token_ttl_sec: 86400
     seed: "true"
     plugin_import_enabled: 1
+    # ── Radar d'entreprise ──
+    # "0" désactive entièrement le Radar (menu masqué, routes 404, scheduler off).
+    radar_enabled: "0"
+    # Observation continue + superviseur proactif (opt-in, consomment des crédits IA).
+    radar_scheduler_enabled: "0"
+    radar_supervisor_enabled: "0"
+    # Modèles dédiés (vides = filtre haiku, superviseur/mission = anthropic_model).
+    radar_llm_model: ""
+    radar_supervisor_model: ""
+    radar_mission_model: ""
     # Supprime les plugins absents des manifests au boot (1 = actif)
     plugin_cleanup_enabled: 0
     plugin_repos: ""

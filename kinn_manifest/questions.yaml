@@ -98,6 +98,38 @@ questions:
     group: Comptes
 
   # ────────────── Provider LLM principal ──────────────
+  - variable: kinn.kinnApi.radar_enabled
+    type: enum
+    options:
+      - "1"
+      - "0"
+    default: "0"
+    label: Activer le Radar d'entreprise (1 = oui)
+    description: Superviseur IA proactif qui surveille les logiciels connectés. 0 = menu masqué et routes coupées.
+    group: Radar d'entreprise
+
+  - variable: kinn.kinnApi.radar_scheduler_enabled
+    type: enum
+    options:
+      - "1"
+      - "0"
+    default: "0"
+    label: Observation continue (1 = oui)
+    description: Collecte périodique des connecteurs et détection de changements (consomme des crédits IA).
+    group: Radar d'entreprise
+    show_if: "kinn.kinnApi.radar_enabled=1"
+
+  - variable: kinn.kinnApi.radar_supervisor_enabled
+    type: enum
+    options:
+      - "1"
+      - "0"
+    default: "0"
+    label: Superviseur proactif (1 = oui)
+    description: L'agent traite automatiquement les signaux et prépare le travail (consomme des crédits IA).
+    group: Radar d'entreprise
+    show_if: "kinn.kinnApi.radar_enabled=1"
+
   - variable: kinn.kinnApi.ai_provider
     type: enum
     options:

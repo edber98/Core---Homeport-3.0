@@ -47,9 +47,10 @@ try { require('./realtime/socketio').attach(server); } catch {}
       try { const { startCleanupWorker } = require('./ai/cache/cleanup-worker'); startCleanupWorker(); } catch (e) { try { console.error('[backend] ai cache cleanup worker failed:', e.message); } catch {} }
       // Start AI jobs resume worker (detects stale heartbeats, resumes)
       try { const { startResumeWorker } = require('./ai/jobs/resume-worker'); startResumeWorker(); } catch (e) { try { console.error('[backend] ai jobs resume worker failed:', e.message); } catch {} }
-      // Start Radar observation scheduler (opt-in: RADAR_SCHEDULER_ENABLED=1 ;
-      // jamais si RADAR_ENABLED=0 qui désactive toute la fonctionnalité)
-      if (process.env.RADAR_SCHEDULER_ENABLED === '1' && process.env.RADAR_ENABLED !== '0') {
+      // Start Radar observation scheduler — nécessite que le Radar soit activé
+      // (RADAR_ENABLED, désactivé par défaut) ET l'observation opt-in.
+      const radarOn = ['1', 'true', 'on', 'yes'].includes(String(process.env.RADAR_ENABLED || '').trim().toLowerCase());
+      if (radarOn && process.env.RADAR_SCHEDULER_ENABLED === '1') {
         try { const { startRadarScheduler } = require('./radar/scheduler'); startRadarScheduler(); } catch (e) { try { console.error('[backend] radar scheduler failed:', e.message); } catch {} }
       }
     } catch (e) {

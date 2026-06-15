@@ -7,7 +7,9 @@ import { ApiClientService } from './api-client.service';
 
 @Injectable({ providedIn: 'root' })
 export class RadarConfigService {
-  readonly enabled = signal<boolean>(true);
+  // Désactivé par défaut : le Radar n'apparaît qu'une fois confirmé activé
+  // par le backend (évite tout flash du menu si la fonctionnalité est coupée).
+  readonly enabled = signal<boolean>(false);
   private loaded = false;
 
   constructor(private api: ApiClientService) {}
