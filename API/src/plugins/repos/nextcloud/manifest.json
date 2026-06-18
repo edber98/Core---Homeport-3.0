@@ -1285,7 +1285,12 @@
           "family": "storage",
           "capabilities": {
             "listTree": {
-              "template": "nc_file_list"
+              "template": "nc_file_tree",
+              "args": {
+                "path": "/",
+                "maxDepth": 3,
+                "maxItems": 800
+              }
             },
             "readFile": {
               "template": "nc_file_get"
@@ -1311,12 +1316,29 @@
               "hashFields": [
                 "etag",
                 "lastmod",
-                "size"
+                "size",
+                "parentPath"
               ],
               "excludeWhen": [
                 {
-                  "field": "contentType",
-                  "empty": true
+                  "field": "isFolder",
+                  "equals": true
+                }
+              ],
+              "itemsField": "files"
+            },
+            {
+              "entity": "folder",
+              "via": "listTree",
+              "key": "path",
+              "hashFields": [
+                "name",
+                "parentPath"
+              ],
+              "excludeWhen": [
+                {
+                  "field": "isFolder",
+                  "equals": false
                 }
               ],
               "itemsField": "files"
@@ -1410,6 +1432,39 @@
     }
   ],
   "nodeTemplates": [
+    {
+      "key": "nc_file_tree",
+      "name": "ncFileTree",
+      "schemaVersion": 2,
+      "title": "Parcourir l'arborescence",
+      "type": "function",
+      "nodeKind": "function",
+      "category": "Nextcloud Files",
+      "providerKey": "nextcloudFiles",
+      "inputHandles": [
+        { "id": "in", "name": "In", "type": "any", "accepts": ["any"] }
+      ],
+      "outputHandles": [
+        { "id": "ok", "name": "Success", "type": "payload", "schema": "$var:nc_files" }
+      ],
+      "description": "Parcourt récursivement les dossiers et fichiers (profondeur et budget limités pour ne pas surcharger). Chaque élément est marqué dossier/fichier avec son dossier parent.",
+      "args": {
+        "title": "Parcourir l'arborescence",
+        "ui": { "layout": "vertical", "labelsOnTop": true },
+        "fields": [
+          { "type": "text", "key": "path", "label": "Dossier racine", "col": { "xs": 24 }, "description": "Point de départ du parcours (ex: /Clients).", "default": "/" },
+          { "type": "number", "key": "maxDepth", "label": "Profondeur max", "col": { "xs": 12 }, "description": "Niveaux de sous-dossiers explorés.", "default": 3 },
+          { "type": "number", "key": "maxItems", "label": "Budget d'éléments", "col": { "xs": 12 }, "description": "Nombre max d'éléments (anti-surcharge).", "default": 800 }
+        ],
+        "displayTitle": false,
+        "displayDescription": false
+      },
+      "subtitle": "Arborescence",
+      "icon": "fa-solid fa-folder-tree",
+      "group": "Fichiers",
+      "tags": ["arborescence", "récursif", "Nextcloud"],
+      "risk": "safe"
+    },
     {
       "key": "nc_file_list",
       "name": "ncFileList",

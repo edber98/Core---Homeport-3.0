@@ -60,16 +60,28 @@ const FAMILIES = {
     capabilities: {
       listOpportunities: { kind: 'read',  description: 'Lister les opportunités / leads' },
       listQuotes:        { kind: 'read',  description: 'Lister les devis (avec statut)' },
+      listContacts:      { kind: 'read',  description: 'Lister les tiers / contacts (organisations, clients, fournisseurs)' },
+      listSalesOrders:   { kind: 'read',  description: 'Lister les commandes clients' },
       createOpportunity: { kind: 'write', description: 'Créer une opportunité' },
     },
     testCapability: 'listOpportunities',
+  },
+  catalog: {
+    label: 'Catalogue & stock',
+    description: 'Produits, articles, prestations de service, niveaux de stock — ERP, e-commerce, PIM.',
+    capabilities: {
+      listProducts:       { kind: 'read', description: 'Lister les produits / articles / services (avec stock)' },
+      listStockMovements: { kind: 'read', description: 'Lister les mouvements de stock' },
+    },
+    testCapability: 'listProducts',
   },
   productivity: {
     label: 'Productivité & tâches',
     description: 'Gestion de tâches et de projets — Trello, Notion, ClickUp…',
     capabilities: {
-      listTasks:  { kind: 'read',  description: 'Lister les tâches (filtre, retard)' },
-      createTask: { kind: 'write', description: 'Créer une tâche' },
+      listTasks:    { kind: 'read',  description: 'Lister les tâches (filtre, retard)' },
+      listProjects: { kind: 'read',  description: 'Lister les projets' },
+      createTask:   { kind: 'write', description: 'Créer une tâche' },
     },
     testCapability: 'listTasks',
   },
@@ -120,6 +132,27 @@ const FAMILIES = {
       listAnomalies:   { kind: 'read', description: 'Lister les anomalies détectées' },
     },
     testCapability: 'listAnomalies',
+  },
+  industry: {
+    label: 'Production & industrie',
+    description: 'MES / production : ordres de fabrication, machines, arrêts, maintenance, capteurs (SAP PP/PM, MES, IoT).',
+    capabilities: {
+      listProductionOrders: { kind: 'read', description: 'Lister les ordres de fabrication (OF)' },
+      listMachines:         { kind: 'read', description: 'Lister les machines / équipements' },
+      listDowntimes:        { kind: 'read', description: 'Lister les arrêts machine / pannes' },
+      listMaintenanceOrders:{ kind: 'read', description: 'Lister les ordres de maintenance' },
+      listSensorReadings:   { kind: 'read', description: 'Lire les relevés capteurs (séries temporelles)' },
+    },
+    testCapability: 'listProductionOrders',
+  },
+  database: {
+    label: 'Base de données',
+    description: 'Connexion directe à une base (MongoDB, MariaDB, PostgreSQL…) pour les logiciels sans API — le Radar analyse les collections/tables et en déduit les catégories.',
+    capabilities: {
+      listCollections: { kind: 'read', description: 'Lister les collections / tables' },
+      queryCollection: { kind: 'read', description: 'Lire les documents / lignes d\'une collection' },
+    },
+    testCapability: 'listCollections',
   },
 };
 

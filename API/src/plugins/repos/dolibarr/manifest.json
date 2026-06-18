@@ -4321,15 +4321,55 @@
             "createDraftInvoice": {
               "template": "dolibarr_invoice_create"
             }
-          }
+          },
+          "watch": [
+            {
+              "entity": "customer_invoice",
+              "via": "listCustomerInvoices",
+              "key": "id",
+              "hashFields": ["ref", "total_ttc", "statut", "paye", "socid", "date"]
+            },
+            {
+              "entity": "supplier_invoice",
+              "via": "listSupplierInvoices",
+              "key": "id",
+              "hashFields": ["ref", "total_ttc", "statut", "paye", "socid", "date"]
+            }
+          ]
         },
         {
           "family": "crm",
           "capabilities": {
             "listQuotes": {
               "template": "dolibarr_proposals_list"
+            },
+            "listContacts": {
+              "template": "dolibarr_thirdparties_list"
+            },
+            "listSalesOrders": {
+              "template": "dolibarr_orders_list"
             }
-          }
+          },
+          "watch": [
+            {
+              "entity": "party",
+              "via": "listContacts",
+              "key": "id",
+              "hashFields": ["name", "email", "phone", "client", "fournisseur"]
+            },
+            {
+              "entity": "quote",
+              "via": "listQuotes",
+              "key": "id",
+              "hashFields": ["ref", "total_ttc", "statut", "socid", "fk_project", "date"]
+            },
+            {
+              "entity": "order",
+              "via": "listSalesOrders",
+              "key": "id",
+              "hashFields": ["ref", "total_ttc", "statut", "socid", "fk_project", "date"]
+            }
+          ]
         },
         {
           "family": "productivity",
@@ -4337,10 +4377,27 @@
             "listTasks": {
               "template": "dolibarr_tasks_list"
             },
+            "listProjects": {
+              "template": "dolibarr_projects_list"
+            },
             "createTask": {
               "template": "dolibarr_task_create"
             }
-          }
+          },
+          "watch": [
+            {
+              "entity": "project",
+              "via": "listProjects",
+              "key": "id",
+              "hashFields": ["title", "ref", "statut", "socid", "date_end"]
+            },
+            {
+              "entity": "task",
+              "via": "listTasks",
+              "key": "id",
+              "hashFields": ["label", "status", "progress", "fk_project", "date_end"]
+            }
+          ]
         },
         {
           "family": "support",
@@ -4354,7 +4411,15 @@
             "createTicket": {
               "template": "dolibarr_ticket_create"
             }
-          }
+          },
+          "watch": [
+            {
+              "entity": "ticket",
+              "via": "listTickets",
+              "key": "id",
+              "hashFields": ["ref", "subject", "status", "fk_soc", "severity_code"]
+            }
+          ]
         },
         {
           "family": "calendar",
@@ -4363,6 +4428,32 @@
               "template": "dolibarr_get_agendaevents"
             }
           }
+        },
+        {
+          "family": "catalog",
+          "capabilities": {
+            "listProducts": {
+              "template": "dolibarr_products_list"
+            },
+            "listStockMovements": {
+              "template": "dolibarr_stock_movements_list"
+            }
+          },
+          "watch": [
+            {
+              "entity": "product",
+              "via": "listProducts",
+              "key": "id",
+              "hashFields": [
+                "ref",
+                "label",
+                "price",
+                "stock_reel",
+                "type",
+                "status"
+              ]
+            }
+          ]
         }
       ]
     }
@@ -7508,6 +7599,15 @@
           "labelsOnTop": true
         },
         "fields": [
+          {
+            "type": "text",
+            "key": "ref",
+            "label": "Référence",
+            "description": "Référence de la tâche (auto-générée si vide).",
+            "col": {
+              "xs": 24
+            }
+          },
           {
             "type": "text",
             "key": "fk_project",
@@ -34391,6 +34491,242 @@
         "endpoint"
       ],
       "risk": "safe"
+    },
+    {
+      "key": "dolibarr_bom_create",
+      "name": "dolibarrBomCreate",
+      "title": "Créer une nomenclature",
+      "subtitle": "Dolibarr · Production",
+      "description": "Créer une nomenclature (BOM) pour un produit à fabriquer.",
+      "icon": "fa-solid fa-sitemap",
+      "type": "function",
+      "category": "Production",
+      "providerKey": "dolibarr",
+      "tags": [
+        "dolibarr",
+        "production",
+        "nomenclature",
+        "bom"
+      ],
+      "risk": "medium",
+      "args": {
+        "title": "Nomenclature",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ref",
+            "label": "Référence",
+            "description": "Référence (auto si vide).",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "text",
+            "key": "label",
+            "label": "Libellé",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "fk_product",
+            "label": "Produit à fabriquer (ID)",
+            "description": "ID du produit fini.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "qty",
+            "label": "Quantité",
+            "description": "Quantité produite (défaut 1).",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "bomtype",
+            "label": "Type",
+            "description": "0=fabrication, 1=désassemblage.",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "textarea",
+            "key": "description",
+            "label": "Description",
+            "col": {
+              "xs": 24
+            }
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Nomenclature créée",
+          "type": "payload",
+          "schema": {
+            "title": "Nomenclature créée",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "id",
+                "label": "ID",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "ref",
+                "label": "Référence",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "label",
+                "label": "Libellé",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "key": "dolibarr_mo_create",
+      "name": "dolibarrMoCreate",
+      "title": "Créer un ordre de fabrication",
+      "subtitle": "Dolibarr · Production",
+      "description": "Créer un ordre de fabrication (MO) pour produire un article.",
+      "icon": "fa-solid fa-industry",
+      "type": "function",
+      "category": "Production",
+      "providerKey": "dolibarr",
+      "tags": [
+        "dolibarr",
+        "production",
+        "fabrication",
+        "mo"
+      ],
+      "risk": "medium",
+      "args": {
+        "title": "Ordre de fabrication",
+        "ui": {
+          "layout": "vertical",
+          "labelsOnTop": true
+        },
+        "fields": [
+          {
+            "type": "text",
+            "key": "ref",
+            "label": "Référence",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "fk_product",
+            "label": "Produit à fabriquer (ID)",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "qty",
+            "label": "Quantité",
+            "description": "Quantité à produire (défaut 1).",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "fk_bom",
+            "label": "Nomenclature (ID)",
+            "description": "BOM à utiliser (optionnel).",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "fk_warehouse",
+            "label": "Entrepôt (ID)",
+            "col": {
+              "xs": 12
+            }
+          },
+          {
+            "type": "number",
+            "key": "fk_project",
+            "label": "Projet (ID)",
+            "col": {
+              "xs": 12
+            }
+          }
+        ]
+      },
+      "outputHandles": [
+        {
+          "id": "ok",
+          "name": "Ordre de fabrication créé",
+          "type": "payload",
+          "schema": {
+            "title": "Ordre de fabrication créé",
+            "ui": {
+              "layout": "vertical",
+              "labelsOnTop": true
+            },
+            "fields": [
+              {
+                "type": "text",
+                "key": "id",
+                "label": "ID",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "ref",
+                "label": "Référence",
+                "col": {
+                  "xs": 24
+                }
+              },
+              {
+                "type": "text",
+                "key": "label",
+                "label": "Libellé",
+                "col": {
+                  "xs": 24
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }

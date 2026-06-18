@@ -1,6 +1,7 @@
 import { Injectable, NgZone, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { AuthTokenService } from './auth-token.service';
+import { apiUrl } from '../shared/api-base';
 
 // Flux temps réel du Radar (SSE /radar/stream) — même pattern que le badge
 // crédits : EventSource avec ?token= (pas de header possible), reconnexion
@@ -48,7 +49,7 @@ export class RadarEventsService implements OnDestroy {
     const token = this.tokenSvc?.token || '';
     if (!wsId || !token) return;
     try {
-      const url = `${window.location.origin}/api/workspaces/${encodeURIComponent(wsId)}/radar/stream?token=${encodeURIComponent(token)}`;
+      const url = `${apiUrl('/api/workspaces/' + encodeURIComponent(wsId) + '/radar/stream')}?token=${encodeURIComponent(token)}`;
       this.sse = new EventSource(url);
       this.sse.addEventListener('open', () => { this.reconnectMs = RECONNECT_BASE_MS; });
       this.sse.addEventListener('radar', (ev: MessageEvent) => {

@@ -266,4 +266,5 @@ Load only what you need:
 - [references/manifest-patterns.md](references/manifest-patterns.md): manifest, provider, variable, and node template patterns.
 - [references/handler-patterns.md](references/handler-patterns.md): `utils.js` and per-action handler patterns.
 - [references/validation.md](references/validation.md): checks before handing off the connector.
+- [references/radar-ingest.md](references/radar-ingest.md): rendre un connecteur OBSERVABLE par le Radar (bloc `radar`/watch du manifest, familles, RadarMapping déclaré vs appris par LLM, lineRules articles/stock, predict-or-ask, relations par ID). À lire dès qu'on touche au bloc `radar` d'un manifest, à `families.js`, ou au mapping ontologique.
 - `scripts/generate-spec-from-endpoints-json.js`: conversion inventaire endpoints filtre -> spec du generateur.

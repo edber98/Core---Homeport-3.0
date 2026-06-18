@@ -5,6 +5,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { CreditsBackendService, CreditsMeResponse } from '../../services/credits-backend.service';
 import { AuthTokenService } from '../../services/auth-token.service';
+import { apiUrl } from '../../shared/api-base';
 
 // Poll lent en backup uniquement. Le badge se met à jour temps réel via SSE
 // (`/api/me/credits/stream`) à chaque débit. Le poll garantit la fraîcheur
@@ -254,7 +255,7 @@ export class CreditsBadgeComponent implements OnInit, OnDestroy {
       // `?token=` (le authMiddleware kinn-app lit `req.query.token`).
       const token = this.tokenSvc?.token || '';
       if (!token) { return; }  // pas connecté → pas de SSE (le poll prendra le relais)
-      const url = `${window.location.origin}/api/me/credits/stream?token=${encodeURIComponent(token)}`;
+      const url = `${apiUrl('/api/me/credits/stream')}?token=${encodeURIComponent(token)}`;
       // withCredentials inutile ici (auth par query token), mais inoffensif.
       this.sse = new EventSource(url);
 

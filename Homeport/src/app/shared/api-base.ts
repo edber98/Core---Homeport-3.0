@@ -23,4 +23,11 @@ export function apiBase(): string {
   return `${apiRoot()}${apiSuffix()}`;
 }
 
-// Construit une URL API à partir d'un chemin; en production, supprime le préfixe '/api' du chemin
+// Construit une URL API ABSOLUE à partir d'un chemin '/api/...'.
+// À utiliser pour EventSource/SSE qui ne passent pas par l'intercepteur HTTP.
+// En production, le suffix est inclus dans la base → on retire le préfixe '/api' du chemin.
+export function apiUrl(path: string): string {
+  const p = path.startsWith('/') ? path : '/' + path;
+  const cleanPath = environment.production ? p.replace(/^\/api\b/, '') : p;
+  return `${apiRoot()}${apiSuffix()}${cleanPath}`;
+}

@@ -8,11 +8,12 @@ import { AccessControlService } from '../../services/access-control.service';
 import { Company, CompanyService, LicensePlan } from '../../services/company.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { RadarResetComponent } from './radar-reset.component';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, NzButtonModule, NzSelectModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzSelectModule, RadarResetComponent],
   template: `
   <div class="list-page">
     <div class="container">
@@ -88,6 +89,7 @@ import { Router } from '@angular/router';
           <button nz-button nzType="default" class="action-blue workspace-state-btn" (click)="logWorkspaceState()">Console: Workspace state</button>
         </div>
       </div>
+      <radar-reset></radar-reset>
     </div>
   </div>
   `,

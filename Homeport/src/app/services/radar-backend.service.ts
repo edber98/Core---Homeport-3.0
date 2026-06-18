@@ -105,6 +105,14 @@ export class RadarBackendService {
     return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/agenda`, { from, to });
   }
 
+  getResetCounts(wsId: string): Observable<{ counts: Record<string, number> }> {
+    return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/reset/counts`);
+  }
+
+  resetRadar(wsId: string, body: { groups?: string[]; all?: boolean; confirm: string }): Observable<{ ok: boolean; deleted: Record<string, number> }> {
+    return this.api.post<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/reset`, body);
+  }
+
   reconcile(wsId: string): Observable<{ findings: number; created: number }> {
     return this.api.post<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/reconcile`, {});
   }
@@ -121,6 +129,56 @@ export class RadarBackendService {
   }
   deleteKnowledge(wsId: string, id: string): Observable<any> {
     return this.api.delete<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/knowledge/${encodeURIComponent(id)}`);
+  }
+
+  // ── Graphe (Knowledge Graph) ──
+  getGraphSummary(wsId: string): Observable<RadarGraphSummary> {
+    return this.api.get<RadarGraphSummary>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/graph/summary`);
+  }
+  getGraph(wsId: string, filters: { coreType?: string; subtype?: string; role?: string; q?: string; limit?: number } = {}): Observable<RadarGraphData> {
+    return this.api.get<RadarGraphData>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/graph`, filters as any);
+  }
+  listGraphEntities(wsId: string, filters: { coreType?: string; subtype?: string; role?: string; q?: string; limit?: number } = {}): Observable<RadarGraphEntity[]> {
+    return this.api.get<RadarGraphEntity[]>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/graph/entities`, filters as any);
+  }
+  getNeighborhood(wsId: string, key: string, depth = 1): Observable<RadarNeighborhood> {
+    return this.api.get<RadarNeighborhood>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/graph/entities/${encodeURIComponent(key)}/neighborhood`, { depth });
+  }
+  getLineage(wsId: string, key: string): Observable<RadarLineage> {
+    return this.api.get<RadarLineage>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/graph/entities/${encodeURIComponent(key)}/lineage`);
+  }
+  getOntology(): Observable<RadarOntology> {
+    return this.api.get<RadarOntology>(`/api/radar/ontology`);
+  }
+  listMappings(wsId: string): Observable<RadarMapping[]> {
+    return this.api.get<RadarMapping[]>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/mappings`);
+  }
+  listSnapshots(wsId: string, filters: { entityType?: string; connectorId?: string; limit?: number } = {}): Observable<RadarSnapshotPage> {
+    return this.api.get<RadarSnapshotPage>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/snapshots`, filters as any);
+  }
+  learnConnector(wsId: string, connectorId: string, body: { capability: string; entity: string; activate?: boolean }): Observable<{ mapping: RadarMapping; watch: any; valid: boolean; errors: string[]; sampleCount: number }> {
+    return this.api.post<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/connectors/${encodeURIComponent(connectorId)}/learn`, body);
+  }
+  getProcesses(wsId: string, filters: { coreType?: string; subtype?: string } = {}): Observable<{ processes: RadarProcess[] }> {
+    return this.api.get<{ processes: RadarProcess[] }>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/process`, filters as any);
+  }
+  getCrossProcess(wsId: string): Observable<RadarCrossProcess> {
+    return this.api.get<RadarCrossProcess>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/process/cross`);
+  }
+  getAnalytics(wsId: string): Observable<RadarAnalytics> {
+    return this.api.get<RadarAnalytics>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/analytics`);
+  }
+  getRecommendations(wsId: string): Observable<RadarRecommendations> {
+    return this.api.get<RadarRecommendations>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/recommendations`);
+  }
+  getLearningStats(wsId: string): Observable<RadarLearningStats> {
+    return this.api.get<RadarLearningStats>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/learning/stats`);
+  }
+  getContext(wsId: string): Observable<{ context: RadarCompanyContext | null; needsSetup: boolean }> {
+    return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/context`);
+  }
+  saveContext(wsId: string, description: string): Observable<{ context: RadarCompanyContext }> {
+    return this.api.put<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/context`, { description });
   }
 
   // Playbooks (procédures)
@@ -158,4 +216,89 @@ export interface RadarPlaybook {
   source: string; enabled: boolean; pendingApproval?: boolean;
   stats?: { timesUsed: number; lastUsedAt?: string; overrideCount?: number };
   createdAt?: string; updatedAt?: string;
+}
+
+// ── Graphe (Knowledge Graph) ──
+export interface RadarGraphEntity {
+  canonicalKey: string; aliasKeys?: string[];
+  coreType: string; subtype?: string; roles?: string[];
+  label: string; attributes?: Record<string, any>;
+}
+export interface RadarGraphRelation { from: string; to: string; type: string; role?: string; }
+export interface RadarGraphData { entities: RadarGraphEntity[]; relations: RadarGraphRelation[]; }
+export interface RadarGraphSummary {
+  entities: number; relations: number;
+  byType: { coreType: string; subtype?: string; count: number }[];
+  byRelationType: { type: string; count: number }[];
+}
+export interface RadarNeighborhood { center: RadarGraphEntity; entities: RadarGraphEntity[]; relations: RadarGraphRelation[]; }
+export interface RadarLineageSource {
+  providerKey: string;
+  snapshot: { entityType: string; entityKey: string; data: any; contentHash?: string; lastChangedAt?: string };
+  mapping?: RadarMapping;
+}
+export interface RadarLineage { entity: RadarGraphEntity & { sources?: any[] }; sources: RadarLineageSource[]; }
+export interface RadarOntology {
+  coreTypes: { coreType: string; label?: string; subtypes: { subtype?: string; key: string; label?: string; category?: string; canonicalFields?: { name: string }[] }[] }[];
+  relationTypes: string[]; roles: string[];
+  coreLabels?: Record<string, string>;
+  subtypeLabels?: Record<string, string>;
+  relationLabels?: Record<string, string>;
+  roleLabels?: Record<string, string>;
+}
+export interface RadarMapping {
+  id?: string; providerKey: string; rawEntityType: string;
+  target: { coreType: string; subtype?: string };
+  roles?: string[]; keyField?: string; identityFields?: string[]; labelField?: string;
+  fieldMap?: Record<string, string>; valueMap?: Record<string, any>;
+  relationRules?: any[]; roleRules?: any[];
+  learnedBy?: string; status?: string; version?: number; workspaceId?: string | null;
+}
+export interface RadarSnapshot {
+  connectorId?: string; family?: string; entityType: string; entityKey: string;
+  contentHash?: string; data: Record<string, any>;
+  firstSeenAt?: string; lastSeenAt?: string; lastChangedAt?: string;
+}
+export interface RadarSnapshotPage {
+  items: RadarSnapshot[];
+  byType: { entityType: string; count: number }[];
+}
+export interface RadarProcess {
+  coreType: string; subtype?: string;
+  entityCount: number; entitiesWithTransitions: number;
+  states: { state: string; count: number }[];
+  transitions: { from: string; to: string; count: number; avgDurationMs: number }[];
+  variants: { sequence: string; count: number }[];
+}
+export interface RadarCrossProcess {
+  cases: number;
+  systemByActivity?: Record<string, string>;
+  typeByActivity?: Record<string, string>;
+  activities: { activity: string; count: number; system?: string }[];
+  transitions: { from: string; to: string; count: number }[];
+  parallels: { activities: string[]; count: number }[];
+  variants: { sequence: string; count: number }[];
+}
+export interface RadarAnalytics {
+  bottlenecks: { process: string; from: string; to: string; avgDays: number; count: number; score: number; description?: string }[];
+  delays: { type: string; label?: string; system?: string; state: string; sinceDays: number; score: number; reason?: string }[];
+  anomalies: { kind: 'near_miss' | 'orphan'; entity: string; type?: string; system?: string; path?: string; suggestedClient?: string; similarity?: number; score: number; reason?: string }[];
+  financial: { invoices: number; paidInvoices: number; billed: number; paid: number; outstanding: number; collectionRate: number };
+}
+export interface RadarRecommendations {
+  recommendations: { type: string; priority: 'haute' | 'normale' | 'basse'; score: number; title: string; detail?: string; action: string; system?: string }[];
+  forecast?: { outstanding: number; expectedDays: number; projectedInflow: number; atRiskCount: number; atRisk: { label: string; system?: string; sinceDays: number }[]; collectionRate: number; riskModel?: { status: string; accuracy?: number; examples?: number } | null } | null;
+}
+export interface RadarCompanyContext {
+  description: string; sector?: string; activities?: string[];
+  suggestedFamilies?: string[]; keyMetrics?: string[]; summary?: string;
+  source?: string; interpretedAt?: string;
+}
+export interface RadarLearningStats {
+  enabled: boolean;
+  feedback: {
+    total: number;
+    byTaskType: { taskType: string; count: number }[];
+    byAction: { action: string; count: number }[];
+  };
 }

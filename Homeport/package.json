@@ -47,6 +47,7 @@
     "codemirror-lang-html-n8n": "^1.0.0",
     "codemirror-lang-n8n-expression": "^0.3.0",
     "cron-parser": "^4.9.0",
+    "cytoscape": "^3.33.2",
     "d3-drag": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",

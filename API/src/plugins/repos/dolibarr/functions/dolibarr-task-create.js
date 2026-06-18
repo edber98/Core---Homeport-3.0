@@ -10,6 +10,11 @@ module.exports = {
     const body = {};
     if (d.fk_project !== undefined && d.fk_project !== null && d.fk_project !== "") body.fk_project = d.fk_project;
     if (d.label !== undefined && d.label !== null && d.label !== "") body.label = d.label;
+    // Dolibarr exige une `ref` pour les tâches. Si non fournie, on en génère une
+    // depuis le label (l'API REST ne l'auto-génère pas comme l'UI).
+    body.ref = (d.ref !== undefined && d.ref !== null && d.ref !== "")
+      ? d.ref
+      : 'TASK-' + String(d.label || 'task').toUpperCase().replace(/[^A-Z0-9]+/g, '-').slice(0, 24) + '-' + Date.now().toString(36).slice(-4);
     if (d.description !== undefined && d.description !== null && d.description !== "") body.description = d.description;
     if (d.fk_task_parent !== undefined && d.fk_task_parent !== null && d.fk_task_parent !== "") body.fk_task_parent = d.fk_task_parent;
     if (d.date_start !== undefined && d.date_start !== null && d.date_start !== "") body.date_start = d.date_start;

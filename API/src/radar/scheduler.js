@@ -36,6 +36,11 @@ const DEFAULT_INTERVALS_MS = {
 
 let _timer = null;
 
+/** Le graphe est-il construit après collecte ? On par défaut (si Radar activé). Pure. */
+function graphEnabled() {
+  return String(process.env.RADAR_GRAPH_ENABLED || '1').trim().toLowerCase() !== '0';
+}
+
 /** Intervalle effectif (politique connecteur > défaut famille) × backoff erreurs. Pure. */
 function effectiveIntervalMs(connector) {
   const base = Number(connector.pollingPolicy?.intervalMs) || DEFAULT_INTERVALS_MS[connector.family] || 15 * 60_000;
@@ -111,6 +116,23 @@ async function runSchedulerPass({ now = new Date(), log = () => {} } = {}) {
       const inQuiet = isInQuietHours(now, claimed.pollingPolicy?.quietHours);
       const summary = await collectConnector(claimed, { now, log });
       if (inQuiet || !claimed.lastFullSyncAt) claimed.lastFullSyncAt = now;
+      // Étage 1 — construction du graphe (entités + relations) après la collecte.
+      // Idempotent (re-link ne duplique pas). Désactivable via RADAR_GRAPH_ENABLED=0.
+      if (summary.ok && graphEnabled()) {
+        // Auto-apprentissage des mappings manquants (zéro-hardcode), avant de linker
+        const { autoLearnConnector, autolearnEnabled } = require('./graph/autolearn');
+        if (autolearnEnabled()) {
+          await autoLearnConnector(claimed, { log })
+            .catch(e => log(`[radar-autolearn] erreur ${claimed.providerKey}: ${e?.message}`));
+        }
+        const { linkConnector } = require('./graph/linker');
+        await linkConnector(claimed, { now, log })
+          .catch(e => log(`[radar-linker] erreur ${claimed.providerKey}: ${e?.message}`));
+        // Corrélation cross-logiciel par nom (dossiers/projets → tiers). Idempotent.
+        const { correlateByName } = require('./graph/correlate');
+        await correlateByName(claimed.workspaceId, { log })
+          .catch(e => log(`[radar-correlate] erreur ${claimed.workspaceId}: ${e?.message}`));
+      }
       // Réconciliations nocturnes (déterministes, dédupliquées) après la collecte de nuit
       if (inQuiet) {
         const { runReconciliationsForWorkspace } = require('./reconciliations');
@@ -173,5 +195,6 @@ module.exports = {
   effectiveIntervalMs,
   isInQuietHours,
   quietWindowStart,
+  graphEnabled,
   DEFAULT_INTERVALS_MS,
 };

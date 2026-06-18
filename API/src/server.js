@@ -50,8 +50,20 @@ try { require('./realtime/socketio').attach(server); } catch {}
       // Start Radar observation scheduler — nécessite que le Radar soit activé
       // (RADAR_ENABLED, désactivé par défaut) ET l'observation opt-in.
       const radarOn = ['1', 'true', 'on', 'yes'].includes(String(process.env.RADAR_ENABLED || '').trim().toLowerCase());
-      if (radarOn && process.env.RADAR_SCHEDULER_ENABLED === '1') {
-        try { const { startRadarScheduler } = require('./radar/scheduler'); startRadarScheduler(); } catch (e) { try { console.error('[backend] radar scheduler failed:', e.message); } catch {} }
+      if (radarOn) {
+        // Seed du registre d'ontologie + mappings déclarés (idempotent).
+        try {
+          const { seedOntologyTypes } = require('./radar/graph/ontology-seed');
+          const { seedDolibarrMappings } = require('./radar/graph/mappings-dolibarr');
+          const { seedEmailMappings } = require('./radar/graph/mappings-email');
+          const { seedExtraMappings } = require('./radar/graph/mappings-extra');
+          const nOnt = await seedOntologyTypes();
+          const nMap = (await seedDolibarrMappings()) + (await seedEmailMappings()) + (await seedExtraMappings());
+          console.log(`[backend] radar seed: ${nOnt} types d'ontologie, ${nMap} mappings (dolibarr+email+nc/op)`);
+        } catch (e) { try { console.error('[backend] radar seed failed:', e.message); } catch {} }
+        if (process.env.RADAR_SCHEDULER_ENABLED === '1') {
+          try { const { startRadarScheduler } = require('./radar/scheduler'); startRadarScheduler(); } catch (e) { try { console.error('[backend] radar scheduler failed:', e.message); } catch {} }
+        }
       }
     } catch (e) {
       console.error('[backend] DB init failed:', e.message);

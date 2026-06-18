@@ -49,12 +49,20 @@ test('matchesExclude : empty / equals / in, OR entre règles', () => {
   assert.equal(matchesExclude(file, [{ field: 'x', empty: true }, { field: 'name', equals: 'facture.pdf' }]), true);
 });
 
-test('manifest nextcloud : le watch fichiers exclut les dossiers', () => {
+test('manifest nextcloud : parcours récursif, watch fichiers ET dossiers séparés', () => {
   const m = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../plugins/repos/nextcloud/manifest.json'), 'utf8'));
   const ncFiles = m.providers.find(p => p.key === 'nextcloudFiles');
-  const watch = ncFiles.radar.find(b => b.family === 'storage').watch.find(w => w.entity === 'file');
-  assert.deepEqual(watch.excludeWhen, [{ field: 'contentType', empty: true }]);
-  assert.equal(watch.itemsField, 'files');
+  const storage = ncFiles.radar.find(b => b.family === 'storage');
+  // capacité branchée sur le parcours récursif borné
+  assert.equal(storage.capabilities.listTree.template, 'nc_file_tree');
+  // deux watch : fichiers (exclut dossiers) et dossiers (exclut fichiers)
+  const fileW = storage.watch.find(w => w.entity === 'file');
+  const folderW = storage.watch.find(w => w.entity === 'folder');
+  assert.deepEqual(fileW.excludeWhen, [{ field: 'isFolder', equals: true }]);
+  assert.deepEqual(folderW.excludeWhen, [{ field: 'isFolder', equals: false }]);
+  assert.equal(fileW.itemsField, 'files');
+  // le nodeTemplate nc_file_tree doit exister (sinon le bloc radar est rejeté à l'import)
+  assert.ok(m.nodeTemplates.some(t => t.key === 'nc_file_tree'), 'nodeTemplate nc_file_tree déclaré');
 });
 
 test('manifest email : smtp_imap a un watch sur les messages (hashFields stables)', () => {

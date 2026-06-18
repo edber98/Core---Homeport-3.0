@@ -1,6 +1,6 @@
 const express = require('express');
 const { Types } = require('mongoose');
-const { authMiddleware, requireCompanyScope } = require('../../auth/jwt');
+const { authMiddleware, requireCompanyScope, requireAdmin } = require('../../auth/jwt');
 const Workspace = require('../../db/models/workspace.model');
 const WorkspaceMembership = require('../../db/models/workspace-membership.model');
 const Provider = require('../../db/models/provider.model');
@@ -93,6 +93,66 @@ module.exports = function () {
   // Toujours disponible : le frontend lit ce flag pour afficher/masquer le Radar
   r.get('/radar/config', (req, res) => res.apiOk({ enabled: radarEnabled() }));
 
+  // ── RESET RADAR (admin) : purge des données du workspace, comme reparti à zéro ──
+  // Modèles radar groupés par catégorie de purge (clé = nom affiché côté UI).
+  const RADAR_RESET_GROUPS = {
+    observations: ['radar-snapshot.model', 'radar-delta.model'],
+    signaux: ['radar-signal.model'],
+    missions: ['radar-mission.model', 'radar-wakeup.model'],
+    board: ['radar-card.model'],
+    chat: ['radar-chat-message.model'],
+    memoire: ['radar-knowledge.model'],        // savoir entreprise
+    procedures: ['radar-playbook.model'],       // playbooks
+    graphe: ['radar-entity.model', 'radar-relation.model'], // graphe (entités + relations, par workspace)
+    apprentissage: ['radar-feedback.model'],    // dataset de feedback (Étage 2)
+    connecteurs: ['radar-connector.model'],     // les connexions elles-mêmes
+  };
+
+  // Compteurs (pour afficher « X snapshots, Y signaux… » avant de purger)
+  r.get('/workspaces/:wsId/radar/reset/counts', requireAdmin(), async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const counts = {};
+    for (const [group, models] of Object.entries(RADAR_RESET_GROUPS)) {
+      let n = 0;
+      for (const mf of models) {
+        try { n += await require(`../../db/models/${mf}`).countDocuments({ workspaceId: ws._id }); } catch {}
+      }
+      counts[group] = n;
+    }
+    return res.apiOk({ counts });
+  });
+
+  // Purge effective. Body : { groups: ["observations","signaux",...] } ou { all: true }.
+  // Confirmation : { confirm: "<nom exact du workspace>" } obligatoire.
+  r.post('/workspaces/:wsId/radar/reset', requireAdmin(), async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { groups, all, confirm } = req.body || {};
+    if (String(confirm || '') !== String(ws.name)) {
+      return res.apiError(400, 'confirm_mismatch', `Confirmation requise : retape le nom exact du workspace (« ${ws.name} »)`);
+    }
+    const selected = all ? Object.keys(RADAR_RESET_GROUPS)
+      : (Array.isArray(groups) ? groups.filter(g => RADAR_RESET_GROUPS[g]) : []);
+    if (!selected.length) return res.apiError(400, 'nothing_selected', 'Aucune donnée sélectionnée à purger');
+
+    // Si on purge les connecteurs, cascader leur mémoire dérivée (snapshots, deltas,
+    // entités, relations) — la mémoire est liée au connecteur qui l'a produite.
+    if (selected.includes('connecteurs')) {
+      const { purgeConnectorData } = require('../../radar/cleanup');
+      const connectors = await RadarConnector.find({ workspaceId: ws._id });
+      for (const c of connectors) { try { await purgeConnectorData(c); } catch {} }
+    }
+    const deleted = {};
+    for (const group of selected) {
+      let n = 0;
+      for (const mf of RADAR_RESET_GROUPS[group]) {
+        try { const r2 = await require(`../../db/models/${mf}`).deleteMany({ workspaceId: ws._id }); n += r2.deletedCount || 0; } catch {}
+      }
+      deleted[group] = n;
+    }
+    console.log(`[radar-reset] ws=${ws._id} par ${req.user.email || req.user.id} → ${JSON.stringify(deleted)}`);
+    return res.apiOk({ ok: true, deleted });
+  });
+
   // Désactivation globale : toutes les autres routes radar répondent 404
   r.use((req, res, next) => {
     if (!radarEnabled()) return res.apiError(404, 'radar_disabled', 'La fonctionnalité Radar est désactivée');
@@ -128,6 +188,217 @@ module.exports = function () {
       }
     }
     return res.apiOk(Object.values(byFamily));
+  });
+
+  // Registre d'ontologie : les coreTypes + sous-types + champs canoniques.
+  // Lu depuis la base (seedé au démarrage) ; fallback sur le seed pur si vide.
+  r.get('/radar/ontology', async (req, res) => {
+    const RadarOntologyType = require('../../db/models/radar-ontology-type.model');
+    let types = await RadarOntologyType.find({ workspaceId: null, status: 'active' })
+      .select('key coreType subtype label canonicalFields category source').sort({ coreType: 1, subtype: 1 }).lean();
+    if (!types.length) {
+      const { buildOntologyRows } = require('../../radar/graph/ontology-seed');
+      types = buildOntologyRows();
+    }
+    const { CORE_TYPES, RELATION_TYPES, RELATION_LABELS, ROLES, ROLE_LABELS } = require('../../radar/graph/ontology');
+    const byCore = {};
+    for (const t of types) {
+      (byCore[t.coreType] ||= { coreType: t.coreType, label: CORE_TYPES[t.coreType]?.label, subtypes: [] })
+        .subtypes.push({ subtype: t.subtype, key: t.key, label: t.label, category: t.category, canonicalFields: t.canonicalFields });
+    }
+    // Cartes de libellés FR pour l'UI (coreType, sous-type, relation, rôle)
+    const coreLabels = {}; const subtypeLabels = {};
+    for (const c of Object.values(byCore)) {
+      coreLabels[c.coreType] = c.label || c.coreType;
+      for (const s of c.subtypes) if (s.subtype) subtypeLabels[`${c.coreType}.${s.subtype}`] = s.label || s.subtype;
+    }
+    return res.apiOk({
+      coreTypes: Object.values(byCore),
+      relationTypes: RELATION_TYPES, roles: ROLES,
+      coreLabels, subtypeLabels, relationLabels: RELATION_LABELS, roleLabels: ROLE_LABELS,
+    });
+  });
+
+  // ── GRAPHE (Knowledge Graph — entités + relations) ──
+  // Résumé : compteurs par type d'entité et de relation.
+  r.get('/workspaces/:wsId/radar/graph/summary', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const graph = require('../../radar/graph/query');
+    return res.apiOk(await graph.graphSummary(ws._id));
+  });
+
+  // Vue graphe : entités filtrées + relations entre elles (pour l'affichage vflow).
+  r.get('/workspaces/:wsId/radar/graph', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { coreType, subtype, role, q, limit } = req.query || {};
+    const graph = require('../../radar/graph/query');
+    return res.apiOk(await graph.graphData(ws._id, { coreType, subtype, role, q, limit: Number(limit) || 300 }));
+  });
+
+  // Liste d'entités (table), filtrable.
+  r.get('/workspaces/:wsId/radar/graph/entities', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { coreType, subtype, role, q, limit } = req.query || {};
+    const graph = require('../../radar/graph/query');
+    return res.apiOk(await graph.listEntities(ws._id, { coreType, subtype, role, q, limit: Number(limit) || 100 }));
+  });
+
+  // Voisinage d'une entité (sous-graphe). :key = canonicalKey (URL-encodé).
+  r.get('/workspaces/:wsId/radar/graph/entities/:key/neighborhood', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const graph = require('../../radar/graph/query');
+    const depth = Math.min(Math.max(Number(req.query?.depth) || 1, 1), 3);
+    const n = await graph.neighborhood(ws._id, req.params.key, { depth });
+    if (!n) return res.apiError(404, 'entity_not_found', 'Entité introuvable');
+    return res.apiOk(n);
+  });
+
+  // Lignée d'une entité : snapshots bruts + mappings appliqués (traçabilité).
+  r.get('/workspaces/:wsId/radar/graph/entities/:key/lineage', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const graph = require('../../radar/graph/query');
+    const l = await graph.lineage(ws._id, req.params.key);
+    if (!l) return res.apiError(404, 'entity_not_found', 'Entité introuvable');
+    return res.apiOk(l);
+  });
+
+  // Process mining (style Celonis) : processus découverts depuis les cycles de vie.
+  r.get('/workspaces/:wsId/radar/process', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { coreType, subtype } = req.query || {};
+    const { mineProcesses } = require('../../radar/process/miner');
+    return res.apiOk({ processes: await mineProcesses(ws._id, { coreType, subtype }) });
+  });
+
+  // ── Contexte entreprise : décrit le métier pour que le cerveau l'interprète ──
+  r.get('/workspaces/:wsId/radar/context', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const ctx = await require('../../radar/context').getContext(ws._id);
+    return res.apiOk({ context: ctx || null, needsSetup: !ctx || !ctx.description });
+  });
+  r.put('/workspaces/:wsId/radar/context', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { description } = req.body || {};
+    if (!description || !String(description).trim()) return res.apiError(400, 'missing_description', 'Description requise');
+    try {
+      const ctx = await require('../../radar/context').saveContext(ws._id, String(description));
+      return res.apiOk({ context: ctx });
+    } catch (e) { return res.apiError(500, 'context_error', e?.message || String(e)); }
+  });
+
+  // Process mining CROSS-LOGICIEL (object-centric, par client) : flux inter-logiciels
+  // + actions parallèles (devis validé → dossier Nextcloud + projet OpenProject).
+  r.get('/workspaces/:wsId/radar/process/cross', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { mineCrossProcess } = require('../../radar/process/cross-miner');
+    return res.apiOk(await mineCrossProcess(ws._id, {}));
+  });
+
+  // Analyse (cerveau) : goulots, retards, anomalies de corrélation, financier.
+  r.get('/workspaces/:wsId/radar/analytics', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { analyzeWorkspace } = require('../../radar/analytics');
+    return res.apiOk(await analyzeWorkspace(ws._id));
+  });
+
+  // Recommandations d'action (cerveau) : « quoi faire » + forecasting financier.
+  r.get('/workspaces/:wsId/radar/recommendations', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { recommend } = require('../../radar/recommendations');
+    return res.apiOk(await recommend(ws._id));
+  });
+
+  // Capteurs / production : séries, tendances, anomalies (R5).
+  r.get('/workspaces/:wsId/radar/sensors', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { analyzeSensors } = require('../../radar/sensors');
+    return res.apiOk({ series: await analyzeSensors(ws._id) });
+  });
+
+  // Doublons / double-saisie (R4.2).
+  r.get('/workspaces/:wsId/radar/duplicates', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { findDuplicates } = require('../../radar/duplicates');
+    return res.apiOk({ duplicates: await findDuplicates(ws._id) });
+  });
+
+  // Dérive de schéma (R3.1) : mappings dont la source a changé.
+  r.get('/workspaces/:wsId/radar/drift', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { detectDrift } = require('../../radar/graph/drift');
+    return res.apiOk({ drift: await detectDrift(ws._id) });
+  });
+
+  // Échéances & SLA (R4.3).
+  r.get('/workspaces/:wsId/radar/deadlines', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { findDeadlines } = require('../../radar/deadlines');
+    return res.apiOk({ deadlines: await findDeadlines(ws._id) });
+  });
+
+  // ── ACTIONS (S4) : le Radar agit sur le graphe (fusion/rattachement) ──
+  r.post('/workspaces/:wsId/radar/actions/merge', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { keepKey, dropKey } = req.body || {};
+    if (!keepKey || !dropKey) return res.apiError(400, 'missing_keys', 'keepKey et dropKey requis');
+    const out = await require('../../radar/actions').mergeEntities(ws._id, String(keepKey), String(dropKey));
+    return out.ok ? res.apiOk(out) : res.apiError(400, out.error, out.error);
+  });
+  r.post('/workspaces/:wsId/radar/actions/correlate', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { fromKey, toKey, role } = req.body || {};
+    if (!fromKey || !toKey) return res.apiError(400, 'missing_keys', 'fromKey et toKey requis');
+    return res.apiOk(await require('../../radar/actions').applyCorrelation(ws._id, String(fromKey), String(toKey), role || 'client'));
+  });
+
+  // Snapshots bruts (données observées) — filtrables par entityType. Traçabilité.
+  r.get('/workspaces/:wsId/radar/snapshots', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const RadarSnapshot = require('../../db/models/radar-snapshot.model');
+    const { entityType, connectorId, limit } = req.query || {};
+    const q = { workspaceId: ws._id, deletedAt: null };
+    if (entityType) q.entityType = entityType;
+    if (connectorId && Types.ObjectId.isValid(String(connectorId))) q.connectorId = connectorId;
+    const [items, byType] = await Promise.all([
+      RadarSnapshot.find(q).sort({ lastChangedAt: -1, lastSeenAt: -1 })
+        .limit(Math.min(Number(limit) || 100, 500))
+        .select('connectorId family entityType entityKey contentHash data firstSeenAt lastSeenAt lastChangedAt').lean(),
+      RadarSnapshot.aggregate([
+        { $match: { workspaceId: ws._id, deletedAt: null } },
+        { $group: { _id: '$entityType', n: { $sum: 1 } } },
+        { $sort: { n: -1 } },
+      ]),
+    ]);
+    return res.apiOk({ items, byType: byType.map(b => ({ entityType: b._id, count: b.n })) });
+  });
+
+  // Mappings actifs (schémas raw→ontologie) — global + workspace.
+  r.get('/workspaces/:wsId/radar/mappings', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const RadarMapping = require('../../db/models/radar-mapping.model');
+    const list = await RadarMapping.find({ status: { $ne: 'deprecated' }, $or: [{ workspaceId: ws._id }, { workspaceId: null }] })
+      .sort({ providerKey: 1, rawEntityType: 1 }).lean();
+    return res.apiOk(list);
+  });
+
+  // Apprentissage du mapping (LLM) pour un connecteur : échantillonne une capacité,
+  // infère le mapping + dérive la watch. Rend n'importe quel logiciel connectable
+  // sans code (SAP, ERP industriels…). Body : { capability, entity, activate? }.
+  r.post('/workspaces/:wsId/radar/connectors/:id/learn', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const connector = await findConnector(ws, req.params.id);
+    if (!connector) return res.apiError(404, 'connector_not_found', 'Connecteur introuvable');
+    const { capability, entity, activate } = req.body || {};
+    if (!capability || !entity) return res.apiError(400, 'missing_params', 'capability et entity requis');
+    const { learnConnectorEntity, saveLearnedMapping } = require('../../radar/graph/learn-watch');
+    try {
+      const out = await learnConnectorEntity({ connector, capability, entity });
+      if (!out.ok) return res.apiError(422, 'learn_failed', out.error);
+      const saved = await saveLearnedMapping(out.mapping, { workspaceId: ws._id, activate: !!activate && out.valid });
+      return res.apiOk({ mapping: saved, watch: out.watch, valid: out.valid, errors: out.errors, sampleCount: out.sampleCount });
+    } catch (e) {
+      return res.apiError(500, 'learn_error', e?.message || String(e));
+    }
   });
 
   r.get('/workspaces/:wsId/radar/connectors', async (req, res) => {
@@ -210,8 +481,11 @@ module.exports = function () {
     const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
     const c = await findConnector(ws, req.params.id);
     if (!c) return res.apiError(404, 'connector_not_found', 'Connecteur introuvable');
+    // Cascade : on purge la mémoire dérivée de ce connecteur (snapshots, deltas,
+    // entités/relations orphelines). Une entité vue par d'autres connecteurs survit.
+    const purged = await require('../../radar/cleanup').purgeConnectorData(c);
     await RadarConnector.deleteOne({ _id: c._id });
-    return res.apiOk({ deleted: true });
+    return res.apiOk({ deleted: true, purged });
   });
 
   // ── Flux temps réel du radar (SSE, même pattern que /me/credits/stream) ──
@@ -334,7 +608,22 @@ module.exports = function () {
       userId: req.user.id,
     });
     if (!out.ok) return res.apiError(out.error === 'card_not_found' ? 404 : 400, out.error, out.error);
+    // Étage 2 — chaque réponse devient un exemple d'apprentissage (best-effort, gardé par flag)
+    require('../../radar/feedback').emitFeedback({
+      workspaceId: ws._id, userId: req.user.id, action,
+      targetKind: 'card', targetId: req.params.cardId,
+      taskType: out.card?.type === 'question' ? 'answer' : 'alert_relevance',
+      features: { cardType: out.card?.type, section: out.card?.section, priority: out.card?.priority },
+      label: action, rawAfter: modifiedPayload,
+    }).catch(() => {});
     return res.apiOk(out.card);
+  });
+
+  // Statistiques d'apprentissage (dataset de feedback) — pour l'UI supervision.
+  r.get('/workspaces/:wsId/radar/learning/stats', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { feedbackStats, learningEnabled } = require('../../radar/feedback');
+    return res.apiOk({ enabled: learningEnabled(), feedback: await feedbackStats(ws._id) });
   });
 
   // Test de connexion (wizard) : exécute la capacité de test de la famille,
@@ -462,6 +751,13 @@ module.exports = function () {
     delta.status = 'consumed';
     delta.consumedAt = new Date();
     await delta.save();
+    // Étage 2 — la requalification est un signal d'apprentissage fort (le filtre s'est trompé)
+    require('../../radar/feedback').emitFeedback({
+      workspaceId: ws._id, userId: req.user.id, action: 'requalify',
+      targetKind: 'delta', targetId: delta.id, taskType: 'significance',
+      features: { entityType: delta.entityType, family: delta.family, category: delta.classification?.category },
+      label: 'significant',
+    }).catch(() => {});
     return res.apiOk({ ok: true, signalId: signal.id });
   });
 

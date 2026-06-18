@@ -98,11 +98,22 @@ async function collectConnector(connector, { now = new Date(), log = () => {} } 
   const isBaseline = summary.baseline;
   const deltasToInsert = [];
 
+  // Cache par run : plusieurs watch peuvent partager une même capacité (ex. Nextcloud
+  // fichiers + dossiers via le même parcours récursif `listTree`) → on ne crawle qu'une fois.
+  const capCache = new Map();
+  const execCached = async (capability, args) => {
+    const ck = `${capability}::${JSON.stringify(args || {})}`;
+    if (capCache.has(ck)) return capCache.get(ck);
+    const r = await execCapability({ connector, capability, args: args || {}, log });
+    capCache.set(ck, r);
+    return r;
+  };
+
   for (const spec of watchSpecs) {
     const w = { entityType: spec.entity, seen: 0, skippedNoKey: 0, created: 0, updated: 0, deleted: 0, error: null };
     summary.perWatch.push(w);
 
-    const exec = await execCapability({ connector, capability: spec.via, args: spec.args || {}, log });
+    const exec = await execCached(spec.via, spec.args || {});
     if (!exec.ok) {
       w.error = exec.error;
       summary.errors.push(`${spec.entity}: ${exec.error}`);
