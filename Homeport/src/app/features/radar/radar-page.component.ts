@@ -16,6 +16,8 @@ import { RadarGraphComponent } from './radar-graph.component';
 import { RadarDataComponent } from './radar-data.component';
 import { RadarProcessComponent } from './radar-process.component';
 import { RadarAnalyseComponent } from './radar-analyse.component';
+import { RadarDocumentsComponent } from './radar-documents.component';
+import { RadarDictionaryComponent } from './radar-dictionary.component';
 import { RadarChatService } from './radar-chat.service';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FormsModule } from '@angular/forms';
@@ -26,7 +28,7 @@ import { RadarBackendService, RadarCompanyContext } from '../../services/radar-b
 // Section Radar d'entreprise — shell au style standard de l'app.
 // L'onglet actif est porté par ?tab= : il survit au refresh et est partageable.
 
-const TABS = ['dashboard', 'activite', 'memoire', 'donnees', 'processus', 'analyse', 'agenda', 'connecteurs', 'savoir', 'procedures'];
+const TABS = ['dashboard', 'activite', 'memoire', 'dictionnaire', 'donnees', 'processus', 'analyse', 'documents', 'agenda', 'connecteurs', 'savoir', 'procedures'];
 
 @Component({
   selector: 'radar-page',
@@ -35,7 +37,7 @@ const TABS = ['dashboard', 'activite', 'memoire', 'donnees', 'processus', 'analy
     CommonModule, NzTabsModule, NzIconModule,
     RadarBoardComponent, RadarActivityComponent, RadarConnectorsComponent,
     RadarKnowledgeComponent, RadarPlaybooksComponent, RadarChatDrawerComponent, RadarAgendaComponent,
-    RadarGraphComponent, RadarDataComponent, RadarProcessComponent, RadarAnalyseComponent,
+    RadarGraphComponent, RadarDataComponent, RadarProcessComponent, RadarAnalyseComponent, RadarDocumentsComponent, RadarDictionaryComponent,
     NzButtonModule, FormsModule, NzInputModule, NzTagModule,
   ],
   template: `
@@ -76,6 +78,9 @@ const TABS = ['dashboard', 'activite', 'memoire', 'donnees', 'processus', 'analy
         <nz-tab nzTitle="Mémoire">
           <ng-template nz-tab><radar-graph></radar-graph></ng-template>
         </nz-tab>
+        <nz-tab nzTitle="Dictionnaire">
+          <ng-template nz-tab><radar-dictionary></radar-dictionary></ng-template>
+        </nz-tab>
         <nz-tab nzTitle="Données">
           <ng-template nz-tab><radar-data></radar-data></ng-template>
         </nz-tab>
@@ -84,6 +89,9 @@ const TABS = ['dashboard', 'activite', 'memoire', 'donnees', 'processus', 'analy
         </nz-tab>
         <nz-tab nzTitle="Analyse">
           <ng-template nz-tab><radar-analyse></radar-analyse></ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="Documents">
+          <ng-template nz-tab><radar-documents></radar-documents></ng-template>
         </nz-tab>
         <nz-tab nzTitle="Agenda">
           <ng-template nz-tab><radar-agenda></radar-agenda></ng-template>

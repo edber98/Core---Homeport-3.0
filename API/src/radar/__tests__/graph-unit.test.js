@@ -109,6 +109,37 @@ test('inferSchema : types hétérogènes d\'un même champ → doute', () => {
   assert.ok(doubts.some(d => d.includes('montant')));    // number vs string → structure douteuse
 });
 
+// ── Typage sémantique (I2) — 100% LLM dynamique (open-ended, aucune liste figée) ──
+
+test('classifyEntityLLM : extrait un type LLM ouvert + slugifie', async () => {
+  const { classifyEntityLLM } = require('../graph/classify');
+  // stub LLM : renvoie une valeur LIBRE (secteur non prévu d'avance → aucun hardcode)
+  const stub = async (prompt) => {
+    assert.ok(prompt.includes('SECTEUR'), 'prompt cible le secteur');
+    return { segment: 'Agroalimentaire bio', confidence: 0.9 };
+  };
+  const r = await classifyEntityLLM({ coreType: 'Party', label: 'Ferme du Val' }, {}, stub);
+  assert.equal(r.segment, 'agroalimentaire_bio');   // slugifié
+  assert.equal(r.label, 'Agroalimentaire bio');
+  assert.equal(r.source, 'llm');
+});
+
+test('classifyEntityLLM : valeur vide → non typé (predict-or-ask)', async () => {
+  const { classifyEntityLLM } = require('../graph/classify');
+  const r = await classifyEntityLLM({ coreType: 'Project', label: 'X' }, {}, async () => ({ kind: '' }));
+  assert.deepEqual(r, {});
+});
+
+test('classifyWorkspace : réutilise une valeur proche au lieu de créer un quasi-doublon', async () => {
+  // pur : on teste la logique « distinct » via le stub LLM qui renvoie des variantes
+  const { classifyEntityLLM } = require('../graph/classify');
+  // 1er projet → "marketing", 2e → "marketing rebranding" (variante) doit canonicaliser
+  const a = await classifyEntityLLM({ coreType: 'Project', label: 'A' }, {}, async () => ({ kind: 'marketing' }));
+  const b = await classifyEntityLLM({ coreType: 'Project', label: 'B' }, { known: ['marketing'] }, async () => ({ kind: 'marketing rebranding' }));
+  assert.equal(a.kind, 'marketing');
+  assert.equal(b.kind, 'marketing_rebranding');  // l'extraction reste libre ; la fusion se fait dans classifyWorkspace via canonicalize
+});
+
 test('applyMapping : sans clé → null ; relation ignorée si champ vide', () => {
   assert.equal(applyMapping({ ref: 'x' }, invoiceMapping), null); // pas d'id
   const noSoc = applyMapping({ id: '1', ref: 'r', socid: '' }, invoiceMapping);

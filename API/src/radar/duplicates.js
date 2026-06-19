@@ -20,6 +20,15 @@ async function findDuplicates(workspaceId, { coreTypes = ['Party', 'Project', 'W
     .select('canonicalKey label coreType subtype attributes sources').lean();
   const sysOf = (e) => [...new Set((e.sources || []).map(s => s.providerKey))];
 
+  // Deux enregistrements du MÊME logiciel avec des ids différents (provider:type:id)
+  // sont DISTINCTS par définition — jamais des doublons, même libellé identique
+  // (ex. deux commandes « (PROV14) » de clients différents). On les exclut.
+  const idTriplet = (k) => { const p = String(k).split(':'); return p.length === 3 ? `${p[0]}:${p[1]}` : null; };
+  const sameSystemDistinct = (a, b) => {
+    const ta = idTriplet(a.canonicalKey), tb = idTriplet(b.canonicalKey);
+    return ta && tb && ta === tb && a.canonicalKey !== b.canonicalKey;   // même provider:type, id différent
+  };
+
   // 1) candidats par similarité de nom (≥ grayLow), dédupliqués
   const candidates = [], seen = new Set();
   for (let i = 0; i < ents.length; i++) {
@@ -27,6 +36,7 @@ async function findDuplicates(workspaceId, { coreTypes = ['Party', 'Project', 'W
       const a = ents[i], b = ents[j];
       if (a.coreType !== b.coreType) continue;
       if (!a.label || !b.label || a.label.length < minLabel || b.label.length < minLabel) continue;
+      if (sameSystemDistinct(a, b)) continue;                            // enregistrements distincts du même logiciel
       const sim = nameSimilarity(a.label, b.label);
       if (sim < grayLow) continue;
       const pairKey = [a.canonicalKey, b.canonicalKey].sort().join('|');

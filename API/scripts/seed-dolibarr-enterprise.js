@@ -63,8 +63,21 @@ function soft(label, cond, detail = '') { if (cond) { pass++; console.log(`  ✅
     { name: 'Boucherie Centrale', client: 1, email: 'compta@boucherie-centrale.fr', town: 'Lyon' },
     { name: 'France Num', client: 1, email: 'contact@francenum.gouv.fr', town: 'Paris' },
     { name: 'Mairie de Cergy', client: 1, email: 'si@ville-cergy.fr', town: 'Cergy' },
+    // clients supplémentaires (secteurs variés → typage sémantique + segments riches)
+    { name: 'Clinique du Parc', client: 1, email: 'achats@clinique-parc.fr', town: 'Lyon' },
+    { name: 'Garage Moderne SARL', client: 1, email: 'contact@garage-moderne.fr', town: 'Nantes' },
+    { name: 'Lycée Jean Moulin', client: 1, email: 'intendance@lycee-jeanmoulin.fr', town: 'Lille' },
+    { name: 'BioFerme Coopérative', client: 1, email: 'gestion@bioferme-coop.fr', town: 'Rennes' },
+    { name: 'TechNova Studio', client: 1, email: 'hello@technova-studio.com', town: 'Bordeaux' },
+    { name: 'Hôtel des Voyageurs', client: 1, email: 'direction@hotel-voyageurs.fr', town: 'Nice' },
+    { name: 'Cabinet Durand & Associés', client: 1, email: 'contact@durand-associes.fr', town: 'Strasbourg' },
+    { name: 'Logistique Atlantique', client: 1, email: 'ops@log-atlantique.fr', town: 'Le Havre' },
+    { name: 'Pharmacie Centrale', client: 1, email: 'commande@pharma-centrale.fr', town: 'Toulouse' },
+    // fournisseurs
     { name: 'ITBS', fournisseur: 1, email: 'christophe.royen@it-bs.fr', town: 'Bordeaux' },
     { name: 'Schneider Electric', fournisseur: 1, email: 'pro@schneider.fr', town: 'Grenoble' },
+    { name: 'Papeterie Industrielle SA', fournisseur: 1, email: 'ventes@papeterie-indus.fr', town: 'Angoulême' },
+    { name: 'Encres & Cie', fournisseur: 1, email: 'pro@encres-cie.fr', town: 'Tours' },
   ];
   // Résolution fiable des ids : on liste les tiers existants (ids numériques propres)
   // et on matche par email, sinon on crée. (L'endpoint email-by-email renvoie une
@@ -98,7 +111,12 @@ function soft(label, cond, detail = '') { if (cond) { pass++; console.log(`  ✅
   const products = [];
   for (const c of catalogSpecs) {
     let id = prodByRef.get(c.ref);                         // réutilise si déjà créé
-    if (!id) id = idOf(await call('dolibarr_product_create', { ref: c.ref, label: c.label, type: c.type, price: c.price, tva_tx: c.tva_tx, status: 1, status_buy: 1 }));
+    // prix de revient (cost_price) → permet le calcul de MARGE. Services ~45% de coût
+    // (forte marge), matériel ~70% (faible marge) → marges réalistes et variées.
+    const cost = Math.round(c.price * (c.type === 1 ? 0.45 : 0.70) * 100) / 100;
+    if (!id) id = idOf(await call('dolibarr_product_create', { ref: c.ref, label: c.label, type: c.type, price: c.price, cost_price: cost, tva_tx: c.tva_tx, status: 1, status_buy: 1 }));
+    // si le produit existait déjà sans coût, on le met à jour (idempotent)
+    if (id) await raw(`/products/${id}`, { cost_price: cost }, 'PUT').catch(() => {});
     if (ok(`${c.type === 1 ? 'Service' : 'Produit'} « ${c.label} »`, !!id, id ? `id=${id}` : '')) products.push({ id, ...c });
   }
   const services = products.filter(p => p.type === 1);
@@ -114,11 +132,21 @@ function soft(label, cond, detail = '') { if (cond) { pass++; console.log(`  ✅
     soft(`Stock ${g.stockTarget}× « ${g.label} »`, r.ok, r.ok ? '' : r.error);
   }
 
-  // Compte bancaire (requis pour les paiements) — créé en RAW avec les champs requis
-  // (le handler wrappé n'envoie pas `ref`). type:'BA' = compte bancaire, devise EUR.
-  let accountId = idOf(arrOf(await call('dolibarr_bankaccounts_list', { limit: 1 }))[0]);
-  if (!accountId) accountId = idOf(await raw('/bankaccounts', { ref: `BANK-${stamp}`, label: `Compte courant ${stamp}`, type: 'BA', currency_code: 'EUR', country_id: 1, clos: 0 }));
-  soft('Compte bancaire disponible', accountId != null, `id=${accountId}`);
+  // Compte bancaire (requis pour les paiements). IMPORTANT : il faut un compte de type
+  // BANQUE (courant=1). Un compte CAISSE (courant=2) refuse les virements/chèques
+  // ("ErrorCashAccountAcceptsOnlyCashMoney"). On réutilise un compte banque existant,
+  // sinon on en crée un explicitement avec courant=1.
+  // On liste via l'endpoint BRUT (le handler wrappé parse mal cette ressource) et on
+  // prend un compte de type BANQUE (courant=1, non clos). La création API échoue en 500
+  // sur cette instance → si aucun compte banque, on prévient (à créer 1× dans l'UI).
+  const racc = await raw('/bankaccounts', null, 'GET');
+  const accounts = Array.isArray(racc) ? racc : (Array.isArray(racc?.data) ? racc.data : arrOf(racc));
+  let accountId = idOf(accounts.find(a => String(a.courant) === '1' && String(a.clos) !== '1'));
+  if (!accountId) {
+    const cr8 = await raw('/bankaccounts', { ref: `BANK-${stamp}`, label: `Compte courant ${stamp}`, courant: 1, type: 1, currency_code: 'EUR', country_id: 1, clos: 0 });
+    accountId = idOf(cr8);
+  }
+  soft('Compte bancaire (banque, courant=1) disponible', accountId != null, accountId != null ? `id=${accountId}` : '⚠️ crée 1 compte « Compte courant » dans Dolibarr (Banque)');
 
   // ───────────────────────── Étape 4 : Affaires complètes (devis→cmd→facture→paiement) ─────────────────────────
   console.log('\n=== 4. Affaires : devis → commande → facture (avec lignes articles) → paiement ===');
@@ -132,37 +160,63 @@ function soft(label, cond, detail = '') { if (cond) { pass++; console.log(`  ✅
     { quote: 'signed',  order: 'validated', invoice: 'overdue' },  // livré mais impayé en retard
     { quote: 'validated', order: 'delivered', invoice: 'paid' },   // en cours de signature
     { quote: 'signed',  order: 'delivered', invoice: 'draft' },    // facture pas encore émise
+    { quote: 'signed',  order: 'delivered', invoice: 'paid' },     // 2e deal gagné (récurrence)
+    { quote: 'none',    order: 'validated', invoice: 'none' },     // ⚠️ COMMANDE SANS DEVIS — anomalie de flux à détecter
+    { quote: 'validated', order: 'validated', invoice: 'overdue' },// en cours, paiement tardif
   ];
-  for (let i = 0; i < clients.length; i++) {
-    const c = clients[i];
-    const plan = CASES[i % CASES.length];
-    const svc = services[i % services.length];
-    const good = goods[i % goods.length];
+  // Sujets de projet variés → typage sémantique (nature) + segments riches.
+  const SUBJECTS = ['Refonte site web', 'Migration infrastructure', 'Audit sécurité', 'Déploiement ERP',
+    'Campagne impression', 'Formation équipe', 'Maintenance annuelle', 'Étude de faisabilité',
+    'Intégration logicielle', 'Fourniture matériel', 'Conseil organisation', 'Développement application'];
+
+  // Plusieurs AFFAIRES par client, ÉTALÉES sur ~6 mois (process mining riche).
+  const DEALS_PER_CLIENT = Number(process.env.SEED_DEALS_PER_CLIENT || 4);
+  const deals = [];
+  for (let ci = 0; ci < clients.length; ci++)
+    for (let d = 0; d < DEALS_PER_CLIENT; d++)
+      deals.push({ c: clients[ci], gi: deals.length, di: d,
+        plan: CASES[(ci + d) % CASES.length],
+        age: d * 40 + (ci % 3) * 12,                                  // décalage : étale sur ~6 mois
+        subject: SUBJECTS[(ci * DEALS_PER_CLIENT + d) % SUBJECTS.length] });
+
+  console.log(`  → ${deals.length} affaires planifiées (${clients.length} clients × ${DEALS_PER_CLIENT})`);
+  for (let g = 0; g < deals.length; g++) {
+    const { c, plan, age, subject, di } = deals[g];
+    const svc = services[g % services.length];
+    const good = goods[g % goods.length];
     const lines = [
-      { desc: svc.label, qty: 2 + (i % 4), subprice: svc.price, tva_tx: 20, fk_product: svc.id },
-      { desc: good.label, qty: 1 + (i % 3), subprice: good.price, tva_tx: 20, fk_product: good.id },
+      { desc: svc.label, qty: 2 + (g % 4), subprice: svc.price, tva_tx: 20, fk_product: svc.id },
+      { desc: good.label, qty: 1 + (g % 3), subprice: good.price, tva_tx: 20, fk_product: good.id },
     ];
     const total = lines.reduce((s, l) => s + l.qty * l.subprice * 1.2, 0);
 
-    // Projet + tâches
-    const projId = idOf(await callRetry('dolibarr_project_create', { ref: `PJ-${stamp}-${i}`, title: `Projet ${c.name}`, socid: c.id }));
+    // Projet + tâches (titre = sujet varié pour la sémantique)
+    const projId = idOf(await callRetry('dolibarr_project_create', { ref: `PJ-${stamp}-${g}`, title: `${subject} — ${c.name}`, socid: c.id }));
+    // SANTÉ du projet : sain (avance bien, se clôture) vs EN DIFFICULTÉ (retard, blocage)
+    const troubled = plan.invoice === 'overdue' || plan.order === 'validated';
     if (projId) {
       made.projects++;
-      // tâches avec progression VARIÉE (à faire 0 / en cours 50 / terminée 100)
-      const prog = [100, 50, 0];
+      // sain : tâches bien avancées/terminées ; en difficulté : tâche BLOQUÉE + retard
+      const prog = troubled ? [70, 25, 0] : [100, 100, 90];
+      const tlabels = troubled
+        ? ['Cadrage', 'Réalisation (en retard)', '⚠️ BLOQUÉ — en attente client']
+        : ['Cadrage', 'Réalisation', 'Recette'];
       for (let ti = 0; ti < 3; ti++) {
-        const tl = ['Cadrage', 'Réalisation', 'Recette'][ti];
-        const tid = idOf(await call('dolibarr_task_create', { fk_project: projId, label: `${tl} — ${c.name}` }));
+        const tid = idOf(await call('dolibarr_task_create', { fk_project: projId, label: `${tlabels[ti]} — ${c.name}` }));
         if (tid) { made.tasks++; if (prog[ti]) await call('dolibarr_task_update', { id: tid, progress: prog[ti] }); }
       }
-      // clôture du projet « gagné complet » (cas 0) → cycle ouvert→fermé
-      if (plan.invoice === 'paid' && plan.order === 'delivered') await raw(`/projects/${projId}/close`, {});
+      // clôture du projet SAIN gagné complet → cycle ouvert→fermé ; les projets en
+      // difficulté restent OUVERTS (anomalie détectable).
+      if (!troubled && plan.invoice === 'paid' && plan.order === 'delivered') await raw(`/projects/${projId}/close`, {});
     }
 
-    // DEVIS → validé, puis signé / refusé selon le plan (rattaché au projet)
-    const propId = idOf(await callRetry('dolibarr_proposal_create', { socid: c.id, date: nowS() - 30 * DAY, fk_project: projId || '' }));
-    if (propId) { made.proposals++;
-      for (const l of lines) if ((await call('dolibarr_proposal_add_line', { id: propId, ...l })).ok) made.lines++;
+    // DEVIS → validé, puis signé / refusé selon le plan (rattaché au projet).
+    // quote='none' = scénario « commande sans devis » → on NE crée PAS de devis (anomalie).
+    // IMPORTANT : sur Dolibarr 23, POST /proposals/{id}/lines est CASSÉ (lignes vides) →
+    // on crée le devis AVEC les lignes EMBARQUÉES en une requête (raw POST /proposals).
+    const propLines = lines.map(l => ({ ...l, product_type: 0 }));
+    const propId = plan.quote === 'none' ? null : idOf(await raw('/proposals', { socid: c.id, date: nowS() - (age + 30) * DAY, fk_project: projId || '', lines: propLines }));
+    if (propId) { made.proposals++; made.lines += propLines.length;
       await call('dolibarr_proposal_validate', { id: propId });
       if (plan.quote === 'signed')  { if ((await raw(`/proposals/${propId}/close`, { status: 2 })).ok) made.qSigned++; }
       if (plan.quote === 'refused') { if ((await raw(`/proposals/${propId}/close`, { status: 3 })).ok) made.qRefused++; }
@@ -170,7 +224,7 @@ function soft(label, cond, detail = '') { if (cond) { pass++; console.log(`  ✅
 
     // COMMANDE → validée, puis livrée selon le plan
     if (plan.order !== 'none') {
-      const ordId = idOf(await callRetry('dolibarr_order_create', { socid: c.id, date: nowS() - 22 * DAY, fk_project: projId || '' }));
+      const ordId = idOf(await callRetry('dolibarr_order_create', { socid: c.id, date: nowS() - (age + 22) * DAY, fk_project: projId || '' }));
       if (ordId) { made.orders++;
         for (const l of lines) await call('dolibarr_order_add_line', { id: ordId, ...l });
         await call('dolibarr_order_validate', { id: ordId });
@@ -181,20 +235,94 @@ function soft(label, cond, detail = '') { if (cond) { pass++; console.log(`  ✅
     // FACTURE → brouillon | émise | payée | en retard impayée
     if (plan.invoice !== 'none') {
       const overdue = plan.invoice === 'overdue';
-      const invId = idOf(await callRetry('dolibarr_invoice_create', { socid: c.id, date: nowS() - 15 * DAY, date_lim_reglement: nowS() - (overdue ? 20 : 5) * DAY, fk_project: projId || '' }));
+      const invId = idOf(await callRetry('dolibarr_invoice_create', { socid: c.id, date: nowS() - (age + 15) * DAY, date_lim_reglement: nowS() - (age + (overdue ? 20 : 5)) * DAY, fk_project: projId || '' }));
       if (invId) { made.invoices++;
         for (const l of lines) if ((await call('dolibarr_invoice_add_line', { id: invId, ...l })).ok) made.lines++;
         if (plan.invoice !== 'draft') {                       // 'draft' = on laisse en brouillon
           const v = await call('dolibarr_invoice_validate', { id: invId });
           if (v.ok && plan.invoice === 'paid') {
-            const pay = await call('dolibarr_payment_create', { id: invId, datepaye: nowS() - 3 * DAY, amount: Math.round(total * 100) / 100, paymentid: 2, closepaidinvoices: 'yes', accountid: accountId });
-            if (pay.ok) made.paid++; else console.log(`  ⚠️  Paiement « ${c.name} » — ${pay.error}`);
+            const pay = await call('dolibarr_payment_create', { id: invId, datepaye: nowS() - (age + 3) * DAY, amount: Math.round(total * 100) / 100, paymentid: 2, closepaidinvoices: 'yes', accountid: accountId });
+            if (pay.ok) made.paid++; else if (g < 3) console.log(`  ⚠️  Paiement « ${c.name} » — ${pay.error}`);
           } else if (v.ok && overdue) made.overdue++;
         }
       }
     }
-    console.log(`  ✅ ${c.name} : devis=${plan.quote} cmd=${plan.order} facture=${plan.invoice}`);
+    // Ticket d'INCIDENT pour les affaires en difficulté (retard/blocage) → SAV/support
+    if (troubled) {
+      const sev = g % 4 === 0 ? 'HIGH' : 'NORMAL';
+      const ti = idOf(await call('dolibarr_ticket_create', { subject: `Incident — ${subject} (${c.name})`,
+        message: `Problème signalé sur l'affaire « ${subject} » du client ${c.name} : retard de livraison / blocage. Client mécontent, à traiter en priorité.`,
+        fk_soc: c.id, severity_code: sev }));
+      if (ti) { made.incidents = (made.incidents || 0) + 1; if (g % 3 === 0) await call('dolibarr_ticket_update', { id: ti, status: 1 }); }
+    }
+    if (g < 8 || g % 12 === 0) console.log(`  ✅ ${c.name} : ${subject} — devis=${plan.quote} cmd=${plan.order} facture=${plan.invoice}${troubled ? ' ⚠️ EN DIFFICULTÉ' : ''}`);
   }
+  console.log(`  → ${made.proposals} devis · ${made.orders} commandes · ${made.invoices} factures (${made.paid} payées) · ${made.projects} projets · ${made.incidents || 0} incidents`);
+
+  // ───────────────────────── Étape 4c : ACHATS — factures fournisseurs ─────────────────────────
+  console.log('\n=== 4c. Achats : factures fournisseurs (matières, sous-traitance) ===');
+  const suppliers = parties.filter(t => t.fournisseur);
+  const purchaseLabels = ['Matières premières — carton', 'Encres d\'impression', 'Sous-traitance découpe', 'Maintenance machines', 'Fournitures bureau', 'Licences logicielles'];
+  let supInv = 0, supPaid = 0;
+  for (let si = 0; si < suppliers.length; si++) {
+    const s = suppliers[si];
+    for (let k = 0; k < 3; k++) {                                  // 3 factures fournisseur par fournisseur
+      const age = k * 35 + si * 10;
+      const amount = 200 + ((si * 3 + k) % 6) * 350;
+      const r = await raw('/supplierinvoices', { socid: s.id, type: 0, date: nowS() - (age + 18) * DAY,
+        ref_supplier: `FF-${stamp}-${si}-${k}`, label: `${purchaseLabels[(si * 3 + k) % purchaseLabels.length]} — ${s.name}` });
+      const invId = idOf(r);
+      if (!invId) continue;
+      supInv++;
+      await raw(`/supplierinvoices/${invId}/lines`, { fk_product: (goods[k % goods.length] || {}).id || 0, qty: 1 + (k % 3), pu_ht: amount, tva_tx: 20, product_type: 0, desc: purchaseLabels[(si * 3 + k) % purchaseLabels.length] });
+      await raw(`/supplierinvoices/${invId}/validate`, {});
+      // ~la moitié payées, le reste en attente (dette fournisseur)
+      if ((si + k) % 2 === 0) { const p = await raw(`/supplierinvoices/${invId}/payments`, { datepaye: nowS() - (age + 2) * DAY, amount, accountid: accountId, paymentid: 2 }); if (p.status < 400 || p.ok) supPaid++; }
+    }
+  }
+  ok('Factures fournisseurs (achats)', supInv > 0, `${supInv} créées (${supPaid} payées)`);
+
+  // ───────────────────────── Étape 4d : Contacts CRM (interlocuteurs clients) ─────────────────────────
+  console.log('\n=== 4d. Contacts CRM (interlocuteurs chez les clients) ===');
+  const firstNames = ['Marie', 'Pierre', 'Sophie', 'Thomas', 'Julie', 'Nicolas', 'Camille', 'Laurent', 'Émilie', 'Antoine', 'Claire', 'David', 'Léa', 'Hugo'];
+  const postes = ['Directeur achats', 'Responsable technique', 'Comptable', 'Directeur général', 'Chef de projet', 'Responsable SI'];
+  let contacts = 0;
+  for (let ci = 0; ci < clients.length; ci++) {
+    const c = clients[ci];
+    for (let n = 0; n < 2; n++) {                                  // 2 interlocuteurs par client
+      const fn = firstNames[(ci * 2 + n) % firstNames.length];
+      const r = await call('dolibarr_contact_create', { lastname: c.name.split(' ')[0], firstname: fn,
+        email: `${fn.toLowerCase().normalize('NFD').replace(/[^a-z]/g, '')}@${(c.email || 'x@x').split('@')[1]}`,
+        socid: c.id, poste: postes[(ci * 2 + n) % postes.length] });
+      if (idOf(r)) contacts++;
+    }
+  }
+  ok('Contacts CRM (interlocuteurs)', contacts > 0, `${contacts} contacts`);
+
+  // ───────────────────────── Étape 4e : LEADS / prospects (pipeline commercial) ─────────────────────────
+  console.log('\n=== 4e. Leads commerciaux (prospects à convertir) ===');
+  const leadSpecs = [
+    { name: 'Prospect — Restaurant Le Gourmet', email: 'contact@le-gourmet.fr', town: 'Dijon' },
+    { name: 'Prospect — Startup GreenTech', email: 'hello@greentech.io', town: 'Montpellier' },
+    { name: 'Prospect — Mairie de Vannes', email: 'si@vannes.fr', town: 'Vannes' },
+    { name: 'Prospect — Imprimerie Rapide', email: 'devis@imprimerie-rapide.fr', town: 'Reims' },
+    { name: 'Prospect — Cabinet Médical Saint-Roch', email: 'secretariat@cabinet-saintroch.fr', town: 'Avignon' },
+  ];
+  let leads = 0, leadProps = 0;
+  for (let li = 0; li < leadSpecs.length; li++) {
+    const ls = leadSpecs[li];
+    let id = byEmail.get(ls.email.toLowerCase());
+    if (!id) id = idOf(await callRetry('dolibarr_thirdparty_create', { ...ls, client: 2 }));   // client=2 = PROSPECT
+    if (!id) continue;
+    leads++;
+    // opportunité ouverte : un devis en brouillon/validé (pas encore signé) = lead dans le pipeline
+    const svc = services[li % services.length];
+    const propId = idOf(await raw('/proposals', { socid: id, date: nowS() - (li * 7 + 5) * DAY, lines: [{ desc: svc.label, qty: 1 + li, subprice: svc.price, tva_tx: 20, fk_product: svc.id, product_type: 0 }] }));
+    if (propId) { leadProps++;
+      if (li % 2 === 0) await call('dolibarr_proposal_validate', { id: propId });   // moitié envoyés, moitié en cours de rédaction
+    }
+  }
+  ok('Leads / prospects (pipeline)', leads > 0, `${leads} prospects, ${leadProps} opportunités ouvertes`);
 
   // ───────────────────────── Étape 5 : Support (tickets clients, cycle de vie) ─────────────────────────
   console.log('\n=== 5. Tickets support (reçu → résolu/fermé) ===');

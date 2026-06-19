@@ -106,3 +106,89 @@ test('PM — mineProcesses : découvre le processus Facture depuis la base', asy
   assert.equal(be.count, 2);
   console.log(`[test] Facture : ${invoice.entityCount} entités, variantes=${invoice.variants.map(v => v.sequence + ' (' + v.count + ')').join(' | ')}`);
 });
+
+// ── C. Processus de vente global + segment (I3/I4) ──
+
+test('PM — mineSalesProcess : flux de vente bout-en-bout + segment', async (t) => {
+  if (!mongoUp) return t.skip('MongoDB injoignable');
+  const { mineSalesProcess } = require('../process/sales-process');
+  const RadarEntity = require('../../db/models/radar-entity.model');
+  const RadarRelation = require('../../db/models/radar-relation.model');
+  // un client (segment industrie) + ses 2 factures (déjà des deltas 14/15) reliées
+  await RadarEntity.create({ workspaceId: wsId, coreType: 'Party', subtype: 'organization', canonicalKey: 'email:c@indus.fr', label: 'Indus SA', roles: ['client'], attributes: { segment: 'industrie' }, firstSeenAt: new Date('2026-05-01'), lastSeenAt: new Date() });
+  for (const id of ['14', '15']) {
+    await RadarEntity.create({ workspaceId: wsId, coreType: 'Transaction', subtype: 'invoice', canonicalKey: `dolibarr:customer_invoice:${id}`, label: `FA-${id}`, firstSeenAt: new Date('2026-05-01'), lastSeenAt: new Date() });
+    await RadarRelation.create({ workspaceId: wsId, fromKey: `dolibarr:customer_invoice:${id}`, toKey: 'email:c@indus.fr', type: 'party_of', role: 'billed_to', confidence: 1, source: 'rule' });
+  }
+  const sp = await mineSalesProcess(wsId);
+  assert.ok(sp.deals >= 1, 'au moins une affaire');
+  // étapes issues des vrais états (brouillon/émise/payée) reconstruits depuis les deltas
+  assert.ok(sp.stages.some(s => /Facture/.test(s.stage)), 'étapes Facture présentes');
+  const seg = sp.bySegment.find(s => s.segment === 'industrie');
+  assert.ok(seg && seg.deals >= 1, 'segment industrie comptabilisé');
+  // filtre par segment
+  const filtered = await mineSalesProcess(wsId, { segment: 'industrie' });
+  assert.ok(filtered.deals >= 1, 'filtre segment fonctionne');
+  console.log(`[test] Vente : ${sp.deals} affaires, étapes=${sp.stages.map(s => s.stage).join(', ')}`);
+});
+
+// ── D. Exécution d'action R4 (fusion de doublon) ──
+
+test('R4 — executeAction : fusionne deux doublons et ré-aiguille les relations', async (t) => {
+  if (!mongoUp) return t.skip('MongoDB injoignable');
+  const { executeAction } = require('../actions');
+  const RadarEntity = require('../../db/models/radar-entity.model');
+  const RadarRelation = require('../../db/models/radar-relation.model');
+  await RadarEntity.create({ workspaceId: wsId, coreType: 'Party', subtype: 'organization', canonicalKey: 'p:keep', label: 'ACME', roles: ['client'], firstSeenAt: new Date(), lastSeenAt: new Date() });
+  await RadarEntity.create({ workspaceId: wsId, coreType: 'Party', subtype: 'organization', canonicalKey: 'p:drop', label: 'ACME SA', roles: ['supplier'], firstSeenAt: new Date(), lastSeenAt: new Date() });
+  await RadarRelation.create({ workspaceId: wsId, fromKey: 'x:doc', toKey: 'p:drop', type: 'party_of', role: 'client', confidence: 1, source: 'rule' });
+  const r = await executeAction(wsId, { type: 'fusionner', keepKey: 'p:keep', dropKey: 'p:drop' });
+  assert.equal(r.ok, true);
+  assert.equal(await RadarEntity.countDocuments({ workspaceId: wsId, canonicalKey: 'p:drop' }), 0, 'drop supprimée');
+  const kept = await RadarEntity.findOne({ workspaceId: wsId, canonicalKey: 'p:keep' }).lean();
+  assert.ok(kept.roles.includes('supplier'), 'rôles fusionnés');
+  assert.ok((kept.aliasKeys || []).includes('p:drop'), 'alias conservé');
+  const rel = await RadarRelation.findOne({ workspaceId: wsId, fromKey: 'x:doc' }).lean();
+  assert.equal(rel.toKey, 'p:keep', 'relation ré-aiguillée vers keep');
+});
+
+// ── E. Mapping utilisateurs / charge (qui fait quoi) ──
+
+test('people — workloadStats : charge par personne depuis les affectations', async (t) => {
+  if (!mongoUp) return t.skip('MongoDB injoignable');
+  const { workloadStats } = require('../people');
+  const RadarEntity = require('../../db/models/radar-entity.model');
+  const RadarRelation = require('../../db/models/radar-relation.model');
+  await RadarEntity.create({ workspaceId: wsId, coreType: 'Party', subtype: 'person', canonicalKey: 'email:claire@k.fr', label: 'Claire', roles: ['employee'], attributes: { org: 'KINN' }, firstSeenAt: new Date(), lastSeenAt: new Date() });
+  await RadarEntity.create({ workspaceId: wsId, coreType: 'WorkItem', subtype: 'task', canonicalKey: 'w:t1', label: 'T1', attributes: { status: 'en cours' }, firstSeenAt: new Date(), lastSeenAt: new Date() });
+  await RadarEntity.create({ workspaceId: wsId, coreType: 'WorkItem', subtype: 'task', canonicalKey: 'w:t2', label: 'T2', attributes: { status: 'terminée' }, firstSeenAt: new Date(), lastSeenAt: new Date() });
+  await RadarRelation.create({ workspaceId: wsId, fromKey: 'w:t1', toKey: 'email:claire@k.fr', type: 'assigned_to', role: 'assignee', confidence: 1, source: 'rule' });
+  await RadarRelation.create({ workspaceId: wsId, fromKey: 'w:t2', toKey: 'email:claire@k.fr', type: 'assigned_to', role: 'assignee', confidence: 1, source: 'rule' });
+  const w = await workloadStats(wsId);
+  const claire = w.byPerson.find(p => p.person === 'Claire');
+  assert.ok(claire, 'Claire présente');
+  assert.equal(claire.total, 2);
+  assert.equal(claire.open, 1);    // T1 en cours
+  assert.equal(claire.done, 1);    // T2 terminée
+  console.log(`[test] charge Claire : ${claire.total} items (${claire.open} en cours)`);
+});
+
+// ── F. Moteur d'analyse hyper-dynamique (auto-gating) ──
+
+test('analysis-registry : n\'active que les analyses dont la donnée existe', async (t) => {
+  if (!mongoUp) return t.skip('MongoDB injoignable');
+  const { profileWorkspace, ANALYZERS } = require('../analysis-registry');
+  const RadarEntity = require('../../db/models/radar-entity.model');
+  const ws2 = new mongoose.Types.ObjectId();
+  // entreprise SANS stock ni production : juste des factures
+  await RadarEntity.create({ workspaceId: ws2, coreType: 'Transaction', subtype: 'invoice', canonicalKey: 'd:inv:z', label: 'F', attributes: { amount_total: '100' }, firstSeenAt: new Date(), lastSeenAt: new Date() });
+  const prof = await profileWorkspace(ws2);
+  const stock = ANALYZERS.find(a => a.key === 'stock');
+  const prod = ANALYZERS.find(a => a.key === 'production');
+  const fin = ANALYZERS.find(a => a.key === 'financial');
+  assert.equal(stock.applies(prof), false, 'pas de stock → analyse stock NON activée');
+  assert.equal(prod.applies(prof), false, 'pas de production → NON activée');
+  assert.equal(fin.applies(prof), true, 'des factures → financier activé');
+  await RadarEntity.deleteMany({ workspaceId: ws2 });
+  console.log('[test] auto-gating : stock/prod ignorés sans données, financier activé');
+});

@@ -165,6 +165,49 @@ export class RadarBackendService {
   getCrossProcess(wsId: string): Observable<RadarCrossProcess> {
     return this.api.get<RadarCrossProcess>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/process/cross`);
   }
+  getDiscoveredProcesses(wsId: string): Observable<{ processes: (RadarCrossProcess & { key: string; name: string })[] }> {
+    return this.api.get<{ processes: (RadarCrossProcess & { key: string; name: string })[] }>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/process/discover`);
+  }
+  getSalesProcess(wsId: string, segment?: string): Observable<RadarSalesProcess> {
+    return this.api.get<RadarSalesProcess>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/process/sales`, segment ? { segment } as any : undefined);
+  }
+  askRadar(wsId: string, question: string): Observable<{ answer: string; sources: string[]; documents?: RadarDocHit[] }> {
+    return this.api.post<{ answer: string; sources: string[]; documents?: RadarDocHit[] }>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/ask`, { question });
+  }
+
+  // ── Dictionnaire mémoire + viewer d'élément (I9) ──
+  dictionary(wsId: string, opts: { page?: number; size?: number; q?: string; coreType?: string } = {}): Observable<{ items: DictItem[]; total: number; page: number; size: number; byType: { coreType: string; n: number }[] }> {
+    return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/dictionary`, opts);
+  }
+  entityDetail(wsId: string, key: string): Observable<{ entity: EntityDetail | null }> {
+    return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/entity/${encodeURIComponent(key)}`);
+  }
+
+  // ── Intelligence documentaire (I7) : recherche RAG, index, analyse, exploration, génération ──
+  docsStatus(wsId: string): Observable<{ files: number; indexed: number; analyzed: number; linkedToDeals: number; lastIndexedAt: string | null; recent: { label: string; path: string; updatedAt: string }[] }> {
+    return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/docs/status`);
+  }
+  docsList(wsId: string, opts: { page?: number; size?: number; search?: string; status?: string } = {}): Observable<{ items: RadarDocItem[]; total: number; page: number; size: number }> {
+    return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/docs/list`, opts);
+  }
+  searchDocs(wsId: string, query: string, topK = 6): Observable<{ results: RadarDocHit[] }> {
+    return this.api.post<{ results: RadarDocHit[] }>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/docs/search`, { query, topK });
+  }
+  indexDocs(wsId: string, cfg: DocIndexConfig): Observable<{ indexed: number; skipped: number; graphed?: number; totalFiles: number }> {
+    return this.api.post<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/docs/index`, cfg);
+  }
+  analyzeDocs(wsId: string, cfg: DocAnalyzeConfig): Observable<{ scanned: number; queued: number; read: number; linked: number; review: number; results: any[] }> {
+    return this.api.post<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/docs/analyze`, cfg);
+  }
+  exploreDocs(wsId: string, cfg: { roots?: string[]; maxFolders?: number; maxDepth?: number }): Observable<{ files: any[]; foldersVisited: number; explored: string[]; skipped: string[] }> {
+    return this.api.post<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/docs/explore`, cfg);
+  }
+  generateDoc(wsId: string, body: { spec: any; format: string; upload?: boolean; destFolder?: string }): Observable<{ filename: string; mime?: string; format: string; contentBase64?: string; path?: string }> {
+    return this.api.post<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/docs/generate`, body);
+  }
+  executeAction(wsId: string, action: any): Observable<{ ok: boolean; error?: string; note?: string }> {
+    return this.api.post<{ ok: boolean; error?: string; note?: string }>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/action`, action);
+  }
   getAnalytics(wsId: string): Observable<RadarAnalytics> {
     return this.api.get<RadarAnalytics>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/analytics`);
   }
@@ -263,6 +306,13 @@ export interface RadarSnapshotPage {
   items: RadarSnapshot[];
   byType: { entityType: string; count: number }[];
 }
+export interface DictItem { key: string; label: string; coreType: string; subtype?: string; roles?: string[]; sentiment?: string; status?: string; source?: string; }
+export interface EntityRelation { type: string; role?: string; direction: 'in' | 'out'; confidence?: number; source?: string; strength?: number; level?: number; target: { key: string; label: string; coreType?: string; subtype?: string }; }
+export interface EntityDetail { key: string; label: string; coreType: string; subtype?: string; roles?: string[]; attributes: Record<string, any>; sources: { providerKey?: string; externalId?: string }[]; firstSeenAt?: string; lastSeenAt?: string; relations: EntityRelation[]; relationCount: number; analysis: { typed: boolean; categorized: boolean; sentiment: string | null; docAnalyzed: boolean; docType: string | null; riskScore?: number }; }
+export interface RadarDocHit { entityKey: string; label: string; path: string; score: number; snippet: string; }
+export interface RadarDocItem { label: string; path: string; key: string; indexed: boolean; analyzed: boolean; linked: boolean; docType: string | null; reviewReason: string | null; }
+export interface DocIndexConfig { useExplorer?: boolean; roots?: string[]; maxFolders?: number; pathPrefix?: string; maxFiles?: number; }
+export interface DocAnalyzeConfig { limit?: number; pathPrefix?: string; skipAnalyzed?: boolean; }
 export interface RadarProcess {
   coreType: string; subtype?: string;
   entityCount: number; entitiesWithTransitions: number;
@@ -275,18 +325,32 @@ export interface RadarCrossProcess {
   systemByActivity?: Record<string, string>;
   typeByActivity?: Record<string, string>;
   activities: { activity: string; count: number; system?: string }[];
-  transitions: { from: string; to: string; count: number }[];
+  transitions: { from: string; to: string; count: number; avgDurationMs?: number }[];
   parallels: { activities: string[]; count: number }[];
   variants: { sequence: string; count: number }[];
+}
+export interface RadarSalesStage { stage: string; count: number; }
+export interface RadarSalesTransition { from: string; to: string; count: number; avgDurationMs: number; }
+export interface RadarSalesSegment { segment: string; deals: number; stages: RadarSalesStage[]; transitions: RadarSalesTransition[]; bottlenecks: RadarSalesTransition[]; }
+export interface RadarSalesProcess {
+  deals: number;
+  stages: RadarSalesStage[];
+  transitions: RadarSalesTransition[];
+  variants: { sequence: string; count: number }[];
+  bottlenecks: RadarSalesTransition[];
+  bySegment: RadarSalesSegment[];
 }
 export interface RadarAnalytics {
   bottlenecks: { process: string; from: string; to: string; avgDays: number; count: number; score: number; description?: string }[];
   delays: { type: string; label?: string; system?: string; state: string; sinceDays: number; score: number; reason?: string }[];
   anomalies: { kind: 'near_miss' | 'orphan'; entity: string; type?: string; system?: string; path?: string; suggestedClient?: string; similarity?: number; score: number; reason?: string }[];
   financial: { invoices: number; paidInvoices: number; billed: number; paid: number; outstanding: number; collectionRate: number };
+  stockRisks?: { entityKey: string; product: string; stock: number; demand: number; coverage: number; severity: string; reason: string }[];
+  processGaps?: { entityKey: string; label: string; subtype: string; missing: string; severity: string; reason: string }[];
 }
 export interface RadarRecommendations {
-  recommendations: { type: string; priority: 'haute' | 'normale' | 'basse'; score: number; title: string; detail?: string; action: string; system?: string }[];
+  recommendations: { type: string; priority: 'haute' | 'normale' | 'basse'; score: number; title: string; detail?: string; action: string; system?: string;
+    executable?: boolean; keepKey?: string; dropKey?: string; fromKey?: string; toKey?: string; busy?: boolean; done?: boolean; error?: string }[];
   forecast?: { outstanding: number; expectedDays: number; projectedInflow: number; atRiskCount: number; atRisk: { label: string; system?: string; sinceDays: number }[]; collectionRate: number; riskModel?: { status: string; accuracy?: number; examples?: number } | null } | null;
 }
 export interface RadarCompanyContext {

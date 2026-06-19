@@ -26,7 +26,7 @@ const DOLIBARR_MAPPINGS = [
       // lien natif si la facture a été créée DEPUIS une commande (origin_type=commande)
       { type: 'derived_from', viaField: 'origin_id', targetRawType: 'order', targetCoreType: 'Transaction', targetSubtype: 'order' },
     ],
-    lineRules: [{ arrayField: 'lines', viaField: 'fk_product', qtyField: 'qty', labelField: 'product_label', type: 'references', role: 'line_item', targetRawType: 'product', targetCoreType: 'Asset', targetSubtype: 'product' }],
+    lineRules: [{ arrayField: 'lines', viaField: 'fk_product', qtyField: 'qty', labelField: 'product_label', priceField: 'subprice', tvaField: 'tva_tx', totalField: 'total_ttc', type: 'references', role: 'line_item', targetRawType: 'product', targetCoreType: 'Asset', targetSubtype: 'product' }],
   },
   // Facture fournisseur → Transaction/supplier_invoice
   {
@@ -47,7 +47,7 @@ const DOLIBARR_MAPPINGS = [
       { type: 'party_of', role: 'client', viaField: 'socid', targetRawType: 'party', targetCoreType: 'Party', targetSubtype: 'organization' },
       { type: 'part_of', viaField: 'fk_project', targetRawType: 'project', targetCoreType: 'Project', targetSubtype: 'project' },
     ],
-    lineRules: [{ arrayField: 'lines', viaField: 'fk_product', qtyField: 'qty', labelField: 'product_label', type: 'references', role: 'line_item', targetRawType: 'product', targetCoreType: 'Asset', targetSubtype: 'product' }],
+    lineRules: [{ arrayField: 'lines', viaField: 'fk_product', qtyField: 'qty', labelField: 'product_label', priceField: 'subprice', tvaField: 'tva_tx', totalField: 'total_ttc', type: 'references', role: 'line_item', targetRawType: 'product', targetCoreType: 'Asset', targetSubtype: 'product' }],
   },
   // Commande → Transaction/order
   {
@@ -60,7 +60,7 @@ const DOLIBARR_MAPPINGS = [
       { type: 'party_of', role: 'client', viaField: 'socid', targetRawType: 'party', targetCoreType: 'Party', targetSubtype: 'organization' },
       { type: 'part_of', viaField: 'fk_project', targetRawType: 'project', targetCoreType: 'Project', targetSubtype: 'project' },
     ],
-    lineRules: [{ arrayField: 'lines', viaField: 'fk_product', qtyField: 'qty', labelField: 'product_label', type: 'references', role: 'line_item', targetRawType: 'product', targetCoreType: 'Asset', targetSubtype: 'product' }],
+    lineRules: [{ arrayField: 'lines', viaField: 'fk_product', qtyField: 'qty', labelField: 'product_label', priceField: 'subprice', tvaField: 'tva_tx', totalField: 'total_ttc', type: 'references', role: 'line_item', targetRawType: 'product', targetCoreType: 'Asset', targetSubtype: 'product' }],
   },
   // Projet → Project/project
   {
@@ -98,12 +98,25 @@ const DOLIBARR_MAPPINGS = [
     valueMap: { status: { '0': 'brouillon', '1': 'validé', '2': 'en production', '3': 'fabriqué' } },
     relationRules: [{ type: 'references', viaField: 'fk_product', targetRawType: 'product', targetCoreType: 'Asset', targetSubtype: 'product' }],
   },
+  // Ordre de fabrication (MO) → WorkItem/work_order, relié au produit fabriqué
+  {
+    providerKey: 'dolibarr', rawEntityType: 'mo',
+    target: { coreType: 'WorkItem', subtype: 'work_order' },
+    keyField: 'id', labelField: 'ref',
+    fieldMap: { number: 'ref', quantity: 'qty', status: 'status', startDate: 'date_start_planned' },
+    valueMap: { status: { '0': 'brouillon', '1': 'validé', '2': 'en production', '3': 'fabriqué', '9': 'annulé' } },
+    relationRules: [
+      { type: 'references', role: 'produces', viaField: 'fk_product', targetRawType: 'product', targetCoreType: 'Asset', targetSubtype: 'product' },
+      { type: 'derived_from', viaField: 'fk_bom', targetRawType: 'bom', targetCoreType: 'Document', targetSubtype: 'bom' },
+      { type: 'part_of', viaField: 'fk_project', targetRawType: 'project', targetCoreType: 'Project', targetSubtype: 'project' },
+    ],
+  },
   // Produit/article → Asset/product (porte le stock : révèle les ruptures/goulots)
   {
     providerKey: 'dolibarr', rawEntityType: 'product',
     target: { coreType: 'Asset', subtype: 'product' },
     keyField: 'id', labelField: 'label',
-    fieldMap: { name: 'label', reference: 'ref', price: 'price', stock: 'stock_reel', type: 'type', status: 'status' },
+    fieldMap: { name: 'label', reference: 'ref', price: 'price', cost_price: 'cost_price', stock: 'stock_reel', type: 'type', status: 'status' },
     valueMap: { type: { '0': 'produit', '1': 'service' }, status: { '0': 'inactif', '1': 'actif' } },
   },
 ];

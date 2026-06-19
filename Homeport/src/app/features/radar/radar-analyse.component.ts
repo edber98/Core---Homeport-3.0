@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
@@ -7,6 +8,7 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { AccessControlService } from '../../services/access-control.service';
 import { RadarBackendService, RadarAnalytics, RadarRecommendations } from '../../services/radar-backend.service';
 
@@ -16,12 +18,30 @@ import { RadarBackendService, RadarAnalytics, RadarRecommendations } from '../..
 @Component({
   selector: 'radar-analyse',
   standalone: true,
-  imports: [CommonModule, NzButtonModule, NzIconModule, NzSpinModule, NzEmptyModule, NzTagModule, NzProgressModule, NzToolTipModule],
+  imports: [CommonModule, FormsModule, NzButtonModule, NzIconModule, NzSpinModule, NzEmptyModule, NzTagModule, NzProgressModule, NzToolTipModule, NzPaginationModule],
   template: `
   <div class="an-wrap">
     <div class="an-top">
       <button nz-button nzSize="small" (click)="load()"><span nz-icon nzType="reload"></span> Actualiser</button>
     </div>
+
+    <!-- I5 — Interroge le cerveau en langage naturel -->
+    <div class="askbox">
+      <div class="askrow">
+        <span nz-icon nzType="message" class="aski"></span>
+        <input [(ngModel)]="question" (keydown.enter)="ask()" [disabled]="asking"
+               placeholder="Pose une question : « où sont mes goulots sur les clients industriels ? »" class="askinput" />
+        <button nz-button nzType="primary" nzSize="small" (click)="ask()" [nzLoading]="asking" [disabled]="!question.trim()">Demander</button>
+      </div>
+      <div class="suggest" *ngIf="!answer && !asking">
+        <span *ngFor="let q of suggestions" class="chip" (click)="question=q; ask()">{{ q }}</span>
+      </div>
+      <div class="answer" *ngIf="answer">
+        <div class="atext">{{ answer }}</div>
+        <div class="asrc" *ngIf="answerSources.length"><span nz-icon nzType="link"></span> {{ answerSources.join(' · ') }}</div>
+      </div>
+    </div>
+
     <nz-spin *ngIf="loading" nzSimple class="spin"></nz-spin>
 
     <!-- RECOMMANDATIONS : ce que le Radar conseille de faire -->
@@ -32,18 +52,23 @@ import { RadarBackendService, RadarAnalytics, RadarRecommendations } from '../..
         <span class="model" *ngIf="f.riskModel as m" nz-tooltip [nzTooltipTitle]="'Modèle entraîné sur ' + (m.examples||0) + ' exemples'">
           <span nz-icon nzType="experiment"></span> modèle risque d'impayé :
           <b *ngIf="m.status==='active'">actif ({{ ((m.accuracy || 0)*100) | number:'1.0-0' }}%)</b>
-          <b *ngIf="m.status!=='active'">{{ m.status === 'insufficient_data' ? 'apprentissage en cours' : m.status }}</b>
+          <b *ngIf="m.status!=='active'">{{ modelStatusLabel(m.status, m.accuracy) }}</b>
         </span>
       </div>
       <div class="rows">
-        <div class="rrow" *ngFor="let r of recs.recommendations.slice(0, 12)" [class.high]="r.priority==='haute'">
+        <div class="rrow" *ngFor="let r of recs.recommendations | slice: (recPage-1)*recSize : recPage*recSize" [class.high]="r.priority==='haute'">
           <span class="prio" [class.h]="r.priority==='haute'" [class.n]="r.priority==='normale'">{{ r.priority }}</span>
           <div class="rbody">
             <div class="rtitle">{{ r.title }} <nz-tag *ngIf="r.system" nzColor="blue">{{ r.system }}</nz-tag></div>
-            <div class="ract"><span nz-icon nzType="arrow-right"></span> {{ r.action }}</div>
+            <div class="ract"><span nz-icon nzType="arrow-right"></span> {{ r.action }}
+              <button *ngIf="r.executable && !r.done" nz-button nzSize="small" nzType="primary" class="execbtn" (click)="exec(r)" [nzLoading]="r.busy">Exécuter</button>
+              <span *ngIf="r.done" class="doneflag"><span nz-icon nzType="check-circle"></span> fait</span>
+            </div>
           </div>
         </div>
       </div>
+      <nz-pagination *ngIf="recs.recommendations.length > recSize" class="pager"
+        [nzPageIndex]="recPage" (nzPageIndexChange)="recPage=$event" [nzPageSize]="recSize" [nzTotal]="recs.recommendations.length" nzSize="small"></nz-pagination>
     </div>
 
     <div *ngIf="!loading && data">
@@ -63,7 +88,7 @@ import { RadarBackendService, RadarAnalytics, RadarRecommendations } from '../..
       <div class="section" *ngIf="data.delays.length">
         <h4><span nz-icon nzType="clock-circle"></span> Retards & en souffrance ({{ data.delays.length }})</h4>
         <div class="rows">
-          <div class="row" *ngFor="let d of data.delays.slice(0, 12)" [title]="d.reason">
+          <div class="row" *ngFor="let d of data.delays" [title]="d.reason">
             <nz-tag nzColor="orange">{{ d.type }}</nz-tag>
             <nz-tag *ngIf="d.system" nzColor="blue">{{ d.system }}</nz-tag>
             <span class="rmain">{{ d.label }} — bloqué « {{ d.state }} »</span>
@@ -84,12 +109,41 @@ import { RadarBackendService, RadarAnalytics, RadarRecommendations } from '../..
         </div>
       </div>
 
+      <!-- Goulots de STOCK -->
+      <div class="section" *ngIf="data.stockRisks?.length">
+        <h4><span nz-icon nzType="inbox"></span> Goulots de stock ({{ (data.stockRisks||[]).length }})</h4>
+        <div class="rows">
+          <div class="brow" *ngFor="let s of data.stockRisks || []">
+            <div class="bhead">
+              <nz-tag [nzColor]="s.severity==='high' ? 'red' : 'orange'">{{ s.severity==='high' ? 'rupture probable' : 'tendu' }}</nz-tag>
+              <span class="rmain">{{ s.product }}</span>
+              <span class="rend">stock <b>{{ s.stock }}</b> / demande <b>{{ s.demand }}</b></span>
+            </div>
+            <div class="bdesc">{{ s.reason }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ruptures de FLUX (étape sautée dans le processus de vente) -->
+      <div class="section" *ngIf="data.processGaps?.length">
+        <h4><span nz-icon nzType="disconnect"></span> Ruptures de flux ({{ (data.processGaps||[]).length }})</h4>
+        <p class="sub">Pièces qui sautent une étape attendue (commande sans devis, facture sans commande).</p>
+        <div class="rows">
+          <div class="brow anom" *ngFor="let g of data.processGaps || []">
+            <div class="bhead">
+              <nz-tag [nzColor]="g.severity==='high' ? 'red' : 'gold'">{{ g.subtype }} sans {{ g.missing }}</nz-tag>
+              <span class="rmain">{{ g.label }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Anomalies de corrélation -->
       <div class="section" *ngIf="data.anomalies.length">
         <h4><span nz-icon nzType="warning"></span> Anomalies de corrélation ({{ data.anomalies.length }})</h4>
         <p class="sub">Dossiers/projets non rattachés à un client (par dossier, pas par fichier). Pour les noms saisis à la main, le Radar propose le bon client par ressemblance.</p>
         <div class="rows">
-          <div class="brow anom" *ngFor="let a of data.anomalies.slice(0, 15)">
+          <div class="brow anom" *ngFor="let a of data.anomalies">
             <div class="bhead">
               <nz-tag [nzColor]="a.kind === 'near_miss' ? 'gold' : 'default'">{{ a.kind === 'near_miss' ? 'à rattacher ?' : 'orphelin' }}</nz-tag>
               <nz-tag *ngIf="a.system" nzColor="blue">{{ a.system }}</nz-tag>
@@ -132,17 +186,67 @@ import { RadarBackendService, RadarAnalytics, RadarRecommendations } from '../..
     .brow .bhead .rmain { color:#333; } .brow .bhead .rend { margin-left:auto; color:#666; white-space:nowrap; }
     .brow .bdesc { color:#888; font-size:12px; margin-top:3px; }
     .anom .rsugg { color:#666; } .anom .sim { color:#aaa; }
+    .askbox { background:#f0f7ff; border:1px solid #bae0ff; border-radius:10px; padding:12px 14px; margin-bottom:16px; }
+    .askrow { display:flex; align-items:center; gap:8px; } .askrow .aski { color:#1677ff; }
+    .askinput { flex:1; border:1px solid #d9e8ff; border-radius:8px; padding:6px 10px; font-size:13px; outline:none; }
+    .askinput:focus { border-color:#1677ff; }
+    .suggest { margin-top:8px; display:flex; gap:6px; flex-wrap:wrap; }
+    .suggest .chip { font-size:12px; background:#fff; border:1px solid #d9e8ff; border-radius:14px; padding:3px 10px; color:#1677ff; cursor:pointer; }
+    .suggest .chip:hover { background:#e6f4ff; }
+    .answer { margin-top:10px; background:#fff; border:1px solid #e6f0ff; border-radius:8px; padding:10px 12px; }
+    .answer .atext { font-size:13px; color:#222; white-space:pre-wrap; line-height:1.5; }
+    .answer .asrc { margin-top:6px; font-size:11px; color:#8aa; display:flex; align-items:center; gap:4px; }
+    .pager { margin-top:8px; text-align:right; }
+    .execbtn { margin-left:8px; height:22px; padding:0 10px; font-size:11px; }
+    .doneflag { margin-left:8px; color:#52c41a; font-size:12px; }
   `],
 })
 export class RadarAnalyseComponent implements OnInit {
   loading = false;
   data: RadarAnalytics | null = null;
   recs: RadarRecommendations | null = null;
+  recPage = 1;
+  recSize = 15;
+  // I5 — interrogation conversationnelle
+  question = '';
+  asking = false;
+  answer = '';
+  answerSources: string[] = [];
+  suggestions = ['Quelles factures relancer en priorité ?', 'Où sont mes goulots de vente ?', 'Ai-je un risque de rupture de stock ?', 'Quelles ruptures dans mon flux de vente ?'];
 
   constructor(private radar: RadarBackendService, private acl: AccessControlService, private zone: NgZone, private cdr: ChangeDetectorRef) {}
 
+  // Libellé lisible du statut du modèle (évite le jargon « shadow »/« trained »).
+  modelStatusLabel(status: string, accuracy?: number): string {
+    const acc = accuracy != null ? ` (${Math.round(accuracy * 100)}%)` : '';
+    switch (status) {
+      case 'insufficient_data': return 'apprentissage en cours (pas assez de données)';
+      case 'shadow': return `fiabilité insuffisante${acc} — non appliqué`;
+      case 'trained': return `entraîné${acc}`;
+      default: return status || 'inconnu';
+    }
+  }
+
   ngOnInit(): void { this.load(); }
   fmt(n: number): string { return (n || 0).toLocaleString('fr-FR') + ' €'; }
+
+  exec(r: any): void {
+    const ws = this.acl.currentWorkspaceId(); if (!ws || r.busy) return;
+    r.busy = true;
+    this.radar.executeAction(ws, { type: r.type, keepKey: r.keepKey, dropKey: r.dropKey, fromKey: r.fromKey, toKey: r.toKey }).subscribe({
+      next: res => this.zone.run(() => { r.busy = false; if (res.ok) { r.done = true; } else { r.error = res.error || res.note; } this.cdr.markForCheck(); }),
+      error: () => this.zone.run(() => { r.busy = false; r.error = 'échec'; this.cdr.markForCheck(); }),
+    });
+  }
+
+  ask(): void {
+    const ws = this.acl.currentWorkspaceId(); const q = this.question.trim(); if (!ws || !q || this.asking) return;
+    this.asking = true; this.answer = ''; this.answerSources = [];
+    this.radar.askRadar(ws, q).subscribe({
+      next: r => this.zone.run(() => { this.answer = r.answer; this.answerSources = r.sources || []; this.asking = false; this.cdr.markForCheck(); }),
+      error: () => this.zone.run(() => { this.answer = 'Désolé, je n\'ai pas pu analyser la question.'; this.asking = false; this.cdr.markForCheck(); }),
+    });
+  }
 
   load(): void {
     const ws = this.acl.currentWorkspaceId(); if (!ws) return;

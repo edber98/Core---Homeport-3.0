@@ -68,4 +68,27 @@ async function executeWrite({ connector, capability, args, allowWrite = false, l
   return execCapability({ connector, capability, args, allowWrite, log });
 }
 
-module.exports = { mergeEntities, applyCorrelation, executeWrite };
+/**
+ * Exécute une ACTION issue d'une recommandation (R4). Dispatch selon le type.
+ * Les actions sur le GRAPHE (fusion, rattachement) sont sûres et immédiates.
+ * Les actions WRITE vers un logiciel tiers exigent allowWrite (validation).
+ * @returns {Promise<{ok, ...}>}
+ */
+async function executeAction(workspaceId, action = {}) {
+  switch (action.type) {
+    case 'fusionner':
+      if (!action.keepKey || !action.dropKey) return { ok: false, error: 'cles_manquantes' };
+      return mergeEntities(workspaceId, action.keepKey, action.dropKey);
+    case 'rattacher':
+      if (!action.fromKey || !action.toKey) return { ok: false, error: 'cles_manquantes' };
+      return applyCorrelation(workspaceId, action.fromKey, action.toKey, action.role || 'client');
+    case 'write':
+      if (!action.allowWrite) return { ok: false, error: 'write_requires_approval' };
+      return executeWrite(action);
+    default:
+      // Actions non encore automatisées (relance, contrôle…) → renvoyées pour info.
+      return { ok: false, error: 'action_non_executable', note: 'Action à traiter manuellement pour l\'instant.', type: action.type };
+  }
+}
+
+module.exports = { mergeEntities, applyCorrelation, executeWrite, executeAction };

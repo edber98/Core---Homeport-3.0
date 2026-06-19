@@ -46,7 +46,15 @@ function nameSimilarity(a, b) {
   if (!A.length || !B.length) return 0;
   let matched = 0;
   for (const ta of A) if (B.some(tb => fuzzyTokenMatch(ta, tb))) matched++;
-  return matched / Math.max(A.length, B.length);
+  const tokenScore = matched / Math.max(A.length, B.length);
+  // Repli COMPACT (sans espaces) : capte les variantes concaténées / mal orthographiées
+  // (« Joly Formations » vs « jolyformation », « jolyformations »…). La tokenisation par
+  // mots y échoue (1 token vs 2). On compare alors par distance d'édition sur la forme
+  // compacte. Sécurisé : pour des noms réellement différents le score reste bas.
+  const ca = A.join(''), cb = B.join('');
+  const compactScore = (ca.length >= 4 && cb.length >= 4)
+    ? 1 - levenshtein(ca, cb) / Math.max(ca.length, cb.length) : 0;
+  return Math.max(tokenScore, compactScore);
 }
 
 const PROC_FR = { invoice: 'Facturation', quote: 'Devis', order: 'Commandes', task: 'Tâches', ticket: 'Support' };
@@ -234,11 +242,64 @@ async function findStockRisks(workspaceId, { coverDays = 30 } = {}) {
   return risks.sort((a, b) => a.coverage - b.coverage);
 }
 
-async function analyzeWorkspace(workspaceId) {
-  const [bottlenecks, delays, anomalies, financial, stockRisks] = await Promise.all([
-    findBottlenecks(workspaceId), findDelays(workspaceId), findCorrelationAnomalies(workspaceId), financialSummary(workspaceId), findStockRisks(workspaceId),
-  ]);
-  return { bottlenecks, delays, anomalies, financial, stockRisks };
+// Ruptures de PROCESS — DYNAMIQUE (aucun flux codé en dur). On APPREND le flux réel
+// de l'entreprise : pour chaque type de pièce, quel est son prédécesseur le plus
+// FRÉQUENT (devis→commande→facture, ou lead→facture, ou tout autre flux métier
+// spécifique). Puis on signale les pièces qui DÉVIENT de ce flux majoritaire.
+// → s'adapte à chaque métier, détecte des ruptures non prédéfinies.
+async function findProcessGaps(workspaceId, { minSupport = 3, dominance = 0.6 } = {}) {
+  const RadarEntity = require('../db/models/radar-entity.model');
+  const RadarRelation = require('../db/models/radar-relation.model');
+  const txs = await RadarEntity.find({ workspaceId, coreType: 'Transaction' })
+    .select('canonicalKey aliasKeys subtype label attributes').lean();
+  if (txs.length < minSupport) return [];
+  const keyToCanon = new Map(), subtypeByKey = new Map();
+  for (const t of txs) { keyToCanon.set(t.canonicalKey, t.canonicalKey); subtypeByKey.set(t.canonicalKey, t.subtype); for (const a of t.aliasKeys || []) { keyToCanon.set(a, t.canonicalKey); subtypeByKey.set(a, t.subtype); } }
+
+  const rels = await RadarRelation.find({ workspaceId, type: 'derived_from', fromKey: { $in: [...keyToCanon.keys()] } }).select('fromKey toKey').lean();
+  const predsOf = new Map();
+  for (const r of rels) { const f = keyToCanon.get(r.fromKey); if (!f) continue; const a = predsOf.get(f) || []; a.push(subtypeByKey.get(r.toKey) || subtypeByKey.get(keyToCanon.get(r.toKey))); predsOf.set(f, a); }
+
+  // 1) APPRENTISSAGE : par subtype, distribution des subtypes prédécesseurs observés
+  const dist = new Map();   // subtype → { total, withPred, predCount:{subtype:n} }
+  for (const t of txs) {
+    const d = dist.get(t.subtype) || { total: 0, withPred: 0, predCount: {} };
+    d.total++;
+    const preds = (predsOf.get(t.canonicalKey) || []).filter(Boolean);
+    if (preds.length) { d.withPred++; for (const ps of new Set(preds)) d.predCount[ps] = (d.predCount[ps] || 0) + 1; }
+    dist.set(t.subtype, d);
+  }
+  // 2) flux attendu = prédécesseur MAJORITAIRE quand il est suffisamment dominant
+  const expectedPred = new Map();
+  for (const [sub, d] of dist) {
+    if (d.withPred < minSupport) continue;
+    const best = Object.entries(d.predCount).sort((a, b) => b[1] - a[1])[0];
+    if (best && best[1] / d.withPred >= dominance) expectedPred.set(sub, { pred: best[0], rate: best[1] / d.total });
+  }
+
+  // 3) DÉVIATIONS : pièces qui n'ont pas le prédécesseur attendu appris.
+  // Libellés résolus DYNAMIQUEMENT depuis le registre d'ontologie (aucun dictionnaire codé en dur).
+  const fr = await require('./graph/type-labels').loadTypeLabels();
+  const gaps = [];
+  for (const t of txs) {
+    const exp = expectedPred.get(t.subtype); if (!exp) continue;
+    const preds = (predsOf.get(t.canonicalKey) || []).filter(Boolean);
+    if (!preds.includes(exp.pred)) {
+      gaps.push({
+        entityKey: t.canonicalKey, label: t.label, subtype: t.subtype, missing: exp.pred,
+        severity: exp.rate >= 0.8 ? 'high' : 'medium',
+        reason: `${fr(t.subtype)} « ${t.label} » sans ${fr(exp.pred)} en amont — ${Math.round(exp.rate * 100)}% des « ${fr(t.subtype)} » en ont un (flux appris)`,
+      });
+    }
+  }
+  return gaps.sort((a, b) => (b.severity === 'high' ? 1 : 0) - (a.severity === 'high' ? 1 : 0));
 }
 
-module.exports = { analyzeWorkspace, findBottlenecks, findDelays, findCorrelationAnomalies, financialSummary, findStockRisks, nameSimilarity };
+async function analyzeWorkspace(workspaceId) {
+  const [bottlenecks, delays, anomalies, financial, stockRisks, processGaps] = await Promise.all([
+    findBottlenecks(workspaceId), findDelays(workspaceId), findCorrelationAnomalies(workspaceId), financialSummary(workspaceId), findStockRisks(workspaceId), findProcessGaps(workspaceId),
+  ]);
+  return { bottlenecks, delays, anomalies, financial, stockRisks, processGaps };
+}
+
+module.exports = { analyzeWorkspace, findBottlenecks, findDelays, findCorrelationAnomalies, financialSummary, findStockRisks, findProcessGaps, nameSimilarity };

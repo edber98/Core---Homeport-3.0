@@ -35,14 +35,23 @@ async function inferDealChains(workspaceId, { minJaccard = 0.34, apply = true, l
   for (const t of txs) { keyToCanon.set(t.canonicalKey, t.canonicalKey); for (const a of t.aliasKeys || []) keyToCanon.set(a, t.canonicalKey); }
   const txByCanon = new Map(txs.map(t => [t.canonicalKey, t]));
 
+  // résolveur alias→canonique du CLIENT : sinon une commande et son devis qui pointent
+  // vers des représentations différentes du même tiers (canonique vs alias) tombent
+  // dans deux groupes distincts → aucun lien inféré (et l'anomalie « commande sans
+  // devis » devient un faux positif généralisé).
+  const parties = await RadarEntity.find({ workspaceId, coreType: 'Party' }).select('canonicalKey aliasKeys').lean();
+  const partyCanon = new Map();
+  for (const p of parties) { partyCanon.set(p.canonicalKey, p.canonicalKey); for (const a of p.aliasKeys || []) partyCanon.set(a, p.canonicalKey); }
+  const resolveClient = (k) => partyCanon.get(k) || k;
+
   // relations : client (party_of/billed_to) + articles (line_item)
   const rels = await RadarRelation.find({ workspaceId, fromKey: { $in: [...keyToCanon.keys()] } })
     .select('fromKey toKey type role').lean();
-  const clientOf = new Map();          // txCanon → clientKey
+  const clientOf = new Map();          // txCanon → clientKey (canonique)
   const articlesOf = new Map();        // txCanon → Set(produits)
   for (const r of rels) {
     const canon = keyToCanon.get(r.fromKey); if (!canon) continue;
-    if (r.type === 'party_of') { if (!clientOf.has(canon)) clientOf.set(canon, r.toKey); }
+    if (r.type === 'party_of') { if (!clientOf.has(canon)) clientOf.set(canon, resolveClient(r.toKey)); }
     else if (r.type === 'references' && r.role === 'line_item') {
       const set = articlesOf.get(canon) || new Set(); set.add(r.toKey); articlesOf.set(canon, set);
     }
@@ -64,10 +73,16 @@ async function inferDealChains(workspaceId, { minJaccard = 0.34, apply = true, l
       const curArts = articlesOf.get(cur.canonicalKey) || new Set();
       const curAmt = numAmt(cur.attributes?.amount_total);
       for (const cand of candidates) {
-        const j = jaccard(curArts, articlesOf.get(cand.canonicalKey) || new Set());
+        const candArts = articlesOf.get(cand.canonicalKey) || new Set();
+        const j = jaccard(curArts, candArts);
         const candAmt = numAmt(cand.attributes?.amount_total);
         const amtMatch = curAmt != null && candAmt != null && Math.abs(curAmt - candAmt) < 0.01 ? 0.4 : 0;
-        const score = Math.max(j, amtMatch);
+        // Si les DEUX pièces ont des lignes d'articles, on EXIGE un recouvrement réel
+        // (le même deal a les mêmes articles). Le montant seul ne crée plus de lien —
+        // sinon une commande sans devis serait reliée à tort à un autre devis du même
+        // montant, ce qui masquerait l'anomalie « commande sans devis ».
+        const haveArts = curArts.size > 0 && candArts.size > 0;
+        const score = haveArts ? j : amtMatch;
         if (score > bestScore) { bestScore = score; best = cand; }
       }
       if (best && bestScore >= minJaccard) {

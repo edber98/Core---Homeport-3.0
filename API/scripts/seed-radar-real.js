@@ -50,13 +50,24 @@ async function main() {
       { entity: 'work_package', via: 'listTasks', key: 'id', hashFields: ['subject', 'status', 'project', 'dueDate'] },
     ],
   }] } });
-  // nextcloudFiles a déjà son bloc watch (entity 'file')
+  // nextcloudFiles a déjà son bloc watch (entity 'file'). On relève profondeur+plafond
+  // pour atteindre l'arbo de démo /RadarDemo/Clients/<client>/Devis/… (profondeur 5)
+  // tout en gardant les fichiers réels. Configurable (RADAR_NC_DEPTH / RADAR_NC_MAX).
+  {
+    const ncP = await Provider.findOne({ key: 'nextcloudFiles' }).lean();
+    if (ncP?.radar?.[0]?.capabilities?.listTree?.args) {
+      const r = ncP.radar;
+      r[0].capabilities.listTree.args.maxDepth = Number(process.env.RADAR_NC_DEPTH || 6);
+      r[0].capabilities.listTree.args.maxItems = Number(process.env.RADAR_NC_MAX || 1500);
+      await Provider.updateOne({ key: 'nextcloudFiles' }, { $set: { radar: r } });
+    }
+  }
 
   // ── Connecteurs RÉELS ──
   const credOf = {};
   for (const k of ['dolibarr', 'openproject', 'nextcloudFiles', 'smtp_imap']) credOf[k] = await Credential.findOne({ providerKey: k }).lean();
   const plan = [
-    ['dolibarr', 'accounting'], ['dolibarr', 'crm'], ['dolibarr', 'productivity'], ['dolibarr', 'support'], ['dolibarr', 'catalog'],
+    ['dolibarr', 'accounting'], ['dolibarr', 'crm'], ['dolibarr', 'productivity'], ['dolibarr', 'support'], ['dolibarr', 'catalog'], ['dolibarr', 'industry'],
     ['openproject', 'productivity'],
     ['nextcloudFiles', 'storage'],
     ['smtp_imap', 'email'],     // emails RÉELS (boîte perso) — floutent souvent, mais ajoutent la dimension réelle
@@ -76,13 +87,58 @@ async function main() {
   const lc = await require('../src/radar/process/backfill-lifecycle').backfillDolibarrLifecycle(wsId);
   console.log(`[real] cycle de vie reconstitué : ${lc.deltas} deltas datés`, lc.byType);
 
-  // ── Typage sémantique (secteur client, nature projet, catégorie facture) ──
-  const cls = await require('../src/radar/graph/classify').classifyWorkspace(wsId);
-  console.log(`[real] typage sémantique : ${cls.classified} entités typées`, JSON.stringify(cls.byType));
+  // ── Couches SIMULÉES (équipe + emails). Séparables : RADAR_SIMULATE=0 → 100% réel.
+  // Ce ne sont QUE des données ; les moteurs d'analyse restent dynamiques et tournent
+  // sur le réel. À couper dès que tu as de vrais emails/utilisateurs connectés.
+  const SIMULATE = process.env.RADAR_SIMULATE !== '0';
+  if (SIMULATE) {
+    const team = await require('../src/radar/people').seedTeamAndAssign(wsId);
+    const wl = await require('../src/radar/people').workloadStats(wsId);
+    console.log(`[real] [SIM] équipe : ${team.team} personnes · ${team.assigned} affectations · charge: ${wl.byPerson.map(p => `${p.person}(${p.open})`).join(', ')}`);
+    // machines d'atelier + capteurs (température/OEE) reliés à la production réelle
+    const mac = await require('../src/radar/graph/seed-machines').seedMachinesAndSensors(wsId);
+    console.log(`[real] [SIM] atelier : ${mac.machines} machines · ${mac.relations} liens production · ${mac.measurements} mesures capteurs`);
+    const sens = await require('../src/radar/sensors').analyzeSensors(wsId);
+    const alerts = sens.filter(s => s.alert);
+    console.log(`[real] [SIM] capteurs analysés : ${sens.length} séries · ${alerts.length} alerte(s)${alerts.length ? ' → ' + alerts.map(a => `${a.assetKey.split(':').pop()}/${a.metric}`).join(', ') : ''}`);
+  } else {
+    console.log('[real] RADAR_SIMULATE=0 → couches simulées (équipe/emails) DÉSACTIVÉES, 100% données réelles.');
+  }
+
+  // ── Passe ADAPTATIVE (R3) : ré-entraîne les modèles + dérive de schéma + re-type ──
+  const ad = await require('../src/radar/adapt').runAdaptivePass(wsId, { log: () => {} });
+  console.log(`[real] adaptatif : modèle risque=${ad.model?.status}${ad.model?.accuracy != null ? ' ' + Math.round(ad.model.accuracy * 100) + '%' : ''} · dérive=${ad.drift.length} · ${ad.reclassified} entités typées`);
 
   // ── Corrélation cross-logiciel par nom ──
   const corr = await require('../src/radar/graph/correlate').correlateByName(wsId, {});
   console.log(`[real] corrélation: ${corr.matched}/${corr.scanned} reliées`);
+  // fichiers/dossiers (arborescence projet) → projets par nom
+  const corrP = await require('../src/radar/graph/correlate').correlateFilesToProjects(wsId, {});
+  console.log(`[real] fichiers→projets: ${corrP.matched}/${corrP.scanned} (+${corrP.created})`);
+  // fichiers PDF nommés d'après une réf → reliés à la VRAIE pièce (devis/commande/facture)
+  const corrD = await require('../src/radar/graph/correlate').correlateFilesToDeals(wsId, {});
+  console.log(`[real] fichiers→pièces (par réf): ${corrD.matched}/${corrD.scanned} (+${corrD.created})`);
+  // file d'attente : les fichiers SANS réf dans le nom → l'IA lit le contenu et relie
+  if (process.env.RADAR_DOC_ANALYSIS !== '0') {
+    const dq = await require('../src/radar/doc-queue').analyzeDocuments(wsId, { limit: Number(process.env.RADAR_DOC_LIMIT || 30) }).catch(e => { console.log('[real] doc-queue skip:', e.message); return null; });
+    if (dq) console.log(`[real] analyse documents (LLM) : ${dq.read}/${dq.queued} lus · ${dq.linked} reliés · ${dq.review} en revue`);
+  }
+  // index RAG : lit le texte des documents pour la recherche par sujet (« où est le contrat de X »).
+  // Exploration AGENTIQUE (l'IA choisit les dossiers à fouiller) sur des racines configurables ;
+  // sinon repli sur les Documents déjà dans le graphe.
+  if (process.env.RADAR_DOC_INDEX !== '0') {
+    const roots = (process.env.RADAR_INDEX_ROOTS || '/RadarDemo').split(',').map(s => s.trim()).filter(Boolean);
+    const di = require('../src/radar/doc-index');
+    const ixE = await di.indexDocuments(wsId, { useExplorer: true, roots, maxFolders: Number(process.env.RADAR_INDEX_FOLDERS || 80), maxFiles: Number(process.env.RADAR_INDEX_MAX || 250) }).catch(e => { console.log('[real] doc-index explorer skip:', e.message); return null; });
+    if (ixE) console.log(`[real] index RAG (explorateur ${roots.join(',')}) : ${ixE.indexed} docs indexés (${ixE.skipped} ignorés / ${ixE.totalFiles})`);
+    const ixG = await di.indexDocuments(wsId, { useExplorer: false, maxFiles: Number(process.env.RADAR_INDEX_MAX || 250) }).catch(() => null);
+    if (ixG) console.log(`[real] index RAG (graphe réel) : ${ixG.indexed} docs indexés (${ixG.skipped} ignorés / ${ixG.totalFiles})`);
+    // L'explorateur vient d'AJOUTER les fichiers démo au graphe → on (re)corrèle MAINTENANT
+    // pour relier les « Facture_IN…txt » à la VRAIE facture (l'ordre comptait : avant, les
+    // fichiers n'étaient pas encore dans le graphe).
+    const corrD2 = await require('../src/radar/graph/correlate').correlateFilesToDeals(wsId, {});
+    console.log(`[real] fichiers→pièces (après index) : ${corrD2.matched}/${corrD2.scanned} (+${corrD2.created})`);
+  }
 
   // ── Déduplication auto des quasi-identiques (≥95%) : nettoie le bruit (re-créations) ──
   // En boucle (les fusions révèlent de nouveaux doublons) jusqu'à épuisement.
@@ -96,9 +152,20 @@ async function main() {
   }
   console.log(`[real] déduplication : ${deduped} doublons quasi-identiques fusionnés`);
 
-  // ── Couche communication (emails simulés) reliée aux vraies affaires ──
-  const comms = await require('../src/radar/graph/seed-comms').seedSimulatedComms(wsId);
-  console.log(`[real] emails simulés : ${comms.emails} (validation devis, envoi/relance facture) — ${comms.relations} liens`);
+  // ── Couche communication (emails simulés) reliée aux vraies affaires — SIMULÉE ──
+  if (SIMULATE) {
+    const comms = await require('../src/radar/graph/seed-comms').seedSimulatedComms(wsId);
+    console.log(`[real] [SIM] emails simulés : ${comms.emails} (devis/facture/fournisseur/SAV) — ${comms.relations} liens`);
+    const oc = await require('../src/radar/graph/seed-comms').seedDealOutcomes(wsId);
+    console.log(`[real] [SIM] issues d'affaires : ${oc.outcomes} devis avec dénouement varié (signé/refusé/perdu)`);
+  }
+
+  // ── Paiements : nœud Paiement relié à chaque facture payée (visible dans la mémoire) ──
+  const pay = await require('../src/radar/graph/seed-comms').seedPayments(wsId);
+  console.log(`[real] paiements : ${pay.payments} nœuds Paiement reliés aux factures payées`);
+  // ── Demandes client → travail : ticket relié à la tâche de traitement (addressed_by) ──
+  const reqw = await require('../src/radar/graph/seed-comms').linkRequestsToWork(wsId);
+  console.log(`[real] demandes client → tâches : ${reqw.linked} tickets reliés au travail`);
 
   // ── Chaîne d'affaire : devis→commande→facture reliés directement (par articles/montant) ──
   const dc = await require('../src/radar/graph/deal-chains').inferDealChains(wsId);
@@ -107,6 +174,9 @@ async function main() {
   // ── Identité cross-source : projets présents dans Dolibarr ET OpenProject → 1 entité ──
   const xsP = await require('../src/radar/graph/cross-source').resolveCrossSource(wsId, { coreType: 'Project', subtype: 'project' });
   console.log(`[real] projets multi-sources : ${xsP.merged} fusionnés, ${xsP.suggestions.length} suggestions (sur ${xsP.scanned})`);
+  // PERSONNES présentes dans plusieurs systèmes (IDs différents) → 1 utilisateur unique
+  const xsU = await require('../src/radar/graph/cross-source').resolveCrossSource(wsId, { coreType: 'Party', subtype: 'person', strongWithClient: 0.8 });
+  console.log(`[real] utilisateurs multi-sources : ${xsU.merged} fusionnés, ${xsU.suggestions.length} suggestions (sur ${xsU.scanned})`);
   if (xsP.mergedDetail?.length) console.log('   ex:', xsP.mergedDetail.slice(0, 4).map(m => `${m.label}(${m.similarity}%${m.sameClient ? ',client✓' : ''})`).join(' · '));
 
   // ── Processus découverts (vérif) ──

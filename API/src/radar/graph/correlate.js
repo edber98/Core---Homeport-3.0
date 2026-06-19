@@ -56,4 +56,89 @@ async function correlateByName(workspaceId, { sourceTypes = ['Asset', 'Document'
   return out;
 }
 
-module.exports = { correlateByName, normalize, nameMatches };
+/**
+ * Relie les fichiers/dossiers aux PROJETS par nom (arborescence façon bureau d'étude :
+ * /Projets/<titre projet>/Plans, /CAO… → les fichiers appartiennent à ce projet).
+ * Relation part_of (le fichier fait partie du projet). Idempotent.
+ */
+async function correlateFilesToProjects(workspaceId, { log = () => {} } = {}) {
+  const RadarEntity = require('../../db/models/radar-entity.model');
+  const RadarRelation = require('../../db/models/radar-relation.model');
+
+  const projects = await RadarEntity.find({ workspaceId, coreType: 'Project' }).select('canonicalKey label').lean();
+  const idx = projects.map(p => ({ key: p.canonicalKey, norm: normalize(p.label) }))
+    .filter(p => p.norm.length >= 4)
+    .sort((a, b) => b.norm.length - a.norm.length);
+  if (!idx.length) return { created: 0, scanned: 0, matched: 0 };
+
+  const files = await RadarEntity.find({ workspaceId, coreType: { $in: ['Document', 'Asset'] }, subtype: { $in: ['file', 'folder'] } })
+    .select('canonicalKey label attributes').lean();
+  const out = { created: 0, scanned: files.length, matched: 0 };
+  for (const f of files) {
+    const hay = normalize(`${f.label || ''} ${f.attributes?.path || ''}`);
+    if (!hay) continue;
+    const hit = idx.find(p => nameMatches(hay, p.norm));
+    if (!hit) continue;
+    out.matched++;
+    const r = await RadarRelation.updateOne(
+      { workspaceId, fromKey: f.canonicalKey, toKey: hit.key, type: 'part_of', role: 'project' },
+      { $set: { confidence: 0.7, source: 'rule', evidence: { matchedName: hit.norm, via: 'project_name_correlation' } } },
+      { upsert: true }
+    );
+    if (r.upsertedCount) out.created++;
+  }
+  log(`[radar-correlate] ${out.matched}/${out.scanned} fichiers reliés à un projet (+${out.created})`);
+  return out;
+}
+
+/** Compacte un libellé en jeton alphanumérique brut (insensible aux tirets/espaces). Pure. */
+function compactToken(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '');
+}
+
+/**
+ * Relie un FICHIER à la pièce comptable réelle (devis/commande/facture) dont il porte
+ * la RÉFÉRENCE dans son nom. Niveau de détail « bureau réel » : un PDF
+ * « Devis_PR2506-0001.pdf » rangé dans /Clients/<x>/Devis est relié à l'entité Devis
+ * PR2506-0001 elle-même — pas seulement au dossier. On extrait la référence
+ * (jeton type LETTRES+CHIFFRES) du nom de fichier/chemin et on la matche contre la
+ * référence réelle de la transaction (attributes.ref/number ou libellé). Idempotent.
+ * Relation `documents` (le fichier documente la pièce). Déterministe, sans LLM.
+ */
+async function correlateFilesToDeals(workspaceId, { log = () => {} } = {}) {
+  const RadarEntity = require('../../db/models/radar-entity.model');
+  const RadarRelation = require('../../db/models/radar-relation.model');
+
+  const txs = await RadarEntity.find({ workspaceId, coreType: 'Transaction' })
+    .select('canonicalKey subtype label attributes').lean();
+  // index ref (compactée) → transaction. La ref doit être assez longue/discriminante.
+  const idx = [];
+  for (const t of txs) {
+    const ref = t.attributes?.ref || t.attributes?.number || t.attributes?.numero || t.label;
+    const tok = compactToken(ref);
+    if (tok.length >= 6 && /[a-z]/.test(tok) && /[0-9]/.test(tok)) idx.push({ key: t.canonicalKey, tok, subtype: t.subtype, ref });
+  }
+  idx.sort((a, b) => b.tok.length - a.tok.length);   // refs les plus longues d'abord (plus spécifiques)
+  if (!idx.length) return { created: 0, scanned: 0, matched: 0 };
+
+  const files = await RadarEntity.find({ workspaceId, coreType: { $in: ['Document', 'Asset'] }, subtype: 'file' })
+    .select('canonicalKey label attributes').lean();
+  const out = { created: 0, scanned: files.length, matched: 0 };
+  for (const f of files) {
+    const hay = compactToken(`${f.label || ''} ${f.attributes?.path || ''}`);
+    if (hay.length < 6) continue;
+    const hit = idx.find(t => hay.includes(t.tok));
+    if (!hit) continue;
+    out.matched++;
+    const r = await RadarRelation.updateOne(
+      { workspaceId, fromKey: f.canonicalKey, toKey: hit.key, type: 'documents', role: hit.subtype || 'transaction' },
+      { $set: { confidence: 0.9, source: 'rule', evidence: { matchedRef: hit.ref, via: 'file_ref_correlation' } } },
+      { upsert: true }
+    );
+    if (r.upsertedCount) out.created++;
+  }
+  log(`[radar-correlate] ${out.matched}/${out.scanned} fichiers reliés à une pièce par référence (+${out.created})`);
+  return out;
+}
+
+module.exports = { correlateByName, correlateFilesToProjects, correlateFilesToDeals, normalize, nameMatches, compactToken };

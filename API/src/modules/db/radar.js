@@ -291,7 +291,208 @@ module.exports = function () {
   r.get('/workspaces/:wsId/radar/process/cross', async (req, res) => {
     const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
     const { mineCrossProcess } = require('../../radar/process/cross-miner');
-    return res.apiOk(await mineCrossProcess(ws._id, {}));
+    // filtres dynamiques : ?caseRole=client&segment=…&kind=webapp&assignee=email:…
+    const { caseRole, segment, kind, assignee } = req.query;
+    return res.apiOk(await mineCrossProcess(ws._id, { caseRole: caseRole || 'client', segment: segment || null, kind: kind || null, assigneeKey: assignee || null }));
+  });
+
+  // Découverte DYNAMIQUE de tous les processus de l'entreprise (commercial, achat…).
+  r.get('/workspaces/:wsId/radar/process/discover', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { discoverProcesses } = require('../../radar/process/discover');
+    return res.apiOk(await discoverProcesses(ws._id));
+  });
+
+  // Processus de VENTE global (bout-en-bout) + segmentation par secteur (I3/I4).
+  r.get('/workspaces/:wsId/radar/process/sales', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { mineSalesProcess } = require('../../radar/process/sales-process');
+    return res.apiOk(await mineSalesProcess(ws._id, { segment: req.query.segment || null }));
+  });
+
+  // Interrogation conversationnelle du cerveau (I5) : question NL → réponse + sources.
+  r.post('/workspaces/:wsId/radar/ask', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { askRadar } = require('../../radar/ask');
+    return res.apiOk(await askRadar(ws._id, (req.body && req.body.question) || ''));
+  });
+
+  // Passe adaptative (R3) : ré-entraîne les modèles + détecte la dérive + re-type.
+  r.post('/workspaces/:wsId/radar/adapt', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { runAdaptivePass } = require('../../radar/adapt');
+    return res.apiOk(await runAdaptivePass(ws._id, { reinfer: !!(req.body && req.body.reinfer) }));
+  });
+
+  // Exécution d'une action de recommandation (R4) : fusionner / rattacher (graphe).
+  r.post('/workspaces/:wsId/radar/action', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { executeAction } = require('../../radar/actions');
+    return res.apiOk(await executeAction(ws._id, req.body || {}));
+  });
+
+  // ── Documents : recherche RAG, index, analyse (file d'attente), génération, exploration ──
+  // Recherche par sujet : « où est le contrat de X » → docs classés + emplacement.
+  r.post('/workspaces/:wsId/radar/docs/search', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const out = await require('../../radar/doc-index').searchDocs(ws._id, (req.body && req.body.query) || '', { topK: Number(req.body?.topK) || 6 });
+    return res.apiOk({ results: out });
+  });
+  // DICTIONNAIRE mémoire : recherche plein-texte sur TOUTES les entités du graphe.
+  r.get('/workspaces/:wsId/radar/dictionary', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const RadarEntity = require('../../db/models/radar-entity.model');
+    const page = Math.max(1, Number(req.query.page) || 1), size = Math.min(100, Number(req.query.size) || 40);
+    const q = { workspaceId: ws._id };
+    if (req.query.coreType) q.coreType = String(req.query.coreType);
+    if (req.query.q) { const rx = new RegExp(String(req.query.q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i'); q.$or = [{ label: rx }, { canonicalKey: rx }]; }
+    const [total, items] = await Promise.all([
+      RadarEntity.countDocuments(q),
+      RadarEntity.find(q).sort({ coreType: 1, label: 1 }).skip((page - 1) * size).limit(size).select('canonicalKey label coreType subtype roles attributes.sentiment attributes.state attributes.payment_state sources').lean(),
+    ]);
+    const byType = await RadarEntity.aggregate([{ $match: { workspaceId: ws._id } }, { $group: { _id: '$coreType', n: { $sum: 1 } } }, { $sort: { n: -1 } }]);
+    return res.apiOk({ items: items.map(e => ({ key: e.canonicalKey, label: e.label, coreType: e.coreType, subtype: e.subtype, roles: e.roles, sentiment: e.attributes?.sentiment, status: e.attributes?.payment_state || e.attributes?.state, source: e.sources?.[0]?.providerKey })), total, page, size, byType: byType.map(b => ({ coreType: b._id, n: b.n })) });
+  });
+
+  // VIEWER d'un élément : TOUTES les infos (attributs, relations résolues entrantes/
+  // sortantes, origine, dates, sentiment, analyse, processus/flux où il apparaît).
+  r.get('/workspaces/:wsId/radar/entity/:key', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const RadarEntity = require('../../db/models/radar-entity.model');
+    const RadarRelation = require('../../db/models/radar-relation.model');
+    const key = decodeURIComponent(req.params.key);
+    const ent = await RadarEntity.findOne({ workspaceId: ws._id, $or: [{ canonicalKey: key }, { aliasKeys: key }] }).lean();
+    if (!ent) return res.apiOk({ entity: null });
+    const allKeys = [ent.canonicalKey, ...(ent.aliasKeys || [])];
+    const [outRels, inRels] = await Promise.all([
+      RadarRelation.find({ workspaceId: ws._id, fromKey: { $in: allKeys } }).select('toKey type role confidence source').lean(),
+      RadarRelation.find({ workspaceId: ws._id, toKey: { $in: allKeys } }).select('fromKey type role confidence source').lean(),
+    ]);
+    // résolution des libellés des entités liées
+    const otherKeys = [...new Set([...outRels.map(r => r.toKey), ...inRels.map(r => r.fromKey)])];
+    const others = await RadarEntity.find({ workspaceId: ws._id, $or: [{ canonicalKey: { $in: otherKeys } }, { aliasKeys: { $in: otherKeys } }] }).select('canonicalKey aliasKeys label coreType subtype').lean();
+    const resolve = new Map(); for (const o of others) { resolve.set(o.canonicalKey, o); for (const a of o.aliasKeys || []) resolve.set(a, o); }
+    // NIVEAU / FORCE de relation (directe vs indirecte). Le cerveau perçoit qu'être en
+    // CC d'un mail (rôle 'cc') est un lien plus FAIBLE qu'en être l'objet. Calcul
+    // dynamique : force de base par TYPE de lien, modulée par le RÔLE et la CONFIANCE.
+    const TYPE_W = { party_of: 0.95, billed_to: 0.95, derived_from: 0.9, pays: 0.95, documents: 0.85, line_item: 0.85, references: 0.7, assigned_to: 0.85, produces: 0.8, part_of: 0.6, relates_to: 0.45, addressed_by: 0.7, scheduled_for: 0.7 };
+    const WEAK_ROLE = /\b(cc|bcc|copie|copy|watcher|observateur|mention|témoin)\b/i;
+    const relStrength = (r) => {
+      let s = TYPE_W[r.type] != null ? TYPE_W[r.type] : 0.6;
+      if (r.role && WEAK_ROLE.test(r.role)) s -= 0.35;                 // en copie/observateur → lien plus faible
+      if (r.source === 'rule' || r.source === 'simulation') s -= 0.05; // dérivé/inféré, légèrement moins fort
+      if (typeof r.confidence === 'number') s = s * 0.5 + r.confidence * 0.5;  // pondère par la confiance du lien
+      return Math.max(0.1, Math.min(1, s));
+    };
+    const fmtRel = (r, dir, otherKey) => {
+      const o = resolve.get(otherKey);
+      const strength = Math.round(relStrength(r) * 100) / 100;
+      const level = strength >= 0.8 ? 1 : (strength >= 0.55 ? 2 : 3);   // 1=directe · 2=indirecte · 3=contextuelle
+      return { type: r.type, role: r.role, direction: dir, confidence: r.confidence, source: r.source, strength, level,
+        target: o ? { key: o.canonicalKey, label: o.label, coreType: o.coreType, subtype: o.subtype } : { key: otherKey, label: otherKey } };
+    };
+    const relations = [...outRels.map(r => fmtRel(r, 'out', r.toKey)), ...inRels.map(r => fmtRel(r, 'in', r.fromKey))]
+      .sort((a, b) => b.strength - a.strength);   // les liens les plus forts d'abord
+    // analyse : ce que le cerveau a déterminé
+    const a = ent.attributes || {};
+    const analysis = { typed: !!ent.subtype, categorized: !!(a.segmentLabel || a.segment || a.kind), sentiment: a.sentiment || null, docAnalyzed: !!a.docAnalyzed, docType: a.docType || null, riskScore: a.riskScore };
+    return res.apiOk({ entity: {
+      key: ent.canonicalKey, label: ent.label, coreType: ent.coreType, subtype: ent.subtype, roles: ent.roles,
+      attributes: ent.attributes || {}, sources: ent.sources || [], firstSeenAt: ent.firstSeenAt, lastSeenAt: ent.lastSeenAt,
+      relations, relationCount: relations.length, analysis,
+    } });
+  });
+
+  // État documentaire : combien de fichiers, indexés (RAG), analysés (LLM), date du dernier index.
+  r.get('/workspaces/:wsId/radar/docs/status', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const RadarEntity = require('../../db/models/radar-entity.model');
+    const RadarDocChunk = require('../../db/models/radar-doc-chunk.model');
+    const RadarRelation = require('../../db/models/radar-relation.model');
+    const [files, indexed, analyzed, linked, lastChunk] = await Promise.all([
+      RadarEntity.countDocuments({ workspaceId: ws._id, coreType: { $in: ['Document', 'Asset'] }, subtype: 'file' }),
+      RadarDocChunk.countDocuments({ workspaceId: ws._id }),
+      RadarEntity.countDocuments({ workspaceId: ws._id, subtype: 'file', 'attributes.docAnalyzed': true }),
+      RadarRelation.countDocuments({ workspaceId: ws._id, type: 'documents' }),
+      RadarDocChunk.findOne({ workspaceId: ws._id }).sort({ updatedAt: -1 }).select('updatedAt').lean(),
+    ]);
+    const recent = await RadarDocChunk.find({ workspaceId: ws._id }).sort({ updatedAt: -1 }).limit(8).select('label path updatedAt').lean();
+    return res.apiOk({ files, indexed, analyzed, linkedToDeals: linked, lastIndexedAt: lastChunk?.updatedAt || null, recent });
+  });
+
+  // Liste COMPLÈTE des documents avec leur ÉTAT (indexé / analysé / relié) + métadonnées.
+  r.get('/workspaces/:wsId/radar/docs/list', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const RadarEntity = require('../../db/models/radar-entity.model');
+    const RadarDocChunk = require('../../db/models/radar-doc-chunk.model');
+    const RadarRelation = require('../../db/models/radar-relation.model');
+    const page = Math.max(1, Number(req.query.page) || 1), size = Math.min(200, Number(req.query.size) || 50);
+    const q = { workspaceId: ws._id, coreType: { $in: ['Document', 'Asset'] }, subtype: 'file' };
+    if (req.query.search) q.label = new RegExp(String(req.query.search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    if (req.query.status === 'indexed' || req.query.status === 'analyzed') q['attributes.docAnalyzed'] = req.query.status === 'analyzed' ? true : { $ne: null };
+    const [total, files] = await Promise.all([
+      RadarEntity.countDocuments(q),
+      RadarEntity.find(q).sort({ lastSeenAt: -1 }).skip((page - 1) * size).limit(size).select('canonicalKey label attributes').lean(),
+    ]);
+    const keys = files.map(f => f.canonicalKey);
+    const indexedSet = new Set((await RadarDocChunk.find({ workspaceId: ws._id, entityKey: { $in: keys } }).select('entityKey updatedAt').lean()).map(c => c.entityKey));
+    const linkedSet = new Set((await RadarRelation.find({ workspaceId: ws._id, type: 'documents', fromKey: { $in: keys } }).select('fromKey role').lean()).map(r => r.fromKey));
+    const items = files.map(f => ({
+      label: f.label, path: f.attributes?.path || '', key: f.canonicalKey,
+      indexed: indexedSet.has(f.canonicalKey), analyzed: !!f.attributes?.docAnalyzed,
+      linked: linkedSet.has(f.canonicalKey), docType: f.attributes?.docType || null,
+      reviewReason: f.attributes?.reviewReason || null,
+    }));
+    return res.apiOk({ items, total, page, size });
+  });
+
+  // (Ré)indexe les documents pour la recherche (configurable : chemin, budget, explorateur).
+  r.post('/workspaces/:wsId/radar/docs/index', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const b = req.body || {};
+    return res.apiOk(await require('../../radar/doc-index').indexDocuments(ws._id, { useExplorer: !!b.useExplorer, roots: b.roots, maxFolders: b.maxFolders, pathPrefix: b.pathPrefix, maxFiles: b.maxFiles }));
+  });
+  // File d'attente d'analyse LLM : lit le contenu, relie à la bonne pièce (incrémental).
+  r.post('/workspaces/:wsId/radar/docs/analyze', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const b = req.body || {};
+    return res.apiOk(await require('../../radar/doc-queue').analyzeDocuments(ws._id, { limit: Number(b.limit) || 25, pathPrefix: b.pathPrefix, skipAnalyzed: b.skipAnalyzed !== false }));
+  });
+  // Exploration agentique de l'arborescence (l'IA décide où descendre).
+  r.post('/workspaces/:wsId/radar/docs/explore', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const b = req.body || {};
+    return res.apiOk(await require('../../radar/tree-explorer').exploreTree(ws._id, { roots: b.roots, maxFolders: Number(b.maxFolders) || 80, maxDepth: Number(b.maxDepth) || 8 }));
+  });
+  // Génération de document multi-formats (txt|md|csv|html|xlsx|docx|pdf) + dépôt Nextcloud.
+  r.post('/workspaces/:wsId/radar/docs/generate', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const b = req.body || {};
+    try {
+      if (b.upload) return res.apiOk(await require('../../radar/doc-gen').generateAndUpload(b.spec || {}, b.format || 'docx', b.destFolder));
+      const gen = await require('../../radar/doc-gen').generateDocument(b.spec || {}, b.format || 'docx');
+      return res.apiOk({ filename: gen.filename, mime: gen.mime, format: gen.format, contentBase64: gen.buffer.toString('base64') });
+    } catch (e) { return res.apiErr ? res.apiErr(e.message) : res.status(400).json({ ok: false, error: e.message }); }
+  });
+
+  // Analyse de MARGE (vente − revient) par affaire + par type + affaires à marge faible.
+  r.get('/workspaces/:wsId/radar/margins', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/margin').analyzeMargins(ws._id));
+  });
+
+  // Charge par personne / organisation (mapping « qui fait quoi »).
+  r.get('/workspaces/:wsId/radar/workload', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { workloadStats } = require('../../radar/people');
+    return res.apiOk(await workloadStats(ws._id));
+  });
+
+  // Analyse HYPER-DYNAMIQUE : découvre les dimensions pertinentes et n'active que celles-là.
+  r.get('/workspaces/:wsId/radar/discover', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const { discoverAndAnalyze } = require('../../radar/analysis-registry');
+    return res.apiOk(await discoverAndAnalyze(ws._id));
   });
 
   // Analyse (cerveau) : goulots, retards, anomalies de corrélation, financier.

@@ -4454,6 +4454,28 @@
               ]
             }
           ]
+        },
+        {
+          "family": "industry",
+          "capabilities": {
+            "listProductionOrders": {
+              "template": "dolibarr_get_mos"
+            }
+          },
+          "watch": [
+            {
+              "entity": "mo",
+              "via": "listProductionOrders",
+              "key": "id",
+              "hashFields": [
+                "ref",
+                "qty",
+                "status",
+                "fk_product",
+                "fk_bom"
+              ]
+            }
+          ]
         }
       ]
     }

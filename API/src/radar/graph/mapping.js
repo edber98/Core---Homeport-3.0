@@ -89,14 +89,19 @@ function applyMapping(raw, mapping) {
         ? lr.targetKey.replace('{value}', String(pid))
         : `${mapping.providerKey}:${lr.targetRawType || lr.targetSubtype || 'product'}:${pid}`;
       const qty = lr.qtyField ? _get(line, lr.qtyField) : undefined;
+      // prix unitaire, taux de TVA et total par ligne (permet de comparer devis↔commande
+      // quand le client n'accepte pas toutes les lignes → prix/quantités différents).
+      const unitPrice = lr.priceField ? _get(line, lr.priceField) : undefined;
+      const tva = lr.tvaField ? _get(line, lr.tvaField) : undefined;
+      const lineTotal = lr.totalField ? _get(line, lr.totalField) : undefined;
       relations.push({
         type: lr.type || 'references',
         role: lr.role || 'line_item',
         toKey: targetKey,
         target: { coreType: lr.targetCoreType || 'Asset', subtype: lr.targetSubtype || 'product' },
-        evidence: { line: true, product: pid, qty },
+        evidence: { line: true, product: pid, qty, unitPrice, tva, lineTotal },
       });
-      summary.push({ product: String(pid), label: lr.labelField ? _get(line, lr.labelField) : undefined, qty });
+      summary.push({ product: String(pid), label: lr.labelField ? _get(line, lr.labelField) : undefined, qty, unitPrice, tva, lineTotal });
     }
     if (summary.length) attributes[lr.summaryAttr || 'line_items'] = summary;
   }

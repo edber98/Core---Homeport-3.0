@@ -31,16 +31,22 @@ const DAY = 86400000;
  * Découvre les processus cross-logiciel par client.
  * @returns {Promise<{cases, activities, transitions, parallels, variants}>}
  */
-async function mineCrossProcess(workspaceId, { caseRole = 'client' } = {}) {
+// Filtres dynamiques optionnels : `segment` (secteur du client), `kind` (nature de
+// projet / catégorie — sémantique I2), `assigneeKey` (personne responsable).
+// creationOnly : ne garde que les jalons de CRÉATION par type (Devis→Commande→Facture…),
+// sans les transitions d'état → flux métier LISIBLE, sans boucles « refusé→signé »
+// (le détail des états reste dans la vue « Par cycle de vie »).
+async function mineCrossProcess(workspaceId, { caseRole = 'client', segment = null, kind = null, assigneeKey = null, creationOnly = false } = {}) {
   const RadarEntity = require('../../db/models/radar-entity.model');
   const RadarRelation = require('../../db/models/radar-relation.model');
   const RadarDelta = require('../../db/models/radar-delta.model');
   const RadarConnector = require('../../db/models/radar-connector.model');
   const RadarMapping = require('../../db/models/radar-mapping.model');
 
-  const parties = await RadarEntity.find({ workspaceId, coreType: 'Party' }).select('canonicalKey label roles').lean();
+  const parties = await RadarEntity.find({ workspaceId, coreType: 'Party' }).select('canonicalKey label roles attributes').lean();
+  const segMatch = (p) => !segment || p.attributes?.segment === segment || p.attributes?.segmentLabel === segment;
   const caseKeys = new Map();   // caseKey (canonique) -> label
-  for (const p of parties) if (!caseRole || (p.roles || []).includes(caseRole)) caseKeys.set(p.canonicalKey, p.label);
+  for (const p of parties) if ((!caseRole || (p.roles || []).includes(caseRole)) && segMatch(p)) caseKeys.set(p.canonicalKey, p.label);
   if (!caseKeys.size) return { cases: 0, activities: [], transitions: [], parallels: [], variants: [] };
 
   // Entités + index toute-clé (canonique + alias) → entité, pour résoudre relations & deltas
@@ -86,10 +92,19 @@ async function mineCrossProcess(workspaceId, { caseRole = 'client' } = {}) {
     }
     return e.firstSeenAt;
   };
+  // filtre par PERSONNE responsable : ensemble des entités assignées à cette personne
+  let assignedSet = null;
+  if (assigneeKey) {
+    assignedSet = new Set();
+    const ar = await RadarRelation.find({ workspaceId, type: 'assigned_to', toKey: assigneeKey }).select('fromKey').lean();
+    for (const r of ar) { const ck = resolve(r.fromKey); assignedSet.add(ck); assignedSet.add(r.fromKey); }
+  }
   for (const e of entities) {
     if (caseKeys.has(e.canonicalKey)) continue;
     const c = entityCase.get(e.canonicalKey);
     if (!c) continue;
+    if (kind && e.attributes?.kind !== kind) continue;                         // filtre sémantique (nature/catégorie)
+    if (assignedSet && !assignedSet.has(e.canonicalKey)) continue;             // filtre par responsable
     const sys = e.sources && e.sources[0] ? friendlySystem(e.sources[0].providerKey) : systemOfKey(e.canonicalKey);
     addEvent(c, `${typeFr(e.coreType, e.subtype)} ${createdVerb(e.coreType)}`, realDate(e), sys, `${e.coreType}.${e.subtype || ''}`);
   }
@@ -100,7 +115,7 @@ async function mineCrossProcess(workspaceId, { caseRole = 'client' } = {}) {
   const mapByType = new Map();
   for (const m of mappings) { if (stateFieldOf(m)) { const cur = mapByType.get(m.rawEntityType); if (!cur || (m.workspaceId && !cur.workspaceId)) mapByType.set(m.rawEntityType, m); } }
 
-  const deltas = await RadarDelta.find({ workspaceId }).select('entityType entityKey type after occurredAt connectorId').lean();
+  const deltas = creationOnly ? [] : await RadarDelta.find({ workspaceId }).select('entityType entityKey type after occurredAt connectorId').lean();
   for (const d of deltas) {
     const mapping = mapByType.get(d.entityType); if (!mapping) continue;
     const prov = provByConn.get(String(d.connectorId));
@@ -134,20 +149,23 @@ async function mineCrossProcess(workspaceId, { caseRole = 'client' } = {}) {
     // plusieurs factures/commandes d'un même client ne doivent pas créer une
     // séquence en boucle « Facture → Commande → Facture → … ».
     const seenAct = new Set(); const seq = [];
-    for (const e of evs) { if (!seenAct.has(e.activity)) { seenAct.add(e.activity); seq.push(e.activity); } }
+    for (const e of evs) { if (!seenAct.has(e.activity)) { seenAct.add(e.activity); seq.push(e); } }
     for (let i = 0; i < seq.length - 1; i++) {
-      const k = `${seq[i]}→${seq[i + 1]}`;
-      trans.set(k, (trans.get(k) || 0) + 1);
+      const k = `${seq[i].activity}→${seq[i + 1].activity}`;
+      const t = trans.get(k) || { count: 0, durs: [] };
+      t.count++; const d = seq[i + 1].at - seq[i].at; if (d >= 0) t.durs.push(d);
+      trans.set(k, t);
     }
-    variants.set(seq.join(' → '), (variants.get(seq.join(' → ')) || 0) + 1);
+    variants.set(seq.map(s => s.activity).join(' → '), (variants.get(seq.map(s => s.activity).join(' → ')) || 0) + 1);
   }
+  const mean = (a) => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
 
   return {
     cases: caseCount,
     systemByActivity,
     typeByActivity,
     activities: [...actFreq.entries()].map(([activity, count]) => ({ activity, count, system: systemByActivity[activity] || null })).sort((a, b) => b.count - a.count),
-    transitions: [...trans.entries()].map(([k, count]) => { const [from, to] = k.split('→'); return { from, to, count }; }).sort((a, b) => b.count - a.count),
+    transitions: [...trans.entries()].map(([k, t]) => { const [from, to] = k.split('→'); return { from, to, count: t.count, avgDurationMs: Math.round(mean(t.durs)) }; }).sort((a, b) => b.count - a.count),
     parallels: [...parallels.entries()].map(([k, count]) => ({ activities: k.split('  ∥  '), count })).sort((a, b) => b.count - a.count).slice(0, 12),
     variants: [...variants.entries()].map(([sequence, count]) => ({ sequence, count })).sort((a, b) => b.count - a.count).slice(0, 10),
   };
