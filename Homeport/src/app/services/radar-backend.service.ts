@@ -234,6 +234,9 @@ export class RadarBackendService {
   saveContext(wsId: string, description: string): Observable<{ context: RadarCompanyContext }> {
     return this.api.put<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/context`, { description });
   }
+  saveContextUsages(wsId: string, usages: { providerKey: string; usage: string }[]): Observable<{ context: RadarCompanyContext }> {
+    return this.api.put<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/context/usages`, { usages });
+  }
 
   // Playbooks (procédures)
   listPlaybooks(wsId: string): Observable<RadarPlaybook[]> {
@@ -368,6 +371,7 @@ export interface RadarCompanyContext {
   description: string; sector?: string; activities?: string[];
   suggestedFamilies?: string[]; keyMetrics?: string[]; summary?: string;
   source?: string; interpretedAt?: string;
+  connectorUsages?: { providerKey: string; usage: string }[];   // ce qu'on fait sur chaque logiciel
 }
 export interface RadarLearningStats {
   enabled: boolean;

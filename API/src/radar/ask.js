@@ -18,15 +18,23 @@ async function buildBrainContext(workspaceId) {
   const { recommend } = require('./recommendations');
   const { mineSalesProcess } = require('./process/sales-process');
 
-  const [sum, analysis, recos, sales] = await Promise.all([
+  const [sum, analysis, recos, sales, companyCtx] = await Promise.all([
     graphSummary(workspaceId).catch(() => null),
     analyzeWorkspace(workspaceId).catch(() => ({})),
     recommend(workspaceId).catch(() => ({ recommendations: [] })),
     mineSalesProcess(workspaceId).catch(() => null),
+    require('../db/models/radar-company-context.model').findOne({ workspaceId }).lean().catch(() => null),
   ]);
   const days = (ms) => Math.round((ms || 0) / 86400000);
 
   return {
+    // SAVOIR ENTREPRISE : qui elle est + ce qu'elle FAIT sur chaque logiciel (saisi par
+    // l'utilisateur) → le LLM répond en connaissant l'usage réel de chaque outil.
+    entreprise: companyCtx ? {
+      resume: companyCtx.summary || companyCtx.description || null,
+      secteur: companyCtx.sector || null,
+      logiciels: (companyCtx.connectorUsages || []).filter(u => u.usage).map(u => `${u.providerKey} : ${u.usage}`),
+    } : null,
     graphe: sum ? { entites: sum.entities, relations: sum.relations, parType: top(sum.byType, 14).map(b => `${b.subtype || b.coreType}×${b.count}`) } : null,
     financier: analysis.financial,
     goulots_process: top(analysis.bottlenecks, 8).map(b => `${b.process}: ${b.from}→${b.to} (${b.avgDays} j, ${b.count} cas)`),

@@ -285,6 +285,23 @@ module.exports = function () {
       return res.apiOk({ context: ctx });
     } catch (e) { return res.apiError(500, 'context_error', e?.message || String(e)); }
   });
+  // Usages par LOGICIEL : « ce qu'on fait sur chaque connecteur » (relie contexte ↔ connecteurs).
+  // Body : { usages: [{ providerKey, usage }] } — remplace la liste (édition complète depuis l'UI).
+  r.put('/workspaces/:wsId/radar/context/usages', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    const usages = Array.isArray((req.body || {}).usages) ? req.body.usages : null;
+    if (!usages) return res.apiError(400, 'missing_usages', 'usages[] requis');
+    const clean = usages
+      .filter(u => u && u.providerKey)
+      .map(u => ({ providerKey: String(u.providerKey), usage: String(u.usage || '').slice(0, 500) }));
+    const RadarCompanyContext = require('../../db/models/radar-company-context.model');
+    const ctx = await RadarCompanyContext.findOneAndUpdate(
+      { workspaceId: ws._id },
+      { $set: { connectorUsages: clean } },
+      { new: true, upsert: true, setDefaultsOnInsert: true }
+    );
+    return res.apiOk({ context: ctx });
+  });
 
   // Process mining CROSS-LOGICIEL (object-centric, par client) : flux inter-logiciels
   // + actions parallèles (devis validé → dossier Nextcloud + projet OpenProject).

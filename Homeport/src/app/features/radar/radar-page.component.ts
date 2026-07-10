@@ -67,6 +67,22 @@ const TABS = ['dashboard', 'pilotage', 'activite', 'memoire', 'dictionnaire', 'd
         <nz-tag *ngIf="context.sector" nzColor="blue">{{ context.sector }}</nz-tag>
         <nz-tag *ngFor="let m of (context.keyMetrics || []).slice(0,4)" nzColor="default">{{ m }}</nz-tag>
         <button nz-button nzType="link" nzSize="small" (click)="ctxNeedsSetup = true; ctxDraft = context.description">Modifier</button>
+        <button nz-button nzType="link" nzSize="small" (click)="toggleUsages()">
+          <span nz-icon nzType="api"></span> Logiciels ({{ usageRows.length }})</button>
+      </div>
+
+      <!-- CE QU'ON FAIT SUR CHAQUE LOGICIEL — relie le contexte entreprise aux connecteurs.
+           Injecté dans le cerveau : l'IA sait à quoi sert chaque outil dans CETTE entreprise. -->
+      <div class="ctx-usages" *ngIf="usagesOpen && context && !ctxNeedsSetup">
+        <div class="cu-row" *ngFor="let u of usageRows">
+          <span class="cu-prov"><span nz-icon nzType="api"></span> {{ u.providerKey }}</span>
+          <input nz-input nzSize="small" [(ngModel)]="u.usage"
+                 placeholder="Ce qu'on fait sur ce logiciel (ex : devis, factures, stock…)" />
+        </div>
+        <div class="cu-actions">
+          <button nz-button nzType="primary" nzSize="small" [nzLoading]="usagesSaving" (click)="saveUsages()">Enregistrer</button>
+          <span class="cu-hint">Ces descriptions sont injectées dans le cerveau (réponses IA, mapping, processus).</span>
+        </div>
       </div>
 
       <nz-tabset [nzSelectedIndex]="selectedIndex" (nzSelectedIndexChange)="onTabChange($event)">
@@ -127,6 +143,11 @@ const TABS = ['dashboard', 'pilotage', 'activite', 'memoire', 'dictionnaire', 'd
     .ctx-setup textarea { margin-bottom:8px; }
     .ctx-summary { display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:#f6ffed; border:1px solid #b7eb8f; border-radius:8px; padding:6px 12px; margin-bottom:12px; font-size:13px; }
     .ctx-summary .ic { color:#52c41a; } .ctx-summary .csum { color:#555; }
+    .ctx-usages { background:#fafafa; border:1px solid #eee; border-radius:8px; padding:10px 12px; margin:-6px 0 12px; display:flex; flex-direction:column; gap:6px; }
+    .cu-row { display:grid; grid-template-columns: 170px 1fr; gap:10px; align-items:center; }
+    .cu-prov { font-size:13px; font-weight:500; color:#555; display:flex; align-items:center; gap:6px; }
+    .cu-actions { display:flex; align-items:center; gap:10px; margin-top:4px; }
+    .cu-hint { font-size:12px; color:#999; }
     @media (max-width: 768px) {
       .radar-page { padding: 8px; }
       .header-left h2 { font-size: 18px; }
@@ -139,6 +160,10 @@ export class RadarPageComponent implements OnInit, OnDestroy {
   ctxNeedsSetup = false;
   ctxDraft = '';
   ctxSaving = false;
+  // usages par logiciel (contexte ↔ connecteurs)
+  usagesOpen = false;
+  usagesSaving = false;
+  usageRows: { providerKey: string; usage: string }[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -176,6 +201,33 @@ export class RadarPageComponent implements OnInit, OnDestroy {
     this.radar.saveContext(wsId, this.ctxDraft.trim()).subscribe({
       next: r => this.zone.run(() => { this.context = r.context; this.ctxNeedsSetup = false; this.ctxSaving = false; this.cdr.markForCheck(); }),
       error: () => this.zone.run(() => { this.ctxSaving = false; this.cdr.markForCheck(); }),
+    });
+  }
+
+  // Ouvre le panneau « logiciels » : fusionne les connecteurs réels avec les usages saisis.
+  toggleUsages(): void {
+    this.usagesOpen = !this.usagesOpen;
+    if (!this.usagesOpen) return;
+    const wsId = this.acl.currentWorkspaceId(); if (!wsId) return;
+    this.radar.listConnectors(wsId).subscribe({
+      next: (connectors) => this.zone.run(() => {
+        const saved = new Map((this.context?.connectorUsages || []).map(u => [u.providerKey, u.usage]));
+        const providers = [...new Set((connectors || []).map((c: any) => c.providerKey).filter(Boolean))] as string[];
+        this.usageRows = providers.map(p => ({ providerKey: p, usage: saved.get(p) || '' }));
+        // garde aussi les usages saisis pour des logiciels déconnectés (ne pas les perdre)
+        for (const [p, usage] of saved) if (!providers.includes(p)) this.usageRows.push({ providerKey: p, usage });
+        this.cdr.markForCheck();
+      }),
+      error: () => {},
+    });
+  }
+
+  saveUsages(): void {
+    const wsId = this.acl.currentWorkspaceId(); if (!wsId) return;
+    this.usagesSaving = true;
+    this.radar.saveContextUsages(wsId, this.usageRows).subscribe({
+      next: r => this.zone.run(() => { this.context = r.context; this.usagesSaving = false; this.cdr.markForCheck(); }),
+      error: () => this.zone.run(() => { this.usagesSaving = false; this.cdr.markForCheck(); }),
     });
   }
 
