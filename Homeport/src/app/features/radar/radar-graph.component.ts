@@ -87,8 +87,8 @@ function iconKey(coreType: string, subtype?: string): string {
     <!-- Panneau de CONFIGURATION d'affichage : masquer des types, filtrer les niveaux de lien -->
     <div class="cfgbar" *ngIf="cfgOpen && summary">
       <span class="cfglbl">Afficher :</span>
-      <span class="cfgchip" *ngFor="let t of summary.byType" [class.off]="hiddenTypes.has(t.coreType)" (click)="toggleType(t.coreType)">
-        <i [style.background]="colorOf(t.coreType)"></i>{{ labels.coreLabel(t.coreType) }}
+      <span class="cfgchip" *ngFor="let t of coreTypeChips()" [class.off]="hiddenTypes.has(t.coreType)" (click)="toggleType(t.coreType)">
+        <i [style.background]="colorOf(t.coreType)"></i>{{ labels.coreLabel(t.coreType) }} ({{ t.count }})
         <span nz-icon [nzType]="hiddenTypes.has(t.coreType) ? 'eye-invisible' : 'eye'"></span>
       </span>
       <span class="cfgsep"></span>
@@ -381,6 +381,13 @@ export class RadarGraphComponent implements AfterViewInit, OnDestroy {
     let lvl = W[type] || 2;
     if (role && /\b(cc|bcc|copie|observ|mention|témoin)\b/i.test(role)) lvl = Math.min(3, lvl + 1);
     return lvl;
+  }
+  // Chips de type UNIQUES par coreType (byType est par coreType+subtype → on agrège,
+  // sinon « Ressources » apparaît plusieurs fois : Asset.folder, Asset.product…).
+  coreTypeChips(): { coreType: string; count: number }[] {
+    const map = new Map<string, number>();
+    for (const t of (this.summary?.byType || [])) map.set(t.coreType, (map.get(t.coreType) || 0) + (t.count || 0));
+    return [...map.entries()].map(([coreType, count]) => ({ coreType, count })).sort((a, b) => b.count - a.count);
   }
   // Config d'affichage : masquer un type d'entité / filtrer les niveaux de lien.
   toggleType(ct: string): void { if (this.hiddenTypes.has(ct)) this.hiddenTypes.delete(ct); else this.hiddenTypes.add(ct); this.applyVisibility(); }

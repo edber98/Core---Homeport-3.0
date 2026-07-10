@@ -235,13 +235,18 @@ function soft(label, cond, detail = '') { if (cond) { pass++; console.log(`  ✅
     // FACTURE → brouillon | émise | payée | en retard impayée
     if (plan.invoice !== 'none') {
       const overdue = plan.invoice === 'overdue';
-      const invId = idOf(await callRetry('dolibarr_invoice_create', { socid: c.id, date: nowS() - (age + 15) * DAY, date_lim_reglement: nowS() - (age + (overdue ? 20 : 5)) * DAY, fk_project: projId || '' }));
+      const invDate = nowS() - (age + 15) * DAY;
+      const invId = idOf(await callRetry('dolibarr_invoice_create', { socid: c.id, date: invDate, date_lim_reglement: invDate + 30 * DAY, fk_project: projId || '' }));
       if (invId) { made.invoices++;
         for (const l of lines) if ((await call('dolibarr_invoice_add_line', { id: invId, ...l })).ok) made.lines++;
         if (plan.invoice !== 'draft') {                       // 'draft' = on laisse en brouillon
           const v = await call('dolibarr_invoice_validate', { id: invId });
           if (v.ok && plan.invoice === 'paid') {
-            const pay = await call('dolibarr_payment_create', { id: invId, datepaye: nowS() - (age + 3) * DAY, amount: Math.round(total * 100) / 100, paymentid: 2, closepaidinvoices: 'yes', accountid: accountId });
+            // PROFIL DE PAIEMENT par client (déterministe) → variance réaliste du délai :
+            // bons payeurs ~8-20 j, lents ~40-85 j. Donne au modèle DSO de quoi apprendre.
+            const payDelay = 8 + (Number(c.id) % 9) * 10;     // 8 → 88 jours selon le client
+            const datepaye = Math.min(nowS() - DAY, invDate + payDelay * DAY);
+            const pay = await call('dolibarr_payment_create', { id: invId, datepaye, amount: Math.round(total * 100) / 100, paymentid: 2, closepaidinvoices: 'yes', accountid: accountId });
             if (pay.ok) made.paid++; else if (g < 3) console.log(`  ⚠️  Paiement « ${c.name} » — ${pay.error}`);
           } else if (v.ok && overdue) made.overdue++;
         }
@@ -285,14 +290,16 @@ function soft(label, cond, detail = '') { if (cond) { pass++; console.log(`  ✅
   // ───────────────────────── Étape 4d : Contacts CRM (interlocuteurs clients) ─────────────────────────
   console.log('\n=== 4d. Contacts CRM (interlocuteurs chez les clients) ===');
   const firstNames = ['Marie', 'Pierre', 'Sophie', 'Thomas', 'Julie', 'Nicolas', 'Camille', 'Laurent', 'Émilie', 'Antoine', 'Claire', 'David', 'Léa', 'Hugo'];
+  const lastNames = ['Durand', 'Lefèvre', 'Moreau', 'Girard', 'Roux', 'Fournier', 'Mercier', 'Blanc', 'Garnier', 'Faure', 'Rousseau', 'Lambert', 'Bonnet', 'Henry', 'Masson', 'Dumas', 'Robin', 'Gauthier'];
   const postes = ['Directeur achats', 'Responsable technique', 'Comptable', 'Directeur général', 'Chef de projet', 'Responsable SI'];
   let contacts = 0;
   for (let ci = 0; ci < clients.length; ci++) {
     const c = clients[ci];
     for (let n = 0; n < 2; n++) {                                  // 2 interlocuteurs par client
       const fn = firstNames[(ci * 2 + n) % firstNames.length];
-      const r = await call('dolibarr_contact_create', { lastname: c.name.split(' ')[0], firstname: fn,
-        email: `${fn.toLowerCase().normalize('NFD').replace(/[^a-z]/g, '')}@${(c.email || 'x@x').split('@')[1]}`,
+      const ln = lastNames[(ci * 2 + n) % lastNames.length];      // VRAI nom de personne (pas le nom du client)
+      const r = await call('dolibarr_contact_create', { lastname: ln, firstname: fn,
+        email: `${fn.toLowerCase().normalize('NFD').replace(/[^a-z]/g, '')}.${ln.toLowerCase().normalize('NFD').replace(/[^a-z]/g, '')}@${(c.email || 'x@x').split('@')[1]}`,
         socid: c.id, poste: postes[(ci * 2 + n) % postes.length] });
       if (idOf(r)) contacts++;
     }

@@ -11,8 +11,21 @@ const DOLIBARR_MAPPINGS = [
     fieldMap: { name: 'name', email: 'email', phone: 'phone', identifiers: 'idprof1' },
     roleRules: [
       { field: 'client', equals: '1', role: 'client' },
+      { field: 'client', equals: '2', role: 'prospect' },   // lead/prospect (pipeline commercial)
+      { field: 'client', equals: '3', role: 'client' },     // client ET prospect (Dolibarr)
       { field: 'fournisseur', equals: '1', role: 'supplier' },
     ],
+  },
+  // Contact (interlocuteur) → Party/person, rattaché à son organisation (works_at).
+  // identityFields:email → permet la dé-dup CROSS-SYSTÈME (même personne dans 2 logiciels
+  // = 1 entité, fusionnée par email/nom — voir resolveCrossSource persons).
+  {
+    providerKey: 'dolibarr', rawEntityType: 'contact',
+    target: { coreType: 'Party', subtype: 'person' },
+    keyField: 'id', identityFields: ['email'], labelField: 'lastname',
+    fieldMap: { lastname: 'lastname', firstname: 'firstname', email: 'email', phone: 'phone_pro', role: 'poste' },
+    roles: ['contact'],
+    relationRules: [{ type: 'works_at', role: 'contact', viaField: 'socid', targetRawType: 'party', targetCoreType: 'Party', targetSubtype: 'organization' }],
   },
   // Facture client → Transaction/invoice, billed_to → Party
   {
@@ -76,9 +89,20 @@ const DOLIBARR_MAPPINGS = [
     providerKey: 'dolibarr', rawEntityType: 'task',
     target: { coreType: 'WorkItem', subtype: 'task' },
     keyField: 'id', labelField: 'label',
-    fieldMap: { title: 'label', status: 'status', dueDate: 'date_end', progress: 'progress' },
+    // heures réelles (duration_effective) + prévues (planned_workload) en SECONDES → marge réelle + dérive
+    fieldMap: { title: 'label', status: 'status', dueDate: 'date_end', progress: 'progress', hoursReal: 'duration_effective', hoursPlanned: 'planned_workload' },
     valueMap: { status: { '0': 'à faire', '1': 'en cours', '2': 'terminée' } },
     relationRules: [{ type: 'part_of', viaField: 'fk_project', targetRawType: 'project', targetCoreType: 'Project', targetSubtype: 'project' }],
+  },
+  // Événement agenda (RDV, réunion, appel) → Event/calendar_event, relié au tiers (RDV client).
+  // NB : « event » n'est PAS un subtype de l'ontologie (voir ontology.js) — la suite de
+  // non-régression valide chaque mapping contre l'ontologie.
+  {
+    providerKey: 'dolibarr', rawEntityType: 'agendaevent',
+    target: { coreType: 'Event', subtype: 'calendar_event' },
+    keyField: 'id', labelField: 'label',
+    fieldMap: { name: 'label', date: 'datep', endDate: 'datef', kind: 'type_code', state: 'percentage' },
+    relationRules: [{ type: 'scheduled_for', role: 'client', viaField: 'socid', targetRawType: 'party', targetCoreType: 'Party', targetSubtype: 'organization' }],
   },
   // Ticket → WorkItem/ticket
   {

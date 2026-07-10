@@ -105,6 +105,45 @@ try { for (const l of fs.readFileSync(path.resolve(__dirname, '../.env'), 'utf8'
   console.log('\n▸ INDUSTRIE');
   console.log(`  ${mark(machines >= 1, machines === 0)}Machines : ${machines} · alertes capteurs : ${sensors.filter(s => s.alert).length}`);
 
+  // 10) Marges (I10)
+  const mg = await require('../src/radar/margin').analyzeMargins(ws).catch(() => null);
+  console.log('\n▸ MARGES (I10)');
+  if (mg) {
+    console.log(`  ${mark(mg.totals.revenue > 0)}CA ${mg.totals.revenue}€ · coût ${mg.totals.cost}€ · marge ${mg.totals.margin}€ (${mg.totals.rate}%)`);
+    console.log(`  ${mark(Object.keys(mg.byType).length > 0)}Par type : ${Object.entries(mg.byType).map(([k, v]) => `${k} ${v.rate}%`).join(' · ')} · affaires faible marge : ${mg.lowMargin.length}`);
+  }
+
+  // 11) RH + pointage (I11)
+  const hr = await require('../src/radar/hr').analyzeHR(ws).catch(() => null);
+  console.log('\n▸ RH + POINTAGE (I11)');
+  if (hr) {
+    const tot = hr.totals || {};
+    console.log(`  ${mark((tot.people || 0) >= 1)}Personnes : ${tot.people || 0} · items assignés : ${tot.assignedItems || 0} · heures : ${tot.hours || 0}`);
+    console.log(`  ${mark((hr.processHints || []).length > 0, true)}Indices process RH : ${(hr.processHints || []).slice(0, 4).join(', ') || 'aucun'}`);
+    if ((tot.hours || 0) === 0) missing.push('Heures pointées (relancer seed HR + re-sync pour le mapping hoursReal)');
+  }
+
+  // 12) Calendrier (I12)
+  const cal = await require('../src/radar/calendar').analyzeEvents(ws).catch(() => null);
+  console.log('\n▸ CALENDRIER / ÉVÉNEMENTS (I12)');
+  if (cal) {
+    console.log(`  ${mark((cal.events || []).length > 0)}Événements : ${(cal.events || []).length} · RDV sans suite : ${(cal.orphanMeetings || []).length}${cal.note ? ' · ' + cal.note : ''}`);
+    if (!(cal.events || []).length) missing.push('Événements calendrier (vérifier watch calendar + handler agendaevents)');
+  }
+
+  // 13) Audit temps réel (I13)
+  const audit = await require('../src/radar/audit-live').auditDivergences(ws).catch(() => null);
+  console.log('\n▸ AUDIT TEMPS RÉEL (I13)');
+  if (audit) {
+    console.log(`  ${mark((audit.counts?.total || 0) > 0)}Divergences : ${audit.counts?.total || 0} (${audit.counts?.haute || 0} hautes) · score ${audit.score}`);
+    (audit.divergences || []).slice(0, 3).forEach(d => console.log(`     • [${d.severity}] ${d.type} : ${(d.label || '').slice(0, 50)}`));
+  }
+
+  // 14) LLM réel — interrogation conversationnelle (askRadar)
+  console.log('\n▸ LLM CONVERSATIONNEL (askRadar, vrai modèle)');
+  const ask = await require('../src/radar/ask').askRadar(ws, 'Quels sont mes 3 problèmes les plus urgents et ma marge globale ?').catch(e => ({ answer: 'ERREUR: ' + e.message }));
+  console.log(`  ${mark(ask.answer && !/erreur|indisponible/i.test(ask.answer))}Réponse : ${(ask.answer || '').slice(0, 220)}`);
+
   // Récap manques
   console.log('\n══════════ CE QUI MANQUE / À ENRICHIR ══════════');
   if (!missing.length) console.log('  ✅ Toutes les dimensions sont couvertes.');

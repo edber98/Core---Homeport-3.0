@@ -175,6 +175,17 @@ export class RadarBackendService {
     return this.api.post<{ answer: string; sources: string[]; documents?: RadarDocHit[] }>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/ask`, { question });
   }
 
+  // ── Pilotage : marge, RH, calendrier, audit, prédictif (DSO, win-rate, churn, trésorerie, santé) ──
+  getMargins(wsId: string): Observable<any> { return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/margins`); }
+  getHR(wsId: string): Observable<any> { return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/hr`); }
+  getCalendar(wsId: string): Observable<any> { return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/calendar`); }
+  getAudit(wsId: string): Observable<any> { return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/audit`); }
+  getDso(wsId: string): Observable<any> { return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/dso`); }
+  getWinrate(wsId: string): Observable<any> { return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/winrate`); }
+  getChurn(wsId: string): Observable<any> { return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/churn`); }
+  getCashflow(wsId: string): Observable<any> { return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/cashflow`); }
+  getHealth(wsId: string): Observable<any> { return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/health`); }
+
   // ── Dictionnaire mémoire + viewer d'élément (I9) ──
   dictionary(wsId: string, opts: { page?: number; size?: number; q?: string; coreType?: string } = {}): Observable<{ items: DictItem[]; total: number; page: number; size: number; byType: { coreType: string; n: number }[] }> {
     return this.api.get<any>(`/api/workspaces/${encodeURIComponent(wsId)}/radar/dictionary`, opts);

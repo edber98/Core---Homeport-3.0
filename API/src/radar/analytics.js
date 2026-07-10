@@ -49,11 +49,21 @@ function nameSimilarity(a, b) {
   const tokenScore = matched / Math.max(A.length, B.length);
   // Repli COMPACT (sans espaces) : capte les variantes concaténées / mal orthographiées
   // (« Joly Formations » vs « jolyformation », « jolyformations »…). La tokenisation par
-  // mots y échoue (1 token vs 2). On compare alors par distance d'édition sur la forme
-  // compacte. Sécurisé : pour des noms réellement différents le score reste bas.
+  // mots y échoue (1 token vs 2). Garde-fous :
+  //  - longueur ≥ 6 : les sigles courts (ITBS vs IT-BS) restent en zone grise → LLM ;
+  //  - même règle chiffre que fuzzyTokenMatch : un SEUL caractère qui diffère et c'est un
+  //    chiffre (PROV14 vs PROV15) = réfs distinctes, jamais un doublon.
   const ca = A.join(''), cb = B.join('');
-  const compactScore = (ca.length >= 4 && cb.length >= 4)
-    ? 1 - levenshtein(ca, cb) / Math.max(ca.length, cb.length) : 0;
+  let compactScore = 0;
+  if (ca.length >= 6 && cb.length >= 6) {
+    let digitDiff = false;
+    if (ca.length === cb.length) {
+      let n = 0, diff = -1;
+      for (let i = 0; i < ca.length; i++) if (ca[i] !== cb[i]) { n++; diff = i; }
+      digitDiff = n === 1 && (/[0-9]/.test(ca[diff]) || /[0-9]/.test(cb[diff]));
+    }
+    if (!digitDiff) compactScore = 1 - levenshtein(ca, cb) / Math.max(ca.length, cb.length);
+  }
   return Math.max(tokenScore, compactScore);
 }
 

@@ -68,6 +68,17 @@ async function askRadar(workspaceId, question, { complete = llmCompleteJSON } = 
     general: sent.overall, score: sent.score, positifs: sent.counts.positif, négatifs: sent.counts.négatif,
     clients_a_risque: sent.byClient.filter(c => c.atRisk).slice(0, 8).map(c => `${c.client} (${c.negatives} plainte(s))`),
   };
+  // Prédictif (en parallèle) : trésorerie, recouvrement, pipeline, churn, santé client.
+  const [cf, dso, wr, ch] = await Promise.all([
+    require('./predict/cashflow').forecastCashflow(workspaceId).catch(() => null),
+    require('./predict/dso').scorePaymentDelay(workspaceId).catch(() => null),
+    require('./predict/winrate').scoreWinRate(workspaceId).catch(() => null),
+    require('./predict/churn').scoreChurn(workspaceId).catch(() => null),
+  ]);
+  if (cf) ctx.tresorerie_previsionnelle = { encaissements: cf.expectedInflow, decaissements: cf.expectedOutflow, net: cf.netPosition };
+  if (dso) ctx.recouvrement = { factures_a_risque: (dso.invoicesAtRisk || []).slice(0, 5).map(i => `${i.label} (${i.daysOverdue}j, ${i.amount}€)`) };
+  if (wr) ctx.pipeline_commercial = { taux_base_pct: Math.round((wr.baseWinRate || 0) * 100), ca_pondere: wr.weightedForecast };
+  if (ch) ctx.risque_churn = (ch.atRisk || []).slice(0, 6).map(c => `${c.client} (${Math.round((c.score || 0) * 100)}%)`);
   if (typeof complete !== 'function') return { answer: '(LLM indisponible) Voici les faits bruts.', sources: [], context: ctx, documents: docs };
 
   const out = await complete(`Tu es l'analyste du « Radar d'entreprise ». Réponds à la question de l'utilisateur en t'appuyant UNIQUEMENT sur les FAITS ci-dessous (chiffres réels de son entreprise). Sois précis, cite les chiffres, et n'invente RIEN. Si l'utilisateur cherche un document, indique son NOM et son EMPLACEMENT (chemin). Si l'info manque, dis-le.

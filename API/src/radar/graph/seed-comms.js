@@ -192,7 +192,14 @@ async function seedPayments(workspaceId) {
     const key = `payment:${inv.canonicalKey}`;
     const rawAmt = inv.attributes?.total_ttc || inv.attributes?.amount_total;
     const amount = rawAmt != null ? Math.round(Number(rawAmt) * 100) / 100 : null;
-    const at = docDate(inv);
+    // DÉLAI DE PAIEMENT par profil client (déterministe) → variance réaliste : la date
+    // du paiement = date facture + délai (bons payeurs ~8-20 j, lents ~40-85 j). Donne au
+    // modèle DSO de quoi APPRENDRE (sinon délai=0 partout, non prédictif).
+    const cliKey = clientOf.get(inv.canonicalKey) || '';
+    const idMatch = /:(\d+)$/.exec(String(cliKey));
+    const profile = idMatch ? (Number(idMatch[1]) % 9) : (String(cliKey).length % 9);
+    const payDelayDays = 8 + profile * 10;            // 8 → 88 j selon le client
+    const at = new Date(docDate(inv).getTime() + payDelayDays * 86400000);
     await RadarEntity.updateOne({ workspaceId, canonicalKey: key },
       { $set: { coreType: 'Transaction', subtype: 'payment', label: `Paiement ${inv.label || ''}`.trim(),
         roles: [], attributes: { amount, date: Math.floor(at.getTime() / 1000), settles: inv.label },
@@ -251,4 +258,47 @@ async function linkRequestsToWork(workspaceId) {
   return { linked };
 }
 
-module.exports = { seedSimulatedComms, seedDealOutcomes, seedPayments, linkRequestsToWork };
+/**
+ * Relie les EMAILS aux PERSONNES (contacts du client), avec un NIVEAU de relation :
+ * le destinataire principal = lien fort (role 'to'), les autres en COPIE = lien faible
+ * (role 'cc'). Le moteur de force de relation pondère ensuite ('cc' → relation plus
+ * faible). Permet au modèle de distinguer « concerné directement » vs « en copie ».
+ * Dérivé : pour chaque email rattaché à un client, on cible les contacts de ce client.
+ * @returns {{ links }}
+ */
+async function linkEmailsToContacts(workspaceId) {
+  const RadarEntity = require('../../db/models/radar-entity.model');
+  const RadarRelation = require('../../db/models/radar-relation.model');
+  // contacts (personnes) par organisation : relation works_at (contact → org)
+  const persons = await RadarEntity.find({ workspaceId, coreType: 'Party', subtype: 'person', roles: 'contact' })
+    .select('canonicalKey aliasKeys label').lean();
+  if (!persons.length) return { links: 0 };
+  const personCanon = new Map();
+  for (const p of persons) { personCanon.set(p.canonicalKey, p.canonicalKey); for (const a of p.aliasKeys || []) personCanon.set(a, p.canonicalKey); }
+  const worksAt = await RadarRelation.find({ workspaceId, type: 'works_at' }).select('fromKey toKey').lean();
+  // org(canon|alias) → [personCanon]
+  const orgs = await RadarEntity.find({ workspaceId, coreType: 'Party', subtype: 'organization' }).select('canonicalKey aliasKeys').lean();
+  const orgCanon = new Map();
+  for (const o of orgs) { orgCanon.set(o.canonicalKey, o.canonicalKey); for (const a of o.aliasKeys || []) orgCanon.set(a, o.canonicalKey); }
+  const contactsOfOrg = new Map();
+  for (const r of worksAt) { const pc = personCanon.get(r.fromKey); const oc = orgCanon.get(r.toKey); if (!pc || !oc) continue; const a = contactsOfOrg.get(oc) || []; a.push(pc); contactsOfOrg.set(oc, a); }
+
+  // emails rattachés à un client (relation references role 'client')
+  const emailRels = await RadarRelation.find({ workspaceId, type: 'references', role: 'client' }).select('fromKey toKey').lean();
+  let links = 0;
+  for (const r of emailRels) {
+    const oc = orgCanon.get(r.toKey); if (!oc) continue;
+    const contacts = contactsOfOrg.get(oc); if (!contacts || !contacts.length) continue;
+    // 1er contact = destinataire (lien direct 'to'), 2e = en copie (lien faible 'cc')
+    for (let i = 0; i < Math.min(2, contacts.length); i++) {
+      const role = i === 0 ? 'to' : 'cc';
+      await RadarRelation.updateOne(
+        { workspaceId, fromKey: r.fromKey, toKey: contacts[i], type: 'references', role },
+        { $set: { confidence: i === 0 ? 0.9 : 0.5, source: 'derived' } }, { upsert: true }).catch(() => {});
+      links++;
+    }
+  }
+  return { links };
+}
+
+module.exports = { seedSimulatedComms, seedDealOutcomes, seedPayments, linkRequestsToWork, linkEmailsToContacts };

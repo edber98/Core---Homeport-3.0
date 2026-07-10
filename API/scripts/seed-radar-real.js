@@ -67,7 +67,7 @@ async function main() {
   const credOf = {};
   for (const k of ['dolibarr', 'openproject', 'nextcloudFiles', 'smtp_imap']) credOf[k] = await Credential.findOne({ providerKey: k }).lean();
   const plan = [
-    ['dolibarr', 'accounting'], ['dolibarr', 'crm'], ['dolibarr', 'productivity'], ['dolibarr', 'support'], ['dolibarr', 'catalog'], ['dolibarr', 'industry'],
+    ['dolibarr', 'accounting'], ['dolibarr', 'crm'], ['dolibarr', 'productivity'], ['dolibarr', 'support'], ['dolibarr', 'catalog'], ['dolibarr', 'industry'], ['dolibarr', 'calendar'],
     ['openproject', 'productivity'],
     ['nextcloudFiles', 'storage'],
     ['smtp_imap', 'email'],     // emails RÉELS (boîte perso) — floutent souvent, mais ajoutent la dimension réelle
@@ -136,8 +136,15 @@ async function main() {
     // L'explorateur vient d'AJOUTER les fichiers démo au graphe → on (re)corrèle MAINTENANT
     // pour relier les « Facture_IN…txt » à la VRAIE facture (l'ordre comptait : avant, les
     // fichiers n'étaient pas encore dans le graphe).
-    const corrD2 = await require('../src/radar/graph/correlate').correlateFilesToDeals(wsId, {});
+    const C = require('../src/radar/graph/correlate');
+    const corrD2 = await C.correlateFilesToDeals(wsId, {});
     console.log(`[real] fichiers→pièces (après index) : ${corrD2.matched}/${corrD2.scanned} (+${corrD2.created})`);
+    // (re)corrélation fichier/dossier → CLIENT (par nom dans le chemin) + → PROJET, sur
+    // les fichiers démo fraîchement ajoutés par l'explorateur (l'ordre comptait).
+    const corrN2 = await C.correlateByName(wsId, {});
+    console.log(`[real] fichiers/dossiers→client (après index) : ${corrN2.matched}/${corrN2.scanned} (+${corrN2.created})`);
+    const corrP2 = await C.correlateFilesToProjects(wsId, {});
+    console.log(`[real] fichiers→projets (après index) : ${corrP2.matched}/${corrP2.scanned} (+${corrP2.created})`);
   }
 
   // ── Déduplication auto des quasi-identiques (≥95%) : nettoie le bruit (re-créations) ──
@@ -166,6 +173,9 @@ async function main() {
   // ── Demandes client → travail : ticket relié à la tâche de traitement (addressed_by) ──
   const reqw = await require('../src/radar/graph/seed-comms').linkRequestsToWork(wsId);
   console.log(`[real] demandes client → tâches : ${reqw.linked} tickets reliés au travail`);
+  // ── Emails → personnes (contacts) avec NIVEAU : destinataire 'to' (fort) vs 'cc' (faible) ──
+  const ec = await require('../src/radar/graph/seed-comms').linkEmailsToContacts(wsId);
+  console.log(`[real] emails → contacts : ${ec.links} liens (to/cc, niveaux différenciés)`);
 
   // ── Chaîne d'affaire : devis→commande→facture reliés directement (par articles/montant) ──
   const dc = await require('../src/radar/graph/deal-chains').inferDealChains(wsId);

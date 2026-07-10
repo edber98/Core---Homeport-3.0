@@ -375,7 +375,7 @@ module.exports = function () {
     // NIVEAU / FORCE de relation (directe vs indirecte). Le cerveau perçoit qu'être en
     // CC d'un mail (rôle 'cc') est un lien plus FAIBLE qu'en être l'objet. Calcul
     // dynamique : force de base par TYPE de lien, modulée par le RÔLE et la CONFIANCE.
-    const TYPE_W = { party_of: 0.95, billed_to: 0.95, derived_from: 0.9, pays: 0.95, documents: 0.85, line_item: 0.85, references: 0.7, assigned_to: 0.85, produces: 0.8, part_of: 0.6, relates_to: 0.45, addressed_by: 0.7, scheduled_for: 0.7 };
+    const TYPE_W = { party_of: 0.95, billed_to: 0.95, derived_from: 0.9, pays: 0.95, documents: 0.85, line_item: 0.85, references: 0.7, assigned_to: 0.85, produces: 0.8, part_of: 0.6, relates_to: 0.45, addressed_by: 0.7, scheduled_for: 0.7, works_at: 0.9 };
     const WEAK_ROLE = /\b(cc|bcc|copie|copy|watcher|observateur|mention|témoin)\b/i;
     const relStrength = (r) => {
       let s = TYPE_W[r.type] != null ? TYPE_W[r.type] : 0.6;
@@ -479,6 +479,86 @@ module.exports = function () {
   r.get('/workspaces/:wsId/radar/margins', async (req, res) => {
     const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
     return res.apiOk(await require('../../radar/margin').analyzeMargins(ws._id));
+  });
+  // RH + pointage (I11) : charge des personnes, heures, indices de process RH.
+  r.get('/workspaces/:wsId/radar/hr', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/hr').analyzeHR(ws._id));
+  });
+  // Calendrier / événements (I12) : RDV client, réunions sans suite.
+  r.get('/workspaces/:wsId/radar/calendar', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/calendar').analyzeEvents(ws._id, { followupDays: Number(req.query.followupDays) || 30 }));
+  });
+  // Audit temps réel (I13) : toutes les divergences priorisées.
+  r.get('/workspaces/:wsId/radar/audit', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/audit-live').auditDivergences(ws._id));
+  });
+  // ── Prédictif (P) : DSO, win-rate, churn, trésorerie, health score ──
+  r.get('/workspaces/:wsId/radar/dso', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/predict/dso').scorePaymentDelay(ws._id));
+  });
+  r.get('/workspaces/:wsId/radar/winrate', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/predict/winrate').scoreWinRate(ws._id));
+  });
+  r.get('/workspaces/:wsId/radar/churn', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/predict/churn').scoreChurn(ws._id));
+  });
+  r.get('/workspaces/:wsId/radar/cashflow', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/predict/cashflow').forecastCashflow(ws._id, { horizonDays: Number(req.query.horizonDays) || 90 }));
+  });
+  r.get('/workspaces/:wsId/radar/health', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/predict/health').customerHealth(ws._id));
+  });
+  // Back-test des modèles (AUC/accuracy sur la vérité historique) — validation.
+  r.get('/workspaces/:wsId/radar/backtest', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/predict/backtest').backtestModels(ws._id));
+  });
+  // Modèle ENTRAÎNÉ win-rate (régression logistique train/test) + métriques.
+  r.get('/workspaces/:wsId/radar/train-winrate', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/predict/train-winrate').trainWinRateModel(ws._id, { testRatio: Number(req.query.testRatio) || 0.3 }));
+  });
+  // Prévision de CA mensuel + back-test (MAPE).
+  r.get('/workspaces/:wsId/radar/revenue-forecast', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/predict/revenue-forecast').forecastRevenue(ws._id, { months: Number(req.query.months) || 3 }));
+  });
+  // File d'ACTIONS priorisées (R4) issues des divergences/signaux.
+  r.get('/workspaces/:wsId/radar/actions-queue', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/actions-engine').buildActionQueue(ws._id, req.query || {}));
+  });
+  // SLA / échéances (R4) : manquements + risques, sévérité, temps-avant-échéance.
+  r.get('/workspaces/:wsId/radar/sla', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/sla').analyzeSLA(ws._id));
+  });
+  // Supervision continue (R4) : instantané KPI + changements significatifs vs précédent.
+  r.post('/workspaces/:wsId/radar/supervision', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/supervision').superviseSnapshot(ws._id, { persist: (req.body || {}).persist !== false }));
+  });
+  // Flux temps-réel (R2) : changements récents (transitions d'état, nouvelles pièces).
+  r.get('/workspaces/:wsId/radar/changes', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/changes').recentChanges(ws._id, { sinceHours: Number(req.query.sinceHours) || 168, limit: Number(req.query.limit) || 50 }));
+  });
+  // Exécuteur d'actions (R4) : aperçu + exécution réversible d'une action de la file.
+  r.get('/workspaces/:wsId/radar/actions-preview', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/action-runner').previewActions(ws._id));
+  });
+  r.post('/workspaces/:wsId/radar/run-action', async (req, res) => {
+    const ws = await resolveWorkspaceMember(req, res); if (!ws) return;
+    return res.apiOk(await require('../../radar/action-runner').runAction(ws._id, req.body || {}));
   });
 
   // Charge par personne / organisation (mapping « qui fait quoi »).

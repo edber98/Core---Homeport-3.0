@@ -4346,6 +4346,10 @@
             "listContacts": {
               "template": "dolibarr_thirdparties_list"
             },
+            "listContactPersons": {
+              "template": "dolibarr_contacts_list",
+              "args": { "limit": 500 }
+            },
             "listSalesOrders": {
               "template": "dolibarr_orders_list"
             }
@@ -4356,6 +4360,12 @@
               "via": "listContacts",
               "key": "id",
               "hashFields": ["name", "email", "phone", "client", "fournisseur"]
+            },
+            {
+              "entity": "contact",
+              "via": "listContactPersons",
+              "key": "id",
+              "hashFields": ["lastname", "firstname", "email", "socid", "poste"]
             },
             {
               "entity": "quote",
@@ -4425,9 +4435,13 @@
           "family": "calendar",
           "capabilities": {
             "listEvents": {
-              "template": "dolibarr_get_agendaevents"
+              "template": "dolibarr_get_agendaevents",
+              "args": { "limit": 500 }
             }
-          }
+          },
+          "watch": [
+            { "entity": "agendaevent", "via": "listEvents", "key": "id", "hashFields": ["label", "datep", "percentage", "socid"] }
+          ]
         },
         {
           "family": "catalog",

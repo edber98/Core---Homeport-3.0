@@ -90,7 +90,7 @@ const CORE_COLORS: Record<string, string> = {
         <h4>Relations ({{ d.relationCount }})</h4>
         <div class="rels" *ngIf="d.relations?.length; else noRel">
           <div class="relrow" *ngFor="let r of d.relations" (click)="open(r.target.key)"
-               nz-tooltip [nzTooltipTitle]="relLevelLabel(r.level) + ' · force ' + (r.strength*100|number:'1.0-0') + '%'">
+               nz-tooltip [nzTooltipTitle]="relLevelLabel(r.level) + ' · force ' + ((r.strength || 0)*100|number:'1.0-0') + '%'">
             <span class="rellvl" [attr.data-lvl]="r.level">N{{ r.level }}</span>
             <span class="reldir" [class.out]="r.direction==='out'">{{ r.direction==='out' ? '→' : '←' }}</span>
             <span class="reltype">{{ labels.relationLabel(r.type) }}<span *ngIf="r.role"> · {{ r.role }}</span></span>

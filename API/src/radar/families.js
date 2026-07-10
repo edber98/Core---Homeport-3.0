@@ -61,6 +61,7 @@ const FAMILIES = {
       listOpportunities: { kind: 'read',  description: 'Lister les opportunités / leads' },
       listQuotes:        { kind: 'read',  description: 'Lister les devis (avec statut)' },
       listContacts:      { kind: 'read',  description: 'Lister les tiers / contacts (organisations, clients, fournisseurs)' },
+      listContactPersons:{ kind: 'read',  description: 'Lister les contacts PERSONNES (interlocuteurs des tiers)' },
       listSalesOrders:   { kind: 'read',  description: 'Lister les commandes clients' },
       createOpportunity: { kind: 'write', description: 'Créer une opportunité' },
     },

@@ -46,6 +46,7 @@ const RELATION_TYPES = [
   'party_of', 'part_of', 'child_of', 'derived_from', 'attached_to',
   'references', 'relates_to', 'assigned_to', 'scheduled_for', 'mentions',
   'blocks', 'depends_on', 'located_in',
+  'works_at', 'produces', 'documents', 'pays', 'addressed_by',
 ];
 
 // Libellés FR des relations (pour l'UI). Accents requis.
@@ -54,6 +55,7 @@ const RELATION_LABELS = {
   derived_from: 'issu de', attached_to: 'joint à', references: 'référence',
   relates_to: 'lié à', assigned_to: 'assigné à', scheduled_for: 'planifié pour',
   mentions: 'mentionne', blocks: 'bloque', depends_on: 'dépend de', located_in: 'situé dans',
+  works_at: 'travaille chez', produces: 'produit', documents: 'documente', pays: 'règle', addressed_by: 'traité par',
 };
 
 // Rôles applicables aux entités (multi) et aux relations party_of.

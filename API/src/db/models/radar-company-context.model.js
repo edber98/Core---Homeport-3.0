@@ -20,6 +20,17 @@ const RadarCompanyContextSchema = new Schema({
   summary: { type: String },                           // résumé en une phrase
   interpretedAt: { type: Date },
   source: { type: String, enum: ['user', 'llm'], default: 'user' },
+  // CE QU'ON FAIT SUR CHAQUE LOGICIEL — relie le contexte entreprise aux connecteurs.
+  // Saisi par l'utilisateur (« Dolibarr : devis, factures, stock »), injecté dans le
+  // cerveau (askRadar/assistant) et utilisable par le mapping/process pour contexte.
+  connectorUsages: {
+    type: [{
+      providerKey: { type: String, required: true },   // logiciel (dolibarr, nextcloudFiles…)
+      usage: { type: String, default: '' },            // ce que l'entreprise y fait (texte libre)
+      _id: false,
+    }],
+    default: [],
+  },
 }, { timestamps: true });
 
 RadarCompanyContextSchema.pre('save', function(next) { if (!this.id) this.id = newId('rctx'); next(); });

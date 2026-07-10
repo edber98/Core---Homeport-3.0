@@ -18,6 +18,7 @@ import { RadarProcessComponent } from './radar-process.component';
 import { RadarAnalyseComponent } from './radar-analyse.component';
 import { RadarDocumentsComponent } from './radar-documents.component';
 import { RadarDictionaryComponent } from './radar-dictionary.component';
+import { RadarPilotageComponent } from './radar-pilotage.component';
 import { RadarChatService } from './radar-chat.service';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FormsModule } from '@angular/forms';
@@ -28,7 +29,7 @@ import { RadarBackendService, RadarCompanyContext } from '../../services/radar-b
 // Section Radar d'entreprise — shell au style standard de l'app.
 // L'onglet actif est porté par ?tab= : il survit au refresh et est partageable.
 
-const TABS = ['dashboard', 'activite', 'memoire', 'dictionnaire', 'donnees', 'processus', 'analyse', 'documents', 'agenda', 'connecteurs', 'savoir', 'procedures'];
+const TABS = ['dashboard', 'pilotage', 'activite', 'memoire', 'dictionnaire', 'donnees', 'processus', 'analyse', 'documents', 'agenda', 'connecteurs', 'savoir', 'procedures'];
 
 @Component({
   selector: 'radar-page',
@@ -37,7 +38,7 @@ const TABS = ['dashboard', 'activite', 'memoire', 'dictionnaire', 'donnees', 'pr
     CommonModule, NzTabsModule, NzIconModule,
     RadarBoardComponent, RadarActivityComponent, RadarConnectorsComponent,
     RadarKnowledgeComponent, RadarPlaybooksComponent, RadarChatDrawerComponent, RadarAgendaComponent,
-    RadarGraphComponent, RadarDataComponent, RadarProcessComponent, RadarAnalyseComponent, RadarDocumentsComponent, RadarDictionaryComponent,
+    RadarGraphComponent, RadarDataComponent, RadarProcessComponent, RadarAnalyseComponent, RadarDocumentsComponent, RadarDictionaryComponent, RadarPilotageComponent,
     NzButtonModule, FormsModule, NzInputModule, NzTagModule,
   ],
   template: `
@@ -71,6 +72,9 @@ const TABS = ['dashboard', 'activite', 'memoire', 'dictionnaire', 'donnees', 'pr
       <nz-tabset [nzSelectedIndex]="selectedIndex" (nzSelectedIndexChange)="onTabChange($event)">
         <nz-tab nzTitle="Dashboard">
           <ng-template nz-tab><radar-board></radar-board></ng-template>
+        </nz-tab>
+        <nz-tab nzTitle="Pilotage">
+          <ng-template nz-tab><radar-pilotage></radar-pilotage></ng-template>
         </nz-tab>
         <nz-tab nzTitle="Activité">
           <ng-template nz-tab><radar-activity></radar-activity></ng-template>

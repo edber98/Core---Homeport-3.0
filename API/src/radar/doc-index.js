@@ -43,7 +43,13 @@ async function indexDocuments(workspaceId, { roots, maxFolders, pathPrefix = nul
     const docs = await RadarEntity.find(q).select('canonicalKey label attributes').lean();
     targets = docs.map(d => ({ path: d.attributes?.path, label: d.label, key: d.canonicalKey }));
   }
-  targets = targets.filter(t => t.path).slice(0, maxFiles);
+  // On n'indexe QUE des documents bureautiques (pdf/docx/xlsx/txt/md…) — jamais le code,
+  // les images, archives, dotfiles de config (.eslintrc, .dockerignore…) qui polluent le RAG.
+  const { DOC_EXTS } = require('./tree-explorer');
+  const isBusinessDoc = (p, label) => DOC_EXTS.test(String(p || '')) && !/(^|\/)\.[^/]+$/.test(String(label || p || '')) && !/(^|\/)(node_modules|\.git)\//i.test(String(p || ''));
+  targets = targets.filter(t => t.path && isBusinessDoc(t.path, t.label)).slice(0, maxFiles);
+  // Nettoie les chunks JUNK déjà indexés (images/code/archives/dotfiles) → RAG propre.
+  await RadarDocChunk.deleteMany({ workspaceId, path: { $not: DOC_EXTS } }).catch(() => {});
 
   let indexed = 0, skipped = 0, graphed = 0;
   for (const t of targets) {
